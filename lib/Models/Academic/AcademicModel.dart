@@ -10,27 +10,18 @@ class AcademicModel {
   @HiveField(1)
   String? name;
   @HiveField(2)
-  String? startYear;
+  String? year;
   @HiveField(3)
-  String? endYear;
-  @HiveField(4)
   String? semester;
-  @HiveField(5)
+  @HiveField(4)
   DateTime? createdAt;
 
-  AcademicModel(
-      {this.id,
-      this.name,
-      this.startYear,
-      this.endYear,
-      this.semester,
-      this.createdAt});
+  AcademicModel({this.id, this.name, this.semester, this.year, this.createdAt});
 
   AcademicModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-    startYear = json['startYear'];
-    endYear = json['endYear'];
+    year = json['year'];
     semester = json['semester'];
     createdAt = DateTime.parse(json['createdAt']);
   }
@@ -39,8 +30,7 @@ class AcademicModel {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
-    data['startYear'] = startYear;
-    data['endYear'] = endYear;
+    data['year'] = year;
     data['semester'] = semester;
     data['createdAt'] = createdAt.toString();
     return data;

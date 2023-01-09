@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../../../SateManager/MongoListener.dart';
+import '../../../SateManager/HiveListener.dart';
 
 class TopView extends StatefulWidget {
   const TopView({Key? key}) : super(key: key);
@@ -17,7 +17,7 @@ class _TopViewState extends State<TopView> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Consumer<MongoListener>(builder: (context, mongo, child) {
+    return Consumer<HiveListener>(builder: (context, mongo, child) {
       return Container(
         height: 90,
         color: background,
@@ -68,8 +68,8 @@ class _TopViewState extends State<TopView> {
                 onChanged: (value) {},
                 items: mongo.getAcademicList
                     .map((e) => DropdownMenuItem(
-                  value: e.name,
-                            child: Text(
+                        value: e.name,
+                        child: Text(
                           e.name!,
                           style: GoogleFonts.nunito(),
                         )))
