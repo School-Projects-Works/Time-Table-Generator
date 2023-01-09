@@ -1,3 +1,4 @@
+import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:aamusted_timetable_generator/Components/CustomDropDown.dart';
 import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _TopViewState extends State<TopView> {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -56,29 +58,49 @@ class _TopViewState extends State<TopView> {
                     ))
               ],
             ),
-            const SizedBox(
-              width: 120,
+            SizedBox(
+              width: size.width * 0.4,
+              child: Row(
+                children: [
+                  Text(
+                    'Current Academic Year : ',
+                    style: GoogleFonts.poppins(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: CustomDropDown(
+                      hintText: 'Select Academic Year',
+                      radius: 10,
+                      color: background,
+                      onChanged: (value) {},
+                      items: mongo.getAcademicList
+                          .map((e) => DropdownMenuItem(
+                              value: e.name,
+                              child: Text(
+                                e.name!,
+                                style: GoogleFonts.nunito(),
+                              )))
+                          .toList(),
+                    ),
+                  ),
+                ],
+              ),
             ),
             SizedBox(
-              width: size.width * 0.5,
-              child: CustomDropDown(
-                hintText: 'Search',
-                radius: 50,
-                color: background,
-                onChanged: (value) {},
-                items: mongo.getAcademicList
-                    .map((e) => DropdownMenuItem(
-                        value: e.name,
-                        child: Text(
-                          e.name!,
-                          style: GoogleFonts.nunito(),
-                        )))
-                    .toList(),
-              ),
-            )
+                height: 50,
+                child: CustomButton(
+                    onPressed: addNewAcademic, text: 'Add Academic Year')),
+            const SizedBox(
+              width: 10,
+            ),
           ],
         ),
       );
     });
   }
+
+  void addNewAcademic() {}
 }

@@ -21,7 +21,7 @@ class HiveCache {
     await Hive.openBox('isLoggedIn');
   }
 
-  static void saveAdmin(Admin admin) {
+  static void setAdmin(Admin admin) {
     final box = Hive.box<Admin>('admins');
     box.put('admin', admin);
   }

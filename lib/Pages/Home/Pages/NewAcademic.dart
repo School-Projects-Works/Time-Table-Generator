@@ -7,7 +7,6 @@ import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-
 import '../../../Components/CustomDropDown.dart';
 import '../../../Styles/colors.dart';
 
@@ -38,7 +37,7 @@ class _NewAcademicState extends State<NewAcademic> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'No Academic Year Found. Please add at least one academic year and semester to proceed.',
+                  'Create New Academic Year and Semester under which you can add courses, Students, Venues and generate timetable for that semester',
                   style: GoogleFonts.nunito(color: Colors.black, fontSize: 20),
                 ),
                 const SizedBox(
