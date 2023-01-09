@@ -249,11 +249,18 @@ class _AuthPageState extends State<AuthPage> {
   void signIn() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      print('$_username, $_password');
+
       Admin admin = HiveCache.getAdmin()!;
-      if (admin.name == _username && admin.password == _password) {
-        Provider.of<NavigationProvider>(context, listen: false)
-            .setCurrentIndex(1);
+      if (admin.name!.toLowerCase() == _username!.toLowerCase() &&
+          admin.password == _password) {
+        if (_password == '123456') {
+          Provider.of<NavigationProvider>(context, listen: false)
+              .setCurrentIndex(2);
+        } else {
+          HiveCache.saveIsLoggedIn(true);
+          Provider.of<NavigationProvider>(context, listen: false)
+              .setCurrentIndex(1);
+        }
       } else {
         CustomDialog.showError(message: 'Invalid username or password');
       }

@@ -7,7 +7,7 @@ import 'package:window_manager/window_manager.dart';
 import 'Pages/ContainerPage.dart';
 import 'SateManager/ConfigDataFlow.dart';
 import 'SateManager/HiveCache.dart';
-import 'SateManager/MongoListener.dart';
+import 'SateManager/HiveListener.dart';
 import 'SateManager/NavigationProvider.dart';
 import 'Styles/colors.dart';
 
@@ -38,7 +38,7 @@ void main() async {
       create: (context) => NavigationProvider(),
     ),
     ChangeNotifierProvider(create: (context) => ConfigDataFlow()),
-    ChangeNotifierProvider(create: (context) => MongoListener()),
+    ChangeNotifierProvider(create: (context) => HiveListener()),
   ], child: const MyApp()));
 }
 

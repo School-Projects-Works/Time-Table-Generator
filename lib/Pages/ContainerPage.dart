@@ -8,6 +8,7 @@ import '../Components/ActionControls.dart';
 import '../Components/Background.dart';
 import '../SateManager/NavigationProvider.dart';
 import 'Auth/AuthPage.dart';
+import 'Auth/NewPassword.dart';
 import 'Home/HomePage.dart';
 
 class ContainerPage extends StatefulWidget {
@@ -80,6 +81,7 @@ class _ContainerPageState extends State<ContainerPage> {
                   children: const [
                     AuthPage(),
                     HomePage(),
+                    NewPassword(),
                   ],
                 ),
               ),

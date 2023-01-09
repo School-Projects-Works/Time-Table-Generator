@@ -1,4 +1,4 @@
-import 'package:aamusted_timetable_generator/SateManager/MongoListener.dart';
+import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:aamusted_timetable_generator/SateManager/NavigationProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,57 +25,55 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Consumer<NavigationProvider>(
-      builder: (context, nav, child) {
-        return SizedBox(
-          width: double.infinity,
-          height: size.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const TopView(),
-              Row(children: [
+    return Consumer<NavigationProvider>(builder: (context, nav, child) {
+      return SizedBox(
+        width: double.infinity,
+        height: size.height,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const TopView(),
+            Row(
+              children: [
                 const SideBard(),
-                Consumer<MongoListener>(
-                    builder: (context, mongo, child) {
-                    return Expanded(
-                      child: Card(
-                        elevation: 10,
-                        color: background,
-                        child: Container(
-                          height: size.height- 135,
-                          margin: const EdgeInsets.only(left: 10,top: 10,right: 5,bottom: 5),
+                Consumer<HiveListener>(builder: (context, hive, child) {
+                  return Expanded(
+                    child: Card(
+                      elevation: 10,
+                      color: background,
+                      child: Container(
+                          height: size.height - 135,
+                          margin: const EdgeInsets.only(
+                              left: 10, top: 10, right: 5, bottom: 5),
                           width: double.infinity,
-                          decoration:  const BoxDecoration(
+                          decoration: const BoxDecoration(
                               color: background,
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(20))),
-                          child:mongo.getAcademicList.isNotEmpty? IndexedStack(
-                            index: nav.page,
-                            children: const[
-                              Configuration(),
-                              CoursesPage(),
-                              ClassesPage(),
-                              LiberalPage(),
-                              TimeTablePage(),
-                              HelpPage(),
-                              AboutPage(),
-                              NewAcademic()
-                            ],
-                          ): const NewAcademic()
-                        ),
-                      ),
-                    );
-                  }
-                )
-
-              ],)
-            ],
-          ),
-
-        );
-      }
-    );
+                          child: hive.getAcademicList.isNotEmpty
+                              ? IndexedStack(
+                                  index: nav.page,
+                                  children: const [
+                                    Configuration(),
+                                    CoursesPage(),
+                                    ClassesPage(),
+                                    LiberalPage(),
+                                    TimeTablePage(),
+                                    HelpPage(),
+                                    AboutPage(),
+                                    NewAcademic()
+                                  ],
+                                )
+                              : const NewAcademic()),
+                    ),
+                  );
+                })
+              ],
+            )
+          ],
+        ),
+      );
+    });
   }
 }
