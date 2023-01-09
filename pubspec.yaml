@@ -44,3 +44,4 @@ flutter:
 
 
 #flutter pub run flutter_native_splash:create
+#flutter packages pub run build_runner build

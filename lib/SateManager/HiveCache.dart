@@ -1,11 +1,17 @@
+import 'package:aamusted_timetable_generator/Models/Academic/AcademicModel.dart';
 import 'package:hive_flutter/adapters.dart';
 import '../Models/Admin/Admin.dart';
+import '../Models/Config/ConfigModel.dart';
 
 class HiveCache {
   static Future<void> init() async {
     await Hive.initFlutter();
     Hive.registerAdapter(AdminAdapter());
-   await  Hive.openBox<Admin>('admins');
+    Hive.registerAdapter(AcademicModelAdapter());
+    Hive.registerAdapter(ConfigModelAdapter());
+    await Hive.openBox<Admin>('admins');
+    await Hive.openBox<AcademicModel>('academics');
+    await Hive.openBox<ConfigModel>('config');
     await Hive.openBox('isLoggedIn');
   }
 
@@ -13,9 +19,19 @@ class HiveCache {
     final box = Hive.box<Admin>('admins');
     box.put('admin', admin);
   }
+
   static Admin? getAdmin() {
     final box = Hive.box<Admin>('admins');
     return box.get('admin');
+  }
+
+  static void createAdmin() async {
+    final box = Hive.box<Admin>('admins');
+    Admin admin = box.get('admin')!;
+    if (admin.id == null) {
+      admin = Admin(id: 'admin', name: 'admin', password: 'admin');
+      box.put('admin', admin);
+    }
   }
 
   static void saveIsLoggedIn(bool isLoggedIn) {
@@ -25,7 +41,6 @@ class HiveCache {
 
   static bool? getIsLoggedIn() {
     final box = Hive.box('isLoggedIn');
-    return box.get('loggedIn',defaultValue: false);
+    return box.get('loggedIn', defaultValue: false);
   }
-
 }

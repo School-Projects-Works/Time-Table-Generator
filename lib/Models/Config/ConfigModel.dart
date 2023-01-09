@@ -1,10 +1,23 @@
-class ConfigModel{
+// ignore_for_file: file_names
+
+import 'package:hive/hive.dart';
+
+part 'ConfigModel.g.dart';
+
+@HiveType(typeId: 2)
+class ConfigModel {
+  @HiveField(0)
   String? id;
+  @HiveField(1)
   String? academicName;
+  @HiveField(2)
   String? academicYear;
+  @HiveField(3)
   String? academicSemester;
-  List<Map<String,dynamic>>?days;
-  List<Map<String,dynamic>>?periods;
+  @HiveField(4)
+  List<Map<String, dynamic>>? days;
+  @HiveField(5)
+  List<Map<String, dynamic>>? periods;
 
   ConfigModel({
     this.id,
@@ -15,7 +28,7 @@ class ConfigModel{
     this.periods,
   });
 
-  factory ConfigModel.fromJson(Map<String,dynamic> json){
+  factory ConfigModel.fromJson(Map<String, dynamic> json) {
     return ConfigModel(
       id: json['id'],
       academicName: json['academicName'],
@@ -26,7 +39,7 @@ class ConfigModel{
     );
   }
 
-  Map<String,dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
       'academicName': academicName,

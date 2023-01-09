@@ -24,7 +24,7 @@ class _NewAcademicState extends State<NewAcademic> {
       child: Card(
         elevation: 10,
         child: SizedBox(
-          width: size.width * .6,
+          width: size.width * .5,
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -38,12 +38,20 @@ class _NewAcademicState extends State<NewAcademic> {
                 const SizedBox(
                   height: 20,
                 ),
+                const Divider(
+                  color: Colors.black,
+                  indent: 20,
+                  endIndent: 20,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
                 Row(
                   children: [
                     Text(
                       'Select Academic Year',
                       style:
-                          GoogleFonts.nunito(color: Colors.white, fontSize: 20),
+                          GoogleFonts.nunito(color: Colors.black, fontSize: 20),
                     ),
                     const SizedBox(
                       width: 10,
@@ -61,7 +69,7 @@ class _NewAcademicState extends State<NewAcademic> {
                                   i < DateTime.now().year + 10;
                                   i++)
                                 DropdownMenuItem(
-                                  value: i,
+                                  value: '$i - ${i + 1}',
                                   child: Text(
                                     '$i - ${i + 1}',
                                     style: GoogleFonts.nunito(),
@@ -72,14 +80,14 @@ class _NewAcademicState extends State<NewAcademic> {
                   ],
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 30,
                 ),
                 Row(
                   children: [
                     Text(
                       'Select Semester',
                       style:
-                          GoogleFonts.nunito(color: Colors.white, fontSize: 20),
+                          GoogleFonts.nunito(color: Colors.black, fontSize: 20),
                     ),
                     const SizedBox(
                       width: 10,
@@ -112,12 +120,15 @@ class _NewAcademicState extends State<NewAcademic> {
                   ],
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 30,
                 ),
-                CustomButton(
-                  onPressed: saveAcademic,
-                  text: 'Save Academic Year',
-                  color: primaryColor,
+                SizedBox(
+                  width: size.width * .25,
+                  child: CustomButton(
+                    onPressed: saveAcademic,
+                    text: 'Save Academic Year',
+                    color: primaryColor,
+                  ),
                 )
               ],
             ),

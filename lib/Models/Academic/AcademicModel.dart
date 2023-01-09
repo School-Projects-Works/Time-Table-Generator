@@ -1,12 +1,30 @@
-class AcademicModel{
-  String ? id;
-  String ? name;
-  String ? startYear;
-  String ? endYear;
-  String ? semester;
-  DateTime ? createdAt;
+// ignore_for_file: file_names
 
-  AcademicModel({this.id, this.name, this.startYear, this.endYear, this.semester, this.createdAt});
+import 'package:hive_flutter/hive_flutter.dart';
+part 'AcademicModel.g.dart';
+
+@HiveType(typeId: 1)
+class AcademicModel {
+  @HiveField(0)
+  String? id;
+  @HiveField(1)
+  String? name;
+  @HiveField(2)
+  String? startYear;
+  @HiveField(3)
+  String? endYear;
+  @HiveField(4)
+  String? semester;
+  @HiveField(5)
+  DateTime? createdAt;
+
+  AcademicModel(
+      {this.id,
+      this.name,
+      this.startYear,
+      this.endYear,
+      this.semester,
+      this.createdAt});
 
   AcademicModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];

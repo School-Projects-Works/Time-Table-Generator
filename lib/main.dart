@@ -15,6 +15,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
   await HiveCache.init();
+  HiveCache.createAdmin();
   await windowManager.maximize();
   WindowOptions windowOptions = const WindowOptions(
     center: true,
@@ -25,15 +26,12 @@ void main() async {
     fullScreen: false,
   );
 
-
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.maximize();
     await windowManager.setAsFrameless();
     await windowManager.show();
     await windowManager.focus();
-
   });
-
 
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(

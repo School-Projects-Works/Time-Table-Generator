@@ -1,4 +1,7 @@
+import 'package:aamusted_timetable_generator/Components/SmartDialog.dart';
 import 'package:aamusted_timetable_generator/Components/TextInputs.dart';
+import 'package:aamusted_timetable_generator/Models/Admin/Admin.dart';
+import 'package:aamusted_timetable_generator/SateManager/HiveCache.dart';
 import 'package:aamusted_timetable_generator/SateManager/NavigationProvider.dart';
 import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +34,7 @@ class _AuthPageState extends State<AuthPage> {
             children: [
               Expanded(
                   child: Container(
-                    height: size.height * .55,
+                height: size.height * .55,
                 decoration: const BoxDecoration(
                     color: secondaryColor,
                     borderRadius: BorderRadius.only(
@@ -246,9 +249,14 @@ class _AuthPageState extends State<AuthPage> {
   void signIn() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      Provider.of<NavigationProvider>(context, listen: false).
-      setCurrentIndex(1);
-
+      print('$_username, $_password');
+      Admin admin = HiveCache.getAdmin()!;
+      if (admin.name == _username && admin.password == _password) {
+        Provider.of<NavigationProvider>(context, listen: false)
+            .setCurrentIndex(1);
+      } else {
+        CustomDialog.showError(message: 'Invalid username or password');
+      }
     }
   }
 }
