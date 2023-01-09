@@ -42,10 +42,25 @@ void main() async {
   ], child: const MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
+  Future<void> getData() async {
+    var academic = await HiveCache.getAcademics();
+    if (academic.isNotEmpty) {
+      if (mounted) {
+        Provider.of<HiveListener>(context, listen: false)
+            .setAcademicList(academic);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -69,7 +84,11 @@ class MyApp extends StatelessWidget {
         canvasColor: primaryColor,
       ),
       builder: FlutterSmartDialog.init(),
-      home: const ContainerPage(),
+      home: FutureBuilder(
+          future: getData(),
+          builder: (context, snapshot) {
+            return const ContainerPage();
+          }),
     );
   }
 }

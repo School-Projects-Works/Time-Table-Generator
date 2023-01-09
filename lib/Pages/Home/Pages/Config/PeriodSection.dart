@@ -107,9 +107,9 @@ class PeriodSection extends StatelessWidget {
                 onRegular: () {
                   if (data.getPeriodTwo['reg'] == null ||
                       data.getPeriodTwo['reg'] == false) {
-                    data.updatePeriodTwo('+Regular');
+                    data.updatePeriodTwoType('+Regular');
                   } else {
-                    data.updatePeriodTwo('-Regular');
+                    data.updatePeriodTwoType('-Regular');
                   }
                 },
                 regularChecked: data.getPeriodTwo['reg'] != null &&

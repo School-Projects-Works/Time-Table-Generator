@@ -75,6 +75,7 @@ class _TopViewState extends State<TopView> {
                       hintText: 'Select Academic Year',
                       radius: 10,
                       color: background,
+                      value: mongo.currentAcademicYear,
                       onChanged: (value) {},
                       items: mongo.getAcademicList
                           .map((e) => DropdownMenuItem(

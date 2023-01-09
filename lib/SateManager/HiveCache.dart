@@ -60,4 +60,9 @@ class HiveCache {
     box.put(academicModel.id, academicModel);
     return box.values.toList();
   }
+
+  static getAcademics() {
+    final box = Hive.box<AcademicModel>('academics');
+    return box.values.toList();
+  }
 }
