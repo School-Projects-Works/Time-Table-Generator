@@ -60,7 +60,7 @@ class ImportServices {
 
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
 
-    List<CourseModel> courses = rows.skip(1).map((row) {
+    List<CourseModel> courses = rows.skip(1).map<CourseModel>((row) {
       return CourseModel(
         code: row[0]!.value.toString(),
         title: row[1]!.value.toString(),
@@ -69,10 +69,9 @@ class ImportServices {
         lecturerName: row[4]!.value.toString(),
         lecturerEmail: row[5]!.value.toString(),
         lecturerPhone: row[6]!.value.toString(),
-        department: row[7]!.value.toString(),
         id: row[0]!.value.toString(),
       );
-    }) as List<CourseModel>;
+    }).toList();
 
     return courses;
   }
@@ -87,14 +86,14 @@ class ImportServices {
 
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
 
-    List<VenueModel> venues = rows.skip(1).map((row) {
+    List<VenueModel> venues = rows.skip(1).map<VenueModel>((row) {
       return VenueModel(
         name: row[0]!.value.toString(),
         capacity: row[1]!.value.toString(),
         isDisabilityAccessible: row[2]!.value.toString(),
         id: row[0]!.value.toString(),
       );
-    }) as List<VenueModel>;
+    }).toList();
 
     return venues;
   }
@@ -109,7 +108,7 @@ class ImportServices {
 
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
 
-    List<ClassModel> venues = rows.skip(1).map((row) {
+    List<ClassModel> venues = rows.skip(1).map<ClassModel>((row) {
       return ClassModel(
         id: row[2]!.value.toString().trimToLowerCase(),
         level: row[0]!.value.toString(),
@@ -119,7 +118,7 @@ class ImportServices {
         hasDisability: row[4]!.value.toString(),
         // courses: row[5]!.value.toString(),
       );
-    }) as List<ClassModel>;
+    }).toList();
 
     return venues;
   }

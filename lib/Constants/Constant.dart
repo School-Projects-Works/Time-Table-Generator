@@ -22,10 +22,10 @@ class Constant {
     courseCode,
     couseTitle,
     creaditHourse,
-    lecturerName,
     specialVenue,
-    lecturerPhone,
-    lecturerEmail
+    lecturerName,
+    lecturerEmail,
+    lecturerPhone
   ];
 
   static List<String> classExcelHeaderOrder = [
