@@ -54,7 +54,6 @@ class ExcelService {
 class ImportServices {
   static Future<List<CourseModel>?> importCourses(Excel? excel) async {
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
-
     List<CourseModel> courses = rows.skip(1).map<CourseModel>((row) {
       return CourseModel(
         code: row[0]!.value.toString(),
