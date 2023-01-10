@@ -79,10 +79,10 @@ class CustomTable extends StatefulWidget {
   final TableBorder? border;
 
   @override
-  PaginatedDataTableState createState() => PaginatedDataTableState();
+  CustomTableState createState() => CustomTableState();
 }
 
-class PaginatedDataTableState extends State<PaginatedDataTable> {
+class CustomTableState extends State<CustomTable> {
   late int _firstRowIndex;
   late int _rowCount;
   late bool _rowCountApproximate;
@@ -98,7 +98,7 @@ class PaginatedDataTableState extends State<PaginatedDataTable> {
   }
 
   @override
-  void didUpdateWidget(PaginatedDataTable oldWidget) {
+  void didUpdateWidget(CustomTable oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.source != widget.source) {
       oldWidget.source.removeListener(_handleDataSourceChanged);

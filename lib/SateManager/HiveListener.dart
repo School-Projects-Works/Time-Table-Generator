@@ -34,4 +34,17 @@ class HiveListener extends ChangeNotifier {
     filterdCourses = list;
     notifyListeners();
   }
+
+  void filterCourses(String? value) {
+    if (value == null || value.isEmpty) {
+      filterdCourses = courseList;
+    } else {
+      filterdCourses = courseList
+          .where((element) =>
+              element.title!.toLowerCase().contains(value.toLowerCase()) ||
+              element.code!.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    }
+    notifyListeners();
+  }
 }
