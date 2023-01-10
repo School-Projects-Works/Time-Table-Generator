@@ -26,7 +26,9 @@ class ExcelService {
     if (excel == null) return false;
     // GEt the header row
     List<Data?> headerRow = excel.tables[excel.getDefaultSheet()]!.row(0);
-    List<String> fileColumns = headerRow.map((e) => e?.value) as List<String>;
+    List<String> fileColumns = headerRow
+        .map<String>((data) => data!.value.toString().toString())
+        .toList();
 
     // Validate the name column names
     return const ListEquality().equals(fileColumns, columns);
@@ -61,15 +63,15 @@ class ImportServices {
 
     List<CourseModel> courses = rows.skip(1).map((row) {
       return CourseModel(
-        code: row[0]!.value,
-        title: row[1]!.value,
-        creditHours: row[2]!.value,
-        specialVenue: row[3]!.value,
-        lecturerName: row[4]!.value,
-        lecturerEmail: row[5]!.value,
-        lecturerPhone: row[6]!.value,
-        department: row[7]!.value,
-        id: row[0]!.value,
+        code: row[0]!.value.toString(),
+        title: row[1]!.value.toString(),
+        creditHours: row[2]!.value.toString(),
+        specialVenue: row[3]!.value.toString(),
+        lecturerName: row[4]!.value.toString(),
+        lecturerEmail: row[5]!.value.toString(),
+        lecturerPhone: row[6]!.value.toString(),
+        department: row[7]!.value.toString(),
+        id: row[0]!.value.toString(),
       );
     }) as List<CourseModel>;
 
@@ -88,10 +90,10 @@ class ImportServices {
 
     List<VenueModel> venues = rows.skip(1).map((row) {
       return VenueModel(
-        name: row[0]!.value,
-        capacity: row[1]!.value,
-        isDisabilityAccessible: row[2]!.value,
-        id: row[0]!.value,
+        name: row[0]!.value.toString(),
+        capacity: row[1]!.value.toString(),
+        isDisabilityAccessible: row[2]!.value.toString(),
+        id: row[0]!.value.toString(),
       );
     }) as List<VenueModel>;
 
@@ -111,12 +113,12 @@ class ImportServices {
     List<ClassModel> venues = rows.skip(1).map((row) {
       return ClassModel(
         id: row[2]!.value.toString().trimToLowerCase(),
-        level: row[0]!.value,
-        type: row[1]!.value,
-        name: row[2]!.value,
-        size: row[3]!.value,
-        hasDisability: row[4]!.value,
-        courses: row[5]!.value,
+        level: row[0]!.value.toString(),
+        type: row[1]!.value.toString(),
+        name: row[2]!.value.toString(),
+        size: row[3]!.value.toString(),
+        hasDisability: row[4]!.value.toString(),
+        // courses: row[5]!.value.toString(),
       );
     }) as List<ClassModel>;
 
