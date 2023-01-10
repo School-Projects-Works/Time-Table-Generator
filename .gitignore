@@ -32,6 +32,7 @@ migrate_working_dir/
 .pub/
 /build/
 /Database/
+Database
 
 # Symbolication related
 app.*.symbols
