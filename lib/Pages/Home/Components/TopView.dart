@@ -105,14 +105,6 @@ class _TopViewState extends State<TopView> {
                 ],
               ),
             ),
-            SizedBox(
-              height: 50,
-              child: CustomButton(
-                  onPressed: () {
-                    ExcelService.readExcelFile();
-                  },
-                  text: 'Add Academic Year'),
-            ),
             if (mongo.getAcademicList.isNotEmpty)
               SizedBox(
                   height: 50,

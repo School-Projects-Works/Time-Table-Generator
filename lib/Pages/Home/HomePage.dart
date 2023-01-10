@@ -6,7 +6,7 @@ import '../../Styles/colors.dart';
 import 'Components/SideBar.dart';
 import 'Components/TopView.dart';
 import 'Pages/AboutPage.dart';
-import 'Pages/ClassesPage.dart';
+import 'Pages/ClassPage/ClassesPage.dart';
 import 'Pages/Config/Configurations.dart';
 import 'Pages/CoursePage/Courses.dart';
 import 'Pages/HelpPage.dart';

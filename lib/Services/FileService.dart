@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'package:aamusted_timetable_generator/Constants/Constant.dart';
+import 'package:aamusted_timetable_generator/Constants/CustomStringFunctions.dart';
+import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:collection/collection.dart';
 
+import '../Models/Class/ClassModel.dart';
 import '../Models/Course/CourseModel.dart';
 
 class FileService {
@@ -71,5 +74,52 @@ class ImportServices {
     }) as List<CourseModel>;
 
     return courses;
+  }
+
+  static Future<List<VenueModel>> importVenues() async {
+    Excel? excel = await ExcelService.readExcelFile();
+    bool isFIleValid = ExcelService.validateExcelFIleByColumns(
+      excel,
+      Constant.venueExcelHeaderOrder,
+    );
+    if (!isFIleValid) throw ('Error Occurred');
+
+    var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
+
+    List<VenueModel> venues = rows.skip(1).map((row) {
+      return VenueModel(
+        name: row[0]!.value,
+        capacity: row[1]!.value,
+        isDisabilityAccessible: row[2]!.value,
+        id: row[0]!.value,
+      );
+    }) as List<VenueModel>;
+
+    return venues;
+  }
+
+  static Future<List<ClassModel>> importClasses() async {
+    Excel? excel = await ExcelService.readExcelFile();
+    bool isFIleValid = ExcelService.validateExcelFIleByColumns(
+      excel,
+      Constant.venueExcelHeaderOrder,
+    );
+    if (!isFIleValid) throw ('Error Occurred');
+
+    var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
+
+    List<ClassModel> venues = rows.skip(1).map((row) {
+      return ClassModel(
+        id: row[2]!.value.toString().trimToLowerCase(),
+        level: row[0]!.value,
+        type: row[1]!.value,
+        name: row[2]!.value,
+        size: row[3]!.value,
+        hasDisability: row[4]!.value,
+        courses: row[5]!.value,
+      );
+    }) as List<ClassModel>;
+
+    return venues;
   }
 }
