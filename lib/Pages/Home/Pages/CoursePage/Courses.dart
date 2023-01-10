@@ -126,32 +126,35 @@ class _CoursesPageState extends State<CoursesPage> {
             else
               SizedBox(
                 height: size.height - 216,
-                child: CustomTable(
-                    arrowHeadColor: Colors.black,
-                    dragStartBehavior: DragStartBehavior.start,
-                    controller: _scrollController,
-                    border: hive.getCourseList.isNotEmpty
-                        ? const TableBorder(
-                            horizontalInside:
-                                BorderSide(color: Colors.grey, width: 1),
-                            top: BorderSide(color: Colors.grey, width: 1),
-                            bottom: BorderSide(color: Colors.grey, width: 1))
-                        : const TableBorder(),
-                    dataRowHeight: 45,
-                    source: CoursesDataScource(
-                      context,
-                    ),
-                    rowsPerPage: 10,
-                    columnSpacing: 70,
-                    columns: columns
-                        .map((e) => DataColumn(
-                              label: Text(
-                                e,
-                                style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w600, fontSize: 14),
-                              ),
-                            ))
-                        .toList()),
+                child: SingleChildScrollView(
+                  child: CustomTable(
+                      arrowHeadColor: Colors.black,
+                      dragStartBehavior: DragStartBehavior.start,
+                      controller: _scrollController,
+                      border: hive.getCourseList.isNotEmpty
+                          ? const TableBorder(
+                              horizontalInside:
+                                  BorderSide(color: Colors.grey, width: 1),
+                              top: BorderSide(color: Colors.grey, width: 1),
+                              bottom: BorderSide(color: Colors.grey, width: 1))
+                          : const TableBorder(),
+                      dataRowHeight: 45,
+                      source: CoursesDataScource(
+                        context,
+                      ),
+                      rowsPerPage: 10,
+                      columnSpacing: 70,
+                      columns: columns
+                          .map((e) => DataColumn(
+                                label: Text(
+                                  e,
+                                  style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14),
+                                ),
+                              ))
+                          .toList()),
+                ),
               ),
           ],
         ),

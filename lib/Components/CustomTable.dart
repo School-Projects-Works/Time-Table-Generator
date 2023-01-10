@@ -1,6 +1,8 @@
 import 'dart:math' as math;
+import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
+import 'package:vs_scrollbar/vs_scrollbar.dart';
 
 class CustomTable extends StatefulWidget {
   CustomTable({
@@ -309,21 +311,67 @@ class CustomTableState extends State<CustomTable> {
     ]);
 
     // CARD
+    var constraints = MediaQuery.of(context).size;
+
     return Card(
-      semanticContainer: false,
-      child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  primary: widget.primary,
-                  controller: widget.controller,
-                  dragStartBehavior: widget.dragStartBehavior,
+        semanticContainer: true,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            if (headerWidgets.isNotEmpty)
+              Semantics(
+                container: true,
+                child: DefaultTextStyle(
+                  style: _selectedRowCount > 0
+                      ? themeData.textTheme.titleMedium!
+                          .copyWith(color: themeData.colorScheme.secondary)
+                      : themeData.textTheme.titleLarge!
+                          .copyWith(fontWeight: FontWeight.w400),
+                  child: IconTheme.merge(
+                    data: const IconThemeData(
+                      opacity: 0.54,
+                    ),
+                    child: Ink(
+                      height: 64.0,
+                      color: _selectedRowCount > 0
+                          ? themeData.secondaryHeaderColor
+                          : null,
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.only(
+                            start: 24, end: 14.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: headerWidgets,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            VsScrollbar(
+              controller: widget.controller,
+              showTrackOnHover: true, // default false
+              isAlwaysShown: true, // default false
+              scrollbarFadeDuration: const Duration(
+                  milliseconds: 500), // default : Duration(milliseconds: 300)
+              scrollbarTimeToFade: const Duration(
+                  milliseconds: 800), // default : Duration(milliseconds: 600)
+              style: const VsScrollbarStyle(
+                hoverThickness: 12.0, // default 12.0
+                radius: Radius.circular(10), // default Radius.circular(8.0)
+                thickness: 10.0, // [ default 8.0 ]
+                color: primaryColor, // default ColorScheme Theme
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                primary: widget.primary,
+                controller: widget.controller,
+                dragStartBehavior: widget.dragStartBehavior,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 25),
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                    constraints: BoxConstraints(minWidth: constraints.width),
                     child: DataTable(
                       key: _tableKey,
                       border: widget.border,
@@ -344,59 +392,27 @@ class CustomTableState extends State<CustomTable> {
                   ),
                 ),
               ),
-              if (headerWidgets.isNotEmpty)
-                Semantics(
-                  container: true,
-                  child: DefaultTextStyle(
-                    style: _selectedRowCount > 0
-                        ? themeData.textTheme.titleMedium!
-                            .copyWith(color: themeData.colorScheme.secondary)
-                        : themeData.textTheme.titleLarge!
-                            .copyWith(fontWeight: FontWeight.w400),
-                    child: IconTheme.merge(
-                      data: const IconThemeData(
-                        opacity: 0.54,
-                      ),
-                      child: Ink(
-                        height: 64.0,
-                        color: _selectedRowCount > 0
-                            ? themeData.secondaryHeaderColor
-                            : null,
-                        child: Padding(
-                          padding: const EdgeInsetsDirectional.only(
-                              start: 24, end: 14.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: headerWidgets,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+            ),
+            DefaultTextStyle(
+              style: footerTextStyle!,
+              child: IconTheme.merge(
+                data: const IconThemeData(
+                  opacity: 0.54,
                 ),
-              DefaultTextStyle(
-                style: footerTextStyle!,
-                child: IconTheme.merge(
-                  data: const IconThemeData(
-                    opacity: 0.54,
-                  ),
-                  child: SizedBox(
-                    height: 56.0,
-                    child: SingleChildScrollView(
-                      dragStartBehavior: widget.dragStartBehavior,
-                      scrollDirection: Axis.horizontal,
-                      reverse: true,
-                      child: Row(
-                        children: footerWidgets,
-                      ),
+                child: SizedBox(
+                  height: 56.0,
+                  child: SingleChildScrollView(
+                    dragStartBehavior: widget.dragStartBehavior,
+                    scrollDirection: Axis.horizontal,
+                    reverse: true,
+                    child: Row(
+                      children: footerWidgets,
                     ),
                   ),
                 ),
               ),
-            ],
-          );
-        },
-      ),
-    );
+            ),
+          ],
+        ));
   }
 }
