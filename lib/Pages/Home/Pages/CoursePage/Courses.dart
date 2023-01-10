@@ -1,9 +1,11 @@
 import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
+import 'package:aamusted_timetable_generator/Components/SmartDialog.dart';
 import 'package:aamusted_timetable_generator/Components/TextInputs.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:aamusted_timetable_generator/Services/FileService.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:open_app_file/open_app_file.dart';
 import 'package:provider/provider.dart';
 import '../../../../Components/CustomTable.dart';
 import '../../../../Styles/colors.dart';
@@ -63,7 +65,7 @@ class _CoursesPageState extends State<CoursesPage> {
                       ),
                       const SizedBox(width: 25),
                       CustomButton(
-                        onPressed: () {},
+                        onPressed: viewTemplate,
                         text: 'View Template',
                         radius: 10,
                         color: Colors.deepOrange,
@@ -151,5 +153,17 @@ class _CoursesPageState extends State<CoursesPage> {
         ),
       );
     });
+  }
+
+  void viewTemplate() async {
+    CustomDialog.showLoading(message: 'Creating Template...Please Wait');
+    var file = await ImportServices.tamplateCourses();
+    if (await file.exists()) {
+      OpenAppFile.open(file.path);
+      CustomDialog.dismiss();
+    } else {
+      CustomDialog.dismiss();
+      CustomDialog.showError(message: 'Error Creating Template');
+    }
   }
 }

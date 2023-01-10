@@ -28,6 +28,7 @@ dependencies:
   excel: ^2.0.1
   file_picker: ^5.2.5
   collection: ^1.16.0
+  open_app_file: ^4.0.1
 
 
 dev_dependencies:
