@@ -26,12 +26,11 @@ class ExcelService {
     if (excel == null) return false;
     // GEt the header row
     List<Data?> headerRow = excel.tables[excel.getDefaultSheet()]!.row(0);
-    List<String> fileColumns = headerRow
-        .map<String>((data) => data!.value.toString().toString())
-        .toList();
+    List<String> fileColumns =
+        headerRow.map<String>((data) => data!.value.toString()).toList();
 
     // Validate the name column names
-    return const ListEquality().equals(fileColumns, columns);
+    return listEquals(fileColumns, columns);
   }
 
   static Future<Excel?> readExcelFile() async {
