@@ -37,6 +37,7 @@ class Constant {
     classSize,
     hasDisability,
     courses,
+    // department,
   ];
 
   static List<String> venueExcelHeaderOrder = [roomName, capacity, disbility];

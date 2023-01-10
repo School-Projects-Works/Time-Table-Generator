@@ -1,4 +1,5 @@
 import 'package:excel/excel.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -31,8 +32,11 @@ class _ClassesPageState extends State<ClassesPage> {
     'Courses',
   ];
 
+  final _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Consumer<HiveListener>(builder: (context, hive, child) {
       return SizedBox(
         width: double.infinity,
@@ -107,7 +111,7 @@ class _ClassesPageState extends State<ClassesPage> {
               ],
             ),
             const SizedBox(height: 20),
-            if (hive.getCourseList.isEmpty)
+            if (hive.getClassList.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 50),
                 child: Center(
@@ -121,34 +125,36 @@ class _ClassesPageState extends State<ClassesPage> {
                 ),
               )
             else
-              CustomTable(
-                  arrowHeadColor: Colors.black,
-                  border: hive.getCourseList.isNotEmpty
-                      ? const TableBorder(
-                          horizontalInside:
-                              BorderSide(color: Colors.grey, width: 1),
-                          top: BorderSide(color: Colors.grey, width: 1),
-                          bottom: BorderSide(color: Colors.grey, width: 1))
-                      : const TableBorder(),
-                  dataRowHeight: 70,
-                  source: ClassDataSource(
-                    context,
+              SizedBox(
+                height: size.height - 216,
+                child: SingleChildScrollView(
+                  child: CustomTable(
+                    arrowHeadColor: Colors.black,
+                    dragStartBehavior: DragStartBehavior.start,
+                    controller: _scrollController,
+                    border: hive.getCourseList.isNotEmpty
+                        ? const TableBorder(
+                            horizontalInside:
+                                BorderSide(color: Colors.grey, width: 1),
+                            top: BorderSide(color: Colors.grey, width: 1),
+                            bottom: BorderSide(color: Colors.grey, width: 1))
+                        : const TableBorder(),
+                    dataRowHeight: 45,
+                    source: ClassDataSource(context),
+                    rowsPerPage: 10,
+                    columnSpacing: 70,
+                    columns: columns
+                        .map((e) => DataColumn(
+                              label: Text(
+                                e,
+                                style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w600, fontSize: 14),
+                              ),
+                            ))
+                        .toList(),
                   ),
-                  rowsPerPage: hive.getFilteredClass.length > 10
-                      ? 10
-                      : hive.getFilteredClass.isNotEmpty
-                          ? hive.getFilteredClass.length
-                          : 1,
-                  columnSpacing: 70,
-                  columns: columns
-                      .map((e) => DataColumn(
-                            label: Text(
-                              e,
-                              style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w600, fontSize: 14),
-                            ),
-                          ))
-                      .toList()),
+                ),
+              ),
           ],
         ),
       );

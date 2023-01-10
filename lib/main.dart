@@ -60,15 +60,18 @@ class _MyAppState extends State<MyApp> {
         var configProvider =
             Provider.of<ConfigDataFlow>(context, listen: false);
         configProvider.updateConfigList();
+
         provider.setAcademicList(academic);
         String? id = provider.academicList.first.id;
         var config = await HiveCache.getConfig(id);
         configProvider.updateConfigurations(config);
         var currentYesr = provider.currentAcademicYear;
-        print('current year===>${currentYesr}');
+
         var courses = await HiveCache.getCourses(currentYesr);
         provider.setCourseList(courses);
-        print('Course count===>${courses.length}');
+
+        var classes = await HiveCache.getClasses(currentYesr);
+        provider.setClassList(classes);
       }
     });
   }

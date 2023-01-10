@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aamusted_timetable_generator/Models/Academic/AcademicModel.dart';
 import 'package:aamusted_timetable_generator/Models/Class/ClassModel.dart';
 import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
+import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
 import 'package:hive_flutter/adapters.dart';
 import '../Models/Admin/Admin.dart';
 import '../Models/Config/ConfigModel.dart';
@@ -15,11 +16,15 @@ class HiveCache {
     Hive.registerAdapter(AcademicModelAdapter());
     Hive.registerAdapter(ConfigModelAdapter());
     Hive.registerAdapter(CourseModelAdapter());
+    Hive.registerAdapter(ClassModelAdapter());
+    Hive.registerAdapter(VenueModelAdapter());
 
     await Hive.openBox<Admin>('admins');
     await Hive.openBox<AcademicModel>('academics');
     await Hive.openBox<ConfigModel>('config');
     await Hive.openBox<CourseModel>('courses');
+    await Hive.openBox<ClassModel>('classes');
+    await Hive.openBox<VenueModel>('venues');
     await Hive.openBox('isLoggedIn');
   }
 

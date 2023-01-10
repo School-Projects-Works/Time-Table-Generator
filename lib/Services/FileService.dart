@@ -87,7 +87,7 @@ class ImportServices {
 
   static Future<List<ClassModel>?> importClasses(Excel? excel) async {
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
-    List<ClassModel> venues = rows.skip(1).map<ClassModel>((row) {
+    List<ClassModel> classes = rows.skip(1).map<ClassModel>((row) {
       return ClassModel(
         id: row[2]!.value.toString().trimToLowerCase(),
         level: row[0]!.value.toString(),
@@ -99,7 +99,7 @@ class ImportServices {
       );
     }).toList();
 
-    return venues;
+    return classes;
   }
 
   static Future<File> tamplateCourses() async {
