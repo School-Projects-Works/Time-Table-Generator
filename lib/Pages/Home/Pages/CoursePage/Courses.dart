@@ -1,13 +1,16 @@
 import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:aamusted_timetable_generator/Components/SmartDialog.dart';
 import 'package:aamusted_timetable_generator/Components/TextInputs.dart';
+import 'package:aamusted_timetable_generator/SateManager/HiveCache.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:aamusted_timetable_generator/Services/FileService.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:open_app_file/open_app_file.dart';
 import 'package:provider/provider.dart';
 import '../../../../Components/CustomTable.dart';
+import '../../../../Constants/Constant.dart';
 import '../../../../Styles/colors.dart';
 import 'CoursesDataSource.dart';
 
@@ -74,10 +77,7 @@ class _CoursesPageState extends State<CoursesPage> {
                       ),
                       const SizedBox(width: 10),
                       CustomButton(
-                        onPressed: () async {
-                          var list = await ImportServices.importCourses();
-                          print(list);
-                        },
+                        onPressed: () => importData(hive),
                         text: 'Import Courses',
                         radius: 10,
                         padding: const EdgeInsets.symmetric(
@@ -164,6 +164,38 @@ class _CoursesPageState extends State<CoursesPage> {
     } else {
       CustomDialog.dismiss();
       CustomDialog.showError(message: 'Error Creating Template');
+    }
+  }
+
+  void importData(HiveListener hive) async {
+    Excel? excel = await ExcelService.readExcelFile();
+    bool isFIleValid = ExcelService.validateExcelFIleByColumns(
+      excel,
+      Constant.courseExcelHeaderOrder,
+    );
+    if (isFIleValid) {
+      CustomDialog.showLoading(message: 'Importing Data...Please Wait');
+      ImportServices.importCourses(excel).then((value) {
+        if (value == null) {
+          CustomDialog.dismiss();
+          CustomDialog.showError(message: 'Error Importing Data');
+          return;
+        } else if (value.isNotEmpty) {
+          for (var element in value) {
+            element.academicYear = hive.currentAcademicYear;
+            HiveCache.addCourses(element);
+          }
+          var data = HiveCache.getCourses(hive.currentAcademicYear);
+          hive.setCourseList(data);
+          CustomDialog.dismiss();
+          CustomDialog.showSuccess(message: 'Data Imported Successfully');
+        } else {
+          CustomDialog.dismiss();
+          CustomDialog.showError(message: 'Error Importing Data');
+        }
+      });
+    } else {
+      CustomDialog.showError(message: 'Invalid Excel File Selected');
     }
   }
 }

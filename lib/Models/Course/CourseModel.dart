@@ -22,30 +22,33 @@ class CourseModel {
   String? department;
   @HiveField(8)
   String? id;
+  @HiveField(9)
+  String? academicYear;
 
-  CourseModel(
-      {this.code,
-      this.title,
-      this.creditHours,
-      this.specialVenue,
-      this.lecturerName,
-      this.lecturerEmail,
-      this.lecturerPhone,
-      this.department,
-      this.id});
+  CourseModel({
+    this.code,
+    this.title,
+    this.creditHours,
+    this.specialVenue,
+    this.lecturerName,
+    this.lecturerEmail,
+    this.lecturerPhone,
+    this.department,
+    this.id,
+    this.academicYear,
+  });
 
-  factory CourseModel.fromJson(Map<String, dynamic> json) {
-    return CourseModel(
-      code: json['code'],
-      title: json['title'],
-      creditHours: json['creditHours'],
-      specialVenue: json['specialVenue'],
-      lecturerName: json['lecturerName'],
-      lecturerEmail: json['lecturerEmail'],
-      lecturerPhone: json['lecturerPhone'],
-      department: json['department'],
-      id: json['id'],
-    );
+  CourseModel.fromJson(Map<String, dynamic> json) {
+    code = json['code'];
+    title = json['title'];
+    creditHours = json['creditHours'];
+    specialVenue = json['specialVenue'];
+    lecturerName = json['lecturerName'];
+    lecturerEmail = json['lecturerEmail'];
+    lecturerPhone = json['lecturerPhone'];
+    department = json['department'];
+    id = json['id'];
+    academicYear = json['academicYear'];
   }
 
   Map<String, dynamic> toJson() {
@@ -59,6 +62,7 @@ class CourseModel {
     data['lecturerPhone'] = lecturerPhone;
     data['department'] = department;
     data['id'] = id;
+    data['academicYear'] = academicYear;
     return data;
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aamusted_timetable_generator/Models/Academic/AcademicModel.dart';
+import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
 import 'package:hive_flutter/adapters.dart';
 import '../Models/Admin/Admin.dart';
 import '../Models/Config/ConfigModel.dart';
@@ -12,9 +13,12 @@ class HiveCache {
     Hive.registerAdapter(AdminAdapter());
     Hive.registerAdapter(AcademicModelAdapter());
     Hive.registerAdapter(ConfigModelAdapter());
+    Hive.registerAdapter(CourseModelAdapter());
+
     await Hive.openBox<Admin>('admins');
     await Hive.openBox<AcademicModel>('academics');
     await Hive.openBox<ConfigModel>('config');
+    await Hive.openBox<CourseModel>('courses');
     await Hive.openBox('isLoggedIn');
   }
 
@@ -76,5 +80,17 @@ class HiveCache {
   static List<ConfigModel> getConfigList() {
     final box = Hive.box<ConfigModel>('config');
     return box.values.toList();
+  }
+
+  static void addCourses(CourseModel element) {
+    final box = Hive.box<CourseModel>('courses');
+    box.put(element.id, element);
+  }
+
+  static getCourses(String currentAcademicYear) {
+    final box = Hive.box<CourseModel>('courses');
+    return box.values
+        .where((element) => element.academicYear == currentAcademicYear)
+        .toList();
   }
 }
