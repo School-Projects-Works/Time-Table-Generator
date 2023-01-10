@@ -66,7 +66,9 @@ class _CoursesPageState extends State<CoursesPage> {
                             Icons.search,
                             color: Colors.grey,
                           ),
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            hive.filterCourses(value);
+                          },
                         ),
                       ),
                       const SizedBox(width: 25),
@@ -88,16 +90,7 @@ class _CoursesPageState extends State<CoursesPage> {
                       ),
                       const SizedBox(width: 10),
                       CustomButton(
-                        onPressed: () {},
-                        text: 'Export Courses',
-                        radius: 10,
-                        color: Colors.purple,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 6),
-                      ),
-                      const SizedBox(width: 10),
-                      CustomButton(
-                        onPressed: () {},
+                        onPressed: () => clearCourses(hive),
                         text: 'Clear Courses',
                         color: Colors.red,
                         radius: 10,
@@ -110,12 +103,12 @@ class _CoursesPageState extends State<CoursesPage> {
               ],
             ),
             const SizedBox(height: 20),
-            if (hive.getCourseList.isEmpty)
+            if (hive.filterdCourses.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 50),
                 child: Center(
                   child: Text(
-                    'No Courses Added',
+                    'No Courses Found',
                     style: GoogleFonts.nunito(
                       fontSize: 16,
                       color: Colors.grey,
@@ -127,6 +120,7 @@ class _CoursesPageState extends State<CoursesPage> {
               SizedBox(
                 height: size.height - 216,
                 child: SingleChildScrollView(
+                  primary: true,
                   child: CustomTable(
                       arrowHeadColor: Colors.black,
                       dragStartBehavior: DragStartBehavior.start,
@@ -142,7 +136,11 @@ class _CoursesPageState extends State<CoursesPage> {
                       source: CoursesDataScource(
                         context,
                       ),
-                      rowsPerPage: 10,
+                      rowsPerPage: hive.getFilterdCourses.length > 10
+                          ? 10
+                          : hive.getFilterdCourses.isEmpty
+                              ? 1
+                              : hive.getFilterdCourses.length,
                       columnSpacing: 70,
                       columns: columns
                           .map((e) => DataColumn(
@@ -204,5 +202,25 @@ class _CoursesPageState extends State<CoursesPage> {
     } else {
       CustomDialog.showError(message: 'Invalid Excel File Selected');
     }
+  }
+
+  void clearCourses(HiveListener hive) {
+    refresh(hive);
+    // CustomDialog.showInfo(
+    //   message:
+    //       'Are you sure yo want to delete all Courses? Note: This action is not reversable',
+    //   buttonText: 'Yes|Delete',
+    //   onPressed: refresh,
+    // );
+  }
+
+  void refresh(HiveListener hive) {
+    HiveCache.clearCourses();
+
+    var data = HiveCache.getCourses(hive.currentAcademicYear);
+    Provider.of<HiveListener>(context, listen: false).setCourseList(data);
+    setState(() {});
+    CustomDialog.dismiss();
+    CustomDialog.showSuccess(message: 'Courses Cleared Successfully');
   }
 }

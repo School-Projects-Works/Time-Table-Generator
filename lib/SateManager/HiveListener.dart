@@ -33,6 +33,7 @@ class HiveListener extends ChangeNotifier {
   void setCourseList(List<CourseModel> list) {
     courseList = list;
     filterdCourses = list;
+    print('Course List===: ${filterdCourses.length}');
     notifyListeners();
   }
 

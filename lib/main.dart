@@ -66,7 +66,6 @@ class _MyAppState extends State<MyApp> {
         var config = await HiveCache.getConfig(id);
         configProvider.updateConfigurations(config);
         var currentYesr = provider.currentAcademicYear;
-
         var courses = await HiveCache.getCourses(currentYesr);
         provider.setCourseList(courses);
 
