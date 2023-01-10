@@ -7,12 +7,15 @@ class CustomButton extends StatefulWidget {
       {Key? key,
       required this.onPressed,
       required this.text,
-       this.color=secondaryColor, this.padding= const EdgeInsets.symmetric(horizontal: 20,vertical: 12)})
+      this.color = secondaryColor,
+      this.padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      this.radius = 20})
       : super(key: key);
   final VoidCallback onPressed;
   final String text;
   final Color color;
   final EdgeInsets? padding;
+  final double radius;
 
   @override
   State<CustomButton> createState() => _CustomButtonState();
@@ -26,33 +29,31 @@ class _CustomButtonState extends State<CustomButton> {
     return InkWell(
       onTap: widget.onPressed,
       onHover: (value) {
-       setState(() {
+        setState(() {
           onHover = value;
-       });
+        });
       },
       child: Container(
-        padding: widget.padding,
-        decoration: BoxDecoration(
-            color: onHover?Colors.white:widget.color,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: onHover ?widget.color :  Colors.white),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withOpacity(.2),
-                  offset: const Offset(0, 5),
-                  blurRadius: 10)
-            ]),
-        child: Center(
-          child: Text(
-            widget.text,
-            style: GoogleFonts.roboto(
-                color: onHover ? widget.color : Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.w500),
-          ),
-
-        )
-      ),
+          padding: widget.padding,
+          decoration: BoxDecoration(
+              color: onHover ? Colors.white : widget.color,
+              borderRadius: BorderRadius.circular(widget.radius),
+              border: Border.all(color: onHover ? widget.color : Colors.white),
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.black.withOpacity(.2),
+                    offset: const Offset(0, 5),
+                    blurRadius: 10)
+              ]),
+          child: Center(
+            child: Text(
+              widget.text,
+              style: GoogleFonts.nunito(
+                  color: onHover ? widget.color : Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500),
+            ),
+          )),
     );
   }
 }

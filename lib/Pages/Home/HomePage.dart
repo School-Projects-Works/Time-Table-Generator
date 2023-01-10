@@ -8,7 +8,7 @@ import 'Components/TopView.dart';
 import 'Pages/AboutPage.dart';
 import 'Pages/ClassesPage.dart';
 import 'Pages/Config/Configurations.dart';
-import 'Pages/Courses.dart';
+import 'Pages/CoursePage/Courses.dart';
 import 'Pages/HelpPage.dart';
 import 'Pages/LiberalPage.dart';
 import 'Pages/NewAcademic.dart';

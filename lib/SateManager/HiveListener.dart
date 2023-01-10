@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
 import 'package:flutter/material.dart';
 import '../Models/Academic/AcademicModel.dart';
 
@@ -21,7 +22,13 @@ class HiveListener extends ChangeNotifier {
       academicList = academicList.reversed.toList();
       _currentAcademicYear = list.first.name;
     }
+    notifyListeners();
+  }
 
+  List<CourseModel> courseList = [];
+  List<CourseModel> get getCourseList => courseList;
+  void setCourseList(List<CourseModel> list) {
+    courseList = list;
     notifyListeners();
   }
 }
