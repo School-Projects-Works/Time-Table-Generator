@@ -1,9 +1,7 @@
 import 'package:hive/hive.dart';
 
-part 'StudentModel.g.dart';
-
 @HiveType(typeId: 5)
-class StudentModel {
+class ClassModel {
   @HiveField(0)
   String? id;
   @HiveField(1)
@@ -23,7 +21,7 @@ class StudentModel {
   @HiveField(8)
   String? createdAt;
 
-  StudentModel(
+  ClassModel(
       {this.id,
       this.level,
       this.type,
@@ -34,8 +32,8 @@ class StudentModel {
       this.department,
       this.createdAt});
 
-  factory StudentModel.fromJson(Map<String, dynamic> json) {
-    return StudentModel(
+  factory ClassModel.fromJson(Map<String, dynamic> json) {
+    return ClassModel(
       id: json['id'],
       level: json['level'],
       type: json['type'],
