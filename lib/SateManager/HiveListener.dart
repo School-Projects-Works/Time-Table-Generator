@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:aamusted_timetable_generator/Models/Class/ClassModel.dart';
 import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
 import 'package:flutter/material.dart';
 import '../Models/Academic/AcademicModel.dart';
@@ -32,6 +33,43 @@ class HiveListener extends ChangeNotifier {
   void setCourseList(List<CourseModel> list) {
     courseList = list;
     filterdCourses = list;
+    notifyListeners();
+  }
+
+  void filterCourses(String? value) {
+    if (value == null || value.isEmpty) {
+      filterdCourses = courseList;
+    } else {
+      filterdCourses = courseList
+          .where((element) =>
+              element.title!.toLowerCase().contains(value.toLowerCase()) ||
+              element.code!.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    }
+    notifyListeners();
+  }
+
+  List<ClassModel> classList = [];
+  List<ClassModel> filteredClass = [];
+  List<ClassModel> get getFilteredClass => filteredClass;
+  List<ClassModel> get getClassList => classList;
+  void setClassList(List<ClassModel> list) {
+    classList = list;
+    filteredClass = list;
+    notifyListeners();
+  }
+
+  void filterClass(String? value) {
+    if (value == null || value.isEmpty) {
+      filteredClass = classList;
+    } else {
+      filteredClass = classList
+          .where((element) =>
+              element.name!.toLowerCase().contains(value.toLowerCase()) ||
+              element.level!.toLowerCase().contains(value.toLowerCase()) ||
+              element.type!.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    }
     notifyListeners();
   }
 }
