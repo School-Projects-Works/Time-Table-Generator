@@ -52,14 +52,7 @@ class ExcelService {
 }
 
 class ImportServices {
-  static Future<List<CourseModel>> importCourses() async {
-    Excel? excel = await ExcelService.readExcelFile();
-    bool isFIleValid = ExcelService.validateExcelFIleByColumns(
-      excel,
-      Constant.courseExcelHeaderOrder,
-    );
-    if (!isFIleValid) throw ('Error Occurred');
-
+  static Future<List<CourseModel>?> importCourses(Excel? excel) async {
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
 
     List<CourseModel> courses = rows.skip(1).map((row) {
