@@ -1,6 +1,7 @@
 import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:aamusted_timetable_generator/Components/TextInputs.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
+import 'package:aamusted_timetable_generator/Services/FileService.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -71,7 +72,10 @@ class _CoursesPageState extends State<CoursesPage> {
                       ),
                       const SizedBox(width: 10),
                       CustomButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          var list = await ImportServices.importCourses();
+                          print(list);
+                        },
                         text: 'Import Courses',
                         radius: 10,
                         padding: const EdgeInsets.symmetric(

@@ -1,7 +1,7 @@
 class Constant {
   static String courseCode = "Course Code";
   static String couseTitle = "Course Title";
-  static String creaditHourse = "Credi Hourse";
+  static String creaditHourse = "Credit Hours";
   static String lecturerName = "Lecturer Name";
   static String specialVenue = "Special Venue(Specify Venue)";
   static String lecturerPhone = "Lecturer Phone";
