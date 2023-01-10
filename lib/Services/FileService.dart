@@ -46,19 +46,30 @@ class ExcelService {
 }
 
 class ImportServices {
-  // static Future<List<CourseModel>> importCourses() async {
-  static importCourses() async {
+  static Future<List<CourseModel>> importCourses() async {
     Excel? excel = await ExcelService.readExcelFile();
     bool isFIleValid = ExcelService.validateExcelFIleByColumns(
       excel,
       Constant.courseExcelHeaderOrder,
     );
     if (!isFIleValid) throw ('Error Occurred');
-    List<CourseModel> courses =
-        excel!.tables[excel.getDefaultSheet()]!.rows.map((row) {
-      print(row);
-      return null;
+
+    var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
+
+    List<CourseModel> courses = rows.skip(1).map((row) {
+      return CourseModel(
+        code: row[0]!.value,
+        title: row[1]!.value,
+        creditHours: row[2]!.value,
+        specialVenue: row[3]!.value,
+        lecturerName: row[4]!.value,
+        lecturerEmail: row[5]!.value,
+        lecturerPhone: row[6]!.value,
+        department: row[7]!.value,
+        id: row[0]!.value,
+      );
     }) as List<CourseModel>;
-    // return courses;
+
+    return courses;
   }
 }
