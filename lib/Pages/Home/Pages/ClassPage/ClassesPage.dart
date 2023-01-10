@@ -6,6 +6,7 @@ import '../../../../Components/CustomButton.dart';
 import '../../../../Components/CustomTable.dart';
 import '../../../../Components/TextInputs.dart';
 import '../../../../SateManager/HiveListener.dart';
+import '../../../../Services/FileService.dart';
 import '../../../../Styles/colors.dart';
 import 'ClassDataSource.dart';
 
@@ -72,7 +73,10 @@ class _ClassesPageState extends State<ClassesPage> {
                       ),
                       const SizedBox(width: 10),
                       CustomButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          var list = await ImportServices.importClasses();
+                          print(list);
+                        },
                         text: 'Import Classes',
                         radius: 10,
                         padding: const EdgeInsets.symmetric(

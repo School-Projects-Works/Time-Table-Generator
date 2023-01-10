@@ -102,7 +102,7 @@ class ImportServices {
     Excel? excel = await ExcelService.readExcelFile();
     bool isFIleValid = ExcelService.validateExcelFIleByColumns(
       excel,
-      Constant.venueExcelHeaderOrder,
+      Constant.classExcelHeaderOrder,
     );
     if (!isFIleValid) throw ('Error Occurred');
 
@@ -116,7 +116,7 @@ class ImportServices {
         name: row[2]!.value.toString(),
         size: row[3]!.value.toString(),
         hasDisability: row[4]!.value.toString(),
-        // courses: row[5]!.value.toString(),
+        courses: row[5]!.value.toString().split(','),
       );
     }).toList();
 
