@@ -22,17 +22,21 @@ class ClassModel {
   String? department;
   @HiveField(8)
   String? createdAt;
+  @HiveField(9)
+  String? academicYear;
 
-  ClassModel(
-      {this.id,
-      this.level,
-      this.type,
-      this.name,
-      this.size,
-      this.hasDisability,
-      this.courses,
-      this.department,
-      this.createdAt});
+  ClassModel({
+    this.id,
+    this.level,
+    this.type,
+    this.name,
+    this.size,
+    this.hasDisability,
+    this.courses,
+    this.department,
+    this.createdAt,
+    this.academicYear,
+  });
 
   factory ClassModel.fromJson(Map<String, dynamic> json) {
     return ClassModel(
@@ -45,6 +49,7 @@ class ClassModel {
       courses: json['courses'],
       department: json['department'],
       createdAt: json['createdAt'],
+      academicYear: json['academicYear'],
     );
   }
 
@@ -59,6 +64,7 @@ class ClassModel {
     data['courses'] = courses;
     data['department'] = department;
     data['createdAt'] = createdAt;
+    data['academicYear'] = academicYear;
     return data;
   }
 }

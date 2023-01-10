@@ -1,10 +1,14 @@
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Components/CustomButton.dart';
 import '../../../../Components/CustomTable.dart';
+import '../../../../Components/SmartDialog.dart';
 import '../../../../Components/TextInputs.dart';
+import '../../../../Constants/Constant.dart';
+import '../../../../SateManager/HiveCache.dart';
 import '../../../../SateManager/HiveListener.dart';
 import '../../../../Services/FileService.dart';
 import '../../../../Styles/colors.dart';
@@ -73,10 +77,7 @@ class _ClassesPageState extends State<ClassesPage> {
                       ),
                       const SizedBox(width: 10),
                       CustomButton(
-                        onPressed: () async {
-                          var list = await ImportServices.importClasses();
-                          print(list);
-                        },
+                        onPressed: () => importData(hive),
                         text: 'Import Classes',
                         radius: 10,
                         padding: const EdgeInsets.symmetric(
@@ -152,5 +153,37 @@ class _ClassesPageState extends State<ClassesPage> {
         ),
       );
     });
+  }
+
+  void importData(HiveListener hive) async {
+    Excel? excel = await ExcelService.readExcelFile();
+    bool isFIleValid = ExcelService.validateExcelFIleByColumns(
+      excel,
+      Constant.classExcelHeaderOrder,
+    );
+    if (isFIleValid) {
+      CustomDialog.showLoading(message: 'Importing Data...Please Wait');
+      ImportServices.importClasses(excel).then((value) {
+        if (value == null) {
+          CustomDialog.dismiss();
+          CustomDialog.showError(message: 'Error Importing Data');
+          return;
+        } else if (value.isNotEmpty) {
+          for (var element in value) {
+            element.academicYear = hive.currentAcademicYear;
+            HiveCache.addClass(element);
+          }
+          var data = HiveCache.getClasses(hive.currentAcademicYear);
+          hive.setClassList(data);
+          CustomDialog.dismiss();
+          CustomDialog.showSuccess(message: 'Data Imported Successfully');
+        } else {
+          CustomDialog.dismiss();
+          CustomDialog.showError(message: 'Error Importing Data');
+        }
+      });
+    } else {
+      CustomDialog.showError(message: 'Invalid Excel File Selected');
+    }
   }
 }

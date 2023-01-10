@@ -21,13 +21,14 @@ class VenueModelAdapter extends TypeAdapter<VenueModel> {
       capacity: fields[1] as String?,
       isDisabilityAccessible: fields[2] as String?,
       id: fields[3] as String?,
+      academicYear: fields[4] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, VenueModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class VenueModelAdapter extends TypeAdapter<VenueModel> {
       ..writeByte(2)
       ..write(obj.isDisabilityAccessible)
       ..writeByte(3)
-      ..write(obj.id);
+      ..write(obj.id)
+      ..writeByte(4)
+      ..write(obj.academicYear);
   }
 
   @override

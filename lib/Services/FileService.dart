@@ -71,16 +71,8 @@ class ImportServices {
     return courses;
   }
 
-  static Future<List<VenueModel>> importVenues() async {
-    Excel? excel = await ExcelService.readExcelFile();
-    bool isFIleValid = ExcelService.validateExcelFIleByColumns(
-      excel,
-      Constant.venueExcelHeaderOrder,
-    );
-    if (!isFIleValid) throw ('Error Occurred');
-
+  static Future<List<VenueModel>?> importVenues(Excel? excel) async {
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
-
     List<VenueModel> venues = rows.skip(1).map<VenueModel>((row) {
       return VenueModel(
         name: row[0]!.value.toString(),
@@ -93,16 +85,8 @@ class ImportServices {
     return venues;
   }
 
-  static Future<List<ClassModel>> importClasses() async {
-    Excel? excel = await ExcelService.readExcelFile();
-    bool isFIleValid = ExcelService.validateExcelFIleByColumns(
-      excel,
-      Constant.classExcelHeaderOrder,
-    );
-    if (!isFIleValid) throw ('Error Occurred');
-
+  static Future<List<ClassModel>?> importClasses(Excel? excel) async {
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
-
     List<ClassModel> venues = rows.skip(1).map<ClassModel>((row) {
       return ClassModel(
         id: row[2]!.value.toString().trimToLowerCase(),

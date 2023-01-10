@@ -12,8 +12,16 @@ class VenueModel {
   String? isDisabilityAccessible;
   @HiveField(3)
   String? id;
+  @HiveField(4)
+  String? academicYear;
 
-  VenueModel({this.name, this.capacity, this.isDisabilityAccessible, this.id});
+  VenueModel({
+    this.name,
+    this.capacity,
+    this.isDisabilityAccessible,
+    this.id,
+    this.academicYear,
+  });
 
   factory VenueModel.fromJson(Map<String, dynamic> json) {
     return VenueModel(
@@ -21,6 +29,7 @@ class VenueModel {
       capacity: json['capacity'],
       isDisabilityAccessible: json['isDisabilityAccessible'],
       id: json['id'],
+      academicYear: json['academicYear'],
     );
   }
 
@@ -30,6 +39,7 @@ class VenueModel {
     data['capacity'] = capacity;
     data['isDisabilityAccessible'] = isDisabilityAccessible;
     data['id'] = id;
+    data['academicYear'] = academicYear;
     return data;
   }
 }

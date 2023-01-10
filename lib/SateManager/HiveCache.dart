@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:aamusted_timetable_generator/Models/Academic/AcademicModel.dart';
+import 'package:aamusted_timetable_generator/Models/Class/ClassModel.dart';
 import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
 import 'package:hive_flutter/adapters.dart';
 import '../Models/Admin/Admin.dart';
@@ -89,6 +90,18 @@ class HiveCache {
 
   static getCourses(String currentAcademicYear) {
     final box = Hive.box<CourseModel>('courses');
+    return box.values
+        .where((element) => element.academicYear == currentAcademicYear)
+        .toList();
+  }
+
+  static void addClass(ClassModel element) {
+    final box = Hive.box<ClassModel>('classes');
+    box.put(element.id, element);
+  }
+
+  static getClasses(String currentAcademicYear) {
+    final box = Hive.box<ClassModel>('classes');
     return box.values
         .where((element) => element.academicYear == currentAcademicYear)
         .toList();
