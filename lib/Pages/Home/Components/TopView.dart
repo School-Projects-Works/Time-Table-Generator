@@ -1,14 +1,10 @@
 import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:aamusted_timetable_generator/Components/CustomDropDown.dart';
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 import 'package:aamusted_timetable_generator/Services/FileService.dart';
-=======
+
 import 'package:aamusted_timetable_generator/SateManager/NavigationProvider.dart';
->>>>>>> 66ac45ae47d6544edd38b7d988a722e17812894a
-=======
-import 'package:aamusted_timetable_generator/SateManager/NavigationProvider.dart';
->>>>>>> 66ac45ae47d6544edd38b7d988a722e17812894a
+
 import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -109,8 +105,6 @@ class _TopViewState extends State<TopView> {
                 ],
               ),
             ),
-<<<<<<< HEAD
-<<<<<<< HEAD
             SizedBox(
               height: 50,
               child: CustomButton(
@@ -119,18 +113,11 @@ class _TopViewState extends State<TopView> {
                   },
                   text: 'Add Academic Year'),
             ),
-=======
-=======
->>>>>>> 66ac45ae47d6544edd38b7d988a722e17812894a
             if (mongo.getAcademicList.isNotEmpty)
               SizedBox(
                   height: 50,
                   child: CustomButton(
                       onPressed: addNewAcademic, text: 'Add Academic Year')),
-<<<<<<< HEAD
->>>>>>> 66ac45ae47d6544edd38b7d988a722e17812894a
-=======
->>>>>>> 66ac45ae47d6544edd38b7d988a722e17812894a
             const SizedBox(
               width: 10,
             ),
