@@ -3,13 +3,27 @@ import 'package:aamusted_timetable_generator/Models/Config/DayModel.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveCache.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import '../Models/Config/ConfigModel.dart';
-import '../Models/PeriodModel.dart';
+import '../Models/Config/PeriodModel.dart';
 
 class ConfigDataFlow extends ChangeNotifier {
   ConfigModel configurations = ConfigModel();
   ConfigModel get getConfigurations => configurations;
+
+  List<String>? configList = [];
+  List<String>? get getConfigList => configList;
+
+  void updateConfigList() {
+    var data = HiveCache.getConfigList();
+    if (data.isNotEmpty) {
+      configList!.clear();
+      for (ConfigModel config in data) {
+        configList!.add(config.academicName!);
+      }
+    }
+    notifyListeners();
+  }
+
   void updateConfigurations(ConfigModel newConfigurations) {
     configurations = newConfigurations;
     if (configurations.days != null) {
@@ -34,6 +48,14 @@ class ConfigDataFlow extends ChangeNotifier {
       sunday = DaysModel.fromJson(configurations.days!
           .where((element) => element['day'] == "Sunday")
           .first);
+    } else {
+      monday = DaysModel().clear();
+      tuesday = DaysModel().clear();
+      wednesday = DaysModel().clear();
+      thursday = DaysModel().clear();
+      friday = DaysModel().clear();
+      saturday = DaysModel().clear();
+      sunday = DaysModel().clear();
     }
     if (configurations.periods != null && configurations.periods!.isNotEmpty) {
       periodOne = PeriodModel.fromJson(configurations.periods!
@@ -48,6 +70,11 @@ class ConfigDataFlow extends ChangeNotifier {
       periodFour = PeriodModel.fromJson(configurations.periods!
           .where((element) => element['period'] == "4th Period")
           .first);
+    } else {
+      periodOne = PeriodModel().clear();
+      periodTwo = PeriodModel().clear();
+      periodThree = PeriodModel().clear();
+      periodFour = PeriodModel().clear();
     }
     notifyListeners();
   }

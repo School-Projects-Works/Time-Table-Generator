@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../Components/CustomDropDown.dart';
+import '../../../SateManager/NavigationProvider.dart';
 import '../../../Styles/colors.dart';
 
 class NewAcademic extends StatefulWidget {
@@ -23,132 +24,159 @@ class _NewAcademicState extends State<NewAcademic> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Container(
-      alignment: Alignment.center,
-      width: double.infinity,
-      child: Card(
-        elevation: 10,
-        child: SizedBox(
-          width: size.width * .5,
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Create New Academic Year and Semester under which you can add courses, Students, Venues and generate timetable for that semester',
-                  style: GoogleFonts.nunito(color: Colors.black, fontSize: 20),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const Divider(
-                  color: Colors.black,
-                  indent: 20,
-                  endIndent: 20,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Select Academic Year',
-                        style: GoogleFonts.nunito(
-                            color: Colors.black, fontSize: 20),
+    return Consumer<NavigationProvider>(builder: (context, nav, child) {
+      return Container(
+        alignment: Alignment.center,
+        width: double.infinity,
+        color: Colors.transparent,
+        child: Stack(
+          children: [
+            if (nav.page == 7)
+              Positioned(
+                  top: 10,
+                  right: 10,
+                  child: InkWell(
+                    onTap: () {
+                      Provider.of<NavigationProvider>(context, listen: false)
+                          .setPage(0);
+                    },
+                    child: const CircleAvatar(
+                      backgroundColor: Colors.red,
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.white,
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      SizedBox(
-                          width: 200,
-                          child: CustomDropDown(
-                              onChanged: (value) {
-                                setState(() {
-                                  year = value;
-                                });
-                              },
-                              items: [
-                                for (int i = DateTime.now().year;
-                                    i < DateTime.now().year + 10;
-                                    i++)
-                                  DropdownMenuItem(
-                                    value: '$i - ${i + 1}',
-                                    child: Text(
-                                      '$i - ${i + 1}',
-                                      style: GoogleFonts.nunito(),
-                                    ),
-                                  ),
-                              ],
-                              color: background))
-                    ],
+                    ),
+                  )),
+            Center(
+              child: Card(
+                elevation: 10,
+                child: SizedBox(
+                  width: size.width * .5,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Create New Academic Year and Semester under which you can add courses, Students, Venues and generate timetable for that semester',
+                          style: GoogleFonts.nunito(
+                              color: Colors.black, fontSize: 20),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        const Divider(
+                          color: Colors.black,
+                          indent: 20,
+                          endIndent: 20,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Select Academic Year',
+                                style: GoogleFonts.nunito(
+                                    color: Colors.black, fontSize: 20),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              SizedBox(
+                                  width: 200,
+                                  child: CustomDropDown(
+                                      onChanged: (value) {
+                                        setState(() {
+                                          year = value;
+                                        });
+                                      },
+                                      items: [
+                                        for (int i = DateTime.now().year;
+                                            i < DateTime.now().year + 10;
+                                            i++)
+                                          DropdownMenuItem(
+                                            value: '$i - ${i + 1}',
+                                            child: Text(
+                                              '$i - ${i + 1}',
+                                              style: GoogleFonts.nunito(),
+                                            ),
+                                          ),
+                                      ],
+                                      color: background))
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Select Semester',
+                                style: GoogleFonts.nunito(
+                                    color: Colors.black, fontSize: 20),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              SizedBox(
+                                  width: 200,
+                                  child: CustomDropDown(
+                                      onChanged: (value) {
+                                        setState(() {
+                                          semester = value;
+                                        });
+                                      },
+                                      items: [
+                                        DropdownMenuItem(
+                                          value: 'Semester1',
+                                          child: Text(
+                                            'Semester 1',
+                                            style: GoogleFonts.nunito(),
+                                          ),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: 'Semester2',
+                                          child: Text(
+                                            'Semester 2',
+                                            style: GoogleFonts.nunito(),
+                                          ),
+                                        ),
+                                      ],
+                                      color: background))
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        SizedBox(
+                          width: size.width * .25,
+                          child: CustomButton(
+                            onPressed: saveAcademic,
+                            text: 'Save Academic Year',
+                            color: primaryColor,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Select Semester',
-                        style: GoogleFonts.nunito(
-                            color: Colors.black, fontSize: 20),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      SizedBox(
-                          width: 200,
-                          child: CustomDropDown(
-                              onChanged: (value) {
-                                setState(() {
-                                  semester = value;
-                                });
-                              },
-                              items: [
-                                DropdownMenuItem(
-                                  value: 'Semester1',
-                                  child: Text(
-                                    'Semester 1',
-                                    style: GoogleFonts.nunito(),
-                                  ),
-                                ),
-                                DropdownMenuItem(
-                                  value: 'Semester2',
-                                  child: Text(
-                                    'Semester 2',
-                                    style: GoogleFonts.nunito(),
-                                  ),
-                                ),
-                              ],
-                              color: background))
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                SizedBox(
-                  width: size.width * .25,
-                  child: CustomButton(
-                    onPressed: saveAcademic,
-                    text: 'Save Academic Year',
-                    color: primaryColor,
-                  ),
-                )
-              ],
+              ),
             ),
-          ),
+          ],
         ),
-      ),
-    );
+      );
+    });
   }
 
   void saveAcademic() {

@@ -70,6 +70,11 @@ class HiveCache {
 
   static getConfig(String? id) {
     final box = Hive.box<ConfigModel>('config');
-    return box.get(id);
+    return box.get(id, defaultValue: ConfigModel());
+  }
+
+  static List<ConfigModel> getConfigList() {
+    final box = Hive.box<ConfigModel>('config');
+    return box.values.toList();
   }
 }

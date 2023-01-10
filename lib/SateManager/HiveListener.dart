@@ -7,13 +7,21 @@ class HiveListener extends ChangeNotifier {
   List<AcademicModel> academicList = [];
   List<AcademicModel> get getAcademicList => academicList;
 
-  get currentAcademicYear =>
-      academicList.isNotEmpty ? academicList.first.name! : null;
+  String? _currentAcademicYear;
+  void updateCurrentAcademicYear(String? value) {
+    _currentAcademicYear = value;
+    notifyListeners();
+  }
 
+  get currentAcademicYear => _currentAcademicYear;
   void setAcademicList(List<AcademicModel> list) {
-    academicList = list;
-    academicList.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
-    academicList = academicList.reversed.toList();
+    if (list.isNotEmpty) {
+      academicList = list;
+      academicList.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+      academicList = academicList.reversed.toList();
+      _currentAcademicYear = list.first.name;
+    }
+
     notifyListeners();
   }
 }

@@ -46,7 +46,7 @@ class PeriodSection extends StatelessWidget {
                 startVal: data.periodOne.startTime,
                 endVal: data.periodOne.endTime,
                 onTap: () {
-                  if (data.getMonday.day == null) {
+                  if (data.getPeriodOne.period == null) {
                     data.updatePeriodOne('1st Period');
                   } else {
                     data.updatePeriodOne('');
@@ -97,7 +97,7 @@ class PeriodSection extends StatelessWidget {
                 startVal: data.periodTwo.startTime,
                 endVal: data.periodTwo.endTime,
                 onTap: () {
-                  if (data.getMonday.day == null) {
+                  if (data.getPeriodTwo.period == null) {
                     data.updatePeriodTwo('2nd Period');
                   } else {
                     data.updatePeriodTwo('');
@@ -148,7 +148,7 @@ class PeriodSection extends StatelessWidget {
                 startVal: data.periodThree.startTime,
                 endVal: data.periodThree.endTime,
                 onTap: () {
-                  if (data.getMonday.day == null) {
+                  if (data.getPeriodThree.period == null) {
                     data.updatePeriodThree('3rd Period');
                   } else {
                     data.updatePeriodThree('');
@@ -199,7 +199,7 @@ class PeriodSection extends StatelessWidget {
                 startVal: data.periodFour.startTime,
                 endVal: data.periodFour.endTime,
                 onTap: () {
-                  if (data.getMonday.day == null) {
+                  if (data.getPeriodFour.period == null) {
                     data.updatePeriodFour('4th Period');
                   } else {
                     data.updatePeriodFour('');

@@ -58,6 +58,7 @@ class _MyAppState extends State<MyApp> {
         var provider = Provider.of<HiveListener>(context, listen: false);
         var configProvider =
             Provider.of<ConfigDataFlow>(context, listen: false);
+        configProvider.updateConfigList();
         provider.setAcademicList(academic);
         String? id = provider.academicList.first.id;
         var config = await HiveCache.getConfig(id);

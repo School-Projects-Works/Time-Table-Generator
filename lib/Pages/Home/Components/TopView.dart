@@ -1,10 +1,13 @@
 import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:aamusted_timetable_generator/Components/CustomDropDown.dart';
+import 'package:aamusted_timetable_generator/SateManager/NavigationProvider.dart';
 import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import '../../../SateManager/ConfigDataFlow.dart';
+import '../../../SateManager/HiveCache.dart';
 import '../../../SateManager/HiveListener.dart';
 
 class TopView extends StatefulWidget {
@@ -76,7 +79,15 @@ class _TopViewState extends State<TopView> {
                       radius: 10,
                       color: background,
                       value: mongo.currentAcademicYear,
-                      onChanged: (value) {},
+                      onChanged: (value) {
+                        mongo.updateCurrentAcademicYear(value);
+                        var id = mongo.getAcademicList
+                            .firstWhere((element) => element.name == value)
+                            .id;
+                        var config = HiveCache.getConfig(id);
+                        Provider.of<ConfigDataFlow>(context, listen: false)
+                            .updateConfigurations(config);
+                      },
                       items: mongo.getAcademicList
                           .map((e) => DropdownMenuItem(
                               value: e.name,
@@ -90,10 +101,11 @@ class _TopViewState extends State<TopView> {
                 ],
               ),
             ),
-            SizedBox(
-                height: 50,
-                child: CustomButton(
-                    onPressed: addNewAcademic, text: 'Add Academic Year')),
+            if (mongo.getAcademicList.isNotEmpty)
+              SizedBox(
+                  height: 50,
+                  child: CustomButton(
+                      onPressed: addNewAcademic, text: 'Add Academic Year')),
             const SizedBox(
               width: 10,
             ),
@@ -103,5 +115,7 @@ class _TopViewState extends State<TopView> {
     });
   }
 
-  void addNewAcademic() {}
+  void addNewAcademic() {
+    Provider.of<NavigationProvider>(context, listen: false).setPage(7);
+  }
 }
