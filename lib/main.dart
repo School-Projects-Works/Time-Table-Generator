@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -52,9 +53,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   Future<void> getData() async {
-    var academic = await HiveCache.getAcademics();
-    if (academic.isNotEmpty) {
-      if (mounted) {
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      var academic = HiveCache.getAcademics();
+      if (academic.isNotEmpty) {
         var provider = Provider.of<HiveListener>(context, listen: false);
         var configProvider =
             Provider.of<ConfigDataFlow>(context, listen: false);
@@ -63,8 +64,13 @@ class _MyAppState extends State<MyApp> {
         String? id = provider.academicList.first.id;
         var config = await HiveCache.getConfig(id);
         configProvider.updateConfigurations(config);
+        var currentYesr = provider.currentAcademicYear;
+        print('current year===>${currentYesr}');
+        var courses = await HiveCache.getCourses(currentYesr);
+        provider.setCourseList(courses);
+        print('Course count===>${courses.length}');
       }
-    }
+    });
   }
 
   @override

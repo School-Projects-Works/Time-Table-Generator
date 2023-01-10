@@ -63,6 +63,7 @@ class ImportServices {
         lecturerName: row[4]!.value.toString(),
         lecturerEmail: row[5]!.value.toString(),
         lecturerPhone: row[6]!.value.toString(),
+        department: row[7]!.value.toString(),
         id: row[0]!.value.toString(),
       );
     }).toList();
@@ -120,6 +121,7 @@ class ImportServices {
   static Future<File> tamplateCourses() async {
     Excel excel = Excel.createExcel();
     Sheet sheetObject = excel['Courses'];
+    excel.setDefaultSheet('Courses');
     CellStyle cellStyle = CellStyle(
       bold: true,
       fontSize: 12,

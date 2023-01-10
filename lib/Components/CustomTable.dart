@@ -316,13 +316,38 @@ class CustomTableState extends State<CustomTable> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  primary: widget.primary,
+                  controller: widget.controller,
+                  dragStartBehavior: widget.dragStartBehavior,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                    child: DataTable(
+                      key: _tableKey,
+                      border: widget.border,
+                      columns: widget.columns,
+                      sortColumnIndex: widget.sortColumnIndex,
+                      sortAscending: widget.sortAscending,
+                      onSelectAll: widget.onSelectAll,
+                      decoration: const BoxDecoration(),
+                      dataRowHeight: widget.dataRowHeight,
+                      headingRowHeight: widget.headingRowHeight,
+                      horizontalMargin: widget.horizontalMargin,
+                      checkboxHorizontalMargin: widget.checkboxHorizontalMargin,
+                      columnSpacing: widget.columnSpacing,
+                      showCheckboxColumn: widget.showCheckboxColumn,
+                      showBottomBorder: true,
+                      rows: _getRows(_firstRowIndex, widget.rowsPerPage),
+                    ),
+                  ),
+                ),
+              ),
               if (headerWidgets.isNotEmpty)
                 Semantics(
                   container: true,
                   child: DefaultTextStyle(
-                    // These typographic styles aren't quite the regular ones. We pick the closest ones from the regular
-                    // list and then tweak them appropriately.
-                    // See https://material.io/design/components/data-tables.html#tables-within-cards
                     style: _selectedRowCount > 0
                         ? themeData.textTheme.titleMedium!
                             .copyWith(color: themeData.colorScheme.secondary)
@@ -349,34 +374,6 @@ class CustomTableState extends State<CustomTable> {
                     ),
                   ),
                 ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                primary: widget.primary,
-                controller: widget.controller,
-                dragStartBehavior: widget.dragStartBehavior,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minWidth: constraints.minWidth),
-                  child: DataTable(
-                    key: _tableKey,
-                    border: widget.border,
-                    columns: widget.columns,
-                    sortColumnIndex: widget.sortColumnIndex,
-                    sortAscending: widget.sortAscending,
-                    onSelectAll: widget.onSelectAll,
-                    // Make sure no decoration is set on the DataTable
-                    // from the theme, as its already wrapped in a Card.
-                    decoration: const BoxDecoration(),
-                    dataRowHeight: widget.dataRowHeight,
-                    headingRowHeight: widget.headingRowHeight,
-                    horizontalMargin: widget.horizontalMargin,
-                    checkboxHorizontalMargin: widget.checkboxHorizontalMargin,
-                    columnSpacing: widget.columnSpacing,
-                    showCheckboxColumn: widget.showCheckboxColumn,
-                    showBottomBorder: true,
-                    rows: _getRows(_firstRowIndex, widget.rowsPerPage),
-                  ),
-                ),
-              ),
               DefaultTextStyle(
                 style: footerTextStyle!,
                 child: IconTheme.merge(

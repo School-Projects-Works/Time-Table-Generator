@@ -5,6 +5,7 @@ import 'package:aamusted_timetable_generator/SateManager/HiveCache.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:aamusted_timetable_generator/Services/FileService.dart';
 import 'package:excel/excel.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:open_app_file/open_app_file.dart';
@@ -30,9 +31,11 @@ class _CoursesPageState extends State<CoursesPage> {
     'Department',
     'Lecturer',
   ];
+  final _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Consumer<HiveListener>(builder: (context, hive, child) {
       return SizedBox(
         width: double.infinity,
@@ -121,34 +124,35 @@ class _CoursesPageState extends State<CoursesPage> {
                 ),
               )
             else
-              CustomTable(
-                  arrowHeadColor: Colors.black,
-                  border: hive.getCourseList.isNotEmpty
-                      ? const TableBorder(
-                          horizontalInside:
-                              BorderSide(color: Colors.grey, width: 1),
-                          top: BorderSide(color: Colors.grey, width: 1),
-                          bottom: BorderSide(color: Colors.grey, width: 1))
-                      : const TableBorder(),
-                  dataRowHeight: 70,
-                  source: CoursesDataScource(
-                    context,
-                  ),
-                  rowsPerPage: hive.getFilterdCourses.length > 10
-                      ? 10
-                      : hive.getFilterdCourses.isNotEmpty
-                          ? hive.getFilterdCourses.length
-                          : 1,
-                  columnSpacing: 70,
-                  columns: columns
-                      .map((e) => DataColumn(
-                            label: Text(
-                              e,
-                              style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w600, fontSize: 14),
-                            ),
-                          ))
-                      .toList()),
+              SizedBox(
+                height: size.height - 216,
+                child: CustomTable(
+                    arrowHeadColor: Colors.black,
+                    dragStartBehavior: DragStartBehavior.start,
+                    controller: _scrollController,
+                    border: hive.getCourseList.isNotEmpty
+                        ? const TableBorder(
+                            horizontalInside:
+                                BorderSide(color: Colors.grey, width: 1),
+                            top: BorderSide(color: Colors.grey, width: 1),
+                            bottom: BorderSide(color: Colors.grey, width: 1))
+                        : const TableBorder(),
+                    dataRowHeight: 45,
+                    source: CoursesDataScource(
+                      context,
+                    ),
+                    rowsPerPage: 10,
+                    columnSpacing: 70,
+                    columns: columns
+                        .map((e) => DataColumn(
+                              label: Text(
+                                e,
+                                style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w600, fontSize: 14),
+                              ),
+                            ))
+                        .toList()),
+              ),
           ],
         ),
       );
