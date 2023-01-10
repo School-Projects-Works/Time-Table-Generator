@@ -6,6 +6,7 @@ class Constant {
   static String specialVenue = "Special Venue(Specify Venue)";
   static String lecturerPhone = "Lecturer Phone";
   static String lecturerEmail = "Lecturer Email";
+  static String department = "Department";
 
   static String level = "Level";
   static String className = "Class Name";
@@ -25,7 +26,8 @@ class Constant {
     specialVenue,
     lecturerName,
     lecturerEmail,
-    lecturerPhone
+    lecturerPhone,
+    department
   ];
 
   static List<String> classExcelHeaderOrder = [
