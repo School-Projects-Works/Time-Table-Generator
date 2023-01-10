@@ -4,8 +4,10 @@ import 'package:aamusted_timetable_generator/Constants/CustomStringFunctions.dar
 import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:collection/collection.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../Models/Class/ClassModel.dart';
 import '../Models/Course/CourseModel.dart';
@@ -122,5 +124,28 @@ class ImportServices {
     }) as List<ClassModel>;
 
     return venues;
+  }
+
+  static Future<File> tamplateCourses() async {
+    Excel excel = Excel.createExcel();
+    Sheet sheetObject = excel['Courses'];
+    CellStyle cellStyle = CellStyle(
+      bold: true,
+      fontSize: 12,
+      fontColorHex: '#000000',
+      horizontalAlign: HorizontalAlign.Center,
+      verticalAlign: VerticalAlign.Center,
+    );
+
+    sheetObject.appendRow(Constant.courseExcelHeaderOrder);
+    sheetObject.row(0).forEach((element) {
+      element?.cellStyle = cellStyle;
+    });
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String fileName = '${appDocDir.path}/courses.xlsx';
+    File file = File(fileName);
+    file.writeAsBytesSync(excel.encode()!);
+    file.createSync();
+    return file;
   }
 }
