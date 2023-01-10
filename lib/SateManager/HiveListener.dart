@@ -26,9 +26,12 @@ class HiveListener extends ChangeNotifier {
   }
 
   List<CourseModel> courseList = [];
+  List<CourseModel> filterdCourses = [];
+  List<CourseModel> get getFilterdCourses => filterdCourses;
   List<CourseModel> get getCourseList => courseList;
   void setCourseList(List<CourseModel> list) {
     courseList = list;
+    filterdCourses = list;
     notifyListeners();
   }
 }
