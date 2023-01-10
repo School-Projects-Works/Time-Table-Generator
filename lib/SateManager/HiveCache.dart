@@ -8,9 +8,6 @@ import '../Models/Config/ConfigModel.dart';
 class HiveCache {
   static Future<void> init() async {
     String path = Directory('${Directory.current.path}/Database').path;
-
-    print("path================: $path");
-
     await Hive.initFlutter(path);
     Hive.registerAdapter(AdminAdapter());
     Hive.registerAdapter(AcademicModelAdapter());
@@ -64,5 +61,15 @@ class HiveCache {
   static getAcademics() {
     final box = Hive.box<AcademicModel>('academics');
     return box.values.toList();
+  }
+
+  static void addConfigurations(ConfigModel configurations) {
+    final box = Hive.box<ConfigModel>('config');
+    box.put(configurations.id, configurations);
+  }
+
+  static getConfig(String? id) {
+    final box = Hive.box<ConfigModel>('config');
+    return box.get(id);
   }
 }

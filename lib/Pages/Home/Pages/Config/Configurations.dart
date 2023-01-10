@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../../Components/CustomDropDown.dart';
 import '../../../../SateManager/ConfigDataFlow.dart';
+import '../../../../SateManager/HiveListener.dart';
 import 'DaysSection.dart';
 import 'PeriodSection.dart';
 
@@ -90,7 +91,8 @@ class _ConfigurationState extends State<Configuration> {
   }
 
   void saveConfig() {
-    var data=Provider.of<ConfigDataFlow>(context,listen: false);
-      data.saveConfig();
+    var data = Provider.of<ConfigDataFlow>(context, listen: false);
+    var hiveData = Provider.of<HiveListener>(context, listen: false);
+    data.saveConfig(hiveData);
   }
 }

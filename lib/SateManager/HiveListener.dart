@@ -7,7 +7,8 @@ class HiveListener extends ChangeNotifier {
   List<AcademicModel> academicList = [];
   List<AcademicModel> get getAcademicList => academicList;
 
-  get currentAcademicYear => academicList.first.name!;
+  get currentAcademicYear =>
+      academicList.isNotEmpty ? academicList.first.name! : null;
 
   void setAcademicList(List<AcademicModel> list) {
     academicList = list;

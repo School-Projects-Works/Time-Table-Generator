@@ -55,8 +55,13 @@ class _MyAppState extends State<MyApp> {
     var academic = await HiveCache.getAcademics();
     if (academic.isNotEmpty) {
       if (mounted) {
-        Provider.of<HiveListener>(context, listen: false)
-            .setAcademicList(academic);
+        var provider = Provider.of<HiveListener>(context, listen: false);
+        var configProvider =
+            Provider.of<ConfigDataFlow>(context, listen: false);
+        provider.setAcademicList(academic);
+        String? id = provider.academicList.first.id;
+        var config = await HiveCache.getConfig(id);
+        configProvider.updateConfigurations(config);
       }
     }
   }
