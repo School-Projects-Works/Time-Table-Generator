@@ -19,7 +19,9 @@ class CustomCheckBox extends StatelessWidget {
       this.onWeekend,
       this.hasDropDown = false,
       this.startVal,
-      this.endVal, this.onStartChanged, this.onEndChanged})
+      this.endVal,
+      this.onStartChanged,
+      this.onEndChanged})
       : super(key: key);
   final bool isChecked;
   final String title;
@@ -121,13 +123,13 @@ class CustomCheckBox extends StatelessWidget {
                               children: [
                                 regularChecked
                                     ? const Icon(
-                                  Icons.check_box,
-                                  color: primaryColor,
-                                )
+                                        Icons.check_box,
+                                        color: primaryColor,
+                                      )
                                     : const Icon(
-                                  Icons.check_box_outline_blank,
-                                  color: primaryColor,
-                                ),
+                                        Icons.check_box_outline_blank,
+                                        color: primaryColor,
+                                      ),
                                 const SizedBox(width: 8),
                                 Text(
                                   'Regular',
@@ -146,13 +148,13 @@ class CustomCheckBox extends StatelessWidget {
                               children: [
                                 eveningChecked
                                     ? const Icon(
-                                  Icons.check_box,
-                                  color: primaryColor,
-                                )
+                                        Icons.check_box,
+                                        color: primaryColor,
+                                      )
                                     : const Icon(
-                                  Icons.check_box_outline_blank,
-                                  color: primaryColor,
-                                ),
+                                        Icons.check_box_outline_blank,
+                                        color: primaryColor,
+                                      ),
                                 const SizedBox(width: 8),
                                 Text(
                                   'Evening',
@@ -171,13 +173,13 @@ class CustomCheckBox extends StatelessWidget {
                               children: [
                                 weekendChecked
                                     ? const Icon(
-                                  Icons.check_box,
-                                  color: primaryColor,
-                                )
+                                        Icons.check_box,
+                                        color: primaryColor,
+                                      )
                                     : const Icon(
-                                  Icons.check_box_outline_blank,
-                                  color: primaryColor,
-                                ),
+                                        Icons.check_box_outline_blank,
+                                        color: primaryColor,
+                                      ),
                                 const SizedBox(width: 8),
                                 Text(
                                   'Weekend',
@@ -197,7 +199,6 @@ class CustomCheckBox extends StatelessWidget {
                 ),
             ],
           ),
-
         ],
       );
     } else {
@@ -260,7 +261,7 @@ class CustomCheckBox extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 15),
+                const SizedBox(width: 10),
                 InkWell(
                   onTap: onEvening,
                   child: Row(
@@ -286,7 +287,7 @@ class CustomCheckBox extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 15),
+                const SizedBox(width: 10),
                 InkWell(
                   onTap: onWeekend,
                   child: Row(

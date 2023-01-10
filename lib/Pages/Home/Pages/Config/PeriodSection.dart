@@ -43,46 +43,46 @@ class PeriodSection extends StatelessWidget {
                 onEndChanged: (value) {
                   data.setPeriodOneEnd(value);
                 },
-                startVal: data.periodOne['start'],
-                endVal: data.periodOne['end'],
+                startVal: data.periodOne.startTime,
+                endVal: data.periodOne.endTime,
                 onTap: () {
-                  if (data.getMonday.isEmpty) {
+                  if (data.getPeriodOne.period == null) {
                     data.updatePeriodOne('1st Period');
                   } else {
                     data.updatePeriodOne('');
                   }
                 },
-                isChecked: data.getPeriodOne.isNotEmpty,
+                isChecked: data.getPeriodOne.period != null,
                 onRegular: () {
-                  if (data.getPeriodOne['reg'] == null ||
-                      data.getPeriodOne['reg'] == false) {
+                  if (data.getPeriodOne.isRegular == null ||
+                      data.getPeriodOne.isRegular == false) {
                     data.updatePeriodOneType('+Regular');
                   } else {
                     data.updatePeriodOneType('-Regular');
                   }
                 },
-                regularChecked: data.getPeriodOne['reg'] != null &&
-                    data.getPeriodOne['reg'],
+                regularChecked: data.getPeriodOne.isRegular != null &&
+                    data.getPeriodOne.isRegular!,
                 onEvening: () {
-                  if (data.getPeriodOne['eve'] == null ||
-                      data.getPeriodOne['eve'] == false) {
+                  if (data.getPeriodOne.isEvening == null ||
+                      data.getPeriodOne.isEvening == false) {
                     data.updatePeriodOneType('+Evening');
                   } else {
                     data.updatePeriodOneType('-Evening');
                   }
                 },
-                eveningChecked: data.getPeriodOne['eve'] != null &&
-                    data.getPeriodOne['eve'],
+                eveningChecked: data.getPeriodOne.isEvening != null &&
+                    data.getPeriodOne.isEvening!,
                 onWeekend: () {
-                  if (data.getPeriodOne['week'] == null ||
-                      data.getPeriodOne['week'] == false) {
+                  if (data.getPeriodOne.isWeekend == null ||
+                      data.getPeriodOne.isWeekend == false) {
                     data.updatePeriodOneType('+Weekend');
                   } else {
                     data.updatePeriodOneType('-Weekend');
                   }
                 },
-                weekendChecked: data.getPeriodOne['week'] != null &&
-                    data.getPeriodOne['week'],
+                weekendChecked: data.getPeriodOne.isWeekend != null &&
+                    data.getPeriodOne.isWeekend!,
               ),
               const Divider(color: Colors.grey, thickness: 1, height: 25),
               CustomCheckBox(
@@ -94,46 +94,46 @@ class PeriodSection extends StatelessWidget {
                 onEndChanged: (value) {
                   data.setPeriodTwoEnd(value);
                 },
-                startVal: data.periodTwo['start'],
-                endVal: data.periodTwo['end'],
+                startVal: data.periodTwo.startTime,
+                endVal: data.periodTwo.endTime,
                 onTap: () {
-                  if (data.getMonday.isEmpty) {
+                  if (data.getPeriodTwo.period == null) {
                     data.updatePeriodTwo('2nd Period');
                   } else {
                     data.updatePeriodTwo('');
                   }
                 },
-                isChecked: data.getPeriodTwo.isNotEmpty,
+                isChecked: data.getPeriodTwo.period != null,
                 onRegular: () {
-                  if (data.getPeriodTwo['reg'] == null ||
-                      data.getPeriodTwo['reg'] == false) {
-                    data.updatePeriodTwo('+Regular');
+                  if (data.getPeriodTwo.isRegular == null ||
+                      data.getPeriodTwo.isRegular == false) {
+                    data.updatePeriodTwoType('+Regular');
                   } else {
-                    data.updatePeriodTwo('-Regular');
+                    data.updatePeriodTwoType('-Regular');
                   }
                 },
-                regularChecked: data.getPeriodTwo['reg'] != null &&
-                    data.getPeriodTwo['reg'],
+                regularChecked: data.getPeriodTwo.isRegular != null &&
+                    data.getPeriodTwo.isRegular!,
                 onEvening: () {
-                  if (data.getPeriodTwo['eve'] == null ||
-                      data.getPeriodTwo['eve'] == false) {
+                  if (data.getPeriodTwo.isEvening == null ||
+                      data.getPeriodTwo.isEvening == false) {
                     data.updatePeriodTwoType('+Evening');
                   } else {
                     data.updatePeriodTwoType('-Evening');
                   }
                 },
-                eveningChecked: data.getPeriodTwo['eve'] != null &&
-                    data.getPeriodTwo['eve'],
+                eveningChecked: data.getPeriodTwo.isEvening != null &&
+                    data.getPeriodTwo.isEvening!,
                 onWeekend: () {
-                  if (data.getPeriodTwo['week'] == null ||
-                      data.getPeriodTwo['week'] == false) {
+                  if (data.getPeriodTwo.isWeekend == null ||
+                      data.getPeriodTwo.isWeekend == false) {
                     data.updatePeriodTwoType('+Weekend');
                   } else {
                     data.updatePeriodTwoType('-Weekend');
                   }
                 },
-                weekendChecked: data.getPeriodTwo['week'] != null &&
-                    data.getPeriodTwo['week'],
+                weekendChecked: data.getPeriodTwo.isWeekend != null &&
+                    data.getPeriodTwo.isWeekend!,
               ),
               const Divider(color: Colors.grey, thickness: 1, height: 25),
               CustomCheckBox(
@@ -145,46 +145,46 @@ class PeriodSection extends StatelessWidget {
                 onEndChanged: (value) {
                   data.setPeriodThreeEnd(value);
                 },
-                startVal: data.periodThree['start'],
-                endVal: data.periodThree['end'],
+                startVal: data.periodThree.startTime,
+                endVal: data.periodThree.endTime,
                 onTap: () {
-                  if (data.getMonday.isEmpty) {
+                  if (data.getPeriodThree.period == null) {
                     data.updatePeriodThree('3rd Period');
                   } else {
                     data.updatePeriodThree('');
                   }
                 },
-                isChecked: data.getPeriodThree.isNotEmpty,
+                isChecked: data.getPeriodThree.period != null,
                 onRegular: () {
-                  if (data.getPeriodThree['reg'] == null ||
-                      data.getPeriodThree['reg'] == false) {
+                  if (data.getPeriodThree.isRegular == null ||
+                      data.getPeriodThree.isRegular == false) {
                     data.updatePeriodThreeType('+Regular');
                   } else {
                     data.updatePeriodThreeType('-Regular');
                   }
                 },
-                regularChecked: data.getPeriodThree['reg'] != null &&
-                    data.getPeriodThree['reg'],
+                regularChecked: data.getPeriodThree.isRegular != null &&
+                    data.getPeriodThree.isRegular!,
                 onEvening: () {
-                  if (data.getPeriodThree['eve'] == null ||
-                      data.getPeriodThree['eve'] == false) {
+                  if (data.getPeriodThree.isEvening == null ||
+                      data.getPeriodThree.isEvening == false) {
                     data.updatePeriodThreeType('+Evening');
                   } else {
                     data.updatePeriodThreeType('-Evening');
                   }
                 },
-                eveningChecked: data.getPeriodThree['eve'] != null &&
-                    data.getPeriodThree['eve'],
+                eveningChecked: data.getPeriodThree.isEvening != null &&
+                    data.getPeriodThree.isEvening!,
                 onWeekend: () {
-                  if (data.getPeriodThree['week'] == null ||
-                      data.getPeriodThree['week'] == false) {
+                  if (data.getPeriodThree.isWeekend == null ||
+                      data.getPeriodThree.isWeekend == false) {
                     data.updatePeriodThreeType('+Weekend');
                   } else {
                     data.updatePeriodThreeType('-Weekend');
                   }
                 },
-                weekendChecked: data.getPeriodThree['week'] != null &&
-                    data.getPeriodThree['week'],
+                weekendChecked: data.getPeriodThree.isWeekend != null &&
+                    data.getPeriodThree.isWeekend!,
               ),
               const Divider(color: Colors.grey, thickness: 1, height: 25),
               CustomCheckBox(
@@ -196,46 +196,46 @@ class PeriodSection extends StatelessWidget {
                 onEndChanged: (value) {
                   data.setPeriodFourEnd(value);
                 },
-                startVal: data.periodFour['start'],
-                endVal: data.periodFour['end'],
+                startVal: data.periodFour.startTime,
+                endVal: data.periodFour.endTime,
                 onTap: () {
-                  if (data.getMonday.isEmpty) {
+                  if (data.getPeriodFour.period == null) {
                     data.updatePeriodFour('4th Period');
                   } else {
                     data.updatePeriodFour('');
                   }
                 },
-                isChecked: data.getPeriodFour.isNotEmpty,
+                isChecked: data.getPeriodFour.period != null,
                 onRegular: () {
-                  if (data.getPeriodFour['reg'] == null ||
-                      data.getPeriodFour['reg'] == false) {
+                  if (data.getPeriodFour.isRegular == null ||
+                      data.getPeriodFour.isRegular == false) {
                     data.updatePeriodFourType('+Regular');
                   } else {
                     data.updatePeriodFourType('-Regular');
                   }
                 },
-                regularChecked: data.getPeriodFour['reg'] != null &&
-                    data.getPeriodFour['reg'],
+                regularChecked: data.getPeriodFour.isRegular != null &&
+                    data.getPeriodFour.isRegular!,
                 onEvening: () {
-                  if (data.getPeriodFour['eve'] == null ||
-                      data.getPeriodFour['eve'] == false) {
+                  if (data.getPeriodFour.isEvening == null ||
+                      data.getPeriodFour.isEvening == false) {
                     data.updatePeriodFourType('+Evening');
                   } else {
                     data.updatePeriodFourType('-Evening');
                   }
                 },
-                eveningChecked: data.getPeriodFour['eve'] != null &&
-                    data.getPeriodFour['eve'],
+                eveningChecked: data.getPeriodFour.isEvening != null &&
+                    data.getPeriodFour.isEvening!,
                 onWeekend: () {
-                  if (data.getPeriodFour['week'] == null ||
-                      data.getPeriodFour['week'] == false) {
+                  if (data.getPeriodFour.isWeekend == null ||
+                      data.getPeriodFour.isWeekend == false) {
                     data.updatePeriodFourType('+Weekend');
                   } else {
                     data.updatePeriodFourType('-Weekend');
                   }
                 },
-                weekendChecked: data.getPeriodFour['week'] != null &&
-                    data.getPeriodFour['week'],
+                weekendChecked: data.getPeriodFour.isWeekend != null &&
+                    data.getPeriodFour.isWeekend!,
               ),
               const SizedBox(height: 15),
             ],

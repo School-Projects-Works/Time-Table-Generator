@@ -1,10 +1,17 @@
 import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:aamusted_timetable_generator/Components/CustomDropDown.dart';
+<<<<<<< HEAD
+import 'package:aamusted_timetable_generator/Services/FileService.dart';
+=======
+import 'package:aamusted_timetable_generator/SateManager/NavigationProvider.dart';
+>>>>>>> 66ac45ae47d6544edd38b7d988a722e17812894a
 import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import '../../../SateManager/ConfigDataFlow.dart';
+import '../../../SateManager/HiveCache.dart';
 import '../../../SateManager/HiveListener.dart';
 
 class TopView extends StatefulWidget {
@@ -75,7 +82,16 @@ class _TopViewState extends State<TopView> {
                       hintText: 'Select Academic Year',
                       radius: 10,
                       color: background,
-                      onChanged: (value) {},
+                      value: mongo.currentAcademicYear,
+                      onChanged: (value) {
+                        mongo.updateCurrentAcademicYear(value);
+                        var id = mongo.getAcademicList
+                            .firstWhere((element) => element.name == value)
+                            .id;
+                        var config = HiveCache.getConfig(id);
+                        Provider.of<ConfigDataFlow>(context, listen: false)
+                            .updateConfigurations(config);
+                      },
                       items: mongo.getAcademicList
                           .map((e) => DropdownMenuItem(
                               value: e.name,
@@ -89,10 +105,22 @@ class _TopViewState extends State<TopView> {
                 ],
               ),
             ),
+<<<<<<< HEAD
             SizedBox(
-                height: 50,
-                child: CustomButton(
-                    onPressed: addNewAcademic, text: 'Add Academic Year')),
+              height: 50,
+              child: CustomButton(
+                  onPressed: () {
+                    ExcelService.readExcelFile();
+                  },
+                  text: 'Add Academic Year'),
+            ),
+=======
+            if (mongo.getAcademicList.isNotEmpty)
+              SizedBox(
+                  height: 50,
+                  child: CustomButton(
+                      onPressed: addNewAcademic, text: 'Add Academic Year')),
+>>>>>>> 66ac45ae47d6544edd38b7d988a722e17812894a
             const SizedBox(
               width: 10,
             ),
@@ -102,5 +130,7 @@ class _TopViewState extends State<TopView> {
     });
   }
 
-  void addNewAcademic() {}
+  void addNewAcademic() {
+    Provider.of<NavigationProvider>(context, listen: false).setPage(7);
+  }
 }
