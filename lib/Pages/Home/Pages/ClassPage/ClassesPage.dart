@@ -90,15 +90,6 @@ class _ClassesPageState extends State<ClassesPage> {
                       const SizedBox(width: 10),
                       CustomButton(
                         onPressed: () {},
-                        text: 'Export Classes',
-                        radius: 10,
-                        color: Colors.purple,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 6),
-                      ),
-                      const SizedBox(width: 10),
-                      CustomButton(
-                        onPressed: () {},
                         text: 'Clear Classes',
                         color: Colors.red,
                         radius: 10,

@@ -100,7 +100,20 @@ class HiveCache {
         .toList();
   }
 
-  static getClasses(currentYesr) {}
+  static getClasses(currentYesr) {
+    final box = Hive.box<ClassModel>('classes');
+    return box.values
+        .where((element) => element.academicYear == currentYesr)
+        .toList();
+  }
 
-  static void clearCourses() {}
+  static void clearCourses() {
+    final box = Hive.box<CourseModel>('courses');
+    box.clear();
+  }
+
+  static void addClass(ClassModel element) {
+    final box = Hive.box<ClassModel>('classes');
+    box.put(element.id, element);
+  }
 }
