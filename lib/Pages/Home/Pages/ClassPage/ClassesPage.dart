@@ -1,12 +1,16 @@
 // ignore_for_file: file_names
 
+import 'dart:io';
+
 import 'package:aamusted_timetable_generator/Models/Class/ClassModel.dart';
+import 'package:aamusted_timetable_generator/SateManager/ConfigDataFlow.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:open_app_file/open_app_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../Components/CustomButton.dart';
@@ -214,6 +218,8 @@ class _ClassesPageState extends State<ClassesPage> {
               }
               var data = HiveCache.getClasses(hive.currentAcademicYear);
               hive.setClassList(data);
+              Provider.of<ConfigDataFlow>(context, listen: false)
+                  .updateHasClass(true);
               CustomDialog.dismiss();
               CustomDialog.showSuccess(message: 'Data Imported Successfully');
             } else {
@@ -232,19 +238,19 @@ class _ClassesPageState extends State<ClassesPage> {
   }
 
   void viewTemplate() async {
-    CustomDialog.showLoading(message: 'Creating Template...Please Wait');
-    try {
-      var file = await ImportServices.templateClasses();
-      if (await file.exists()) {
-        OpenAppFile.open(file.path);
-        CustomDialog.dismiss();
-      } else {
-        CustomDialog.dismiss();
-        CustomDialog.showError(message: 'Error Creating Template');
-      }
-    } catch (e) {
-      CustomDialog.dismiss();
-      CustomDialog.showError(message: 'Error Creating Template');
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String fileName = '${appDocDir.path}/classes.xlsx';
+    if (File(fileName).existsSync()) {
+      CustomDialog.showInfo(
+        onPressed: () => viewFile(fileName),
+        message:
+            'File with the name classes.xlsx already exist. Do you want to view it or overwrite it ?',
+        buttonText: 'View Template',
+        buttonText2: 'Overwrite',
+        onPressed2: () => createTemplate(File(fileName)),
+      );
+    } else {
+      createTemplate(File(fileName));
     }
   }
 
@@ -260,7 +266,7 @@ class _ClassesPageState extends State<ClassesPage> {
     CustomDialog.dismiss();
     CustomDialog.showLoading(message: 'Deleting Student Classes...Please Wait');
     Provider.of<HiveListener>(context, listen: false)
-        .deleteClasses(getSelectedClasses);
+        .deleteClasses(getSelectedClasses, context);
     CustomDialog.dismiss();
     CustomDialog.showSuccess(message: 'Selected Classes Deleted Successfully');
   }
@@ -277,8 +283,36 @@ class _ClassesPageState extends State<ClassesPage> {
   void refresh() {
     CustomDialog.dismiss();
     CustomDialog.showLoading(message: 'Deleting Classes...Please Wait');
-    Provider.of<HiveListener>(context, listen: false).clearClasses();
+    Provider.of<HiveListener>(context, listen: false).clearClasses(context);
     CustomDialog.dismiss();
     CustomDialog.showSuccess(message: 'Classes Cleared Successfully');
+  }
+
+  viewFile(String fileName) {
+    try {
+      CustomDialog.dismiss();
+      OpenAppFile.open(fileName);
+    } catch (e) {
+      CustomDialog.showError(message: 'Error Opening File');
+    }
+  }
+
+  createTemplate(File existingFile) async {
+    CustomDialog.dismiss();
+    CustomDialog.showLoading(message: 'Creating Template...Please Wait');
+    try {
+      existingFile.createSync();
+      var file = await ImportServices.templateClasses(existingFile);
+      if (await file.exists()) {
+        OpenAppFile.open(file.path);
+        CustomDialog.dismiss();
+      } else {
+        CustomDialog.dismiss();
+        CustomDialog.showError(message: 'Error Creating Template');
+      }
+    } catch (e) {
+      CustomDialog.dismiss();
+      CustomDialog.showError(message: 'Error Creating Template');
+    }
   }
 }

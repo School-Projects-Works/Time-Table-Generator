@@ -705,4 +705,32 @@ class ConfigDataFlow extends ChangeNotifier {
     updateConfigurations(configurations);
     updateConfigList();
   }
+
+  void updateHasCourse(bool bool) {
+    configurations.hasCourse = bool;
+    HiveCache.addConfigurations(configurations);
+    updateConfigurations(configurations);
+    updateConfigList();
+  }
+
+  void updateHasLiberal(bool bool) {
+    configurations.hasLiberalCourse = bool;
+    HiveCache.addConfigurations(configurations);
+    updateConfigurations(configurations);
+    updateConfigList();
+  }
+
+  void updateHasClass(bool bool) {
+    configurations.hasClass = bool;
+    HiveCache.addConfigurations(configurations);
+    updateConfigurations(configurations);
+    updateConfigList();
+  }
+
+  void updateHasVenue(data) {
+    configurations.hasVenues = data;
+    HiveCache.addConfigurations(configurations);
+    updateConfigurations(configurations);
+    updateConfigList();
+  }
 }

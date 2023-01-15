@@ -110,7 +110,7 @@ class ImportServices {
         .toList();
   }
 
-  static Future<File> templateCourses() async {
+  static Future<File> templateCourses(File file) async {
     Excel excel = Excel.createExcel();
     Sheet sheetObject = excel['Courses'];
     excel.setDefaultSheet('Courses');
@@ -126,15 +126,13 @@ class ImportServices {
     sheetObject.row(0).forEach((element) {
       element?.cellStyle = cellStyle;
     });
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    String fileName = '${appDocDir.path}/courses.xlsx';
-    File file = File(fileName);
+
     file.writeAsBytesSync(excel.encode()!);
     file.createSync();
     return file;
   }
 
-  static templateClasses() async {
+  static templateClasses(File file) async {
     Excel excel = Excel.createExcel();
     Sheet sheetObject = excel['Classes'];
     excel.setDefaultSheet('Classes');
@@ -150,15 +148,13 @@ class ImportServices {
     sheetObject.row(0).forEach((element) {
       element?.cellStyle = cellStyle;
     });
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    String fileName = '${appDocDir.path}/classes.xlsx';
-    File file = File(fileName);
+
     file.writeAsBytesSync(excel.encode()!);
     file.createSync();
     return file;
   }
 
-  static templateVenue() async {
+  static templateVenue(File file) async {
     Excel excel = Excel.createExcel();
     Sheet sheetObject = excel['Venues'];
     excel.setDefaultSheet('Venues');
@@ -174,15 +170,13 @@ class ImportServices {
     sheetObject.row(0).forEach((element) {
       element?.cellStyle = cellStyle;
     });
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    String fileName = '${appDocDir.path}/venues.xlsx';
-    File file = File(fileName);
+
     file.writeAsBytesSync(excel.encode()!);
     file.createSync();
     return file;
   }
 
-  static templateLiberal() async {
+  static templateLiberal(File file) async {
     Excel excel = Excel.createExcel();
     Sheet sheetObject = excel['Liberal'];
     excel.setDefaultSheet('Liberal');
@@ -198,9 +192,7 @@ class ImportServices {
     sheetObject.row(0).forEach((element) {
       element?.cellStyle = cellStyle;
     });
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    String fileName = '${appDocDir.path}/liberal.xlsx';
-    File file = File(fileName);
+
     file.writeAsBytesSync(excel.encode()!);
     file.createSync();
     return file;

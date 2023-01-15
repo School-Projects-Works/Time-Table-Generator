@@ -3,8 +3,10 @@ import 'package:aamusted_timetable_generator/Models/Class/ClassModel.dart';
 import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
 import 'package:aamusted_timetable_generator/Models/Course/LiberalModel.dart';
 import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
+import 'package:aamusted_timetable_generator/SateManager/ConfigDataFlow.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveCache.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../Models/Academic/AcademicModel.dart';
 
 class HiveListener extends ChangeNotifier {
@@ -143,27 +145,36 @@ class HiveListener extends ChangeNotifier {
     setCourseList(data);
   }
 
-  deleteCourse(List<CourseModel> courses) {
+  deleteCourse(List<CourseModel> courses, BuildContext context) {
     for (var element in courses) {
       HiveCache.deleteCourse(element);
     }
     var data = HiveCache.getCourses(currentAcademicYear);
+    if (data.isEmpty) {
+      Provider.of<ConfigDataFlow>(context, listen: false)
+          .updateHasCourse(false);
+    }
     setCourseList(data);
   }
 
-  void clearCourses() {
+  void clearCourses(BuildContext context) {
     for (var element in getCourseList) {
       HiveCache.deleteCourse(element);
     }
+    Provider.of<ConfigDataFlow>(context, listen: false).updateHasCourse(false);
     var data = HiveCache.getCourses(currentAcademicYear);
     setCourseList(data);
   }
 
-  void deleteClasses(List<ClassModel> getSelectedClasses) {
+  void deleteClasses(
+      List<ClassModel> getSelectedClasses, BuildContext context) {
     for (var element in getSelectedClasses) {
       HiveCache.deleteClass(element);
     }
     var data = HiveCache.getClasses(currentAcademicYear);
+    if (data.isEmpty) {
+      Provider.of<ConfigDataFlow>(context, listen: false).updateHasClass(false);
+    }
     setClassList(data);
   }
 
@@ -190,10 +201,11 @@ class HiveListener extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clearClasses() {
+  void clearClasses(BuildContext context) {
     for (var element in getClassList) {
       HiveCache.deleteClass(element);
     }
+    Provider.of<ConfigDataFlow>(context, listen: false).updateHasClass(false);
     var data = HiveCache.getClasses(currentAcademicYear);
     setClassList(data);
   }
@@ -244,18 +256,22 @@ class HiveListener extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteVenues(List<VenueModel> getSelectedVenues) {
+  void deleteVenues(List<VenueModel> getSelectedVenues, BuildContext context) {
     for (var element in getSelectedVenues) {
       HiveCache.deleteVenue(element);
     }
     var data = HiveCache.getVenues(currentAcademicYear);
+    if (data.isEmpty) {
+      Provider.of<ConfigDataFlow>(context, listen: false).updateHasVenue(false);
+    }
     setVenueList(data);
   }
 
-  void clearVenues() {
+  void clearVenues(BuildContext context) {
     for (var element in getVenues) {
       HiveCache.deleteVenue(element);
     }
+    Provider.of<ConfigDataFlow>(context, listen: false).updateHasVenue(false);
     var data = HiveCache.getVenues(currentAcademicYear);
     setVenueList(data);
   }
@@ -278,19 +294,25 @@ class HiveListener extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clearLiberal() {
+  void clearLiberal(BuildContext context) {
     for (var element in getLiberals) {
       HiveCache.deleteLiberal(element);
     }
+    Provider.of<ConfigDataFlow>(context, listen: false).updateHasLiberal(false);
     var data = HiveCache.getLiberals(currentAcademicYear);
     setLiberalList(data);
   }
 
-  void deleteLiberal(List<LiberalModel> getSelectedLiberal) {
+  void deleteLiberal(
+      List<LiberalModel> getSelectedLiberal, BuildContext context) {
     for (var element in getSelectedLiberal) {
       HiveCache.deleteLiberal(element);
     }
     var data = HiveCache.getLiberals(currentAcademicYear);
+    if (data.isEmpty) {
+      Provider.of<ConfigDataFlow>(context, listen: false)
+          .updateHasLiberal(false);
+    }
     setLiberalList(data);
   }
 

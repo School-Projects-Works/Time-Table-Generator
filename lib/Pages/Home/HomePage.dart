@@ -13,7 +13,7 @@ import 'Pages/ConfigPage/Configurations.dart';
 import 'Pages/CoursePage/CoursesPage.dart';
 import 'Pages/LiberalPage/LiberalPage.dart';
 import 'Pages/NewAcademic.dart';
-import 'Pages/TimetablePage.dart';
+import 'Pages/TablesPage/TimetablePage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

@@ -21,6 +21,14 @@ class ConfigModel {
   Map<String, dynamic>? liberalCourseDay;
   @HiveField(7)
   Map<String, dynamic>? liberalCoursePeriod;
+  @HiveField(8)
+  bool hasLiberalCourse;
+  @HiveField(9)
+  bool hasCourse;
+  @HiveField(10)
+  bool hasClass;
+  @HiveField(11)
+  bool hasVenues;
 
   ConfigModel({
     this.id,
@@ -31,31 +39,9 @@ class ConfigModel {
     this.periods,
     this.liberalCourseDay,
     this.liberalCoursePeriod,
+    this.hasLiberalCourse = false,
+    this.hasCourse = false,
+    this.hasClass = false,
+    this.hasVenues = false,
   });
-
-  factory ConfigModel.fromJson(Map<String, dynamic> json) {
-    return ConfigModel(
-      id: json['id'],
-      academicName: json['academicName'],
-      academicYear: json['academicYear'],
-      academicSemester: json['academicSemester'],
-      days: json['days'],
-      periods: json['periods'],
-      liberalCourseDay: json['LiberalCourseDay'],
-      liberalCoursePeriod: json['LiberalCoursePeriod'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'academicName': academicName,
-      'academicYear': academicYear,
-      'academicSemester': academicSemester,
-      'days': days,
-      'periods': periods,
-      'liberalCourseDay': liberalCourseDay,
-      'liberalCoursePeriod': liberalCoursePeriod,
-    };
-  }
 }

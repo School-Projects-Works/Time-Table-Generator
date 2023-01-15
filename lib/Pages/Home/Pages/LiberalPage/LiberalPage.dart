@@ -1,5 +1,7 @@
 // ignore_for_file: file_names, unnecessary_null_comparison
 
+import 'dart:io';
+
 import 'package:aamusted_timetable_generator/Components/BreathingWidget.dart';
 import 'package:aamusted_timetable_generator/Components/CustomDropDown.dart';
 import 'package:aamusted_timetable_generator/SateManager/ConfigDataFlow.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:open_app_file/open_app_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import '../../../../Components/CustomButton.dart';
 import '../../../../Components/CustomTable.dart';
@@ -130,6 +133,8 @@ class _LiberalPageState extends State<LiberalPage> {
                                       width: 250,
                                       child: CustomDropDown(
                                           onChanged: changeLiberalDay,
+                                          value: config.getConfigurations
+                                              .liberalCourseDay,
                                           hintText: 'Select day',
                                           items: config.getConfigurations.days!
                                               .map((e) => DropdownMenuItem(
@@ -157,6 +162,8 @@ class _LiberalPageState extends State<LiberalPage> {
                                       child: CustomDropDown(
                                           hintText: 'Select period',
                                           onChanged: changeLiberalPeriod,
+                                          value: config.getConfigurations
+                                              .liberalCoursePeriod,
                                           items: config
                                               .getConfigurations.periods!
                                               .map((e) => DropdownMenuItem(
@@ -195,6 +202,8 @@ class _LiberalPageState extends State<LiberalPage> {
                                     width: 250,
                                     child: CustomDropDown(
                                         onChanged: changeLiberalDay,
+                                        value: config
+                                            .getConfigurations.liberalCourseDay,
                                         hintText: 'Select day',
                                         items: config.getConfigurations.days!
                                             .map((e) => DropdownMenuItem(
@@ -222,6 +231,8 @@ class _LiberalPageState extends State<LiberalPage> {
                                     child: CustomDropDown(
                                         hintText: 'Select period',
                                         onChanged: changeLiberalPeriod,
+                                        value: config.getConfigurations
+                                            .liberalCoursePeriod,
                                         items: config.getConfigurations.periods!
                                             .map((e) => DropdownMenuItem(
                                                 value: e['period'],
@@ -332,19 +343,19 @@ class _LiberalPageState extends State<LiberalPage> {
   }
 
   void viewTemplate() async {
-    CustomDialog.showLoading(message: 'Creating Template...Please Wait');
-    try {
-      var file = await ImportServices.templateLiberal();
-      if (await file.exists()) {
-        OpenAppFile.open(file.path);
-        CustomDialog.dismiss();
-      } else {
-        CustomDialog.dismiss();
-        CustomDialog.showError(message: 'Error Creating Template');
-      }
-    } catch (e) {
-      CustomDialog.dismiss();
-      CustomDialog.showError(message: 'Error Creating Template');
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String fileName = '${appDocDir.path}/liberal.xlsx';
+    if (File(fileName).existsSync()) {
+      CustomDialog.showInfo(
+        onPressed: () => viewFile(fileName),
+        message:
+            'File with the name liberal.xlsx already exist. Do you want to view it or overwrite it ?',
+        buttonText: 'View Template',
+        buttonText2: 'Overwrite',
+        onPressed2: () => createTemplate(File(fileName)),
+      );
+    } else {
+      createTemplate(File(fileName));
     }
   }
 
@@ -370,6 +381,8 @@ class _LiberalPageState extends State<LiberalPage> {
               }
               var data = HiveCache.getLiberals(hive.currentAcademicYear);
               hive.setLiberalList(data);
+              Provider.of<ConfigDataFlow>(context, listen: false)
+                  .updateHasLiberal(true);
               CustomDialog.dismiss();
               CustomDialog.showSuccess(message: 'Data Imported Successfully');
             } else {
@@ -390,7 +403,7 @@ class _LiberalPageState extends State<LiberalPage> {
   void clearCourses() {
     CustomDialog.showInfo(
       message:
-          'Are you sure yo want to delete all Liberal/African Studies Courses? Note: This action is not revisable',
+          'Are you sure yo want to delete all Liberal/African Studies Courses? Note: This action is not reversible',
       buttonText: 'Yes|Clear',
       onPressed: refresh,
     );
@@ -400,7 +413,8 @@ class _LiberalPageState extends State<LiberalPage> {
     CustomDialog.dismiss();
     CustomDialog.showLoading(
         message: 'Deleting Liberal/African Studies Courses...Please Wait');
-    Provider.of<HiveListener>(context, listen: false).clearLiberal();
+    Provider.of<HiveListener>(context, listen: false).clearLiberal(context);
+
     CustomDialog.dismiss();
     CustomDialog.showSuccess(
         message: 'Liberal/African Studies Courses Cleared Successfully');
@@ -410,7 +424,7 @@ class _LiberalPageState extends State<LiberalPage> {
     CustomDialog.showInfo(
         onPressed: () => delete(getSelectedLiberals),
         message:
-            'Are you sure you want to delete the selected Liberal/African Studies Courses ? Note: This action is not revisable',
+            'Are you sure you want to delete the selected Liberal/African Studies Courses ? Note: This action is not reversible',
         buttonText: 'Yes|Delete');
   }
 
@@ -419,7 +433,7 @@ class _LiberalPageState extends State<LiberalPage> {
     CustomDialog.showLoading(
         message: 'Deleting Liberal/African Studies Courses...Please Wait');
     Provider.of<HiveListener>(context, listen: false)
-        .deleteLiberal(getSelectedLiberal);
+        .deleteLiberal(getSelectedLiberal, context);
     CustomDialog.dismiss();
     CustomDialog.showSuccess(
         message:
@@ -435,6 +449,34 @@ class _LiberalPageState extends State<LiberalPage> {
   changeLiberalPeriod(p1) {
     if (p1 != null) {
       Provider.of<ConfigDataFlow>(context, listen: false).setLiberalPeriod(p1);
+    }
+  }
+
+  viewFile(String fileName) {
+    try {
+      CustomDialog.dismiss();
+      OpenAppFile.open(fileName);
+    } catch (e) {
+      CustomDialog.showError(message: 'Error Opening File');
+    }
+  }
+
+  createTemplate(File existingFile) async {
+    CustomDialog.dismiss();
+    CustomDialog.showLoading(message: 'Creating Template...Please Wait');
+    try {
+      existingFile.createSync();
+      var file = await ImportServices.templateLiberal(existingFile);
+      if (await file.exists()) {
+        OpenAppFile.open(file.path);
+        CustomDialog.dismiss();
+      } else {
+        CustomDialog.dismiss();
+        CustomDialog.showError(message: 'Error Creating Template');
+      }
+    } catch (e) {
+      CustomDialog.dismiss();
+      CustomDialog.showError(message: 'Error Creating Template');
     }
   }
 }

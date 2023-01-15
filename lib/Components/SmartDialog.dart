@@ -4,7 +4,6 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Styles/colors.dart';
 
-
 class CustomDialog {
   static void showLoading({required String message}) {
     SmartDialog.showLoading(
@@ -154,8 +153,10 @@ class CustomDialog {
 
   static Future<void> showInfo(
       {required String message,
-        VoidCallback? onPressed,
-        required String buttonText}) async {
+      VoidCallback? onPressed,
+      required String buttonText,
+      String? buttonText2,
+      VoidCallback? onPressed2}) async {
     SmartDialog.show(
       maskColor: Colors.transparent,
       builder: (_) {
@@ -221,10 +222,16 @@ class CustomDialog {
                       backgroundColor: secondaryColor,
                     ),
                     child: Text(
-                      'Cancel',
+                      buttonText2 ?? 'Cancel',
                       style: GoogleFonts.nunito(color: Colors.white),
                     ),
-                    onPressed: () => SmartDialog.dismiss(),
+                    onPressed: () {
+                      if (onPressed2 != null) {
+                        onPressed2.call();
+                      } else {
+                        SmartDialog.dismiss();
+                      }
+                    },
                   ),
                 ],
               ),

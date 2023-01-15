@@ -1,9 +1,12 @@
 // ignore_for_file: file_names
 
+import 'dart:io';
+
 import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:aamusted_timetable_generator/Components/SmartDialog.dart';
 import 'package:aamusted_timetable_generator/Components/TextInputs.dart';
 import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
+import 'package:aamusted_timetable_generator/SateManager/ConfigDataFlow.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveCache.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:aamusted_timetable_generator/Services/FileService.dart';
@@ -12,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:open_app_file/open_app_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import '../../../../Components/CustomTable.dart';
 import '../../../../Constants/Constant.dart';
@@ -196,19 +200,19 @@ class _CoursesPageState extends State<CoursesPage> {
   }
 
   void viewTemplate() async {
-    CustomDialog.showLoading(message: 'Creating Template...Please Wait');
-    try {
-      var file = await ImportServices.templateCourses();
-      if (await file.exists()) {
-        OpenAppFile.open(file.path);
-        CustomDialog.dismiss();
-      } else {
-        CustomDialog.dismiss();
-        CustomDialog.showError(message: 'Error Creating Template');
-      }
-    } catch (e) {
-      CustomDialog.dismiss();
-      CustomDialog.showError(message: 'Error Creating Template');
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String fileName = '${appDocDir.path}/courses.xlsx';
+    if (File(fileName).existsSync()) {
+      CustomDialog.showInfo(
+        onPressed: () => viewFile(fileName),
+        message:
+            'File with the name courses.xlsx already exist. Do you want to view it or overwrite it ?',
+        buttonText: 'View Template',
+        buttonText2: 'Overwrite',
+        onPressed2: () => createTemplate(File(fileName)),
+      );
+    } else {
+      createTemplate(File(fileName));
     }
   }
 
@@ -234,6 +238,8 @@ class _CoursesPageState extends State<CoursesPage> {
               }
               var data = HiveCache.getCourses(hive.currentAcademicYear);
               hive.setCourseList(data);
+              Provider.of<ConfigDataFlow>(context, listen: false)
+                  .updateHasCourse(true);
               CustomDialog.dismiss();
               CustomDialog.showSuccess(message: 'Data Imported Successfully');
             } else {
@@ -263,7 +269,7 @@ class _CoursesPageState extends State<CoursesPage> {
   void refresh() {
     CustomDialog.dismiss();
     CustomDialog.showLoading(message: 'Deleting Courses...Please Wait');
-    Provider.of<HiveListener>(context, listen: false).clearCourses();
+    Provider.of<HiveListener>(context, listen: false).clearCourses(context);
     CustomDialog.dismiss();
     CustomDialog.showSuccess(message: 'Courses Cleared Successfully');
   }
@@ -280,8 +286,36 @@ class _CoursesPageState extends State<CoursesPage> {
     CustomDialog.dismiss();
     CustomDialog.showLoading(message: 'Deleting Courses...Please Wait');
     Provider.of<HiveListener>(context, listen: false)
-        .deleteCourse(getSelectedCourses);
+        .deleteCourse(getSelectedCourses, context);
     CustomDialog.dismiss();
     CustomDialog.showSuccess(message: 'Selected Courses Deleted Successfully');
+  }
+
+  viewFile(String fileName) {
+    try {
+      CustomDialog.dismiss();
+      OpenAppFile.open(fileName);
+    } catch (e) {
+      CustomDialog.showError(message: 'Error Opening File');
+    }
+  }
+
+  createTemplate(File existingFile) async {
+    CustomDialog.dismiss();
+    CustomDialog.showLoading(message: 'Creating Template...Please Wait');
+    try {
+      existingFile.createSync();
+      var file = await ImportServices.templateCourses(existingFile);
+      if (await file.exists()) {
+        OpenAppFile.open(file.path);
+        CustomDialog.dismiss();
+      } else {
+        CustomDialog.dismiss();
+        CustomDialog.showError(message: 'Error Creating Template');
+      }
+    } catch (e) {
+      CustomDialog.dismiss();
+      CustomDialog.showError(message: 'Error Creating Template');
+    }
   }
 }
