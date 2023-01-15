@@ -46,38 +46,43 @@ class LiberialDataScource extends DataTableSource {
       ),
       index: index,
       cells: [
-        DataCell(Checkbox(
-          checkColor: primaryColor,
-          activeColor: Colors.white,
-          fillColor: MaterialStateProperty.resolveWith<Color?>(
-            (Set<MaterialState> states) {
-              const Set<MaterialState> interactiveStates = <MaterialState>{
-                MaterialState.pressed,
-                MaterialState.hovered,
-                MaterialState.focused,
-              };
+        DataCell(ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 50, minWidth: 50),
+          child: Checkbox(
+            checkColor: primaryColor,
+            activeColor: Colors.white,
+            fillColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+                const Set<MaterialState> interactiveStates = <MaterialState>{
+                  MaterialState.pressed,
+                  MaterialState.hovered,
+                  MaterialState.focused,
+                };
 
-              if (states.any(interactiveStates.contains)) {
-                return Colors.black.withOpacity(.5);
+                if (states.any(interactiveStates.contains)) {
+                  return Colors.black.withOpacity(.5);
+                } else {
+                  return Colors.black.withOpacity(.5);
+                }
+              },
+            ),
+            value: Provider.of<HiveListener>(context, listen: false)
+                .getSelectedLiberials
+                .contains(liberialItem),
+            onChanged: (val) {
+              if (val!) {
+                Provider.of<HiveListener>(context, listen: false)
+                    .addSelectedLiberials([liberialItem]);
               } else {
-                return Colors.black.withOpacity(.5);
+                Provider.of<HiveListener>(context, listen: false)
+                    .removeSelectedLiberial([liberialItem]);
               }
             },
           ),
-          value: Provider.of<HiveListener>(context, listen: false)
-              .getSelectedLiberials
-              .contains(liberialItem),
-          onChanged: (val) {
-            if (val!) {
-              Provider.of<HiveListener>(context, listen: false)
-                  .addSelectedLiberials([liberialItem]);
-            } else {
-              Provider.of<HiveListener>(context, listen: false)
-                  .removeSelectedLiberial([liberialItem]);
-            }
-          },
         )),
-        DataCell(Text(liberialItem.code!)),
+        DataCell(ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 100, minWidth: 100),
+            child: Text(liberialItem.code!))),
         DataCell(Text(liberialItem.title!)),
         DataCell(Text(liberialItem.lecturerName!)),
         DataCell(Text(liberialItem.lecturerEmail!)),

@@ -45,42 +45,49 @@ class ClassDataSource extends DataTableSource {
       ),
       index: index,
       cells: [
-        DataCell(Checkbox(
-          checkColor: primaryColor,
-          activeColor: Colors.white,
-          fillColor: MaterialStateProperty.resolveWith<Color?>(
-            (Set<MaterialState> states) {
-              const Set<MaterialState> interactiveStates = <MaterialState>{
-                MaterialState.pressed,
-                MaterialState.hovered,
-                MaterialState.focused,
-              };
+        DataCell(ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 50, minWidth: 50),
+          child: Checkbox(
+            checkColor: primaryColor,
+            activeColor: Colors.white,
+            fillColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
+                const Set<MaterialState> interactiveStates = <MaterialState>{
+                  MaterialState.pressed,
+                  MaterialState.hovered,
+                  MaterialState.focused,
+                };
 
-              if (states.any(interactiveStates.contains)) {
-                return Colors.black.withOpacity(.5);
+                if (states.any(interactiveStates.contains)) {
+                  return Colors.black.withOpacity(.5);
+                } else {
+                  return Colors.black.withOpacity(.5);
+                }
+              },
+            ),
+            value: Provider.of<HiveListener>(context, listen: false)
+                .getSelectedClasses
+                .contains(classItem),
+            onChanged: (val) {
+              if (val!) {
+                Provider.of<HiveListener>(context, listen: false)
+                    .addSelectedClass([classItem]);
               } else {
-                return Colors.black.withOpacity(.5);
+                Provider.of<HiveListener>(context, listen: false)
+                    .removeSelectedClass([classItem]);
               }
             },
           ),
-          value: Provider.of<HiveListener>(context, listen: false)
-              .getSelectedClasses
-              .contains(classItem),
-          onChanged: (val) {
-            if (val!) {
-              Provider.of<HiveListener>(context, listen: false)
-                  .addSelectedClass([classItem]);
-            } else {
-              Provider.of<HiveListener>(context, listen: false)
-                  .removeSelectedClass([classItem]);
-            }
-          },
         )),
         DataCell(Text(classItem.level!)),
         DataCell(Text(classItem.type!)),
         DataCell(Text(classItem.name!)),
-        DataCell(Text(classItem.size!)),
-        DataCell(Text(classItem.hasDisability!)),
+        DataCell(ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 100, minWidth: 100),
+            child: Text(classItem.size!))),
+        DataCell(ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 100, minWidth: 100),
+            child: Text(classItem.hasDisability!))),
         DataCell(Text(classItem.courses!.join(', '))),
       ],
     );

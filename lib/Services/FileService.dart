@@ -55,49 +55,57 @@ class ImportServices {
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
     List<CourseModel> courses = rows.skip(1).map<CourseModel>((row) {
       return CourseModel(
-        code: row[0]!.value.toString(),
-        title: row[1]!.value.toString(),
-        creditHours: row[2]!.value.toString(),
-        specialVenue: row[3]!.value.toString(),
-        lecturerName: row[4]!.value.toString(),
-        lecturerEmail: row[5]!.value.toString(),
-        department: row[6]!.value.toString(),
-        id: row[0]!.value.toString().trimToLowerCase(),
+        code: row[0] != null ? row[0]!.value.toString() : '',
+        title: row[1] != null ? row[1]!.value.toString() : '',
+        creditHours: row[2] != null ? row[2]!.value.toString() : '3',
+        specialVenue: row[3] != null ? row[3]!.value.toString() : 'No',
+        lecturerName: row[4] != null ? row[4]!.value.toString() : '',
+        lecturerEmail: row[5] != null ? row[5]!.value.toString() : '',
+        department: row[6] != null ? row[6]!.value.toString() : '',
+        id: row[0] != null ? row[0]!.value.toString().trimToLowerCase() : '',
       );
     }).toList();
 
-    return courses;
+    return courses.where((element) => element.id!.isNotEmpty).toList();
   }
 
   static Future<List<VenueModel>?> importVenues(Excel? excel) async {
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
     List<VenueModel> venues = rows.skip(1).map<VenueModel>((row) {
       return VenueModel(
-        name: row[0]!.value.toString(),
-        capacity: row[1]!.value.toString(),
-        isDisabilityAccessible: row[2]!.value.toString(),
-        id: row[0]!.value.toString().trimToLowerCase(),
+        name: row[0] != null ? row[0]!.value.toString() : '',
+        capacity: row[1] != null ? row[1]!.value.toString() : '100',
+        isDisabilityAccessible:
+            row[2] != null ? row[2]!.value.toString() : 'No',
+        id: row[0] != null ? row[0]!.value.toString().trimToLowerCase() : '',
       );
     }).toList();
 
-    return venues;
+    return venues
+        .where((element) => element.id!.isNotEmpty && element.name!.isNotEmpty)
+        .toList();
   }
 
   static Future<List<ClassModel>?> importClasses(Excel? excel) async {
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
     List<ClassModel> classes = rows.skip(1).map<ClassModel>((row) {
       return ClassModel(
-        id: row[2]!.value.toString().trimToLowerCase(),
-        level: row[0]!.value.toString(),
-        type: row[1]!.value.toString(),
-        name: row[2]!.value.toString(),
-        size: row[3]!.value.toString(),
-        hasDisability: row[4]!.value.toString(),
-        courses: row[5]!.value.toString().split(','),
+        id: row[2] != null ? row[2]!.value.toString().trimToLowerCase() : '',
+        level: row[0] != null ? row[0]!.value.toString() : '',
+        type: row[1] != null ? row[1]!.value.toString() : 'Regular',
+        name: row[2] != null ? row[2]!.value.toString() : '',
+        size: row[3] != null ? row[3]!.value.toString() : '1',
+        hasDisability: row[4] != null ? row[4]!.value.toString() : 'No',
+        courses: row[5] != null ? row[5]!.value.toString().split(',') : [],
       );
     }).toList();
 
-    return classes;
+    return classes
+        .where((element) =>
+            element.id!.isNotEmpty &&
+            element.courses!.isNotEmpty &&
+            element.name!.isNotEmpty)
+        .toList();
   }
 
   static Future<File> tamplateCourses() async {
@@ -200,14 +208,14 @@ class ImportServices {
     var rows = excel.tables[excel.getDefaultSheet()]!.rows;
     List<LiberialModel> liberials = rows.skip(1).map<LiberialModel>((row) {
       return LiberialModel(
-        id: row[0]!.value.toString().trimToLowerCase(),
-        code: row[0]!.value.toString(),
-        title: row[1]!.value.toString(),
-        lecturerName: row[2]!.value.toString(),
-        lecturerEmail: row[3]!.value.toString(),
+        id: row[0] != null ? row[0]!.value.toString().trimToLowerCase() : '',
+        code: row[0] != null ? row[0]!.value.toString() : '',
+        title: row[1] != null ? row[1]!.value.toString() : '',
+        lecturerName: row[2] != null ? row[2]!.value.toString() : '',
+        lecturerEmail: row[3] != null ? row[3]!.value.toString() : '',
       );
     }).toList();
 
-    return liberials;
+    return liberials.where((element) => element.id!.isNotEmpty).toList();
   }
 }

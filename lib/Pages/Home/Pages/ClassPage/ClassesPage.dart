@@ -115,7 +115,7 @@ class _ClassesPageState extends State<ClassesPage> {
               )
             else
               SizedBox(
-                height: size.height - 216,
+                height: size.height - 205,
                 child: CustomTable(
                   bottomAction: Row(
                     children: [
@@ -132,7 +132,7 @@ class _ClassesPageState extends State<ClassesPage> {
                       CustomButton(
                         onPressed: clearClasses,
                         text: 'Clear Classes',
-                        color: Colors.red,
+                        color: Colors.black,
                         radius: 10,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 6),

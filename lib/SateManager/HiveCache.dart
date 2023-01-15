@@ -28,7 +28,7 @@ class HiveCache {
     await Hive.openBox<ClassModel>('classes');
     await Hive.openBox<VenueModel>('venues');
     await Hive.openBox('isLoggedIn');
-    await Hive.openBox('liberials');
+    await Hive.openBox<LiberialModel>('liberials');
   }
 
   static void setAdmin(Admin admin) {

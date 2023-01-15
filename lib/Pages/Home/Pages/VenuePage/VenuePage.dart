@@ -128,7 +128,7 @@ class _VenuePageState extends State<VenuePage> {
                       CustomButton(
                         onPressed: clearVenues,
                         text: 'Clear Venues',
-                        color: Colors.red,
+                        color: Colors.black,
                         radius: 10,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 6),

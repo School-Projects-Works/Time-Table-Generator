@@ -684,4 +684,23 @@ class ConfigDataFlow extends ChangeNotifier {
       CustomDialog.showSuccess(message: 'Configurations saved successfully');
     }
   }
+
+  void setLiberialDay(p1) {
+    var day =
+        configurations.days!.where((element) => element['day'] == p1).first;
+    configurations.liberialCourseDay = day;
+    HiveCache.addConfigurations(configurations);
+    updateConfigurations(configurations);
+    updateConfigList();
+  }
+
+  void setLiberialPeriod(p1) {
+    var period = configurations.periods!
+        .where((element) => element['period'] == p1)
+        .first;
+    configurations.liberialCoursePeriod = period;
+    HiveCache.addConfigurations(configurations);
+    updateConfigurations(configurations);
+    updateConfigList();
+  }
 }
