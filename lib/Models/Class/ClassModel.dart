@@ -1,5 +1,6 @@
-import 'package:hive/hive.dart';
+// ignore_for_file: file_names
 
+import 'package:hive/hive.dart';
 part 'ClassModel.g.dart';
 
 @HiveType(typeId: 5)

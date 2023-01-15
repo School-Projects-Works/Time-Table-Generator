@@ -1,6 +1,6 @@
-import 'dart:async';
-import 'dart:ui';
+// ignore_for_file: file_names
 
+import 'dart:async';
 import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +12,8 @@ class MyBackground extends StatefulWidget {
   State<MyBackground> createState() => _MyBackgroundState();
 }
 
-class _MyBackgroundState extends State<MyBackground>with TickerProviderStateMixin {
+class _MyBackgroundState extends State<MyBackground>
+    with TickerProviderStateMixin {
   late AnimationController controller1;
   late AnimationController controller2;
   late Animation<double> animation1;
@@ -53,8 +54,8 @@ class _MyBackgroundState extends State<MyBackground>with TickerProviderStateMixi
         curve: Curves.easeInOut,
       ),
     )..addListener(() {
-      setState(() {});
-    });
+        setState(() {});
+      });
 
     controller2 = AnimationController(
       vsync: this,
@@ -82,8 +83,8 @@ class _MyBackgroundState extends State<MyBackground>with TickerProviderStateMixi
         curve: Curves.easeInOut,
       ),
     )..addListener(() {
-      setState(() {});
-    });
+        setState(() {});
+      });
 
     Timer(const Duration(milliseconds: 2500), () {
       controller1.forward();
@@ -98,7 +99,6 @@ class _MyBackgroundState extends State<MyBackground>with TickerProviderStateMixi
     controller2.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -159,8 +159,6 @@ class _MyBackgroundState extends State<MyBackground>with TickerProviderStateMixi
       ),
     );
   }
-
-
 }
 
 /// to control with shape circle ///
@@ -173,9 +171,9 @@ class MyPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
       ..shader = const LinearGradient(
-          colors: [Color(0xffffffC5), Color(0xff706830)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight)
+              colors: [Color(0xffffffC5), Color(0xff706830)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight)
           .createShader(Rect.fromCircle(
         center: const Offset(0, 0),
         radius: radius,
@@ -197,4 +195,3 @@ class MyBehavior extends ScrollBehavior {
     return child;
   }
 }
-

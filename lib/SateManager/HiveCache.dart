@@ -1,9 +1,10 @@
-import 'dart:io';
+// ignore_for_file: file_names
 
+import 'dart:io';
 import 'package:aamusted_timetable_generator/Models/Academic/AcademicModel.dart';
 import 'package:aamusted_timetable_generator/Models/Class/ClassModel.dart';
 import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
-import 'package:aamusted_timetable_generator/Models/Course/LiberialModel.dart';
+import 'package:aamusted_timetable_generator/Models/Course/LiberalModel.dart';
 import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
 import 'package:hive_flutter/adapters.dart';
 import '../Models/Admin/Admin.dart';
@@ -19,7 +20,7 @@ class HiveCache {
     Hive.registerAdapter(CourseModelAdapter());
     Hive.registerAdapter(ClassModelAdapter());
     Hive.registerAdapter(VenueModelAdapter());
-    Hive.registerAdapter(LiberialModelAdapter());
+    Hive.registerAdapter(LiberalModelAdapter());
 
     await Hive.openBox<Admin>('admins');
     await Hive.openBox<AcademicModel>('academics');
@@ -28,7 +29,7 @@ class HiveCache {
     await Hive.openBox<ClassModel>('classes');
     await Hive.openBox<VenueModel>('venues');
     await Hive.openBox('isLoggedIn');
-    await Hive.openBox<LiberialModel>('liberials');
+    await Hive.openBox<LiberalModel>('liberals');
   }
 
   static void setAdmin(Admin admin) {
@@ -103,10 +104,10 @@ class HiveCache {
         .toList();
   }
 
-  static getClasses(currentYesr) {
+  static getClasses(currentYear) {
     final box = Hive.box<ClassModel>('classes');
     return box.values
-        .where((element) => element.academicYear == currentYesr)
+        .where((element) => element.academicYear == currentYear)
         .toList();
   }
 
@@ -147,20 +148,20 @@ class HiveCache {
     box.delete(element.id);
   }
 
-  static void addLiberial(LiberialModel element) {
-    final box = Hive.box<LiberialModel>('liberials');
+  static void addLiberal(LiberalModel element) {
+    final box = Hive.box<LiberalModel>('liberals');
     box.put(element.id, element);
   }
 
-  static getLiberials(currentAcademicYear) {
-    final box = Hive.box<LiberialModel>('liberials');
+  static getLiberals(currentAcademicYear) {
+    final box = Hive.box<LiberalModel>('liberals');
     return box.values
         .where((element) => element.academicYear == currentAcademicYear)
         .toList();
   }
 
-  static void deleteLiberial(LiberialModel element) {
-    final box = Hive.box<LiberialModel>('liberials');
+  static void deleteLiberal(LiberalModel element) {
+    final box = Hive.box<LiberalModel>('liberals');
     box.delete(element.id);
   }
 }

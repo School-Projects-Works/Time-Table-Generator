@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:aamusted_timetable_generator/Components/SmartDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
@@ -57,7 +59,6 @@ class _ActionControlsState extends State<ActionControls> with WindowListener {
       ],
     );
   }
-
 
   @override
   void initState() {

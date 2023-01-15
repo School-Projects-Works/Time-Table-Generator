@@ -1,7 +1,10 @@
+// ignore_for_file: file_names
+
 import 'package:hive/hive.dart';
 part 'Admin.g.dart';
+
 @HiveType(typeId: 0)
-class Admin{
+class Admin {
   @HiveField(0)
   String? id;
   @HiveField(1)

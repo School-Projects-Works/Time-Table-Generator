@@ -1,9 +1,10 @@
-import 'package:hive/hive.dart';
+// ignore_for_file: file_names
 
-part 'LiberialModel.g.dart';
+import 'package:hive/hive.dart';
+part 'LiberalModel.g.dart';
 
 @HiveType(typeId: 9)
-class LiberialModel {
+class LiberalModel {
   @HiveField(0)
   String? code;
   @HiveField(1)
@@ -17,7 +18,7 @@ class LiberialModel {
   @HiveField(5)
   String? academicYear;
 
-  LiberialModel(
+  LiberalModel(
       {this.code,
       this.title,
       this.lecturerName,
@@ -25,7 +26,7 @@ class LiberialModel {
       this.id,
       this.academicYear});
 
-  LiberialModel.fromJson(Map<String, dynamic> json) {
+  LiberalModel.fromJson(Map<String, dynamic> json) {
     code = json['code'];
     title = json['title'];
     lecturerName = json['lecturerName'];

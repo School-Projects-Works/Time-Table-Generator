@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:aamusted_timetable_generator/Components/SmartDialog.dart';
 import 'package:aamusted_timetable_generator/Components/TextInputs.dart';
@@ -35,7 +37,7 @@ class _NewPasswordState extends State<NewPassword> {
             key: _formKey,
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               Text(
-                'You Logged in for the first time with a default Password. The system require that you set a new Password Please set a new passwor. Note that the new password must be at least 6 characters long and must contain at least one number and one special character.',
+                'You Logged in for the first time with a default Password. The system require that you set a new Password Please set a new password. Note that the new password must be at least 6 characters long and must contain at least one number and one special character.',
                 style: GoogleFonts.nunito(),
               ),
               const SizedBox(

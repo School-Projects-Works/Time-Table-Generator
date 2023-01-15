@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:aamusted_timetable_generator/Models/Class/ClassModel.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/gestures.dart';
@@ -232,7 +234,7 @@ class _ClassesPageState extends State<ClassesPage> {
   void viewTemplate() async {
     CustomDialog.showLoading(message: 'Creating Template...Please Wait');
     try {
-      var file = await ImportServices.tamplateClasses();
+      var file = await ImportServices.templateClasses();
       if (await file.exists()) {
         OpenAppFile.open(file.path);
         CustomDialog.dismiss();
@@ -250,8 +252,8 @@ class _ClassesPageState extends State<ClassesPage> {
     CustomDialog.showInfo(
         onPressed: () => delete(getSelectedClasses),
         message:
-            'Are you sure you want to delete the selected Classes ? Note: This action is not reversable',
-        buttonText: 'Yes|Delect');
+            'Are you sure you want to delete the selected Classes ? Note: This action is not reversible',
+        buttonText: 'Yes|Delete');
   }
 
   delete(List<ClassModel> getSelectedClasses) {
@@ -266,7 +268,7 @@ class _ClassesPageState extends State<ClassesPage> {
   void clearClasses() {
     CustomDialog.showInfo(
       message:
-          'Are you sure yo want to delete all Students\' Classes? Note: This action is not reversable',
+          'Are you sure yo want to delete all Students\' Classes? Note: This action is not reversible',
       buttonText: 'Yes|Clear',
       onPressed: refresh,
     );

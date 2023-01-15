@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 extension StringCasingExtension on String {
   String toCapitalized() =>
       length > 0 ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';

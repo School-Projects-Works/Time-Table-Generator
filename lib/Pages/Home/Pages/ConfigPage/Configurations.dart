@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/material.dart';

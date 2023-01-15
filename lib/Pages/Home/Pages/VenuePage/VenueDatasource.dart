@@ -1,8 +1,9 @@
+// ignore_for_file: file_names
+
 import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../Styles/colors.dart';
 
 class VenueDataSource extends DataTableSource {
@@ -43,6 +44,7 @@ class VenueDataSource extends DataTableSource {
                 .contains(venue)) {
               return Colors.blue.withOpacity(.7);
             }
+            return null;
           },
         ),
         index: index,

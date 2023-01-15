@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:aamusted_timetable_generator/Constants/Constant.dart';
 import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
 import 'package:flutter/gestures.dart';
@@ -6,7 +8,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:open_app_file/open_app_file.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../Components/CustomButton.dart';
 import '../../../../Components/CustomTable.dart';
 import '../../../../Components/SmartDialog.dart';
@@ -15,7 +16,7 @@ import '../../../../SateManager/HiveCache.dart';
 import '../../../../SateManager/HiveListener.dart';
 import '../../../../Services/FileService.dart';
 import '../../../../Styles/colors.dart';
-import 'VenueDatasource.dart';
+import 'VenueDataSource.dart';
 
 class VenuePage extends StatefulWidget {
   const VenuePage({super.key});
@@ -234,7 +235,7 @@ class _VenuePageState extends State<VenuePage> {
   void viewTemplate() async {
     CustomDialog.showLoading(message: 'Creating Template...Please Wait');
     try {
-      var file = await ImportServices.tamplateVenue();
+      var file = await ImportServices.templateVenue();
       if (await file.exists()) {
         OpenAppFile.open(file.path);
         CustomDialog.dismiss();
@@ -252,8 +253,8 @@ class _VenuePageState extends State<VenuePage> {
     CustomDialog.showInfo(
         onPressed: () => delete(getSelectedVenues),
         message:
-            'Are you sure you want to delete the selected Courses ? Note: This action is not reversable',
-        buttonText: 'Yes|Delect');
+            'Are you sure you want to delete the selected Courses ? Note: This action is not reversible',
+        buttonText: 'Yes|Delete');
   }
 
   delete(List<VenueModel> getSelectedVenues) {
@@ -269,7 +270,7 @@ class _VenuePageState extends State<VenuePage> {
     CustomDialog.showInfo(
         onPressed: () => clear(),
         message:
-            'Are you sure you want to clear all Venues ? Note: This action is not reversable',
+            'Are you sure you want to clear all Venues ? Note: This action is not reversible',
         buttonText: 'Yes|Clear');
   }
 

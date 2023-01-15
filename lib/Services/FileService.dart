@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:io';
 import 'package:aamusted_timetable_generator/Constants/Constant.dart';
 import 'package:aamusted_timetable_generator/Constants/CustomStringFunctions.dart';
@@ -8,7 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import '../Models/Class/ClassModel.dart';
 import '../Models/Course/CourseModel.dart';
-import '../Models/Course/LiberialModel.dart';
+import '../Models/Course/LiberalModel.dart';
 
 class FileService {
   static Future<String?> pickExcelFIle() async {
@@ -108,7 +110,7 @@ class ImportServices {
         .toList();
   }
 
-  static Future<File> tamplateCourses() async {
+  static Future<File> templateCourses() async {
     Excel excel = Excel.createExcel();
     Sheet sheetObject = excel['Courses'];
     excel.setDefaultSheet('Courses');
@@ -132,7 +134,7 @@ class ImportServices {
     return file;
   }
 
-  static tamplateClasses() async {
+  static templateClasses() async {
     Excel excel = Excel.createExcel();
     Sheet sheetObject = excel['Classes'];
     excel.setDefaultSheet('Classes');
@@ -156,7 +158,7 @@ class ImportServices {
     return file;
   }
 
-  static tamplateVenue() async {
+  static templateVenue() async {
     Excel excel = Excel.createExcel();
     Sheet sheetObject = excel['Venues'];
     excel.setDefaultSheet('Venues');
@@ -180,10 +182,10 @@ class ImportServices {
     return file;
   }
 
-  static tamplateLiberial() async {
+  static templateLiberal() async {
     Excel excel = Excel.createExcel();
-    Sheet sheetObject = excel['Liberial'];
-    excel.setDefaultSheet('Liberial');
+    Sheet sheetObject = excel['Liberal'];
+    excel.setDefaultSheet('Liberal');
     CellStyle cellStyle = CellStyle(
         bold: true,
         fontSize: 12,
@@ -197,17 +199,17 @@ class ImportServices {
       element?.cellStyle = cellStyle;
     });
     Directory appDocDir = await getApplicationDocumentsDirectory();
-    String fileName = '${appDocDir.path}/liberial.xlsx';
+    String fileName = '${appDocDir.path}/liberal.xlsx';
     File file = File(fileName);
     file.writeAsBytesSync(excel.encode()!);
     file.createSync();
     return file;
   }
 
-  static Future<List<LiberialModel>> importLiberial(Excel excel) async {
+  static Future<List<LiberalModel>> importLiberal(Excel excel) async {
     var rows = excel.tables[excel.getDefaultSheet()]!.rows;
-    List<LiberialModel> liberials = rows.skip(1).map<LiberialModel>((row) {
-      return LiberialModel(
+    List<LiberalModel> liberals = rows.skip(1).map<LiberalModel>((row) {
+      return LiberalModel(
         id: row[0] != null ? row[0]!.value.toString().trimToLowerCase() : '',
         code: row[0] != null ? row[0]!.value.toString() : '',
         title: row[1] != null ? row[1]!.value.toString() : '',
@@ -216,6 +218,6 @@ class ImportServices {
       );
     }).toList();
 
-    return liberials.where((element) => element.id!.isNotEmpty).toList();
+    return liberals.where((element) => element.id!.isNotEmpty).toList();
   }
 }

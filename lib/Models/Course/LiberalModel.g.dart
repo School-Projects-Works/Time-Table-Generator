@@ -1,22 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'LiberialModel.dart';
+part of 'LiberalModel.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class LiberialModelAdapter extends TypeAdapter<LiberialModel> {
+class LiberalModelAdapter extends TypeAdapter<LiberalModel> {
   @override
   final int typeId = 9;
 
   @override
-  LiberialModel read(BinaryReader reader) {
+  LiberalModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return LiberialModel(
+    return LiberalModel(
       code: fields[0] as String?,
       title: fields[1] as String?,
       lecturerName: fields[2] as String?,
@@ -27,7 +27,7 @@ class LiberialModelAdapter extends TypeAdapter<LiberialModel> {
   }
 
   @override
-  void write(BinaryWriter writer, LiberialModel obj) {
+  void write(BinaryWriter writer, LiberalModel obj) {
     writer
       ..writeByte(6)
       ..writeByte(0)
@@ -50,7 +50,7 @@ class LiberialModelAdapter extends TypeAdapter<LiberialModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is LiberialModelAdapter &&
+      other is LiberalModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

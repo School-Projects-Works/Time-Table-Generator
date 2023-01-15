@@ -1,30 +1,31 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../SateManager/HiveListener.dart';
 import '../../../../Styles/colors.dart';
 
-class LiberialDataScource extends DataTableSource {
+class LiberalDataSource extends DataTableSource {
   final BuildContext context;
-  LiberialDataScource(this.context);
+  LiberalDataSource(this.context);
 
   @override
   DataRow? getRow(int index) {
     var data =
-        Provider.of<HiveListener>(context, listen: false).getFilteredLiberial;
+        Provider.of<HiveListener>(context, listen: false).getFilteredLiberal;
     if (index >= data.length) return null;
-    final liberialItem = data[index];
+    final liberalItem = data[index];
     return DataRow.byIndex(
       selected: Provider.of<HiveListener>(context, listen: false)
-          .getSelectedLiberials
-          .contains(liberialItem),
+          .getSelectedLiberals
+          .contains(liberalItem),
       onSelectChanged: (value) {
         if (value!) {
           Provider.of<HiveListener>(context, listen: false)
-              .addSelectedLiberials([liberialItem]);
+              .addSelectedLiberals([liberalItem]);
         } else {
           Provider.of<HiveListener>(context, listen: false)
-              .removeSelectedLiberial([liberialItem]);
+              .removeSelectedLiberal([liberalItem]);
         }
       },
       color: MaterialStateProperty.resolveWith<Color?>(
@@ -38,10 +39,11 @@ class LiberialDataScource extends DataTableSource {
           if (states.any(interactiveStates.contains)) {
             return Colors.blue.withOpacity(.2);
           } else if (Provider.of<HiveListener>(context, listen: false)
-              .getSelectedLiberials
-              .contains(liberialItem)) {
+              .getSelectedLiberals
+              .contains(liberalItem)) {
             return Colors.blue.withOpacity(.7);
           }
+          return null;
         },
       ),
       index: index,
@@ -67,25 +69,25 @@ class LiberialDataScource extends DataTableSource {
               },
             ),
             value: Provider.of<HiveListener>(context, listen: false)
-                .getSelectedLiberials
-                .contains(liberialItem),
+                .getSelectedLiberals
+                .contains(liberalItem),
             onChanged: (val) {
               if (val!) {
                 Provider.of<HiveListener>(context, listen: false)
-                    .addSelectedLiberials([liberialItem]);
+                    .addSelectedLiberals([liberalItem]);
               } else {
                 Provider.of<HiveListener>(context, listen: false)
-                    .removeSelectedLiberial([liberialItem]);
+                    .removeSelectedLiberal([liberalItem]);
               }
             },
           ),
         )),
         DataCell(ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 100, minWidth: 100),
-            child: Text(liberialItem.code!))),
-        DataCell(Text(liberialItem.title!)),
-        DataCell(Text(liberialItem.lecturerName!)),
-        DataCell(Text(liberialItem.lecturerEmail!)),
+            child: Text(liberalItem.code!))),
+        DataCell(Text(liberalItem.title!)),
+        DataCell(Text(liberalItem.lecturerName!)),
+        DataCell(Text(liberalItem.lecturerEmail!)),
       ],
     );
   }
@@ -95,7 +97,7 @@ class LiberialDataScource extends DataTableSource {
 
   @override
   int get rowCount => Provider.of<HiveListener>(context, listen: false)
-      .getFilteredLiberial
+      .getFilteredLiberal
       .length;
 
   @override

@@ -18,7 +18,7 @@ class LiberalTimePairModelAdapter extends TypeAdapter<LiberalTimePairModel> {
     };
     return LiberalTimePairModel(
       id: fields[0] as String?,
-      umiqueId: fields[1] as String?,
+      uniqueId: fields[1] as String?,
       day: fields[2] as String?,
       period: fields[3] as String?,
       courseCode: fields[4] as String?,
@@ -36,7 +36,7 @@ class LiberalTimePairModelAdapter extends TypeAdapter<LiberalTimePairModel> {
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.umiqueId)
+      ..write(obj.uniqueId)
       ..writeByte(2)
       ..write(obj.day)
       ..writeByte(3)

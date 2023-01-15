@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
 import 'package:aamusted_timetable_generator/Pages/Home/Pages/CoursePage/setSpecialVenuePage.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
@@ -5,17 +7,16 @@ import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../Components/BreathingWidget.dart';
 
-class CoursesDataScource extends DataTableSource {
+class CoursesDataSource extends DataTableSource {
   final BuildContext context;
 
-  CoursesDataScource(this.context);
+  CoursesDataSource(this.context);
   @override
   DataRow? getRow(int index) {
     var data =
-        Provider.of<HiveListener>(context, listen: false).getFilterdCourses;
+        Provider.of<HiveListener>(context, listen: false).getFilteredCourses;
     var venue = Provider.of<HiveListener>(context, listen: false).getVenues;
 
     if (index >= data.length) return null;
@@ -60,6 +61,7 @@ class CoursesDataScource extends DataTableSource {
               .contains(course)) {
             return Colors.blue.withOpacity(.7);
           }
+          return null;
         },
       ),
       index: index,
@@ -194,7 +196,7 @@ class CoursesDataScource extends DataTableSource {
 
   @override
   int get rowCount => Provider.of<HiveListener>(context, listen: false)
-      .getFilterdCourses
+      .getFilteredCourses
       .length;
 
   @override

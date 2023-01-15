@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:hive/hive.dart';
 
 part 'LiberalTimePairModel.g.dart';
@@ -7,7 +9,7 @@ class LiberalTimePairModel {
   @HiveField(0)
   String? id;
   @HiveField(1)
-  String? umiqueId;
+  String? uniqueId;
   @HiveField(2)
   String? day;
   @HiveField(3)
@@ -25,7 +27,7 @@ class LiberalTimePairModel {
 
   LiberalTimePairModel(
       {this.id,
-      this.umiqueId,
+      this.uniqueId,
       this.day,
       this.period,
       this.courseCode,
@@ -37,7 +39,7 @@ class LiberalTimePairModel {
   factory LiberalTimePairModel.fromJson(Map<String, dynamic> json) {
     return LiberalTimePairModel(
       id: json['id'],
-      umiqueId: json['umiqueId'],
+      uniqueId: json['uniqueId'],
       day: json['day'],
       period: json['period'],
       courseCode: json['courseCode'],
@@ -51,7 +53,7 @@ class LiberalTimePairModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    data['umiqueId'] = umiqueId;
+    data['uniqueId'] = uniqueId;
     data['day'] = day;
     data['period'] = period;
     data['courseCode'] = courseCode;

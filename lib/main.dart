@@ -66,17 +66,19 @@ class _MyAppState extends State<MyApp> {
         var config = await HiveCache.getConfig(id);
         configProvider.updateConfigurations(config);
 
-        var currentYesr = provider.currentAcademicYear;
+        var currentYear = provider.currentAcademicYear;
 
-        var courses = await HiveCache.getCourses(currentYesr);
-        debugPrint('list of courses: ${courses.length}');
+        var courses = await HiveCache.getCourses(currentYear);
         provider.setCourseList(courses);
 
-        var classes = await HiveCache.getClasses(currentYesr);
+        var classes = await HiveCache.getClasses(currentYear);
         provider.setClassList(classes);
 
-        var venues = await HiveCache.getVenues(currentYesr);
+        var venues = await HiveCache.getVenues(currentYear);
         provider.setVenueList(venues);
+
+        var liberal = await HiveCache.getLiberals(currentYear);
+        provider.setLiberalList(liberal);
       }
     });
   }

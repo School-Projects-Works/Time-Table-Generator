@@ -1,4 +1,6 @@
-List<String> time=[
+// ignore_for_file: file_names
+
+List<String> time = [
   '5:00 AM',
   '5:30 AM',
   '6:00 AM',

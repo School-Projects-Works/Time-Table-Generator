@@ -1,7 +1,9 @@
+// ignore_for_file: file_names
+
 class Constant {
   static String courseCode = "Course Code";
-  static String couseTitle = "Course Title";
-  static String creaditHourse = "Credit Hours";
+  static String courseTitle = "Course Title";
+  static String creditHours = "Credit Hours";
   static String lecturerName = "Lecturer Name";
   static String specialVenue = "Special Venue(Specify Venue)";
   static String lecturerEmail = "Lecturer Email";
@@ -11,17 +13,17 @@ class Constant {
   static String className = "Class Name";
   static String classSize = "Class Size";
   static String hasDisability = "Has Disable(Yes/No)";
-  static String courses = "Course (Course Code Only) [Seperate with (,)]";
+  static String courses = "Course (Course Code Only) [Separate with (,)]";
   static String type = "Type(Regular/Evening/Weekend)";
 
   static String roomName = "Room";
   static String capacity = "Capacity";
-  static String disbility = "Disability Frindly(Yes/No)";
+  static String disability = "Disability Friendly(Yes/No)";
 
   static List<String> courseExcelHeaderOrder = [
     courseCode,
-    couseTitle,
-    creaditHourse,
+    courseTitle,
+    creditHours,
     specialVenue,
     lecturerName,
     lecturerEmail,
@@ -38,11 +40,11 @@ class Constant {
     // department,
   ];
 
-  static List<String> venueExcelHeaderOrder = [roomName, capacity, disbility];
+  static List<String> venueExcelHeaderOrder = [roomName, capacity, disability];
 
   static List<String> liberalExcelHeaderOrder = [
     courseCode,
-    couseTitle,
+    courseTitle,
     lecturerName,
     lecturerEmail
   ];

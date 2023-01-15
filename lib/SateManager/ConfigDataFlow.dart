@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:aamusted_timetable_generator/Components/SmartDialog.dart';
 import 'package:aamusted_timetable_generator/Models/Config/DayModel.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveCache.dart';
@@ -685,20 +687,20 @@ class ConfigDataFlow extends ChangeNotifier {
     }
   }
 
-  void setLiberialDay(p1) {
+  void setLiberalDay(p1) {
     var day =
         configurations.days!.where((element) => element['day'] == p1).first;
-    configurations.liberialCourseDay = day;
+    configurations.liberalCourseDay = day;
     HiveCache.addConfigurations(configurations);
     updateConfigurations(configurations);
     updateConfigList();
   }
 
-  void setLiberialPeriod(p1) {
+  void setLiberalPeriod(p1) {
     var period = configurations.periods!
         .where((element) => element['period'] == p1)
         .first;
-    configurations.liberialCoursePeriod = period;
+    configurations.liberalCoursePeriod = period;
     HiveCache.addConfigurations(configurations);
     updateConfigurations(configurations);
     updateConfigList();

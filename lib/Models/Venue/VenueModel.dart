@@ -1,5 +1,6 @@
-import 'package:hive/hive.dart';
+// ignore_for_file: file_names
 
+import 'package:hive/hive.dart';
 part 'VenueModel.g.dart';
 
 @HiveType(typeId: 3)

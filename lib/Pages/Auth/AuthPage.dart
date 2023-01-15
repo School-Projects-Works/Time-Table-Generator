@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:aamusted_timetable_generator/Components/SmartDialog.dart';
 import 'package:aamusted_timetable_generator/Components/TextInputs.dart';
 import 'package:aamusted_timetable_generator/Models/Admin/Admin.dart';

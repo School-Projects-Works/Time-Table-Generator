@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, unnecessary_null_comparison
+
 import 'package:aamusted_timetable_generator/Components/BreathingWidget.dart';
 import 'package:aamusted_timetable_generator/Components/CustomDropDown.dart';
 import 'package:aamusted_timetable_generator/SateManager/ConfigDataFlow.dart';
@@ -12,12 +14,12 @@ import '../../../../Components/CustomTable.dart';
 import '../../../../Components/SmartDialog.dart';
 import '../../../../Components/TextInputs.dart';
 import '../../../../Constants/Constant.dart';
-import '../../../../Models/Course/LiberialModel.dart';
+import '../../../../Models/Course/LiberalModel.dart';
 import '../../../../SateManager/HiveCache.dart';
 import '../../../../SateManager/HiveListener.dart';
 import '../../../../Services/FileService.dart';
 import '../../../../Styles/colors.dart';
-import 'LiberialDataScource.dart';
+import 'LiberalDataSource.dart';
 
 class LiberalPage extends StatefulWidget {
   const LiberalPage({Key? key}) : super(key: key);
@@ -53,7 +55,7 @@ class _LiberalPageState extends State<LiberalPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'LIBERIAL/AFRICAN STUDIES',
+                    'LIBERAL/AFRICAN STUDIES',
                     style: GoogleFonts.poppins(
                       fontSize: 30,
                       color: secondaryColor,
@@ -65,14 +67,14 @@ class _LiberalPageState extends State<LiberalPage> {
                       children: [
                         Expanded(
                           child: CustomTextFields(
-                            hintText: 'Search Liberial Course',
+                            hintText: 'Search Liberal Course',
                             color: Colors.white,
                             suffixIcon: const Icon(
                               Icons.search,
                               color: Colors.grey,
                             ),
                             onChanged: (value) {
-                              hive.filterCourses(value);
+                              hive.filterLiberal(value);
                             },
                           ),
                         ),
@@ -99,9 +101,9 @@ class _LiberalPageState extends State<LiberalPage> {
                 ],
               ),
               const SizedBox(height: 20),
-              if (hive.getLiberials.isNotEmpty)
-                config.getConfigurations.liberialCourseDay == null ||
-                        config.getConfigurations.liberialCoursePeriod == null
+              if (hive.getLiberals.isNotEmpty)
+                config.getConfigurations.liberalCourseDay == null ||
+                        config.getConfigurations.liberalCoursePeriod == null
                     ? BreathingWidget(
                         child: Container(
                           decoration: BoxDecoration(
@@ -117,7 +119,7 @@ class _LiberalPageState extends State<LiberalPage> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                        'Select  Day on which the Liberial/African Studies courses will be held:',
+                                        'Select  Day on which the Liberal/African Studies courses will be held:',
                                         style: GoogleFonts.nunito(
                                           fontSize: 16,
                                           color: Colors.black87,
@@ -127,7 +129,7 @@ class _LiberalPageState extends State<LiberalPage> {
                                   SizedBox(
                                       width: 250,
                                       child: CustomDropDown(
-                                          onChanged: changeLiberialDay,
+                                          onChanged: changeLiberalDay,
                                           hintText: 'Select day',
                                           items: config.getConfigurations.days!
                                               .map((e) => DropdownMenuItem(
@@ -143,7 +145,7 @@ class _LiberalPageState extends State<LiberalPage> {
                                 children: [
                                   Expanded(
                                     child: Text(
-                                        'Select  Period on which the Liberial/African Studies courses will be held:',
+                                        'Select  Period on which the Liberal/African Studies courses will be held:',
                                         style: GoogleFonts.nunito(
                                           fontSize: 16,
                                           color: Colors.black87,
@@ -154,7 +156,7 @@ class _LiberalPageState extends State<LiberalPage> {
                                       width: 250,
                                       child: CustomDropDown(
                                           hintText: 'Select period',
-                                          onChanged: changeLiberialPeriod,
+                                          onChanged: changeLiberalPeriod,
                                           items: config
                                               .getConfigurations.periods!
                                               .map((e) => DropdownMenuItem(
@@ -182,7 +184,7 @@ class _LiberalPageState extends State<LiberalPage> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                      'Select  Day on which the Liberial/African Studies courses will be held:',
+                                      'Select  Day on which the Liberal/African Studies courses will be held:',
                                       style: GoogleFonts.nunito(
                                         fontSize: 16,
                                         color: Colors.black87,
@@ -192,7 +194,7 @@ class _LiberalPageState extends State<LiberalPage> {
                                 SizedBox(
                                     width: 250,
                                     child: CustomDropDown(
-                                        onChanged: changeLiberialDay,
+                                        onChanged: changeLiberalDay,
                                         hintText: 'Select day',
                                         items: config.getConfigurations.days!
                                             .map((e) => DropdownMenuItem(
@@ -208,7 +210,7 @@ class _LiberalPageState extends State<LiberalPage> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                      'Select  Period on which the Liberial/African Studies courses will be held:',
+                                      'Select  Period on which the Liberal/African Studies courses will be held:',
                                       style: GoogleFonts.nunito(
                                         fontSize: 16,
                                         color: Colors.black87,
@@ -219,7 +221,7 @@ class _LiberalPageState extends State<LiberalPage> {
                                     width: 250,
                                     child: CustomDropDown(
                                         hintText: 'Select period',
-                                        onChanged: changeLiberialPeriod,
+                                        onChanged: changeLiberalPeriod,
                                         items: config.getConfigurations.periods!
                                             .map((e) => DropdownMenuItem(
                                                 value: e['period'],
@@ -231,8 +233,8 @@ class _LiberalPageState extends State<LiberalPage> {
                           ],
                         ),
                       ),
-              if (hive.getLiberials.isNotEmpty) const SizedBox(height: 10),
-              if (hive.getFilteredLiberial.isEmpty)
+              if (hive.getLiberals.isNotEmpty) const SizedBox(height: 10),
+              if (hive.getFilteredLiberal.isEmpty)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 50),
                   child: Center(
@@ -251,10 +253,10 @@ class _LiberalPageState extends State<LiberalPage> {
                   child: CustomTable(
                       bottomAction: Row(
                         children: [
-                          if (hive.getSelectedLiberials.isNotEmpty)
+                          if (hive.getSelectedLiberals.isNotEmpty)
                             CustomButton(
                                 onPressed: () =>
-                                    deleteSelected(hive.getSelectedLiberials),
+                                    deleteSelected(hive.getSelectedLiberals),
                                 text: 'Delete Selected',
                                 color: Colors.red,
                                 radius: 10,
@@ -276,7 +278,7 @@ class _LiberalPageState extends State<LiberalPage> {
                       controller: _scrollController,
                       controller2: _scrollController2,
                       showFirstLastButtons: true,
-                      border: hive.getFilteredLiberial.isNotEmpty
+                      border: hive.getFilteredLiberal.isNotEmpty
                           ? const TableBorder(
                               horizontalInside:
                                   BorderSide(color: Colors.grey, width: 1),
@@ -285,28 +287,28 @@ class _LiberalPageState extends State<LiberalPage> {
                           : const TableBorder(),
                       dataRowHeight: 45,
                       showCheckboxColumn: false,
-                      source: LiberialDataScource(
+                      source: LiberalDataSource(
                         context,
                       ),
-                      rowsPerPage: hive.getFilteredLiberial.length > 10
+                      rowsPerPage: hive.getFilteredLiberal.length > 10
                           ? 10
-                          : hive.getFilteredLiberial.isEmpty
+                          : hive.getFilteredLiberal.isEmpty
                               ? 1
-                              : hive.getFilteredLiberial.length,
+                              : hive.getFilteredLiberal.length,
                       columns: columns
                           .map((e) => DataColumn(
                                 label: e.isEmpty
                                     ? IconButton(
                                         onPressed: () {
-                                          hive.addSelectedLiberials(
-                                              hive.getFilteredLiberial);
+                                          hive.addSelectedLiberals(
+                                              hive.getFilteredLiberal);
                                         },
                                         icon: Icon(
-                                          hive.getSelectedLiberials.isEmpty
+                                          hive.getSelectedLiberals.isEmpty
                                               ? Icons.check_box_outline_blank
-                                              : hive.getFilteredLiberial
+                                              : hive.getFilteredLiberal
                                                           .length ==
-                                                      hive.getSelectedLiberials
+                                                      hive.getSelectedLiberals
                                                           .length
                                                   ? FontAwesomeIcons
                                                       .solidSquareCheck
@@ -332,7 +334,7 @@ class _LiberalPageState extends State<LiberalPage> {
   void viewTemplate() async {
     CustomDialog.showLoading(message: 'Creating Template...Please Wait');
     try {
-      var file = await ImportServices.tamplateLiberial();
+      var file = await ImportServices.templateLiberal();
       if (await file.exists()) {
         OpenAppFile.open(file.path);
         CustomDialog.dismiss();
@@ -356,7 +358,7 @@ class _LiberalPageState extends State<LiberalPage> {
       if (isFIleValid) {
         CustomDialog.showLoading(message: 'Importing Data...Please Wait');
         try {
-          ImportServices.importLiberial(excel).then((value) {
+          ImportServices.importLiberal(excel).then((value) {
             if (value == null) {
               CustomDialog.dismiss();
               CustomDialog.showError(message: 'Error Importing Data');
@@ -364,10 +366,10 @@ class _LiberalPageState extends State<LiberalPage> {
             } else if (value.isNotEmpty) {
               for (var element in value) {
                 element.academicYear = hive.currentAcademicYear;
-                HiveCache.addLiberial(element);
+                HiveCache.addLiberal(element);
               }
-              var data = HiveCache.getLiberials(hive.currentAcademicYear);
-              hive.setLiberialList(data);
+              var data = HiveCache.getLiberals(hive.currentAcademicYear);
+              hive.setLiberalList(data);
               CustomDialog.dismiss();
               CustomDialog.showSuccess(message: 'Data Imported Successfully');
             } else {
@@ -388,7 +390,7 @@ class _LiberalPageState extends State<LiberalPage> {
   void clearCourses() {
     CustomDialog.showInfo(
       message:
-          'Are you sure yo want to delete all Liberial/African Studies Courses? Note: This action is not reversable',
+          'Are you sure yo want to delete all Liberal/African Studies Courses? Note: This action is not revisable',
       buttonText: 'Yes|Clear',
       onPressed: refresh,
     );
@@ -397,42 +399,42 @@ class _LiberalPageState extends State<LiberalPage> {
   void refresh() {
     CustomDialog.dismiss();
     CustomDialog.showLoading(
-        message: 'Deleting Liberial/African Studies Courses...Please Wait');
-    Provider.of<HiveListener>(context, listen: false).clearLiberial();
+        message: 'Deleting Liberal/African Studies Courses...Please Wait');
+    Provider.of<HiveListener>(context, listen: false).clearLiberal();
     CustomDialog.dismiss();
     CustomDialog.showSuccess(
-        message: 'Liberial/African Studies Courses Cleared Successfully');
+        message: 'Liberal/African Studies Courses Cleared Successfully');
   }
 
-  deleteSelected(List<LiberialModel> getSelectedLiberials) {
+  deleteSelected(List<LiberalModel> getSelectedLiberals) {
     CustomDialog.showInfo(
-        onPressed: () => delete(getSelectedLiberials),
+        onPressed: () => delete(getSelectedLiberals),
         message:
-            'Are you sure you want to delete the selected Liberial/African Studies Courses ? Note: This action is not reversable',
-        buttonText: 'Yes|Delect');
+            'Are you sure you want to delete the selected Liberal/African Studies Courses ? Note: This action is not revisable',
+        buttonText: 'Yes|Delete');
   }
 
-  delete(List<LiberialModel> getSelectedLiberial) {
+  delete(List<LiberalModel> getSelectedLiberal) {
     CustomDialog.dismiss();
     CustomDialog.showLoading(
-        message: 'Deleting Liberial/African Studies Courses...Please Wait');
+        message: 'Deleting Liberal/African Studies Courses...Please Wait');
     Provider.of<HiveListener>(context, listen: false)
-        .deleteLiberial(getSelectedLiberial);
+        .deleteLiberal(getSelectedLiberal);
     CustomDialog.dismiss();
     CustomDialog.showSuccess(
         message:
-            'Selected Liberial/African Studies Courses Deleted Successfully');
+            'Selected Liberal/African Studies Courses Deleted Successfully');
   }
 
-  changeLiberialDay(p1) {
+  changeLiberalDay(p1) {
     if (p1 != null) {
-      Provider.of<ConfigDataFlow>(context, listen: false).setLiberialDay(p1);
+      Provider.of<ConfigDataFlow>(context, listen: false).setLiberalDay(p1);
     }
   }
 
-  changeLiberialPeriod(p1) {
+  changeLiberalPeriod(p1) {
     if (p1 != null) {
-      Provider.of<ConfigDataFlow>(context, listen: false).setLiberialPeriod(p1);
+      Provider.of<ConfigDataFlow>(context, listen: false).setLiberalPeriod(p1);
     }
   }
 }

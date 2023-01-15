@@ -1,8 +1,7 @@
 // ignore_for_file: file_names
-
 import 'package:aamusted_timetable_generator/Models/Class/ClassModel.dart';
 import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
-import 'package:aamusted_timetable_generator/Models/Course/LiberialModel.dart';
+import 'package:aamusted_timetable_generator/Models/Course/LiberalModel.dart';
 import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveCache.dart';
 import 'package:flutter/material.dart';
@@ -31,23 +30,23 @@ class HiveListener extends ChangeNotifier {
   }
 
   List<CourseModel> courseList = [];
-  List<CourseModel> filterdCourses = [];
+  List<CourseModel> filteredCourses = [];
   List<CourseModel> selectedCourse = [];
   List<CourseModel> get getSelectedCourses => selectedCourse;
-  List<CourseModel> get getFilterdCourses => filterdCourses;
+  List<CourseModel> get getFilteredCourses => filteredCourses;
   List<CourseModel> get getCourseList => courseList;
   void setCourseList(List<CourseModel> list) {
     courseList = list;
-    filterdCourses = list;
+    filteredCourses = list;
     selectedCourse = [];
     notifyListeners();
   }
 
   void filterCourses(String? value) {
     if (value == null || value.isEmpty) {
-      filterdCourses = courseList;
+      filteredCourses = courseList;
     } else {
-      filterdCourses = courseList
+      filteredCourses = courseList
           .where((element) =>
               element.title!.toLowerCase().contains(value.toLowerCase()) ||
               element.code!.toLowerCase().contains(value.toLowerCase()) ||
@@ -110,24 +109,24 @@ class HiveListener extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<LiberialModel> liberialList = [];
-  List<LiberialModel> filteredLiberial = [];
-  List<LiberialModel> selectedLiberial = [];
-  List<LiberialModel> get getSelectedLiberials => selectedLiberial;
-  List<LiberialModel> get getFilteredLiberial => filteredLiberial;
-  List<LiberialModel> get getLiberials => liberialList;
-  void setLiberialList(List<LiberialModel> list) {
-    liberialList = list;
-    filteredLiberial = list;
-    selectedLiberial = [];
+  List<LiberalModel> liberalList = [];
+  List<LiberalModel> filteredLiberal = [];
+  List<LiberalModel> selectedLiberal = [];
+  List<LiberalModel> get getSelectedLiberals => selectedLiberal;
+  List<LiberalModel> get getFilteredLiberal => filteredLiberal;
+  List<LiberalModel> get getLiberals => liberalList;
+  void setLiberalList(List<LiberalModel> list) {
+    liberalList = list;
+    filteredLiberal = list;
+    selectedLiberal = [];
     notifyListeners();
   }
 
-  void filterLiberial(String? value) {
+  void filterLiberal(String? value) {
     if (value == null || value.isEmpty) {
-      filteredLiberial = liberialList;
+      filteredLiberal = liberalList;
     } else {
-      filteredLiberial = liberialList
+      filteredLiberal = liberalList
           .where((element) =>
               element.code!.toLowerCase().contains(value.toLowerCase()) ||
               element.title!.toLowerCase().contains(value.toLowerCase()) ||
@@ -199,19 +198,19 @@ class HiveListener extends ChangeNotifier {
     setClassList(data);
   }
 
-  void addSelectedCourses(List<CourseModel> getFilterdCourses) {
-    if (getFilterdCourses.length == 1) {
-      if (selectedCourse.contains(getFilterdCourses[0])) {
-        selectedCourse.remove(getFilterdCourses[0]);
+  void addSelectedCourses(List<CourseModel> getFilteredCourses) {
+    if (getFilteredCourses.length == 1) {
+      if (selectedCourse.contains(getFilteredCourses[0])) {
+        selectedCourse.remove(getFilteredCourses[0]);
       } else {
-        selectedCourse.add(getFilterdCourses[0]);
+        selectedCourse.add(getFilteredCourses[0]);
       }
-    } else if (getFilterdCourses.length > 1) {
-      if (selectedCourse.length == getFilterdCourses.length) {
+    } else if (getFilteredCourses.length > 1) {
+      if (selectedCourse.length == getFilteredCourses.length) {
         selectedCourse.clear();
       } else {
         selectedCourse.clear();
-        selectedCourse.addAll(getFilterdCourses);
+        selectedCourse.addAll(getFilteredCourses);
       }
     }
     notifyListeners();
@@ -261,42 +260,42 @@ class HiveListener extends ChangeNotifier {
     setVenueList(data);
   }
 
-  void addSelectedLiberials(List<LiberialModel> items) {
+  void addSelectedLiberals(List<LiberalModel> items) {
     if (items.length == 1) {
-      if (selectedLiberial.contains(items[0])) {
-        selectedLiberial.remove(items[0]);
+      if (selectedLiberal.contains(items[0])) {
+        selectedLiberal.remove(items[0]);
       } else {
-        selectedLiberial.add(items[0]);
+        selectedLiberal.add(items[0]);
       }
     } else if (items.length > 1) {
-      if (selectedLiberial.length == items.length) {
-        selectedLiberial.clear();
+      if (selectedLiberal.length == items.length) {
+        selectedLiberal.clear();
       } else {
-        selectedLiberial.clear();
-        selectedLiberial.addAll(items);
+        selectedLiberal.clear();
+        selectedLiberal.addAll(items);
       }
     }
     notifyListeners();
   }
 
-  void clearLiberial() {
-    for (var element in getLiberials) {
-      HiveCache.deleteLiberial(element);
+  void clearLiberal() {
+    for (var element in getLiberals) {
+      HiveCache.deleteLiberal(element);
     }
-    var data = HiveCache.getLiberials(currentAcademicYear);
-    setLiberialList(data);
+    var data = HiveCache.getLiberals(currentAcademicYear);
+    setLiberalList(data);
   }
 
-  void deleteLiberial(List<LiberialModel> getSelectedLiberial) {
-    for (var element in getSelectedLiberial) {
-      HiveCache.deleteLiberial(element);
+  void deleteLiberal(List<LiberalModel> getSelectedLiberal) {
+    for (var element in getSelectedLiberal) {
+      HiveCache.deleteLiberal(element);
     }
-    var data = HiveCache.getLiberials(currentAcademicYear);
-    setLiberialList(data);
+    var data = HiveCache.getLiberals(currentAcademicYear);
+    setLiberalList(data);
   }
 
-  void removeSelectedLiberial(List<LiberialModel> list) {
-    selectedLiberial.removeWhere((element) => list.contains(element));
+  void removeSelectedLiberal(List<LiberalModel> list) {
+    selectedLiberal.removeWhere((element) => list.contains(element));
     notifyListeners();
   }
 }

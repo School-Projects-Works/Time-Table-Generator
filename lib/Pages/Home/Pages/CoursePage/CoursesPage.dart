@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:aamusted_timetable_generator/Components/SmartDialog.dart';
 import 'package:aamusted_timetable_generator/Components/TextInputs.dart';
@@ -98,7 +100,7 @@ class _CoursesPageState extends State<CoursesPage> {
               ],
             ),
             const SizedBox(height: 20),
-            if (hive.getFilterdCourses.isEmpty)
+            if (hive.getFilteredCourses.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 50),
                 child: Center(
@@ -142,7 +144,7 @@ class _CoursesPageState extends State<CoursesPage> {
                     controller: _scrollController,
                     controller2: _scrollController2,
                     showFirstLastButtons: true,
-                    border: hive.getFilterdCourses.isNotEmpty
+                    border: hive.getFilteredCourses.isNotEmpty
                         ? const TableBorder(
                             horizontalInside:
                                 BorderSide(color: Colors.grey, width: 1),
@@ -151,26 +153,26 @@ class _CoursesPageState extends State<CoursesPage> {
                         : const TableBorder(),
                     dataRowHeight: 45,
                     showCheckboxColumn: false,
-                    source: CoursesDataScource(
+                    source: CoursesDataSource(
                       context,
                     ),
-                    rowsPerPage: hive.getFilterdCourses.length > 10
+                    rowsPerPage: hive.getFilteredCourses.length > 10
                         ? 10
-                        : hive.getFilterdCourses.isEmpty
+                        : hive.getFilteredCourses.isEmpty
                             ? 1
-                            : hive.getFilterdCourses.length,
+                            : hive.getFilteredCourses.length,
                     columns: columns
                         .map((e) => DataColumn(
                               label: e.isEmpty
                                   ? IconButton(
                                       onPressed: () {
                                         hive.addSelectedCourses(
-                                            hive.getFilterdCourses);
+                                            hive.getFilteredCourses);
                                       },
                                       icon: Icon(
                                         hive.getSelectedCourses.isEmpty
                                             ? Icons.check_box_outline_blank
-                                            : hive.getFilterdCourses.length ==
+                                            : hive.getFilteredCourses.length ==
                                                     hive.getSelectedCourses
                                                         .length
                                                 ? FontAwesomeIcons
@@ -196,7 +198,7 @@ class _CoursesPageState extends State<CoursesPage> {
   void viewTemplate() async {
     CustomDialog.showLoading(message: 'Creating Template...Please Wait');
     try {
-      var file = await ImportServices.tamplateCourses();
+      var file = await ImportServices.templateCourses();
       if (await file.exists()) {
         OpenAppFile.open(file.path);
         CustomDialog.dismiss();
@@ -252,7 +254,7 @@ class _CoursesPageState extends State<CoursesPage> {
   void clearCourses() {
     CustomDialog.showInfo(
       message:
-          'Are you sure yo want to delete all Courses? Note: This action is not reversable',
+          'Are you sure yo want to delete all Courses? Note: This action is not reversible',
       buttonText: 'Yes|Clear',
       onPressed: refresh,
     );
@@ -270,8 +272,8 @@ class _CoursesPageState extends State<CoursesPage> {
     CustomDialog.showInfo(
         onPressed: () => delete(getSelectedCourses),
         message:
-            'Are you sure you want to delete the selected Courses ? Note: This action is not reversable',
-        buttonText: 'Yes|Delect');
+            'Are you sure you want to delete the selected Courses ? Note: This action is not reversible',
+        buttonText: 'Yes|Delete');
   }
 
   delete(List<CourseModel> getSelectedCourses) {

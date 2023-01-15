@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:aamusted_timetable_generator/Components/SmartDialog.dart';
 import 'package:aamusted_timetable_generator/Constants/CustomStringFunctions.dart';
@@ -202,13 +204,13 @@ class _NewAcademicState extends State<NewAcademic> {
         } else {
           CustomDialog.dismiss();
           CustomDialog.showError(
-            message: 'An error occured while saving academic year',
+            message: 'An error occurred while saving academic year',
           );
         }
       } else {
         CustomDialog.dismiss();
         CustomDialog.showError(
-          message: 'This academic Year and seamester Already Exists',
+          message: 'This academic Year and semester Already Exists',
         );
       }
     } else {

@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:flutter/material.dart';

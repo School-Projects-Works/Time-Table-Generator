@@ -1,7 +1,6 @@
 // ignore_for_file: file_names
 
 import 'package:hive/hive.dart';
-
 part 'ConfigModel.g.dart';
 
 @HiveType(typeId: 2)
@@ -19,9 +18,9 @@ class ConfigModel {
   @HiveField(5)
   List<Map<String, dynamic>>? periods;
   @HiveField(6)
-  Map<String, dynamic>? liberialCourseDay;
+  Map<String, dynamic>? liberalCourseDay;
   @HiveField(7)
-  Map<String, dynamic>? liberialCoursePeriod;
+  Map<String, dynamic>? liberalCoursePeriod;
 
   ConfigModel({
     this.id,
@@ -30,8 +29,8 @@ class ConfigModel {
     this.academicSemester,
     this.days,
     this.periods,
-    this.liberialCourseDay,
-    this.liberialCoursePeriod,
+    this.liberalCourseDay,
+    this.liberalCoursePeriod,
   });
 
   factory ConfigModel.fromJson(Map<String, dynamic> json) {
@@ -42,8 +41,8 @@ class ConfigModel {
       academicSemester: json['academicSemester'],
       days: json['days'],
       periods: json['periods'],
-      liberialCourseDay: json['liberialCourseDay'],
-      liberialCoursePeriod: json['liberialCoursePeriod'],
+      liberalCourseDay: json['LiberalCourseDay'],
+      liberalCoursePeriod: json['LiberalCoursePeriod'],
     );
   }
 
@@ -55,8 +54,8 @@ class ConfigModel {
       'academicSemester': academicSemester,
       'days': days,
       'periods': periods,
-      'liberialCourseDay': liberialCourseDay,
-      'liberialCoursePeriod': liberialCoursePeriod,
+      'liberalCourseDay': liberalCourseDay,
+      'liberalCoursePeriod': liberalCoursePeriod,
     };
   }
 }
