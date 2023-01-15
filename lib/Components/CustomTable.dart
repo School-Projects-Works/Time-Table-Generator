@@ -36,6 +36,8 @@ class CustomTable extends StatefulWidget {
     this.checkboxHorizontalMargin,
     this.controller,
     this.primary,
+    this.controller2,
+    this.bottomAction,
   })  : assert(actions == null || (header != null)),
         assert(columns.isNotEmpty),
         assert(sortColumnIndex == null ||
@@ -77,8 +79,10 @@ class CustomTable extends StatefulWidget {
   final double? checkboxHorizontalMargin;
   final Color? arrowHeadColor;
   final ScrollController? controller;
+  final ScrollController? controller2;
   final bool? primary;
   final TableBorder? border;
+  final Widget? bottomAction;
 
   @override
   CustomTableState createState() => CustomTableState();
@@ -315,104 +319,144 @@ class CustomTableState extends State<CustomTable> {
 
     return Card(
         semanticContainer: true,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            if (headerWidgets.isNotEmpty)
-              Semantics(
-                container: true,
-                child: DefaultTextStyle(
-                  style: _selectedRowCount > 0
-                      ? themeData.textTheme.titleMedium!
-                          .copyWith(color: themeData.colorScheme.secondary)
-                      : themeData.textTheme.titleLarge!
-                          .copyWith(fontWeight: FontWeight.w400),
-                  child: IconTheme.merge(
-                    data: const IconThemeData(
-                      opacity: 0.54,
+        child: VsScrollbar(
+          controller: widget.controller2,
+          showTrackOnHover: true, // default false
+          isAlwaysShown: true, // default false
+          scrollbarFadeDuration: const Duration(
+              milliseconds: 500), // default : Duration(milliseconds: 300)
+          scrollbarTimeToFade: const Duration(
+              milliseconds: 800), // default : Duration(milliseconds: 600)
+          style: const VsScrollbarStyle(
+            hoverThickness: 12.0, // default 12.0
+            radius: Radius.circular(2), // default Radius.circular(8.0)
+            thickness: 10.0, // [ default 8.0 ]
+            color: primaryColor, // default ColorScheme Theme
+          ),
+          child: SingleChildScrollView(
+            controller: widget.controller2,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  if (headerWidgets.isNotEmpty)
+                    Semantics(
+                      container: true,
+                      child: DefaultTextStyle(
+                        style: _selectedRowCount > 0
+                            ? themeData.textTheme.titleMedium!.copyWith(
+                                color: themeData.colorScheme.secondary)
+                            : themeData.textTheme.titleLarge!
+                                .copyWith(fontWeight: FontWeight.w400),
+                        child: IconTheme.merge(
+                          data: const IconThemeData(
+                            opacity: 0.54,
+                          ),
+                          child: Ink(
+                            height: 64.0,
+                            color: _selectedRowCount > 0
+                                ? themeData.secondaryHeaderColor
+                                : null,
+                            child: Padding(
+                              padding: const EdgeInsetsDirectional.only(
+                                  start: 24, end: 14.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: headerWidgets,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    child: Ink(
-                      height: 64.0,
-                      color: _selectedRowCount > 0
-                          ? themeData.secondaryHeaderColor
-                          : null,
+                  VsScrollbar(
+                    controller: widget.controller,
+                    showTrackOnHover: true, // default false
+                    isAlwaysShown: true, // default false
+                    scrollbarFadeDuration: const Duration(
+                        milliseconds:
+                            500), // default : Duration(milliseconds: 300)
+                    scrollbarTimeToFade: const Duration(
+                        milliseconds:
+                            800), // default : Duration(milliseconds: 600)
+                    style: const VsScrollbarStyle(
+                      hoverThickness: 12.0, // default 12.0
+                      radius:
+                          Radius.circular(2), // default Radius.circular(8.0)
+                      thickness: 10.0, // [ default 8.0 ]
+                      color: secondaryColor, // default ColorScheme Theme
+                    ),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      primary: widget.primary,
+                      controller: widget.controller,
+                      dragStartBehavior: widget.dragStartBehavior,
                       child: Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                            start: 24, end: 14.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: headerWidgets,
+                        padding: const EdgeInsets.only(bottom: 25),
+                        child: ConstrainedBox(
+                          constraints:
+                              BoxConstraints(minWidth: constraints.width),
+                          child: SingleChildScrollView(
+                            child: DataTable(
+                              key: _tableKey,
+                              border: widget.border,
+                              columns: widget.columns,
+                              sortColumnIndex: widget.sortColumnIndex,
+                              sortAscending: widget.sortAscending,
+                              onSelectAll: widget.onSelectAll,
+                              decoration: const BoxDecoration(),
+                              dataRowHeight: widget.dataRowHeight,
+                              headingRowHeight: widget.headingRowHeight,
+                              horizontalMargin: widget.horizontalMargin,
+                              checkboxHorizontalMargin:
+                                  widget.checkboxHorizontalMargin,
+                              columnSpacing: widget.columnSpacing,
+                              showCheckboxColumn: widget.showCheckboxColumn,
+                              showBottomBorder: true,
+                              rows:
+                                  _getRows(_firstRowIndex, widget.rowsPerPage),
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            VsScrollbar(
-              controller: widget.controller,
-              showTrackOnHover: true, // default false
-              isAlwaysShown: true, // default false
-              scrollbarFadeDuration: const Duration(
-                  milliseconds: 500), // default : Duration(milliseconds: 300)
-              scrollbarTimeToFade: const Duration(
-                  milliseconds: 800), // default : Duration(milliseconds: 600)
-              style: const VsScrollbarStyle(
-                hoverThickness: 12.0, // default 12.0
-                radius: Radius.circular(10), // default Radius.circular(8.0)
-                thickness: 10.0, // [ default 8.0 ]
-                color: primaryColor, // default ColorScheme Theme
-              ),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                primary: widget.primary,
-                controller: widget.controller,
-                dragStartBehavior: widget.dragStartBehavior,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 25),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minWidth: constraints.width),
-                    child: DataTable(
-                      key: _tableKey,
-                      border: widget.border,
-                      columns: widget.columns,
-                      sortColumnIndex: widget.sortColumnIndex,
-                      sortAscending: widget.sortAscending,
-                      onSelectAll: widget.onSelectAll,
-                      decoration: const BoxDecoration(),
-                      dataRowHeight: widget.dataRowHeight,
-                      headingRowHeight: widget.headingRowHeight,
-                      horizontalMargin: widget.horizontalMargin,
-                      checkboxHorizontalMargin: widget.checkboxHorizontalMargin,
-                      columnSpacing: widget.columnSpacing,
-                      showCheckboxColumn: widget.showCheckboxColumn,
-                      showBottomBorder: true,
-                      rows: _getRows(_firstRowIndex, widget.rowsPerPage),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            DefaultTextStyle(
-              style: footerTextStyle!,
-              child: IconTheme.merge(
-                data: const IconThemeData(
-                  opacity: 0.54,
-                ),
-                child: SizedBox(
-                  height: 56.0,
-                  child: SingleChildScrollView(
-                    dragStartBehavior: widget.dragStartBehavior,
-                    scrollDirection: Axis.horizontal,
-                    reverse: true,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Row(
-                      children: footerWidgets,
+                      children: [
+                        const SizedBox(width: 14.0),
+                        widget.bottomAction ?? Container(),
+                        Expanded(
+                          child: DefaultTextStyle(
+                            style: footerTextStyle!,
+                            child: IconTheme.merge(
+                              data: const IconThemeData(
+                                opacity: 0.54,
+                              ),
+                              child: SizedBox(
+                                height: 56.0,
+                                child: SingleChildScrollView(
+                                  dragStartBehavior: widget.dragStartBehavior,
+                                  scrollDirection: Axis.horizontal,
+                                  reverse: true,
+                                  child: Row(
+                                    children: footerWidgets,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
+                ],
               ),
             ),
-          ],
+          ),
         ));
   }
 }

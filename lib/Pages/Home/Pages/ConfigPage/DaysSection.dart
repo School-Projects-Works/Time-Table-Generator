@@ -9,9 +9,10 @@ class DaysSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Consumer<ConfigDataFlow>(builder: (context, data, child) {
       return Container(
-          width: double.infinity,
+          width: size.width * 0.45,
           color: Colors.white,
           margin: const EdgeInsets.all(10),
           padding: const EdgeInsets.all(15),

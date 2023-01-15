@@ -1,47 +1,35 @@
 import 'package:hive/hive.dart';
-part 'CourseModel.g.dart';
 
-@HiveType(typeId: 4)
-class CourseModel {
+part 'LiberialModel.g.dart';
+
+@HiveType(typeId: 9)
+class LiberialModel {
   @HiveField(0)
   String? code;
   @HiveField(1)
   String? title;
   @HiveField(2)
-  String? creditHours;
-  @HiveField(3)
-  String? specialVenue;
-  @HiveField(4)
   String? lecturerName;
-  @HiveField(5)
+  @HiveField(3)
   String? lecturerEmail;
-  @HiveField(6)
-  String? department;
-  @HiveField(7)
+  @HiveField(4)
   String? id;
-  @HiveField(8)
+  @HiveField(5)
   String? academicYear;
 
-  CourseModel({
-    this.code,
-    this.title,
-    this.creditHours,
-    this.specialVenue,
-    this.lecturerName,
-    this.lecturerEmail,
-    this.department,
-    this.id,
-    this.academicYear,
-  });
+  LiberialModel(
+      {this.code,
+      this.title,
+      this.lecturerName,
+      this.lecturerEmail,
+      this.id,
+      this.academicYear});
 
-  CourseModel.fromJson(Map<String, dynamic> json) {
+  LiberialModel.fromJson(Map<String, dynamic> json) {
     code = json['code'];
     title = json['title'];
-    creditHours = json['creditHours'];
-    specialVenue = json['specialVenue'];
     lecturerName = json['lecturerName'];
     lecturerEmail = json['lecturerEmail'];
-    department = json['department'];
     id = json['id'];
     academicYear = json['academicYear'];
   }
@@ -50,11 +38,8 @@ class CourseModel {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['code'] = code;
     data['title'] = title;
-    data['creditHours'] = creditHours;
-    data['specialVenue'] = specialVenue;
     data['lecturerName'] = lecturerName;
     data['lecturerEmail'] = lecturerEmail;
-    data['department'] = department;
     data['id'] = id;
     data['academicYear'] = academicYear;
     return data;

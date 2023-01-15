@@ -1,5 +1,6 @@
 import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:aamusted_timetable_generator/Components/CustomDropDown.dart';
+import 'package:aamusted_timetable_generator/Pages/Home/Pages/HelpPage.dart';
 
 import 'package:aamusted_timetable_generator/Services/FileService.dart';
 
@@ -13,6 +14,7 @@ import 'package:provider/provider.dart';
 import '../../../SateManager/ConfigDataFlow.dart';
 import '../../../SateManager/HiveCache.dart';
 import '../../../SateManager/HiveListener.dart';
+import '../Pages/AboutPage.dart';
 
 class TopView extends StatefulWidget {
   const TopView({Key? key}) : super(key: key);
@@ -113,6 +115,48 @@ class _TopViewState extends State<TopView> {
             const SizedBox(
               width: 10,
             ),
+            Row(
+              children: [
+                IconButton(
+                    tooltip: 'About',
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AboutPage()));
+                    },
+                    icon: const Icon(
+                      Icons.info,
+                      color: Colors.blue,
+                    )),
+                const SizedBox(
+                  width: 10,
+                ),
+                IconButton(
+                    tooltip: 'Help',
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) {
+                          return const HelpPage();
+                        },
+                      ));
+                    },
+                    icon: const Icon(
+                      Icons.help,
+                      color: Colors.red,
+                    )),
+                const SizedBox(
+                  width: 10,
+                ),
+                IconButton(
+                    tooltip: 'Sign Out',
+                    onPressed: () {},
+                    icon: const Icon(Icons.logout)),
+                const SizedBox(
+                  width: 10,
+                ),
+              ],
+            )
           ],
         ),
       );

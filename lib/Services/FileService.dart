@@ -4,13 +4,11 @@ import 'package:aamusted_timetable_generator/Constants/CustomStringFunctions.dar
 import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:collection/collection.dart';
 import 'package:path_provider/path_provider.dart';
-
 import '../Models/Class/ClassModel.dart';
 import '../Models/Course/CourseModel.dart';
+import '../Models/Course/LiberialModel.dart';
 
 class FileService {
   static Future<String?> pickExcelFIle() async {
@@ -42,12 +40,13 @@ class ExcelService {
         var bytes = File(pickedFilePath).readAsBytesSync();
         var excel = Excel.decodeBytes(List<int>.from(bytes));
         return excel;
+      } else {
+        return null;
       }
     } catch (e) {
       debugPrint(e.toString());
       rethrow;
     }
-    return null;
   }
 }
 
@@ -62,9 +61,8 @@ class ImportServices {
         specialVenue: row[3]!.value.toString(),
         lecturerName: row[4]!.value.toString(),
         lecturerEmail: row[5]!.value.toString(),
-        lecturerPhone: row[6]!.value.toString(),
-        department: row[7]!.value.toString(),
-        id: row[0]!.value.toString(),
+        department: row[6]!.value.toString(),
+        id: row[0]!.value.toString().trimToLowerCase(),
       );
     }).toList();
 
@@ -78,7 +76,7 @@ class ImportServices {
         name: row[0]!.value.toString(),
         capacity: row[1]!.value.toString(),
         isDisabilityAccessible: row[2]!.value.toString(),
-        id: row[0]!.value.toString(),
+        id: row[0]!.value.toString().trimToLowerCase(),
       );
     }).toList();
 
@@ -107,12 +105,12 @@ class ImportServices {
     Sheet sheetObject = excel['Courses'];
     excel.setDefaultSheet('Courses');
     CellStyle cellStyle = CellStyle(
-      bold: true,
-      fontSize: 12,
-      fontColorHex: '#000000',
-      horizontalAlign: HorizontalAlign.Center,
-      verticalAlign: VerticalAlign.Center,
-    );
+        bold: true,
+        fontSize: 12,
+        fontColorHex: '#000000',
+        horizontalAlign: HorizontalAlign.Center,
+        verticalAlign: VerticalAlign.Center,
+        textWrapping: TextWrapping.WrapText);
 
     sheetObject.appendRow(Constant.courseExcelHeaderOrder);
     sheetObject.row(0).forEach((element) {
@@ -124,5 +122,92 @@ class ImportServices {
     file.writeAsBytesSync(excel.encode()!);
     file.createSync();
     return file;
+  }
+
+  static tamplateClasses() async {
+    Excel excel = Excel.createExcel();
+    Sheet sheetObject = excel['Classes'];
+    excel.setDefaultSheet('Classes');
+    CellStyle cellStyle = CellStyle(
+        bold: true,
+        fontSize: 12,
+        fontColorHex: '#000000',
+        horizontalAlign: HorizontalAlign.Center,
+        verticalAlign: VerticalAlign.Center,
+        textWrapping: TextWrapping.WrapText);
+
+    sheetObject.appendRow(Constant.classExcelHeaderOrder);
+    sheetObject.row(0).forEach((element) {
+      element?.cellStyle = cellStyle;
+    });
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String fileName = '${appDocDir.path}/classes.xlsx';
+    File file = File(fileName);
+    file.writeAsBytesSync(excel.encode()!);
+    file.createSync();
+    return file;
+  }
+
+  static tamplateVenue() async {
+    Excel excel = Excel.createExcel();
+    Sheet sheetObject = excel['Venues'];
+    excel.setDefaultSheet('Venues');
+    CellStyle cellStyle = CellStyle(
+        bold: true,
+        fontSize: 12,
+        fontColorHex: '#000000',
+        horizontalAlign: HorizontalAlign.Center,
+        verticalAlign: VerticalAlign.Center,
+        textWrapping: TextWrapping.WrapText);
+
+    sheetObject.appendRow(Constant.venueExcelHeaderOrder);
+    sheetObject.row(0).forEach((element) {
+      element?.cellStyle = cellStyle;
+    });
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String fileName = '${appDocDir.path}/venues.xlsx';
+    File file = File(fileName);
+    file.writeAsBytesSync(excel.encode()!);
+    file.createSync();
+    return file;
+  }
+
+  static tamplateLiberial() async {
+    Excel excel = Excel.createExcel();
+    Sheet sheetObject = excel['Liberial'];
+    excel.setDefaultSheet('Liberial');
+    CellStyle cellStyle = CellStyle(
+        bold: true,
+        fontSize: 12,
+        fontColorHex: '#000000',
+        horizontalAlign: HorizontalAlign.Center,
+        verticalAlign: VerticalAlign.Center,
+        textWrapping: TextWrapping.WrapText);
+
+    sheetObject.appendRow(Constant.liberalExcelHeaderOrder);
+    sheetObject.row(0).forEach((element) {
+      element?.cellStyle = cellStyle;
+    });
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String fileName = '${appDocDir.path}/liberial.xlsx';
+    File file = File(fileName);
+    file.writeAsBytesSync(excel.encode()!);
+    file.createSync();
+    return file;
+  }
+
+  static Future<List<LiberialModel>> importLiberial(Excel excel) async {
+    var rows = excel.tables[excel.getDefaultSheet()]!.rows;
+    List<LiberialModel> liberials = rows.skip(1).map<LiberialModel>((row) {
+      return LiberialModel(
+        id: row[0]!.value.toString().trimToLowerCase(),
+        code: row[0]!.value.toString(),
+        title: row[1]!.value.toString(),
+        lecturerName: row[2]!.value.toString(),
+        lecturerEmail: row[3]!.value.toString(),
+      );
+    }).toList();
+
+    return liberials;
   }
 }

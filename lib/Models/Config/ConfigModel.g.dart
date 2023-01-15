@@ -27,13 +27,15 @@ class ConfigModelAdapter extends TypeAdapter<ConfigModel> {
       periods: (fields[5] as List?)
           ?.map((dynamic e) => (e as Map).cast<String, dynamic>())
           .toList(),
+      liberialCourseDay: (fields[6] as Map?)?.cast<String, dynamic>(),
+      liberialCoursePeriod: (fields[7] as Map?)?.cast<String, dynamic>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, ConfigModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -45,7 +47,11 @@ class ConfigModelAdapter extends TypeAdapter<ConfigModel> {
       ..writeByte(4)
       ..write(obj.days)
       ..writeByte(5)
-      ..write(obj.periods);
+      ..write(obj.periods)
+      ..writeByte(6)
+      ..write(obj.liberialCourseDay)
+      ..writeByte(7)
+      ..write(obj.liberialCoursePeriod);
   }
 
   @override

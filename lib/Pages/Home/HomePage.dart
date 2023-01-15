@@ -3,14 +3,15 @@ import 'package:aamusted_timetable_generator/SateManager/NavigationProvider.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../Styles/colors.dart';
+import 'Pages/VenuePage/VenuePage.dart';
 import 'Components/SideBar.dart';
 import 'Components/TopView.dart';
 import 'Pages/AboutPage.dart';
 import 'Pages/ClassPage/ClassesPage.dart';
-import 'Pages/Config/Configurations.dart';
-import 'Pages/CoursePage/Courses.dart';
+import 'Pages/ConfigPage/Configurations.dart';
+import 'Pages/CoursePage/CoursesPage.dart';
 import 'Pages/HelpPage.dart';
-import 'Pages/LiberalPage.dart';
+import 'Pages/LiberalPage/LiberalPage.dart';
 import 'Pages/NewAcademic.dart';
 import 'Pages/TimetablePage.dart';
 
@@ -59,10 +60,8 @@ class _HomePageState extends State<HomePage> {
                                     CoursesPage(),
                                     ClassesPage(),
                                     LiberalPage(),
+                                    VenuePage(),
                                     TimeTablePage(),
-                                    HelpPage(),
-                                    AboutPage(),
-                                    NewAcademic()
                                   ],
                                 )
                               : const NewAcademic()),

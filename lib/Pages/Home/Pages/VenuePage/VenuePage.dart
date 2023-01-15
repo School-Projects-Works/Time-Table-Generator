@@ -1,5 +1,5 @@
-import 'package:aamusted_timetable_generator/Models/Class/ClassModel.dart';
-import 'package:excel/excel.dart';
+import 'package:aamusted_timetable_generator/Constants/Constant.dart';
+import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,33 +11,28 @@ import '../../../../Components/CustomButton.dart';
 import '../../../../Components/CustomTable.dart';
 import '../../../../Components/SmartDialog.dart';
 import '../../../../Components/TextInputs.dart';
-import '../../../../Constants/Constant.dart';
 import '../../../../SateManager/HiveCache.dart';
 import '../../../../SateManager/HiveListener.dart';
 import '../../../../Services/FileService.dart';
 import '../../../../Styles/colors.dart';
-import 'ClassDataSource.dart';
+import 'VenueDatasource.dart';
 
-class ClassesPage extends StatefulWidget {
-  const ClassesPage({Key? key}) : super(key: key);
+class VenuePage extends StatefulWidget {
+  const VenuePage({super.key});
 
   @override
-  State<ClassesPage> createState() => _ClassesPageState();
+  State<VenuePage> createState() => _VenuePageState();
 }
 
-class _ClassesPageState extends State<ClassesPage> {
-  List<String> columns = [
-    '',
-    'Level',
-    'Type(Regular/Evening/Weekend)',
-    'Class Name',
-    'Class Size',
-    'Has Disability',
-    'Courses',
-  ];
-
+class _VenuePageState extends State<VenuePage> {
   final _scrollController = ScrollController();
   final _scrollController2 = ScrollController();
+  final List<String> columns = [
+    '',
+    'Room',
+    'Capacity',
+    'Disability Accessible'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +49,7 @@ class _ClassesPageState extends State<ClassesPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'STUDENTS CLASS',
+                  'VENUES',
                   style: GoogleFonts.poppins(
                     fontSize: 30,
                     color: secondaryColor,
@@ -66,14 +61,14 @@ class _ClassesPageState extends State<ClassesPage> {
                     children: [
                       Expanded(
                         child: CustomTextFields(
-                          hintText: 'Search class',
+                          hintText: 'Search Venue',
                           color: Colors.white,
                           suffixIcon: const Icon(
                             Icons.search,
                             color: Colors.grey,
                           ),
                           onChanged: (value) {
-                            hive.filterClass(value);
+                            hive.filterVenue(value);
                           },
                         ),
                       ),
@@ -89,7 +84,7 @@ class _ClassesPageState extends State<ClassesPage> {
                       const SizedBox(width: 10),
                       CustomButton(
                         onPressed: () => importData(hive),
-                        text: 'Import Classes',
+                        text: 'Import Venues',
                         radius: 10,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 6),
@@ -100,12 +95,12 @@ class _ClassesPageState extends State<ClassesPage> {
               ],
             ),
             const SizedBox(height: 20),
-            if (hive.getFilteredClass.isEmpty)
+            if (hive.getFilteredVenue.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 50),
                 child: Center(
                   child: Text(
-                    'No Students Class Found',
+                    'No Venue Found',
                     style: GoogleFonts.nunito(
                       fontSize: 16,
                       color: Colors.grey,
@@ -119,19 +114,20 @@ class _ClassesPageState extends State<ClassesPage> {
                 child: CustomTable(
                   bottomAction: Row(
                     children: [
-                      if (hive.getSelectedClasses.isNotEmpty)
+                      if (hive.getSelectedVenues.isNotEmpty)
                         CustomButton(
-                            onPressed: () =>
-                                deleteSelected(hive.getSelectedClasses),
-                            text: 'Delete Selected',
-                            color: Colors.red,
-                            radius: 10,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 6)),
+                          onPressed: () =>
+                              deleteSelected(hive.getSelectedVenues),
+                          text: 'Delete Selected',
+                          color: Colors.red,
+                          radius: 10,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 6),
+                        ),
                       const SizedBox(width: 10),
                       CustomButton(
-                        onPressed: clearClasses,
-                        text: 'Clear Classes',
+                        onPressed: clearVenues,
+                        text: 'Clear Venues',
                         color: Colors.red,
                         radius: 10,
                         padding: const EdgeInsets.symmetric(
@@ -143,8 +139,7 @@ class _ClassesPageState extends State<ClassesPage> {
                   dragStartBehavior: DragStartBehavior.start,
                   controller: _scrollController,
                   controller2: _scrollController2,
-                  showCheckboxColumn: false,
-                  border: hive.getFilteredClass.isNotEmpty
+                  border: hive.getFilteredVenue.isNotEmpty
                       ? const TableBorder(
                           horizontalInside:
                               BorderSide(color: Colors.grey, width: 1),
@@ -152,33 +147,41 @@ class _ClassesPageState extends State<ClassesPage> {
                           bottom: BorderSide(color: Colors.grey, width: 1))
                       : const TableBorder(),
                   dataRowHeight: 45,
-                  source: ClassDataSource(context),
+                  source: VenueDataSource(context),
                   rowsPerPage: 10,
+                  showCheckboxColumn: false,
                   showFirstLastButtons: true,
+                  columnSpacing: 0,
+                  horizontalMargin: 10,
                   columns: columns
                       .map((e) => DataColumn(
-                            label: e.isNotEmpty
-                                ? Text(
+                            label: e.isEmpty
+                                ? ConstrainedBox(
+                                    constraints: const BoxConstraints(
+                                        minWidth: 50, maxWidth: 50),
+                                    child: IconButton(
+                                        onPressed: () {
+                                          hive.addSelectedVenues(
+                                              hive.getFilteredVenue);
+                                        },
+                                        icon: Icon(
+                                          hive.getSelectedVenues.isEmpty
+                                              ? Icons.check_box_outline_blank
+                                              : hive.getFilteredVenue.length ==
+                                                      hive.getSelectedVenues
+                                                          .length
+                                                  ? FontAwesomeIcons
+                                                      .solidSquareCheck
+                                                  : FontAwesomeIcons
+                                                      .solidSquareMinus,
+                                        )),
+                                  )
+                                : Text(
                                     e,
                                     style: GoogleFonts.poppins(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 14),
-                                  )
-                                : IconButton(
-                                    onPressed: () {
-                                      hive.addSelectedClass(
-                                          hive.getFilteredClass);
-                                    },
-                                    icon: Icon(
-                                      hive.getSelectedClasses.isEmpty
-                                          ? Icons.check_box_outline_blank
-                                          : hive.getSelectedClasses.length ==
-                                                  hive.getFilteredClass.length
-                                              ? FontAwesomeIcons
-                                                  .solidSquareCheck
-                                              : FontAwesomeIcons
-                                                  .solidSquareMinus,
-                                    )),
+                                  ),
                           ))
                       .toList(),
                 ),
@@ -190,17 +193,16 @@ class _ClassesPageState extends State<ClassesPage> {
   }
 
   void importData(HiveListener hive) async {
-    var data = await ExcelService.readExcelFile();
-    if (data != null) {
-      Excel? excel = data;
+    var excel = await ExcelService.readExcelFile();
+    if (excel != null) {
       bool isFIleValid = ExcelService.validateExcelFIleByColumns(
         excel,
-        Constant.classExcelHeaderOrder,
+        Constant.venueExcelHeaderOrder,
       );
       if (isFIleValid) {
         CustomDialog.showLoading(message: 'Importing Data...Please Wait');
         try {
-          ImportServices.importClasses(excel).then((value) {
+          ImportServices.importVenues(excel).then((value) {
             if (value == null) {
               CustomDialog.dismiss();
               CustomDialog.showError(message: 'Error Importing Data');
@@ -208,10 +210,10 @@ class _ClassesPageState extends State<ClassesPage> {
             } else if (value.isNotEmpty) {
               for (var element in value) {
                 element.academicYear = hive.currentAcademicYear;
-                HiveCache.addClass(element);
+                HiveCache.addVenue(element);
               }
-              var data = HiveCache.getClasses(hive.currentAcademicYear);
-              hive.setClassList(data);
+              var data = HiveCache.getVenues(hive.currentAcademicYear);
+              hive.setVenueList(data);
               CustomDialog.dismiss();
               CustomDialog.showSuccess(message: 'Data Imported Successfully');
             } else {
@@ -224,7 +226,7 @@ class _ClassesPageState extends State<ClassesPage> {
           CustomDialog.showError(message: 'Error Importing Data');
         }
       } else {
-        CustomDialog.showError(message: 'Invalid File Selected');
+        CustomDialog.showError(message: 'Invalid Excel File Selected');
       }
     }
   }
@@ -232,7 +234,7 @@ class _ClassesPageState extends State<ClassesPage> {
   void viewTemplate() async {
     CustomDialog.showLoading(message: 'Creating Template...Please Wait');
     try {
-      var file = await ImportServices.tamplateClasses();
+      var file = await ImportServices.tamplateVenue();
       if (await file.exists()) {
         OpenAppFile.open(file.path);
         CustomDialog.dismiss();
@@ -246,37 +248,36 @@ class _ClassesPageState extends State<ClassesPage> {
     }
   }
 
-  deleteSelected(List<ClassModel> getSelectedClasses) {
+  deleteSelected(List<VenueModel> getSelectedVenues) {
     CustomDialog.showInfo(
-        onPressed: () => delete(getSelectedClasses),
+        onPressed: () => delete(getSelectedVenues),
         message:
-            'Are you sure you want to delete the selected Classes ? Note: This action is not reversable',
+            'Are you sure you want to delete the selected Courses ? Note: This action is not reversable',
         buttonText: 'Yes|Delect');
   }
 
-  delete(List<ClassModel> getSelectedClasses) {
+  delete(List<VenueModel> getSelectedVenues) {
     CustomDialog.dismiss();
-    CustomDialog.showLoading(message: 'Deleting Student Classes...Please Wait');
+    CustomDialog.showLoading(message: 'Deleting Venue...Please Wait');
     Provider.of<HiveListener>(context, listen: false)
-        .deleteClasses(getSelectedClasses);
+        .deleteVenues(getSelectedVenues);
     CustomDialog.dismiss();
-    CustomDialog.showSuccess(message: 'Selected Classes Deleted Successfully');
+    CustomDialog.showSuccess(message: 'Selected Venues Deleted Successfully');
   }
 
-  void clearClasses() {
+  void clearVenues() {
     CustomDialog.showInfo(
-      message:
-          'Are you sure yo want to delete all Students\' Classes? Note: This action is not reversable',
-      buttonText: 'Yes|Clear',
-      onPressed: refresh,
-    );
+        onPressed: () => clear(),
+        message:
+            'Are you sure you want to clear all Venues ? Note: This action is not reversable',
+        buttonText: 'Yes|Clear');
   }
 
-  void refresh() {
+  clear() {
     CustomDialog.dismiss();
-    CustomDialog.showLoading(message: 'Deleting Classes...Please Wait');
-    Provider.of<HiveListener>(context, listen: false).clearClasses();
+    CustomDialog.showLoading(message: 'Clearing Venues...Please Wait');
+    Provider.of<HiveListener>(context, listen: false).clearVenues();
     CustomDialog.dismiss();
-    CustomDialog.showSuccess(message: 'Classes Cleared Successfully');
+    CustomDialog.showSuccess(message: 'Venues Cleared Successfully');
   }
 }

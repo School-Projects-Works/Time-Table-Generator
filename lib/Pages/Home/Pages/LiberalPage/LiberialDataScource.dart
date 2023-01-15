@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../../../SateManager/HiveListener.dart';
 import '../../../../Styles/colors.dart';
 
-class ClassDataSource extends DataTableSource {
+class LiberialDataScource extends DataTableSource {
   final BuildContext context;
+  LiberialDataScource(this.context);
 
-  ClassDataSource(this.context);
   @override
   DataRow? getRow(int index) {
-    final classList =
-        Provider.of<HiveListener>(context, listen: false).getFilteredClass;
-    if (index >= classList.length) return null;
-    final classItem = classList[index];
+    var data =
+        Provider.of<HiveListener>(context, listen: false).getFilteredLiberial;
+    if (index >= data.length) return null;
+    final liberialItem = data[index];
     return DataRow.byIndex(
       selected: Provider.of<HiveListener>(context, listen: false)
-          .getSelectedClasses
-          .contains(classItem),
+          .getSelectedLiberials
+          .contains(liberialItem),
       onSelectChanged: (value) {
         if (value!) {
           Provider.of<HiveListener>(context, listen: false)
-              .addSelectedClass([classItem]);
+              .addSelectedLiberials([liberialItem]);
         } else {
           Provider.of<HiveListener>(context, listen: false)
-              .removeSelectedClass([classItem]);
+              .removeSelectedLiberial([liberialItem]);
         }
       },
       color: MaterialStateProperty.resolveWith<Color?>(
@@ -37,8 +38,8 @@ class ClassDataSource extends DataTableSource {
           if (states.any(interactiveStates.contains)) {
             return Colors.blue.withOpacity(.2);
           } else if (Provider.of<HiveListener>(context, listen: false)
-              .getSelectedClasses
-              .contains(classItem)) {
+              .getSelectedLiberials
+              .contains(liberialItem)) {
             return Colors.blue.withOpacity(.7);
           }
         },
@@ -64,24 +65,22 @@ class ClassDataSource extends DataTableSource {
             },
           ),
           value: Provider.of<HiveListener>(context, listen: false)
-              .getSelectedClasses
-              .contains(classItem),
+              .getSelectedLiberials
+              .contains(liberialItem),
           onChanged: (val) {
             if (val!) {
               Provider.of<HiveListener>(context, listen: false)
-                  .addSelectedClass([classItem]);
+                  .addSelectedLiberials([liberialItem]);
             } else {
               Provider.of<HiveListener>(context, listen: false)
-                  .removeSelectedClass([classItem]);
+                  .removeSelectedLiberial([liberialItem]);
             }
           },
         )),
-        DataCell(Text(classItem.level!)),
-        DataCell(Text(classItem.type!)),
-        DataCell(Text(classItem.name!)),
-        DataCell(Text(classItem.size!)),
-        DataCell(Text(classItem.hasDisability!)),
-        DataCell(Text(classItem.courses!.join(', '))),
+        DataCell(Text(liberialItem.code!)),
+        DataCell(Text(liberialItem.title!)),
+        DataCell(Text(liberialItem.lecturerName!)),
+        DataCell(Text(liberialItem.lecturerEmail!)),
       ],
     );
   }
@@ -90,8 +89,9 @@ class ClassDataSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount =>
-      Provider.of<HiveListener>(context, listen: false).getFilteredClass.length;
+  int get rowCount => Provider.of<HiveListener>(context, listen: false)
+      .getFilteredLiberial
+      .length;
 
   @override
   int get selectedRowCount => 0;

@@ -39,6 +39,7 @@ class CustomCheckBox extends StatelessWidget {
         children: [
           Row(
             mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               InkWell(
                 onTap: onTap,

@@ -86,12 +86,10 @@ class _ConfigurationState extends State<Configuration> {
                 ],
               ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Wrap(
                 children: const [
-                  Expanded(child: DaysSection()),
-                  Expanded(child: PeriodSection()),
+                  DaysSection(),
+                  PeriodSection(),
                 ],
               ),
               const SizedBox(height: 20),

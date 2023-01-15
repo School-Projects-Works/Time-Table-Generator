@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aamusted_timetable_generator/Models/Academic/AcademicModel.dart';
 import 'package:aamusted_timetable_generator/Models/Class/ClassModel.dart';
 import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
+import 'package:aamusted_timetable_generator/Models/Course/LiberialModel.dart';
 import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
 import 'package:hive_flutter/adapters.dart';
 import '../Models/Admin/Admin.dart';
@@ -18,6 +19,7 @@ class HiveCache {
     Hive.registerAdapter(CourseModelAdapter());
     Hive.registerAdapter(ClassModelAdapter());
     Hive.registerAdapter(VenueModelAdapter());
+    Hive.registerAdapter(LiberialModelAdapter());
 
     await Hive.openBox<Admin>('admins');
     await Hive.openBox<AcademicModel>('academics');
@@ -26,6 +28,7 @@ class HiveCache {
     await Hive.openBox<ClassModel>('classes');
     await Hive.openBox<VenueModel>('venues');
     await Hive.openBox('isLoggedIn');
+    await Hive.openBox('liberials');
   }
 
   static void setAdmin(Admin admin) {
@@ -107,13 +110,57 @@ class HiveCache {
         .toList();
   }
 
-  static void clearCourses() {
-    final box = Hive.box<CourseModel>('courses');
-    box.clear();
-  }
-
   static void addClass(ClassModel element) {
     final box = Hive.box<ClassModel>('classes');
     box.put(element.id, element);
+  }
+
+  static void updateCourse(CourseModel course) {
+    final box = Hive.box<CourseModel>('courses');
+    box.put(course.id, course);
+  }
+
+  static void addVenue(VenueModel element) {
+    final box = Hive.box<VenueModel>('venues');
+    box.put(element.id, element);
+  }
+
+  static getVenues(currentAcademicYear) {
+    final box = Hive.box<VenueModel>('venues');
+    return box.values
+        .where((element) => element.academicYear == currentAcademicYear)
+        .toList();
+  }
+
+  static void deleteCourse(CourseModel course) {
+    final box = Hive.box<CourseModel>('courses');
+    box.delete(course.id);
+  }
+
+  static void deleteClass(ClassModel element) {
+    final box = Hive.box<ClassModel>('classes');
+    box.delete(element.id);
+  }
+
+  static void deleteVenue(VenueModel element) {
+    final box = Hive.box<VenueModel>('venues');
+    box.delete(element.id);
+  }
+
+  static void addLiberial(LiberialModel element) {
+    final box = Hive.box<LiberialModel>('liberials');
+    box.put(element.id, element);
+  }
+
+  static getLiberials(currentAcademicYear) {
+    final box = Hive.box<LiberialModel>('liberials');
+    return box.values
+        .where((element) => element.academicYear == currentAcademicYear)
+        .toList();
+  }
+
+  static void deleteLiberial(LiberialModel element) {
+    final box = Hive.box<LiberialModel>('liberials');
+    box.delete(element.id);
   }
 }

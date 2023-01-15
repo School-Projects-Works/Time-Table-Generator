@@ -18,6 +18,10 @@ class ConfigModel {
   List<Map<String, dynamic>>? days;
   @HiveField(5)
   List<Map<String, dynamic>>? periods;
+  @HiveField(6)
+  Map<String, dynamic>? liberialCourseDay;
+  @HiveField(7)
+  Map<String, dynamic>? liberialCoursePeriod;
 
   ConfigModel({
     this.id,
@@ -26,6 +30,8 @@ class ConfigModel {
     this.academicSemester,
     this.days,
     this.periods,
+    this.liberialCourseDay,
+    this.liberialCoursePeriod,
   });
 
   factory ConfigModel.fromJson(Map<String, dynamic> json) {
@@ -36,6 +42,8 @@ class ConfigModel {
       academicSemester: json['academicSemester'],
       days: json['days'],
       periods: json['periods'],
+      liberialCourseDay: json['liberialCourseDay'],
+      liberialCoursePeriod: json['liberialCoursePeriod'],
     );
   }
 
@@ -47,6 +55,8 @@ class ConfigModel {
       'academicSemester': academicSemester,
       'days': days,
       'periods': periods,
+      'liberialCourseDay': liberialCourseDay,
+      'liberialCoursePeriod': liberialCoursePeriod,
     };
   }
 }

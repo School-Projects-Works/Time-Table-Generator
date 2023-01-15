@@ -54,7 +54,7 @@ class _SideBardState extends State<SideBard> {
                         title: '',
                         icon: Icons.menu),
                     const SizedBox(
-                      height: 10,
+                      height: 40,
                     ),
                     SideBarItem(
                         onTap: () {
@@ -89,33 +89,19 @@ class _SideBardState extends State<SideBard> {
                           nav.setPage(4);
                         },
                         isSelected: nav.page == 4,
-                        title: 'Timetable',
-                        icon: FontAwesomeIcons.table),
+                        title: 'Venues',
+                        icon: FontAwesomeIcons.locationDot),
                     SideBarItem(
                         onTap: () {
                           nav.setPage(5);
                         },
                         isSelected: nav.page == 5,
-                        title: 'Help',
-                        icon: Icons.help),
+                        title: 'Timetable',
+                        icon: FontAwesomeIcons.table),
                     const Divider(
                       color: primaryColor,
                       thickness: 5,
                     ),
-                    SideBarItem(
-                        onTap: () {
-                          nav.setPage(6);
-                        },
-                        isSelected: nav.page == 6,
-                        title: 'About',
-                        icon: Icons.info),
-                    SideBarItem(
-                        onTap: () {
-                          //todo log admin out
-                        },
-                        isSelected: false,
-                        title: 'Sing Out',
-                        icon: Icons.logout),
                     const Spacer(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
