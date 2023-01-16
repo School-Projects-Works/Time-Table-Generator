@@ -9,6 +9,7 @@ import '../Models/Config/ConfigModel.dart';
 import '../Models/Config/PeriodModel.dart';
 
 class ConfigDataFlow extends ChangeNotifier {
+  var data = HiveCache.getConfigList();
   ConfigModel configurations = ConfigModel();
   ConfigModel get getConfigurations => configurations;
 
@@ -667,19 +668,7 @@ class ConfigDataFlow extends ChangeNotifier {
         periodThree.toJson(),
         periodFour.toJson()
       ];
-      configurations.academicName = hiveListener.currentAcademicYear;
-      configurations.academicYear = hiveListener.getAcademicList
-          .where((element) => element.name == hiveListener.currentAcademicYear)
-          .first
-          .year;
-      configurations.academicSemester = hiveListener.getAcademicList
-          .where((element) => element.name == hiveListener.currentAcademicYear)
-          .first
-          .semester;
-      configurations.id = hiveListener.getAcademicList
-          .where((element) => element.name == hiveListener.currentAcademicYear)
-          .first
-          .id;
+
       HiveCache.addConfigurations(configurations);
       updateConfigurations(configurations);
       CustomDialog.dismiss();
@@ -687,20 +676,15 @@ class ConfigDataFlow extends ChangeNotifier {
     }
   }
 
-  void setLiberalDay(p1) {
-    var day =
-        configurations.days!.where((element) => element['day'] == p1).first;
-    configurations.liberalCourseDay = day;
+  void setLiberalDay(Map<String, dynamic> p1) {
+    configurations.liberalCourseDay = p1;
     HiveCache.addConfigurations(configurations);
     updateConfigurations(configurations);
     updateConfigList();
   }
 
-  void setLiberalPeriod(p1) {
-    var period = configurations.periods!
-        .where((element) => element['period'] == p1)
-        .first;
-    configurations.liberalCoursePeriod = period;
+  void setLiberalPeriod(Map<String, dynamic> p1) {
+    configurations.liberalCoursePeriod = p1;
     HiveCache.addConfigurations(configurations);
     updateConfigurations(configurations);
     updateConfigList();

@@ -4,6 +4,8 @@ import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:aamusted_timetable_generator/Components/SmartDialog.dart';
 import 'package:aamusted_timetable_generator/Constants/CustomStringFunctions.dart';
 import 'package:aamusted_timetable_generator/Models/Academic/AcademicModel.dart';
+import 'package:aamusted_timetable_generator/Models/Config/ConfigModel.dart';
+import 'package:aamusted_timetable_generator/SateManager/ConfigDataFlow.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveCache.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:flutter/material.dart';
@@ -197,6 +199,16 @@ class _NewAcademicState extends State<NewAcademic> {
         if (data.isNotEmpty) {
           Provider.of<HiveListener>(context, listen: false)
               .setAcademicList(data);
+          ConfigModel configurations = ConfigModel();
+          configurations.academicName = academicModel.name;
+          configurations.academicYear = academicModel.year;
+          configurations.academicSemester = academicModel.semester;
+          configurations.id = academicModel.id;
+          HiveCache.addConfigurations(configurations);
+          Provider.of<ConfigDataFlow>(context, listen: false)
+              .updateConfigurations(configurations);
+          Provider.of<ConfigDataFlow>(context, listen: false)
+              .updateConfigList();
           CustomDialog.dismiss();
           CustomDialog.showSuccess(
             message: 'Academic Year Saved Successfully',
