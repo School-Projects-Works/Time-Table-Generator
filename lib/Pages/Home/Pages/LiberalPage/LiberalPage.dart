@@ -41,8 +41,6 @@ class _LiberalPageState extends State<LiberalPage> {
   ];
   final _scrollController = ScrollController();
   final _scrollController2 = ScrollController();
-
-  String? _liberalDay, _liberalPeriod;
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -132,53 +130,22 @@ class _LiberalPageState extends State<LiberalPage> {
                                   const SizedBox(width: 10),
                                   SizedBox(
                                       width: 250,
-                                      child:
-                                          PopupMenuButton<Map<String, dynamic>>(
-                                        onSelected: (value) {
-                                          config.setLiberalDay(value);
-                                          setState(() {
-                                            _liberalDay = value['day'];
-                                            print(
-                                                'working=================$_liberalDay');
-                                          });
-                                        },
-                                        position: PopupMenuPosition.under,
-                                        color: Colors.white,
-                                        icon: Container(
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                                border: Border.all(
-                                                    color: Colors.grey)),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(_liberalDay ?? "",
-                                                    style: GoogleFonts.nunito(
-                                                        color: Colors.black87,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                                const Icon(
-                                                    Icons.arrow_drop_down)
-                                              ],
-                                            )),
-                                        itemBuilder: (context) {
-                                          return config.getConfigurations.days!
-                                              .map((e) => PopupMenuItem(
-                                                    value: e,
-                                                    child: Text(
-                                                      e['day'],
-                                                      style:
-                                                          GoogleFonts.nunito(),
-                                                    ),
-                                                  ))
-                                              .toList();
-                                        },
-                                      ))
+                                      child: CustomDropDown(
+                                          onChanged: (p0) {
+                                            var data = config
+                                                .getConfigurations.days!
+                                                .firstWhere((element) =>
+                                                    element['day'] == p0);
+                                            changeLiberalDay(data);
+                                          },
+                                          value: config.getLiberalCourseDay,
+                                          hintText: 'Select day',
+                                          items: config.getConfigurations.days!
+                                              .map((e) => DropdownMenuItem(
+                                                  value: e['day'],
+                                                  child: Text(e['day'])))
+                                              .toList(),
+                                          color: Colors.white))
                                 ],
                               )),
                               const SizedBox(width: 20),
@@ -196,25 +163,23 @@ class _LiberalPageState extends State<LiberalPage> {
                                   const SizedBox(width: 10),
                                   SizedBox(
                                       width: 250,
-                                      child:
-                                          PopupMenuButton<Map<String, dynamic>>(
-                                        onSelected: (value) =>
-                                            changeLiberalPeriod,
-                                        position: PopupMenuPosition.under,
-                                        itemBuilder: (context) {
-                                          return config
+                                      child: CustomDropDown(
+                                          onChanged: (p0) {
+                                            var data = config
+                                                .getConfigurations.periods!
+                                                .firstWhere((element) =>
+                                                    element['period'] == p0);
+                                            changeLiberalPeriod(data);
+                                          },
+                                          value: config.getLiberalCoursePeriod,
+                                          hintText: 'Select period',
+                                          items: config
                                               .getConfigurations.periods!
-                                              .map((e) => PopupMenuItem(
-                                                    value: e,
-                                                    child: Text(
-                                                      e['period'],
-                                                      style:
-                                                          GoogleFonts.nunito(),
-                                                    ),
-                                                  ))
-                                              .toList();
-                                        },
-                                      ))
+                                              .map((e) => DropdownMenuItem(
+                                                  value: e['period'],
+                                                  child: Text(e['period'])))
+                                              .toList(),
+                                          color: Colors.white))
                                 ],
                               ))
                             ],
@@ -245,9 +210,14 @@ class _LiberalPageState extends State<LiberalPage> {
                                 SizedBox(
                                     width: 250,
                                     child: CustomDropDown(
-                                        onChanged: (p0) => changeLiberalDay,
-                                        value: config.getConfigurations
-                                            .liberalCourseDay!['day'],
+                                        onChanged: (p0) {
+                                          var data = config
+                                              .getConfigurations.days!
+                                              .firstWhere((element) =>
+                                                  element['day'] == p0);
+                                          changeLiberalDay(data);
+                                        },
+                                        value: config.getLiberalCourseDay,
                                         hintText: 'Select day',
                                         items: config.getConfigurations.days!
                                             .map((e) => DropdownMenuItem(
@@ -273,10 +243,15 @@ class _LiberalPageState extends State<LiberalPage> {
                                 SizedBox(
                                     width: 250,
                                     child: CustomDropDown(
+                                        onChanged: (p0) {
+                                          var data = config
+                                              .getConfigurations.periods!
+                                              .firstWhere((element) =>
+                                                  element['period'] == p0);
+                                          changeLiberalPeriod(data);
+                                        },
+                                        value: config.getLiberalCoursePeriod,
                                         hintText: 'Select period',
-                                        onChanged: (p0) => changeLiberalPeriod,
-                                        value: config.getConfigurations
-                                            .liberalCoursePeriod!['period'],
                                         items: config.getConfigurations.periods!
                                             .map((e) => DropdownMenuItem(
                                                 value: e['period'],
@@ -487,19 +462,12 @@ class _LiberalPageState extends State<LiberalPage> {
   changeLiberalDay(Map<String, dynamic> p1) {
     if (p1 != null) {
       Provider.of<ConfigDataFlow>(context, listen: false).setLiberalDay(p1);
-      setState(() {
-        print("got here");
-        _liberalDay = p1['day'];
-      });
     }
   }
 
   changeLiberalPeriod(Map<String, dynamic> p1) {
     if (p1 != null) {
       Provider.of<ConfigDataFlow>(context, listen: false).setLiberalPeriod(p1);
-      setState(() {
-        _liberalPeriod = p1['period'];
-      });
     }
   }
 

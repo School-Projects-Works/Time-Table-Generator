@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:aamusted_timetable_generator/Models/Class/ClassModel.dart';
@@ -12,7 +13,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:open_app_file/open_app_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../Components/CustomButton.dart';
 import '../../../../Components/CustomTable.dart';
 import '../../../../Components/SmartDialog.dart';
@@ -271,7 +273,7 @@ class _ClassesPageState extends State<ClassesPage> {
     CustomDialog.showSuccess(message: 'Selected Classes Deleted Successfully');
   }
 
-  void clearClasses() {
+  void clearClasses() async {
     CustomDialog.showInfo(
       message:
           'Are you sure yo want to delete all Students\' Classes? Note: This action is not reversible',

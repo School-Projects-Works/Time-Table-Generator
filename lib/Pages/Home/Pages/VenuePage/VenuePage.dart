@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:aamusted_timetable_generator/Constants/Constant.dart';
@@ -248,10 +249,10 @@ class _VenuePageState extends State<VenuePage> {
             'File with the name venues.xlsx already exist. Do you want to view it or overwrite it ?',
         buttonText: 'View Template',
         buttonText2: 'Overwrite',
-        onPressed2: () => createTemplate(File(fileName)),
+        onPressed2: () => createTemplate(),
       );
     } else {
-      createTemplate(File(fileName));
+      createTemplate();
     }
   }
 
@@ -272,12 +273,12 @@ class _VenuePageState extends State<VenuePage> {
     CustomDialog.showSuccess(message: 'Selected Venues Deleted Successfully');
   }
 
-  void clearVenues() {
-    CustomDialog.showInfo(
-        onPressed: () => clear(),
-        message:
-            'Are you sure you want to clear all Venues ? Note: This action is not reversible',
-        buttonText: 'Yes|Clear');
+  void clearVenues() async {
+    // CustomDialog.showInfo(
+    //     onPressed: () => clear(),
+    //     message:
+    //         'Are you sure you want to clear all Venues ? Note: This action is not reversible',
+    //     buttonText: 'Yes|Clear');
   }
 
   clear() {
@@ -297,12 +298,11 @@ class _VenuePageState extends State<VenuePage> {
     }
   }
 
-  createTemplate(File existingFile) async {
+  createTemplate() async {
     CustomDialog.dismiss();
     CustomDialog.showLoading(message: 'Creating Template...Please Wait');
     try {
-      existingFile.createSync();
-      var file = await ImportServices.templateClasses(existingFile);
+      var file = await ImportServices.templateVenue();
       if (await file.exists()) {
         OpenAppFile.open(file.path);
         CustomDialog.dismiss();

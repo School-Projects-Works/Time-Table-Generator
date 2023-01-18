@@ -4,13 +4,16 @@ import 'dart:io';
 import 'package:aamusted_timetable_generator/Constants/Constant.dart';
 import 'package:aamusted_timetable_generator/Constants/CustomStringFunctions.dart';
 import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
+import 'package:aamusted_timetable_generator/Services/ExcelSheetSettings.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import '../Models/Class/ClassModel.dart';
 import '../Models/Course/CourseModel.dart';
 import '../Models/Course/LiberalModel.dart';
+import '../Styles/ExcelHeaderStyle.dart';
 
 class FileService {
   static Future<String?> pickExcelFIle() async {
@@ -111,91 +114,76 @@ class ImportServices {
   }
 
   static Future<File> templateCourses(File file) async {
-    Excel excel = Excel.createExcel();
-    Sheet sheetObject = excel['Courses'];
-    excel.setDefaultSheet('Courses');
-    CellStyle cellStyle = CellStyle(
-        bold: true,
-        fontSize: 12,
-        fontColorHex: '#000000',
-        horizontalAlign: HorizontalAlign.Center,
-        verticalAlign: VerticalAlign.Center,
-        textWrapping: TextWrapping.WrapText);
-
-    sheetObject.appendRow(Constant.courseExcelHeaderOrder);
-    sheetObject.row(0).forEach((element) {
-      element?.cellStyle = cellStyle;
-    });
-
-    file.writeAsBytesSync(excel.encode()!);
-    file.createSync();
+    try {
+      final Workbook workbook = Workbook();
+      ExcelSheetSettings(
+        book: workbook,
+        sheetName: 'Courses',
+        columnCount: Constant.courseExcelHeaderOrder.length,
+        headings: Constant.courseExcelHeaderOrder,
+      ).sheetSettings();
+      file.writeAsBytesSync(workbook.saveAsStream());
+      workbook.dispose();
+      return file;
+    } catch (e) {
+      print('Error=====$e');
+    }
     return file;
   }
 
   static templateClasses(File file) async {
-    Excel excel = Excel.createExcel();
-    Sheet sheetObject = excel['Classes'];
-    excel.setDefaultSheet('Classes');
-    CellStyle cellStyle = CellStyle(
-        bold: true,
-        fontSize: 12,
-        fontColorHex: '#000000',
-        horizontalAlign: HorizontalAlign.Center,
-        verticalAlign: VerticalAlign.Center,
-        textWrapping: TextWrapping.WrapText);
-
-    sheetObject.appendRow(Constant.classExcelHeaderOrder);
-    sheetObject.row(0).forEach((element) {
-      element?.cellStyle = cellStyle;
-    });
-
-    file.writeAsBytesSync(excel.encode()!);
-    file.createSync();
+    try {
+      final Workbook workbook = Workbook();
+      ExcelSheetSettings(
+        book: workbook,
+        sheetName: 'Students Classes',
+        columnCount: Constant.classExcelHeaderOrder.length,
+        headings: Constant.classExcelHeaderOrder,
+      ).sheetSettings();
+      file.writeAsBytesSync(workbook.saveAsStream());
+      workbook.dispose();
+      return file;
+    } catch (e) {
+      print('Error=====$e');
+    }
     return file;
   }
 
-  static templateVenue(File file) async {
-    Excel excel = Excel.createExcel();
-    Sheet sheetObject = excel['Venues'];
-    excel.setDefaultSheet('Venues');
-    CellStyle cellStyle = CellStyle(
-        bold: true,
-        fontSize: 12,
-        fontColorHex: '#000000',
-        horizontalAlign: HorizontalAlign.Center,
-        verticalAlign: VerticalAlign.Center,
-        textWrapping: TextWrapping.WrapText);
-
-    sheetObject.appendRow(Constant.venueExcelHeaderOrder);
-    sheetObject.row(0).forEach((element) {
-      element?.cellStyle = cellStyle;
-    });
-
-    file.writeAsBytesSync(excel.encode()!);
-    file.createSync();
-    return file;
+  static templateVenue() async {
+    try {
+      final Workbook workbook = Workbook();
+      ExcelSheetSettings(
+        book: workbook,
+        sheetName: 'Venues',
+        columnCount: Constant.venueExcelHeaderOrder.length,
+        headings: Constant.venueExcelHeaderOrder,
+      ).sheetSettings();
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      String fileName = '${appDocDir.path}/venues.xlsx';
+      File file = File(fileName);
+      file.writeAsBytesSync(workbook.saveAsStream());
+      workbook.dispose();
+      return file;
+    } catch (e) {
+      print('Error=====$e');
+    }
   }
 
   static templateLiberal(File file) async {
-    Excel excel = Excel.createExcel();
-    Sheet sheetObject = excel['Liberal'];
-    excel.setDefaultSheet('Liberal');
-    CellStyle cellStyle = CellStyle(
-        bold: true,
-        fontSize: 12,
-        fontColorHex: '#000000',
-        horizontalAlign: HorizontalAlign.Center,
-        verticalAlign: VerticalAlign.Center,
-        textWrapping: TextWrapping.WrapText);
-
-    sheetObject.appendRow(Constant.liberalExcelHeaderOrder);
-    sheetObject.row(0).forEach((element) {
-      element?.cellStyle = cellStyle;
-    });
-
-    file.writeAsBytesSync(excel.encode()!);
-    file.createSync();
-    return file;
+    try {
+      final Workbook workbook = Workbook();
+      ExcelSheetSettings(
+        book: workbook,
+        sheetName: 'Liberal Courses',
+        columnCount: Constant.liberalExcelHeaderOrder.length,
+        headings: Constant.liberalExcelHeaderOrder,
+      ).sheetSettings();
+      file.writeAsBytesSync(workbook.saveAsStream());
+      workbook.dispose();
+      return file;
+    } catch (e) {
+      print('Error=====$e');
+    }
   }
 
   static Future<List<LiberalModel>> importLiberal(Excel excel) async {

@@ -27,6 +27,10 @@ class ConfigDataFlow extends ChangeNotifier {
     notifyListeners();
   }
 
+  String? liberalCourseDay, liberalCoursePeriod;
+  String? get getLiberalCourseDay => liberalCourseDay;
+  String? get getLiberalCoursePeriod => liberalCoursePeriod;
+
   void updateConfigurations(ConfigModel newConfigurations) {
     configurations = newConfigurations;
     if (configurations.days != null) {
@@ -79,6 +83,12 @@ class ConfigDataFlow extends ChangeNotifier {
       periodThree = PeriodModel().clear();
       periodFour = PeriodModel().clear();
     }
+    liberalCourseDay = configurations.liberalCourseDay != null
+        ? configurations.liberalCourseDay!['day']
+        : null;
+    liberalCoursePeriod = configurations.liberalCoursePeriod != null
+        ? configurations.liberalCoursePeriod!['period']
+        : null;
     notifyListeners();
   }
 

@@ -22,8 +22,9 @@ class CoursesDataSource extends DataTableSource {
     if (index >= data.length) return null;
     var course = data[index];
     bool isSpecialVenue = course.specialVenue!.toLowerCase() != "no";
-    bool hasVenue = venue.any((element) =>
-        element.name!.toLowerCase() == course.specialVenue!.toLowerCase());
+    bool hasVenue = venue.any((element) => element.name!
+        .toLowerCase()
+        .contains(course.specialVenue!.toLowerCase()));
     final textStyle = GoogleFonts.nunito(
       fontSize: 15,
       color: Colors.black,

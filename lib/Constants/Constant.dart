@@ -5,7 +5,8 @@ class Constant {
   static String courseTitle = "Course Title";
   static String creditHours = "Credit Hours";
   static String lecturerName = "Lecturer Name";
-  static String specialVenue = "Special Venue(Specify Venue)";
+  static String specialVenue =
+      "Special Venue(Specify Venue,eg:Wood Lab,Computer Lab)";
   static String lecturerEmail = "Lecturer Email";
   static String department = "Department";
 
@@ -19,6 +20,7 @@ class Constant {
   static String roomName = "Room";
   static String capacity = "Capacity";
   static String disability = "Disability Friendly(Yes/No)";
+  static String isSpecial = "Special/Lab (Yes/No)";
 
   static List<String> courseExcelHeaderOrder = [
     courseCode,
@@ -40,7 +42,12 @@ class Constant {
     // department,
   ];
 
-  static List<String> venueExcelHeaderOrder = [roomName, capacity, disability];
+  static List<String> venueExcelHeaderOrder = [
+    roomName,
+    capacity,
+    disability,
+    isSpecial
+  ];
 
   static List<String> liberalExcelHeaderOrder = [
     courseCode,
