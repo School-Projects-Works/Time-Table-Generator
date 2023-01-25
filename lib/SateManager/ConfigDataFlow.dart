@@ -721,7 +721,7 @@ class ConfigDataFlow extends ChangeNotifier {
     updateConfigList();
   }
 
-  void updateHasVenue(data) {
+  void updateHasVenue(bool data) {
     configurations.hasVenues = data;
     HiveCache.addConfigurations(configurations);
     updateConfigurations(configurations);

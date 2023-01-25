@@ -37,7 +37,8 @@ class _VenuePageState extends State<VenuePage> {
     '',
     'Room',
     'Capacity',
-    'Disability Accessible'
+    'Disability Accessible',
+    'Special Venue',
   ];
 
   @override
@@ -221,7 +222,7 @@ class _VenuePageState extends State<VenuePage> {
               var data = HiveCache.getVenues(hive.currentAcademicYear);
               hive.setVenueList(data);
               Provider.of<ConfigDataFlow>(context, listen: false)
-                  .updateHasVenue(data);
+                  .updateHasVenue(true);
               CustomDialog.dismiss();
               CustomDialog.showSuccess(message: 'Data Imported Successfully');
             } else {

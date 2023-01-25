@@ -103,6 +103,13 @@ class VenueDataSource extends DataTableSource {
               venue.isDisabilityAccessible!,
               style: style,
             ),
+          )),
+          DataCell(ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 100),
+            child: Text(
+              venue.isSpecialVenue!,
+              style: style,
+            ),
           ))
         ]);
   }

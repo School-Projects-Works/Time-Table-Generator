@@ -13,7 +13,6 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import '../Models/Class/ClassModel.dart';
 import '../Models/Course/CourseModel.dart';
 import '../Models/Course/LiberalModel.dart';
-import '../Styles/ExcelHeaderStyle.dart';
 
 class FileService {
   static Future<String?> pickExcelFIle() async {
@@ -33,8 +32,6 @@ class ExcelService {
     List<Data?> headerRow = excel.tables[excel.getDefaultSheet()]!.row(0);
     List<String> fileColumns =
         headerRow.map<String>((data) => data!.value.toString()).toList();
-
-    // Validate the name column names
     return listEquals(fileColumns, columns);
   }
 
@@ -43,8 +40,7 @@ class ExcelService {
       String? pickedFilePath = await FileService.pickExcelFIle();
       if (pickedFilePath != null) {
         var bytes = File(pickedFilePath).readAsBytesSync();
-        var excel = Excel.decodeBytes(List<int>.from(bytes));
-        return excel;
+        return Excel.decodeBytes(List<int>.from(bytes));
       } else {
         return null;
       }
@@ -60,15 +56,15 @@ class ImportServices {
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
     List<CourseModel> courses = rows.skip(1).map<CourseModel>((row) {
       return CourseModel(
-        code: row[0] != null ? row[0]!.value.toString() : '',
-        title: row[1] != null ? row[1]!.value.toString() : '',
-        creditHours: row[2] != null ? row[2]!.value.toString() : '3',
-        specialVenue: row[3] != null ? row[3]!.value.toString() : 'No',
-        lecturerName: row[4] != null ? row[4]!.value.toString() : '',
-        lecturerEmail: row[5] != null ? row[5]!.value.toString() : '',
-        department: row[6] != null ? row[6]!.value.toString() : '',
-        id: row[0] != null ? row[0]!.value.toString().trimToLowerCase() : '',
-      );
+          code: row[0] != null ? row[0]!.value.toString() : '',
+          title: row[1] != null ? row[1]!.value.toString() : '',
+          creditHours: row[2] != null ? row[2]!.value.toString() : '3',
+          specialVenue: row[3] != null ? row[3]!.value.toString() : 'No',
+          lecturerName: row[4] != null ? row[4]!.value.toString() : '',
+          lecturerEmail: row[5] != null ? row[5]!.value.toString() : '',
+          department: row[6] != null ? row[6]!.value.toString() : '',
+          id: row[0] != null ? row[0]!.value.toString().trimToLowerCase() : '',
+          venues: []);
     }).toList();
 
     return courses.where((element) => element.id!.isNotEmpty).toList();
@@ -83,6 +79,7 @@ class ImportServices {
         isDisabilityAccessible:
             row[2] != null ? row[2]!.value.toString() : 'No',
         id: row[0] != null ? row[0]!.value.toString().trimToLowerCase() : '',
+        isSpecialVenue: row[3] != null ? row[3]!.value.toString() : 'No',
       );
     }).toList();
 
@@ -104,7 +101,6 @@ class ImportServices {
         courses: row[5] != null ? row[5]!.value.toString().split(',') : [],
       );
     }).toList();
-
     return classes
         .where((element) =>
             element.id!.isNotEmpty &&
@@ -197,7 +193,6 @@ class ImportServices {
         lecturerEmail: row[3] != null ? row[3]!.value.toString() : '',
       );
     }).toList();
-
     return liberals.where((element) => element.id!.isNotEmpty).toList();
   }
 }

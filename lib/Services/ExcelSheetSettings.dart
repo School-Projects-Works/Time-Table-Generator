@@ -50,15 +50,15 @@ class ExcelSheetSettings {
     options.all = true;
     for (start; start < end; start++) {
       sheet.getRangeByName('${listOfAlpha[start]}1').setText(headings[start]);
-      sheet
-          .getRangeByName('${listOfAlpha[start]}2:${listOfAlpha[start]}1000')
-          .cellStyle
-          .locked = false;
+      // sheet
+      //     .getRangeByName('${listOfAlpha[start]}2:${listOfAlpha[start]}1000')
+      //     .cellStyle
+      //     .locked = false;
     }
     sheet
         .getRangeByName('${listOfAlpha[0]}1:${listOfAlpha[end - 1]}1')
         .cellStyle = headerStyle(book, sheetName);
-    sheet.protect('Password', options);
+    // sheet.protect('Password', options);
     for (int i = 1; i <= columnCount; i++) {
       sheet.autoFitColumn(i);
     }

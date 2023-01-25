@@ -207,10 +207,12 @@ packages:
   excel:
     dependency: "direct main"
     description:
-      name: excel
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.1"
+      path: "."
+      ref: HEAD
+      resolved-ref: "443a3f862683f4805de46c781f272f589ce45a4b"
+      url: "https://github.com/BST-Forked-Projects/excel.git"
+    source: git
+    version: "2.0.0-null-safety-4"
   fake_async:
     dependency: transitive
     description:

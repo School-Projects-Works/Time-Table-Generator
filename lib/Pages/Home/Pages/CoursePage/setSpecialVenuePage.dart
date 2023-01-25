@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,9 @@ class _SetSpecialVenueState extends State<SetSpecialVenue> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Consumer<HiveListener>(builder: (context, hive, child) {
-      var venues = hive.getVenues;
+      var venues = hive.getVenues
+          .where((element) => element.isSpecialVenue!.toLowerCase() == 'yes')
+          .toList();
       return Scaffold(
           backgroundColor: Colors.transparent,
           body: SizedBox(
@@ -55,7 +58,7 @@ class _SetSpecialVenueState extends State<SetSpecialVenue> {
                         ],
                       ),
                       Text(
-                        'Select Venue for this course\n (${widget.course.code} - ${widget.course.title})',
+                        'Select Venues where this course can be offered\n (${widget.course.code} - ${widget.course.title})',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
                           fontSize: 18,
@@ -79,7 +82,7 @@ class _SetSpecialVenueState extends State<SetSpecialVenue> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 30),
                           child: CustomDropDown(
-                              onChanged: (p0) => setVal(p0),
+                              onChanged: (p0) => widget.course.venues!.add(p0),
                               items: venues
                                   .map((e) => DropdownMenuItem(
                                       value: e.name,
@@ -89,7 +92,35 @@ class _SetSpecialVenueState extends State<SetSpecialVenue> {
                                       )))
                                   .toList(),
                               color: Colors.white),
-                        )
+                        ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                          height: 200,
+                          child: ListView.builder(
+                            itemCount: widget.course.venues!.length,
+                            itemBuilder: ((context, index) {
+                              return ListTile(
+                                title: Text(
+                                  widget.course.venues![index],
+                                  style: GoogleFonts.nunito(),
+                                ),
+                                trailing: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        widget.course.venues!.removeAt(index);
+                                      });
+                                    },
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    )),
+                              );
+                            }),
+                          )),
+                      const SizedBox(height: 20),
+                      if (widget.course.venues!.isNotEmpty)
+                        CustomButton(
+                            onPressed: saveCourse, text: 'Save Changes')
                     ],
                   ),
                 ),
@@ -99,9 +130,9 @@ class _SetSpecialVenueState extends State<SetSpecialVenue> {
     });
   }
 
-  setVal(p0) {
+  void saveCourse() {
     Provider.of<HiveListener>(context, listen: false)
-        .setSpecialVenue(widget.course, p0);
+        .setSpecialVenue(widget.course);
     Navigator.pop(context);
   }
 }

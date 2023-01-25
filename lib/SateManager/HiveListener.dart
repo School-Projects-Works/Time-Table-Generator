@@ -138,8 +138,7 @@ class HiveListener extends ChangeNotifier {
     notifyListeners();
   }
 
-  setSpecialVenue(CourseModel course, p0) {
-    course.specialVenue = p0;
+  setSpecialVenue(CourseModel course) {
     HiveCache.updateCourse(course);
     var data = HiveCache.getCourses(currentAcademicYear);
     setCourseList(data);

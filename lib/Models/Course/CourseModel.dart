@@ -23,6 +23,8 @@ class CourseModel {
   String? id;
   @HiveField(8)
   String? academicYear;
+  @HiveField(9)
+  List<String>? venues;
 
   CourseModel({
     this.code,
@@ -34,6 +36,7 @@ class CourseModel {
     this.department,
     this.id,
     this.academicYear,
+    this.venues,
   });
 
   CourseModel.fromJson(Map<String, dynamic> json) {
@@ -46,6 +49,7 @@ class CourseModel {
     department = json['department'];
     id = json['id'];
     academicYear = json['academicYear'];
+    venues = json['venues'].cast<String>();
   }
 
   Map<String, dynamic> toJson() {
@@ -59,6 +63,7 @@ class CourseModel {
     data['department'] = department;
     data['id'] = id;
     data['academicYear'] = academicYear;
+    data['venues'] = venues;
     return data;
   }
 }

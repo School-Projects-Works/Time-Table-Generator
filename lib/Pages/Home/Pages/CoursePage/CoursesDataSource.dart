@@ -17,14 +17,11 @@ class CoursesDataSource extends DataTableSource {
   DataRow? getRow(int index) {
     var data =
         Provider.of<HiveListener>(context, listen: false).getFilteredCourses;
-    var venue = Provider.of<HiveListener>(context, listen: false).getVenues;
 
     if (index >= data.length) return null;
     var course = data[index];
     bool isSpecialVenue = course.specialVenue!.toLowerCase() != "no";
-    bool hasVenue = venue.any((element) => element.name!
-        .toLowerCase()
-        .contains(course.specialVenue!.toLowerCase()));
+    bool hasVenue = course.venues!.isNotEmpty;
     final textStyle = GoogleFonts.nunito(
       fontSize: 15,
       color: Colors.black,
@@ -149,7 +146,7 @@ class CoursesDataSource extends DataTableSource {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      course.specialVenue!,
+                      course.venues!.join(' or '),
                       style: textStyle,
                     ),
                     const SizedBox(width: 5),
