@@ -18,39 +18,36 @@ class LiberalTimePairModelAdapter extends TypeAdapter<LiberalTimePairModel> {
     };
     return LiberalTimePairModel(
       id: fields[0] as String?,
-      uniqueId: fields[1] as String?,
-      day: fields[2] as String?,
-      period: fields[3] as String?,
-      courseCode: fields[4] as String?,
-      level: fields[5] as String?,
-      lecturerName: fields[6] as String?,
-      lecturerEmail: fields[7] as String?,
-      lecturerPhone: fields[8] as String?,
+      day: fields[1] as String?,
+      period: fields[2] as String?,
+      courseCode: fields[3] as String?,
+      lecturerName: fields[4] as String?,
+      lecturerEmail: fields[5] as String?,
+      courseTitle: fields[6] as String?,
+      academicYear: fields[7] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, LiberalTimePairModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.uniqueId)
-      ..writeByte(2)
       ..write(obj.day)
-      ..writeByte(3)
+      ..writeByte(2)
       ..write(obj.period)
-      ..writeByte(4)
+      ..writeByte(3)
       ..write(obj.courseCode)
-      ..writeByte(5)
-      ..write(obj.level)
-      ..writeByte(6)
+      ..writeByte(4)
       ..write(obj.lecturerName)
-      ..writeByte(7)
+      ..writeByte(5)
       ..write(obj.lecturerEmail)
-      ..writeByte(8)
-      ..write(obj.lecturerPhone);
+      ..writeByte(6)
+      ..write(obj.courseTitle)
+      ..writeByte(7)
+      ..write(obj.academicYear);
   }
 
   @override

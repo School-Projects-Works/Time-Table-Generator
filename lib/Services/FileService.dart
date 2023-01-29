@@ -189,8 +189,9 @@ class ImportServices {
         id: row[0] != null ? row[0]!.value.toString().trimToLowerCase() : '',
         code: row[0] != null ? row[0]!.value.toString() : '',
         title: row[1] != null ? row[1]!.value.toString() : '',
-        lecturerName: row[2] != null ? row[2]!.value.toString() : '',
-        lecturerEmail: row[3] != null ? row[3]!.value.toString() : '',
+        level: row[2] != null ? row[2]!.value.toString() : '',
+        lecturerName: row[3] != null ? row[3]!.value.toString() : '',
+        lecturerEmail: row[4] != null ? row[4]!.value.toString() : '',
       );
     }).toList();
     return liberals.where((element) => element.id!.isNotEmpty).toList();

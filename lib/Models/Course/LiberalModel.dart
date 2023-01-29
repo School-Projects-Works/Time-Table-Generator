@@ -17,6 +17,8 @@ class LiberalModel {
   String? id;
   @HiveField(5)
   String? academicYear;
+  @HiveField(6)
+  String? level;
 
   LiberalModel(
       {this.code,
@@ -24,25 +26,6 @@ class LiberalModel {
       this.lecturerName,
       this.lecturerEmail,
       this.id,
-      this.academicYear});
-
-  LiberalModel.fromJson(Map<String, dynamic> json) {
-    code = json['code'];
-    title = json['title'];
-    lecturerName = json['lecturerName'];
-    lecturerEmail = json['lecturerEmail'];
-    id = json['id'];
-    academicYear = json['academicYear'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['code'] = code;
-    data['title'] = title;
-    data['lecturerName'] = lecturerName;
-    data['lecturerEmail'] = lecturerEmail;
-    data['id'] = id;
-    data['academicYear'] = academicYear;
-    return data;
-  }
+      this.academicYear,
+      this.level});
 }

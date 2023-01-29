@@ -83,12 +83,9 @@ class VenueDataSource extends DataTableSource {
               },
             ),
           )),
-          DataCell(ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 200),
-            child: Text(
-              venue.name!,
-              style: style,
-            ),
+          DataCell(Text(
+            venue.name!,
+            style: style,
           )),
           DataCell(ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 100),

@@ -66,10 +66,10 @@ class CustomCheckBox extends StatelessWidget {
                   ],
                 ),
               ),
-              const Spacer(),
+              //const Spacer(),
+              const SizedBox(width: 150),
               if (isChecked)
-                SizedBox(
-                  width: 350,
+                Expanded(
                   child: Column(
                     children: [
                       Row(

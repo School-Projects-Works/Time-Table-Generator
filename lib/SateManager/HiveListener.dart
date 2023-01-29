@@ -1,13 +1,19 @@
 // ignore_for_file: file_names
+import 'package:aamusted_timetable_generator/Constants/CustomStringFunctions.dart';
 import 'package:aamusted_timetable_generator/Models/Class/ClassModel.dart';
+import 'package:aamusted_timetable_generator/Models/ClassCoursePair/ClassCoursePairModel.dart';
 import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
 import 'package:aamusted_timetable_generator/Models/Course/LiberalModel.dart';
+import 'package:aamusted_timetable_generator/Models/LiberalTimePair/LiberalTimePairModel.dart';
 import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
+import 'package:aamusted_timetable_generator/Models/VenueTimePair/VenueTimePairModel.dart';
 import 'package:aamusted_timetable_generator/SateManager/ConfigDataFlow.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveCache.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Models/Academic/AcademicModel.dart';
+import '../Models/Config/ConfigModel.dart';
+import '../Models/Table/TableModel.dart';
 
 class HiveListener extends ChangeNotifier {
   List<AcademicModel> academicList = [];
@@ -40,6 +46,8 @@ class HiveListener extends ChangeNotifier {
   void setCourseList(List<CourseModel> list) {
     courseList = list;
     filteredCourses = list;
+    hasSpecialCourseError = list.any((element) =>
+        element.specialVenue!.toLowerCase() != "no" && element.venues!.isEmpty);
     selectedCourse = [];
     notifyListeners();
   }
@@ -143,6 +151,9 @@ class HiveListener extends ChangeNotifier {
     var data = HiveCache.getCourses(currentAcademicYear);
     setCourseList(data);
   }
+
+  bool hasSpecialCourseError = false;
+  bool get getHasSpecialCourseError => hasSpecialCourseError;
 
   deleteCourse(List<CourseModel> courses, BuildContext context) {
     for (var element in courses) {
@@ -318,5 +329,284 @@ class HiveListener extends ChangeNotifier {
   void removeSelectedLiberal(List<LiberalModel> list) {
     selectedLiberal.removeWhere((element) => list.contains(element));
     notifyListeners();
+  }
+
+  List<VenueTimePairModel>? venueTimePairs;
+  List<VenueTimePairModel>? get getVenueTimePairs => venueTimePairs;
+  List<LiberalTimePairModel>? libTimePairs;
+  List<LiberalTimePairModel>? get getLiberalTimePairs => libTimePairs;
+  List<ClassCoursePairModel>? classCoursePairs;
+  List<ClassCoursePairModel>? get getClassCoursePairs => classCoursePairs;
+  List<TableModel>? tables;
+  List<TableModel>? get getTables => tables;
+  void generateTables(ConfigModel config) {
+    tables = [];
+
+    var days = config.days;
+    var periods = config.periods;
+    var libDays = config.liberalCourseDay;
+    var libPeriods = config.liberalCoursePeriod;
+    venueTimePairs = getVTP(days, periods);
+    // print('length of venueTimePairs: ${venueTimePairs!.length}');
+    libTimePairs = getLTP(libDays, libPeriods);
+    // print('length of libTimePairs: ${libTimePairs!.length}');
+    classCoursePairs = getCCP();
+    //print('length of classCoursePairs: ${classCoursePairs!.length}');
+
+    //Now we have to generate all the possible combinations of the above
+    //Now let sort the venueTimePairs from higher capacity to lower capacity
+    venueTimePairs!.sort((a, b) =>
+        int.parse(a.venueCapacity!).compareTo(int.parse(b.venueCapacity!)));
+    //now reverse the list
+    venueTimePairs = venueTimePairs!.reversed.toList();
+
+    //now let randomly pick libTimePairs.length venueTimePairs with the highest capacity where the venueTimePairs day and period matches the libTimePairs day and period
+    for (var libTimePair in libTimePairs!) {
+      for (var venueTimePair in venueTimePairs!) {
+        if (!venueTimePair.isBooked &&
+            libTimePair.day == venueTimePair.day &&
+            libTimePair.period == venueTimePair.period) {
+          TableModel table = TableModel();
+          table.id = '${libTimePair.id}${venueTimePair.id}';
+          table.day = libTimePair.day;
+          table.period = libTimePair.period;
+          table.venue = venueTimePair.venueName;
+          table.venueCapacity = venueTimePair.venueCapacity;
+          table.academicYear = currentAcademicYear;
+          table.venueId = venueTimePair.venueId;
+          table.courseCode = libTimePair.courseCode;
+          table.courseTitle = libTimePair.courseTitle;
+          table.lecturerName = libTimePair.lecturerName;
+          table.lecturerEmail = libTimePair.lecturerEmail;
+          table.isSpecialVenue = venueTimePair.isSpecialVenue;
+          table.periodMap = venueTimePair.periodMap;
+          table.dayMap = venueTimePair.dayMap;
+          tables!.add(table);
+
+          venueTimePair.isBooked = true;
+          break;
+        }
+      }
+    }
+
+    //now we get only regular classCoursePairs and create thrir tables
+    generateRegularTables();
+
+    notifyListeners();
+  }
+
+  List<VenueTimePairModel> getVTP(
+      List<Map<String, dynamic>>? days, List<Map<String, dynamic>>? periods) {
+    List<VenueTimePairModel> venueTimePairs = [];
+    for (var day in days!) {
+      for (var period in periods!) {
+        for (var venue in venueList) {
+          VenueTimePairModel vtp = VenueTimePairModel();
+          vtp.day = day['day'];
+          vtp.period = period['period'];
+          vtp.id =
+              '${venue.id}${day['day']}${period['period']}'.trimToLowerCase();
+          vtp.venueId = venue.id;
+          vtp.dayMap = day;
+          vtp.periodMap = period;
+          vtp.isDisabilityAccessible = venue.isDisabilityAccessible;
+          vtp.reg = day['isRegular'] == true && period['isRegular'] == true;
+          vtp.eve = day['isEvening'] == true && period['isEvening'] == true;
+          vtp.wnd = day['isWeekend'] == true && period['isWeekend'] == true;
+          vtp.venueName = venue.name;
+          vtp.venueCapacity = venue.capacity;
+          vtp.academicYear = venue.academicYear;
+          vtp.isSpecialVenue = venue.isSpecialVenue;
+
+          venueTimePairs.add(vtp);
+        }
+      }
+    }
+    return venueTimePairs;
+  }
+
+  List<LiberalTimePairModel> getLTP(
+    Map<String, dynamic>? libDays,
+    Map<String, dynamic>? libPeriods,
+  ) {
+    List<LiberalTimePairModel> libTimePairs = [];
+    for (var lib in liberalList) {
+      LiberalTimePairModel ltp = LiberalTimePairModel();
+      ltp.day = libDays!['day'];
+      ltp.period = libPeriods!['period'];
+      ltp.courseCode = lib.code;
+      ltp.courseTitle = lib.title;
+      ltp.academicYear = lib.academicYear;
+      ltp.id =
+          '${lib.id}${libDays['day']}${libPeriods['period']}'.trimToLowerCase();
+      ltp.lecturerName = lib.lecturerName;
+      ltp.lecturerEmail = lib.lecturerEmail;
+      libTimePairs.add(ltp);
+    }
+    return libTimePairs;
+  }
+
+  List<ClassCoursePairModel> getCCP() {
+    List<ClassCoursePairModel> classCoursePairs = [];
+    for (var stuClass in classList) {
+      for (var txt in stuClass.courses!) {
+        CourseModel course = courseList.firstWhere(
+            (element) =>
+                element.code.toString().trimToLowerCase() ==
+                txt.toString().trimToLowerCase(),
+            orElse: () => CourseModel());
+        if (course.code != null) {
+          ClassCoursePairModel ccp = ClassCoursePairModel();
+          ccp.classId = stuClass.id;
+          ccp.courseCode = course.code;
+          ccp.courseTitle = course.title;
+          ccp.creditHours = course.creditHours;
+          ccp.academicYear = course.academicYear;
+          ccp.id = '${stuClass.id}${course.id}'.trimToLowerCase();
+          ccp.courseId = course.id;
+          ccp.className = stuClass.name;
+          ccp.department = stuClass.department;
+          ccp.classLevel = stuClass.level;
+          ccp.venues = course.venues;
+          ccp.lecturerName = course.lecturerName;
+          ccp.lecturerEmail = course.lecturerEmail;
+          ccp.specialVenue = course.specialVenue;
+          ccp.classHasDisability = stuClass.hasDisability;
+          ccp.classCourses = stuClass.courses;
+          ccp.classSize = stuClass.size;
+          ccp.classType = stuClass.type;
+
+          classCoursePairs.add(ccp);
+        }
+      }
+    }
+
+    return classCoursePairs;
+  }
+
+  void generateRegularTables() {
+    //now we get only regular classCoursePairs and create their tables
+    for (var classCoursePair in classCoursePairs!) {
+      if ((classCoursePair.classType!.trimToLowerCase().startsWith('r') ||
+              classCoursePair.classType!.trimToLowerCase() == 'regular') &&
+          classCoursePair.isAssigned == false) {
+        //check if it has a special Venue==================================
+        if (classCoursePair.venues!.isNotEmpty) {
+          //now we pick one venue from the list of venues and find it in the venueTimePairs
+          for (var title in classCoursePair.venues!) {
+            for (var vtp in venueTimePairs!) {
+              if (title.trimToLowerCase() ==
+                  vtp.venueName.toString().trimToLowerCase()) {
+                if (!vtp.isBooked) {
+                  var table = returnTable(vtp, classCoursePair);
+                  tables!.add(table);
+                  vtp.isBooked = true;
+                  classCoursePair.isAssigned = true;
+                }
+              }
+            }
+          }
+        } else {
+          for (var venueTimePair in venueTimePairs!) {
+            if (venueTimePair.reg == true &&
+                venueTimePair.isBooked == false &&
+                venueTimePair.isSpecialVenue.toString().trimToLowerCase() ==
+                    'no') {
+              //now we check if venue capacity and the class size are in the same range
+              if (int.tryParse(venueTimePair.venueCapacity!)! >=
+                      int.tryParse(classCoursePair.classSize!)! &&
+                  int.tryParse(venueTimePair.venueCapacity!)! <=
+                      int.tryParse(classCoursePair.classSize!)! + 30) {
+                //now we check if the class has disability and the venue is disability accessible
+                if (classCoursePair.classHasDisability
+                        .toString()
+                        .trimToLowerCase() ==
+                    venueTimePair.isDisabilityAccessible
+                        .toString()
+                        .trimToLowerCase()) {
+                  var table = returnTable(venueTimePair, classCoursePair);
+                  tables!.add(table);
+                  venueTimePair.isBooked = true;
+                  classCoursePair.isAssigned = true;
+                  break;
+                }
+              }
+            }
+          }
+          if (!classCoursePair.isAssigned) {
+            for (var venueTimePair in venueTimePairs!) {
+              if (venueTimePair.reg == true &&
+                  venueTimePair.isBooked == false &&
+                  venueTimePair.isSpecialVenue.toString().trimToLowerCase() ==
+                      'no') {
+                //now we check if venue capacity and the class size are in the same range
+                if (int.tryParse(venueTimePair.venueCapacity!)! >=
+                        int.tryParse(classCoursePair.classSize!)! &&
+                    int.tryParse(venueTimePair.venueCapacity!)! <=
+                        int.tryParse(classCoursePair.classSize!)! + 30) {
+                  var table = returnTable(venueTimePair, classCoursePair);
+                  tables!.add(table);
+                  venueTimePair.isBooked = true;
+                  classCoursePair.isAssigned = true;
+                  break;
+                }
+              }
+            }
+          }
+          if (!classCoursePair.isAssigned) {
+            for (var venueTimePair in venueTimePairs!) {
+              if (venueTimePair.reg == true &&
+                  venueTimePair.isBooked == false &&
+                  venueTimePair.isSpecialVenue.toString().trimToLowerCase() ==
+                      'no') {
+                var table = returnTable(venueTimePair, classCoursePair);
+                tables!.add(table);
+                venueTimePair.isBooked = true;
+                classCoursePair.isAssigned = true;
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+    //print the tables
+    print('==================Regular Tables==================');
+    for (var table in tables!) {
+      print('table: ${table.id}');
+    }
+    print('==================Regular Tables==================');
+    //print classCoursePairs
+  }
+
+  TableModel returnTable(vtp, classCoursePair) {
+    TableModel table = TableModel();
+    table.id = '${classCoursePair.id}${vtp.id}'.trimToLowerCase();
+    table.classId = classCoursePair.classId;
+    table.courseId = classCoursePair.courseId;
+    table.venueId = vtp.venueId;
+    table.day = vtp.day;
+    table.period = vtp.period;
+    table.courseCode = classCoursePair.courseCode;
+    table.courseTitle = classCoursePair.courseTitle;
+    table.className = classCoursePair.className;
+    table.venue = vtp.venueName;
+    table.lecturerName = classCoursePair.lecturerName;
+    table.lecturerEmail = classCoursePair.lecturerEmail;
+    table.academicYear = classCoursePair.academicYear;
+    table.isSpecialVenue = classCoursePair.specialVenue;
+    table.classHasDisability = classCoursePair.classHasDisability;
+    table.classSize = classCoursePair.classSize;
+    table.classType = classCoursePair.classType;
+    table.dayMap = vtp.dayMap;
+    table.periodMap = vtp.periodMap;
+    table.isSpecialVenue = vtp.isSpecialVenue;
+    table.creditHours = classCoursePair.creditHours;
+    table.venueCapacity = vtp.venueCapacity;
+    table.venueHasDisability = vtp.isDisabilityAccessible;
+    table.department = classCoursePair.department;
+    table.classLevel = classCoursePair.classLevel;
+
+    return table;
   }
 }

@@ -38,34 +38,4 @@ class ClassModel {
     this.createdAt,
     this.academicYear,
   });
-
-  factory ClassModel.fromJson(Map<String, dynamic> json) {
-    return ClassModel(
-      id: json['id'],
-      level: json['level'],
-      type: json['type'],
-      name: json['name'],
-      size: json['size'],
-      hasDisability: json['hasDisability'],
-      courses: json['courses'],
-      department: json['department'],
-      createdAt: json['createdAt'],
-      academicYear: json['academicYear'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['level'] = level;
-    data['type'] = type;
-    data['name'] = name;
-    data['size'] = size;
-    data['hasDisability'] = hasDisability;
-    data['courses'] = courses;
-    data['department'] = department;
-    data['createdAt'] = createdAt;
-    data['academicYear'] = academicYear;
-    return data;
-  }
 }

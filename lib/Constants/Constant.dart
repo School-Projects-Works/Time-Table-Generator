@@ -52,6 +52,7 @@ class Constant {
   static List<String> liberalExcelHeaderOrder = [
     courseCode,
     courseTitle,
+    level,
     lecturerName,
     lecturerEmail
   ];

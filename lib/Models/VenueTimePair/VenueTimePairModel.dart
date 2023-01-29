@@ -10,13 +10,13 @@ class VenueTimePairModel {
   @HiveField(1)
   String? venueName;
   @HiveField(2)
-  String? uniqueId;
+  String? venueId;
   @HiveField(3)
   String? venueCapacity;
   @HiveField(4)
   String? isDisabilityAccessible;
   @HiveField(5)
-  Map<String, dynamic>? period;
+  Map<String, dynamic>? periodMap;
   @HiveField(6)
   String? day;
   @HiveField(7)
@@ -25,46 +25,31 @@ class VenueTimePairModel {
   bool? eve;
   @HiveField(9)
   bool? wnd;
+  @HiveField(10)
+  String? period;
+  @HiveField(11)
+  Map<String, dynamic>? dayMap;
+  @HiveField(12)
+  String? academicYear;
+  @HiveField(13)
+  String? isSpecialVenue;
+  @HiveField(14)
+  bool isBooked;
 
   VenueTimePairModel(
       {this.id,
       this.venueName,
-      this.uniqueId,
+      this.venueId,
       this.venueCapacity,
       this.isDisabilityAccessible,
-      this.period,
+      this.periodMap,
       this.day,
       this.reg,
       this.eve,
-      this.wnd});
-
-  factory VenueTimePairModel.fromJson(Map<String, dynamic> json) {
-    return VenueTimePairModel(
-      id: json['id'],
-      venueName: json['venueName'],
-      uniqueId: json['uniqueId'],
-      venueCapacity: json['venueCapacity'],
-      isDisabilityAccessible: json['isDisabilityAccessible'],
-      period: json['period'],
-      day: json['day'],
-      reg: json['reg'],
-      eve: json['eve'],
-      wnd: json['wnd'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['venueName'] = venueName;
-    data['uniqueId'] = uniqueId;
-    data['venueCapacity'] = venueCapacity;
-    data['isDisabilityAccessible'] = isDisabilityAccessible;
-    data['period'] = period;
-    data['day'] = day;
-    data['reg'] = reg;
-    data['eve'] = eve;
-    data['wnd'] = wnd;
-    return data;
-  }
+      this.wnd,
+      this.period,
+      this.dayMap,
+      this.academicYear,
+      this.isSpecialVenue,
+      this.isBooked = false});
 }

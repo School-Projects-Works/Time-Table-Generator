@@ -38,32 +38,4 @@ class CourseModel {
     this.academicYear,
     this.venues,
   });
-
-  CourseModel.fromJson(Map<String, dynamic> json) {
-    code = json['code'];
-    title = json['title'];
-    creditHours = json['creditHours'];
-    specialVenue = json['specialVenue'];
-    lecturerName = json['lecturerName'];
-    lecturerEmail = json['lecturerEmail'];
-    department = json['department'];
-    id = json['id'];
-    academicYear = json['academicYear'];
-    venues = json['venues'].cast<String>();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['code'] = code;
-    data['title'] = title;
-    data['creditHours'] = creditHours;
-    data['specialVenue'] = specialVenue;
-    data['lecturerName'] = lecturerName;
-    data['lecturerEmail'] = lecturerEmail;
-    data['department'] = department;
-    data['id'] = id;
-    data['academicYear'] = academicYear;
-    data['venues'] = venues;
-    return data;
-  }
 }

@@ -82,7 +82,13 @@ class _SetSpecialVenueState extends State<SetSpecialVenue> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 30),
                           child: CustomDropDown(
-                              onChanged: (p0) => widget.course.venues!.add(p0),
+                              onChanged: (p0) {
+                                setState(() {
+                                  if (!widget.course.venues!.contains(p0)) {
+                                    widget.course.venues!.add(p0);
+                                  }
+                                });
+                              },
                               items: venues
                                   .map((e) => DropdownMenuItem(
                                       value: e.name,
@@ -102,7 +108,8 @@ class _SetSpecialVenueState extends State<SetSpecialVenue> {
                               return ListTile(
                                 title: Text(
                                   widget.course.venues![index],
-                                  style: GoogleFonts.nunito(),
+                                  style:
+                                      GoogleFonts.nunito(color: Colors.white),
                                 ),
                                 trailing: IconButton(
                                     onPressed: () {
