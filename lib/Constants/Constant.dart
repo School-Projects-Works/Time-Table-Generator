@@ -27,19 +27,19 @@ class Constant {
     courseTitle,
     creditHours,
     specialVenue,
+    department,
+    level,
     lecturerName,
     lecturerEmail,
-    department
   ];
 
   static List<String> classExcelHeaderOrder = [
     level,
     type,
     className,
+    department,
     classSize,
     hasDisability,
-    courses,
-    // department,
   ];
 
   static List<String> venueExcelHeaderOrder = [

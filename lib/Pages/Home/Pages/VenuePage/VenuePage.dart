@@ -1,8 +1,5 @@
 // ignore_for_file: file_names
-
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:aamusted_timetable_generator/Constants/Constant.dart';
 import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
 import 'package:aamusted_timetable_generator/SateManager/ConfigDataFlow.dart';
@@ -275,11 +272,11 @@ class _VenuePageState extends State<VenuePage> {
   }
 
   void clearVenues() async {
-    // CustomDialog.showInfo(
-    //     onPressed: () => clear(),
-    //     message:
-    //         'Are you sure you want to clear all Venues ? Note: This action is not reversible',
-    //     buttonText: 'Yes|Clear');
+    CustomDialog.showInfo(
+        onPressed: () => clear(),
+        message:
+            'Are you sure you want to clear all Venues ? Note: This action is not reversible',
+        buttonText: 'Yes|Clear');
   }
 
   clear() {

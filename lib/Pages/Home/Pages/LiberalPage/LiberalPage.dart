@@ -105,7 +105,8 @@ class _LiberalPageState extends State<LiberalPage> {
               const SizedBox(height: 20),
               if (hive.getLiberals.isNotEmpty)
                 config.getConfigurations.liberalCourseDay == null ||
-                        config.getConfigurations.liberalCoursePeriod == null
+                        config.getConfigurations.liberalCoursePeriod == null ||
+                        config.getConfigurations.liberalLevel == null
                     ? BreathingWidget(
                         child: Container(
                           decoration: BoxDecoration(
@@ -129,7 +130,7 @@ class _LiberalPageState extends State<LiberalPage> {
                                   ),
                                   const SizedBox(width: 10),
                                   SizedBox(
-                                      width: 250,
+                                      width: 200,
                                       child: CustomDropDown(
                                           onChanged: (p0) {
                                             var data = config
@@ -162,7 +163,7 @@ class _LiberalPageState extends State<LiberalPage> {
                                   ),
                                   const SizedBox(width: 10),
                                   SizedBox(
-                                      width: 250,
+                                      width: 200,
                                       child: CustomDropDown(
                                           onChanged: (p0) {
                                             var data = config
@@ -178,6 +179,34 @@ class _LiberalPageState extends State<LiberalPage> {
                                               .map((e) => DropdownMenuItem(
                                                   value: e['period'],
                                                   child: Text(e['period'])))
+                                              .toList(),
+                                          color: Colors.white))
+                                ],
+                              )),
+                              const SizedBox(width: 20),
+                              Expanded(
+                                  child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                        'Select Level of students offering these courses:',
+                                        style: GoogleFonts.nunito(
+                                          fontSize: 16,
+                                          color: Colors.black87,
+                                        )),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  SizedBox(
+                                      width: 200,
+                                      child: CustomDropDown(
+                                          onChanged: (p0) {
+                                            changeLiberalLevel(p0);
+                                          },
+                                          value: config.getLiberalLevel,
+                                          hintText: 'Level',
+                                          items: ["100", "200", "300", "400"]
+                                              .map((e) => DropdownMenuItem(
+                                                  value: e, child: Text(e)))
                                               .toList(),
                                           color: Colors.white))
                                 ],
@@ -208,7 +237,7 @@ class _LiberalPageState extends State<LiberalPage> {
                                 ),
                                 const SizedBox(width: 10),
                                 SizedBox(
-                                    width: 250,
+                                    width: 200,
                                     child: CustomDropDown(
                                         onChanged: (p0) {
                                           var data = config
@@ -241,7 +270,7 @@ class _LiberalPageState extends State<LiberalPage> {
                                 ),
                                 const SizedBox(width: 10),
                                 SizedBox(
-                                    width: 250,
+                                    width: 200,
                                     child: CustomDropDown(
                                         onChanged: (p0) {
                                           var data = config
@@ -256,6 +285,34 @@ class _LiberalPageState extends State<LiberalPage> {
                                             .map((e) => DropdownMenuItem(
                                                 value: e['period'],
                                                 child: Text(e['period'])))
+                                            .toList(),
+                                        color: Colors.white))
+                              ],
+                            )),
+                            const SizedBox(width: 20),
+                            Expanded(
+                                child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                      'Select Level of students offering these courses:',
+                                      style: GoogleFonts.nunito(
+                                        fontSize: 16,
+                                        color: Colors.black87,
+                                      )),
+                                ),
+                                const SizedBox(width: 10),
+                                SizedBox(
+                                    width: 200,
+                                    child: CustomDropDown(
+                                        onChanged: (p0) {
+                                          changeLiberalLevel(p0);
+                                        },
+                                        value: config.getLiberalLevel,
+                                        hintText: 'Level',
+                                        items: ["100", "200", "300", "400"]
+                                            .map((e) => DropdownMenuItem(
+                                                value: e, child: Text(e)))
                                             .toList(),
                                         color: Colors.white))
                               ],
@@ -279,7 +336,7 @@ class _LiberalPageState extends State<LiberalPage> {
                 )
               else
                 SizedBox(
-                  height: size.height - 285,
+                  height: size.height - 322,
                   child: CustomTable(
                       bottomAction: Row(
                         children: [
@@ -496,6 +553,12 @@ class _LiberalPageState extends State<LiberalPage> {
     } catch (e) {
       CustomDialog.dismiss();
       CustomDialog.showError(message: 'Error Creating Template');
+    }
+  }
+
+  void changeLiberalLevel(p0) {
+    if (p0 != null) {
+      Provider.of<ConfigDataFlow>(context, listen: false).setLiberalLevel(p0);
     }
   }
 }

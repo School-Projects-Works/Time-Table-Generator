@@ -172,6 +172,13 @@ class CoursesDataSource extends DataTableSource {
           ),
         )),
         DataCell(ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 100),
+          child: Text(
+            course.level!,
+            style: textStyle,
+          ),
+        )),
+        DataCell(ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 400),
           child: Text(
             course.lecturerName!,

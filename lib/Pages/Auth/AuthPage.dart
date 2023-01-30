@@ -44,103 +44,105 @@ class _AuthPageState extends State<AuthPage> {
                         bottomLeft: Radius.circular(10))),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text('Welcome to',
-                        style: GoogleFonts.roboto(
-                            color: Colors.white,
-                            fontSize: 30,
-                            fontWeight: FontWeight.w500)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Transform.rotate(
-                            angle: 6.1,
-                            child: Text(
-                              'A',
-                              style: GoogleFonts.adamina(
-                                  fontSize: 60, fontWeight: FontWeight.w700),
-                            )),
-                        Text(
-                          'Tt',
-                          style: GoogleFonts.pacifico(
-                              fontSize: 60,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('Welcome to',
+                          style: GoogleFonts.roboto(
                               color: Colors.white,
-                              fontWeight: FontWeight.w700),
-                        ),
-                        Transform.rotate(
-                            angle: 6.1,
-                            child: Text(
-                              'G',
-                              style: GoogleFonts.russoOne(
-                                  fontSize: 60,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w700),
-                            ))
-                      ],
-                    ),
-                    Text('Aamusted Timetable Generator',
-                        style: GoogleFonts.roboto(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500)),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(.4),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: RichText(
-                          text: TextSpan(
-                              text: 'Notice: ',
-                              style: GoogleFonts.roboto(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                              children: [
-                            TextSpan(
-                              text:
-                                  'By default the administrator username is "admin" and the password is "admin". You will be required to set a new password after logging in for the first time.',
-                              style: GoogleFonts.nunito(
-                                  color: Colors.white54,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400),
-                            )
-                          ])),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(.4),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: RichText(
-                          text: TextSpan(
-                              text: 'Notice: ',
-                              style: GoogleFonts.roboto(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                              children: [
-                            TextSpan(
-                              text:
-                                  'This is a beta version of the app. Please report any bugs to the developer.',
-                              style: GoogleFonts.nunito(
-                                  color: Colors.white54,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400),
-                            )
-                          ])),
-                    )
-                  ],
+                              fontSize: 30,
+                              fontWeight: FontWeight.w500)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Transform.rotate(
+                              angle: 6.1,
+                              child: Text(
+                                'A',
+                                style: GoogleFonts.adamina(
+                                    fontSize: 60, fontWeight: FontWeight.w700),
+                              )),
+                          Text(
+                            'Tt',
+                            style: GoogleFonts.pacifico(
+                                fontSize: 60,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700),
+                          ),
+                          Transform.rotate(
+                              angle: 6.1,
+                              child: Text(
+                                'G',
+                                style: GoogleFonts.russoOne(
+                                    fontSize: 60,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w700),
+                              ))
+                        ],
+                      ),
+                      Text('Aamusted Timetable Generator',
+                          style: GoogleFonts.roboto(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500)),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(.4),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: RichText(
+                            text: TextSpan(
+                                text: 'Notice: ',
+                                style: GoogleFonts.roboto(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                                children: [
+                              TextSpan(
+                                text:
+                                    'By default the administrator username is "admin" and the password is "admin". You will be required to set a new password after logging in for the first time.',
+                                style: GoogleFonts.nunito(
+                                    color: Colors.white54,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400),
+                              )
+                            ])),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(.4),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: RichText(
+                            text: TextSpan(
+                                text: 'Notice: ',
+                                style: GoogleFonts.roboto(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                                children: [
+                              TextSpan(
+                                text:
+                                    'This is a beta version of the app. Please report any bugs to the developer.',
+                                style: GoogleFonts.nunito(
+                                    color: Colors.white54,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400),
+                              )
+                            ])),
+                      )
+                    ],
+                  ),
                 ),
               )),
               Expanded(

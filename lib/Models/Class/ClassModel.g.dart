@@ -23,17 +23,16 @@ class ClassModelAdapter extends TypeAdapter<ClassModel> {
       name: fields[3] as String?,
       size: fields[4] as String?,
       hasDisability: fields[5] as String?,
-      courses: (fields[6] as List?)?.cast<dynamic>(),
-      department: fields[7] as String?,
-      createdAt: fields[8] as String?,
-      academicYear: fields[9] as String?,
+      department: fields[6] as String?,
+      createdAt: fields[7] as String?,
+      academicYear: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ClassModel obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,12 +46,10 @@ class ClassModelAdapter extends TypeAdapter<ClassModel> {
       ..writeByte(5)
       ..write(obj.hasDisability)
       ..writeByte(6)
-      ..write(obj.courses)
-      ..writeByte(7)
       ..write(obj.department)
-      ..writeByte(8)
+      ..writeByte(7)
       ..write(obj.createdAt)
-      ..writeByte(9)
+      ..writeByte(8)
       ..write(obj.academicYear);
   }
 

@@ -37,6 +37,7 @@ class _CoursesPageState extends State<CoursesPage> {
     'Credit Hours',
     'Special Venue',
     'Department',
+    'Level',
     'Lecturer',
     'Lecturer Email',
   ];

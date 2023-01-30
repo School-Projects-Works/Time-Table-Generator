@@ -18,12 +18,10 @@ class ClassModel {
   @HiveField(5)
   String? hasDisability;
   @HiveField(6)
-  List? courses;
-  @HiveField(7)
   String? department;
-  @HiveField(8)
+  @HiveField(7)
   String? createdAt;
-  @HiveField(9)
+  @HiveField(8)
   String? academicYear;
 
   ClassModel({
@@ -33,7 +31,6 @@ class ClassModel {
     this.name,
     this.size,
     this.hasDisability,
-    this.courses,
     this.department,
     this.createdAt,
     this.academicYear,

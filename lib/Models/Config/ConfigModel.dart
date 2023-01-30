@@ -29,6 +29,8 @@ class ConfigModel {
   bool hasClass;
   @HiveField(11)
   bool hasVenues;
+  @HiveField(12)
+  String? liberalLevel;
 
   ConfigModel({
     this.id,
@@ -43,5 +45,6 @@ class ConfigModel {
     this.hasCourse = false,
     this.hasClass = false,
     this.hasVenues = false,
+    this.liberalLevel,
   });
 }

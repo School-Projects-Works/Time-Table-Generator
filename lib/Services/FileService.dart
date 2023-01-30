@@ -60,10 +60,13 @@ class ImportServices {
           title: row[1] != null ? row[1]!.value.toString() : '',
           creditHours: row[2] != null ? row[2]!.value.toString() : '3',
           specialVenue: row[3] != null ? row[3]!.value.toString() : 'No',
-          lecturerName: row[4] != null ? row[4]!.value.toString() : '',
-          lecturerEmail: row[5] != null ? row[5]!.value.toString() : '',
-          department: row[6] != null ? row[6]!.value.toString() : '',
-          id: row[0] != null ? row[0]!.value.toString().trimToLowerCase() : '',
+          department: row[4] != null ? row[4]!.value.toString() : '',
+          level: row[5] != null ? row[5]!.value.toString() : '',
+          lecturerName: row[6] != null ? row[6]!.value.toString() : '',
+          lecturerEmail: row[7] != null ? row[7]!.value.toString() : '',
+          id: row[0] != null && row[4] != null
+              ? '${row[0]!.value.toString().trimToLowerCase()}_${row[4]!.value.toString().getInitials()}'
+              : '',
           venues: []);
     }).toList();
 
@@ -92,20 +95,19 @@ class ImportServices {
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
     List<ClassModel> classes = rows.skip(1).map<ClassModel>((row) {
       return ClassModel(
-        id: row[2] != null ? row[2]!.value.toString().trimToLowerCase() : '',
         level: row[0] != null ? row[0]!.value.toString() : '',
         type: row[1] != null ? row[1]!.value.toString() : 'Regular',
         name: row[2] != null ? row[2]!.value.toString() : '',
-        size: row[3] != null ? row[3]!.value.toString() : '1',
-        hasDisability: row[4] != null ? row[4]!.value.toString() : 'No',
-        courses: row[5] != null ? row[5]!.value.toString().split(',') : [],
+        department: row[3] != null ? row[3]!.value.toString() : '',
+        size: row[4] != null ? row[4]!.value.toString() : '10',
+        hasDisability: row[5] != null ? row[5]!.value.toString() : 'No',
+        id: row[2] != null && row[3] != null
+            ? '${row[2]!.value.toString().trimToLowerCase()}_${row[3]!.value.toString().getInitials()}'
+            : '',
       );
     }).toList();
     return classes
-        .where((element) =>
-            element.id!.isNotEmpty &&
-            element.courses!.isNotEmpty &&
-            element.name!.isNotEmpty)
+        .where((element) => element.id!.isNotEmpty && element.name!.isNotEmpty)
         .toList();
   }
 

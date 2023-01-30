@@ -25,13 +25,14 @@ class LiberalTimePairModelAdapter extends TypeAdapter<LiberalTimePairModel> {
       lecturerEmail: fields[5] as String?,
       courseTitle: fields[6] as String?,
       academicYear: fields[7] as String?,
+      level: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, LiberalTimePairModel obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +48,9 @@ class LiberalTimePairModelAdapter extends TypeAdapter<LiberalTimePairModel> {
       ..writeByte(6)
       ..write(obj.courseTitle)
       ..writeByte(7)
-      ..write(obj.academicYear);
+      ..write(obj.academicYear)
+      ..writeByte(8)
+      ..write(obj.level);
   }
 
   @override

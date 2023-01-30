@@ -71,6 +71,7 @@ class CustomCheckBox extends StatelessWidget {
               if (isChecked)
                 Expanded(
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
                         children: [
@@ -115,7 +116,7 @@ class CustomCheckBox extends StatelessWidget {
                       ),
                       const SizedBox(height: 15),
                       Row(
-                        mainAxisSize: MainAxisSize.max,
+                        mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           InkWell(

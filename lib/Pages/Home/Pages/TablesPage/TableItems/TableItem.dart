@@ -43,7 +43,7 @@ class _TableItemState extends State<TableItem> {
             if (widget.table != null)
               Text(
                 widget.table!.className == null
-                    ? "Liberal/African Studies"
+                    ? "Liberal/African Studies (${widget.table!.classLevel ?? ''})"
                     : '${widget.table!.className ?? ''} (${widget.table!.classLevel ?? ''})',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.nunito(

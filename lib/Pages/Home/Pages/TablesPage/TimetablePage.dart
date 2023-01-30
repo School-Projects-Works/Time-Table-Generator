@@ -7,6 +7,7 @@ import 'package:aamusted_timetable_generator/Pages/Home/Pages/TablesPage/Complet
 import 'package:aamusted_timetable_generator/Pages/Home/Pages/TablesPage/IncompleteData.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +34,7 @@ class _TimeTablePageState extends State<TimeTablePage> {
             (data.hasLiberalCourse &&
                 (data.liberalCourseDay == null ||
                     data.liberalCoursePeriod == null ||
+                    data.liberalLevel == null ||
                     hive.getHasSpecialCourseError));
         return SizedBox(
           width: double.infinity,
@@ -51,24 +53,59 @@ class _TimeTablePageState extends State<TimeTablePage> {
                       color: secondaryColor,
                     ),
                   ),
-                  const SizedBox(width: 50),
-                  if (!isIncomplete)
-                    SizedBox(
-                      width: 600,
-                      child: CustomTextFields(
-                        hintText:
-                            'Search by Course or Class or Venue or Lecturer',
-                        onChanged: (value) {},
-                      ),
-                    ),
-                  const SizedBox(width: 50),
+                  const SizedBox(width: 150),
                   if (!isIncomplete)
                     CustomButton(
                       onPressed: () => generateTables(config.configurations),
                       text: 'Generate Tables',
                       color: Colors.green,
                     ),
-                  const SizedBox(width: 50),
+                  const Spacer(),
+                  if (!isIncomplete)
+                    PopupMenuButton(
+                        tooltip: 'Export Table',
+                        position: PopupMenuPosition.under,
+                        child: TextButton.icon(
+                            style: TextButton.styleFrom(
+                                backgroundColor: primaryColor),
+                            onPressed: () {},
+                            icon: const Icon(
+                              FontAwesomeIcons.fileExport,
+                              color: Colors.white,
+                            ),
+                            label: Text(
+                              'Export Table',
+                              style: GoogleFonts.nunito(color: Colors.white),
+                            )),
+                        itemBuilder: (context) {
+                          return [
+                            PopupMenuItem(
+                                value: 'All',
+                                child: Text(
+                                  'All',
+                                  style: GoogleFonts.nunito(),
+                                )),
+                            PopupMenuItem(
+                                value: 'Regular',
+                                child: Text(
+                                  'Only Regular',
+                                  style: GoogleFonts.nunito(),
+                                )),
+                            PopupMenuItem(
+                                value: 'Evening',
+                                child: Text(
+                                  'Only Evening',
+                                  style: GoogleFonts.nunito(),
+                                )),
+                            PopupMenuItem(
+                                value: 'Weekend',
+                                child: Text(
+                                  'Only Weekend',
+                                  style: GoogleFonts.nunito(),
+                                )),
+                          ];
+                        }),
+                  const SizedBox(width: 20),
                 ],
               ),
               const SizedBox(height: 20),

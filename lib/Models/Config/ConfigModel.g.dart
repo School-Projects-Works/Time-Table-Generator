@@ -33,13 +33,14 @@ class ConfigModelAdapter extends TypeAdapter<ConfigModel> {
       hasCourse: fields[9] as bool,
       hasClass: fields[10] as bool,
       hasVenues: fields[11] as bool,
+      liberalLevel: fields[12] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ConfigModel obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -63,7 +64,9 @@ class ConfigModelAdapter extends TypeAdapter<ConfigModel> {
       ..writeByte(10)
       ..write(obj.hasClass)
       ..writeByte(11)
-      ..write(obj.hasVenues);
+      ..write(obj.hasVenues)
+      ..writeByte(12)
+      ..write(obj.liberalLevel);
   }
 
   @override

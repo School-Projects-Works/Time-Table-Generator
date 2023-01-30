@@ -25,6 +25,8 @@ class CourseModel {
   String? academicYear;
   @HiveField(9)
   List<String>? venues;
+  @HiveField(10)
+  String? level;
 
   CourseModel({
     this.code,
@@ -37,5 +39,6 @@ class CourseModel {
     this.id,
     this.academicYear,
     this.venues,
+    this.level,
   });
 }

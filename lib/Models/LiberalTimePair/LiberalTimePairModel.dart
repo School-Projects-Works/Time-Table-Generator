@@ -22,6 +22,8 @@ class LiberalTimePairModel {
   String? courseTitle;
   @HiveField(7)
   String? academicYear;
+  @HiveField(8)
+  String? level;
 
   LiberalTimePairModel(
       {this.id,
@@ -31,5 +33,6 @@ class LiberalTimePairModel {
       this.lecturerName,
       this.lecturerEmail,
       this.courseTitle,
-      this.academicYear});
+      this.academicYear,
+      this.level});
 }

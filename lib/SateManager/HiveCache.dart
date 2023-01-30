@@ -5,6 +5,7 @@ import 'package:aamusted_timetable_generator/Models/Academic/AcademicModel.dart'
 import 'package:aamusted_timetable_generator/Models/Class/ClassModel.dart';
 import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
 import 'package:aamusted_timetable_generator/Models/Course/LiberalModel.dart';
+import 'package:aamusted_timetable_generator/Models/Table/TableModel.dart';
 import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
 import 'package:hive_flutter/adapters.dart';
 import '../Models/Admin/Admin.dart';
@@ -21,6 +22,7 @@ class HiveCache {
     Hive.registerAdapter(ClassModelAdapter());
     Hive.registerAdapter(VenueModelAdapter());
     Hive.registerAdapter(LiberalModelAdapter());
+    Hive.registerAdapter(TableModelAdapter());
 
     await Hive.openBox<Admin>('admins');
     await Hive.openBox<AcademicModel>('academics');
@@ -30,6 +32,7 @@ class HiveCache {
     await Hive.openBox<VenueModel>('venues');
     await Hive.openBox('isLoggedIn');
     await Hive.openBox<LiberalModel>('liberals');
+    await Hive.openBox<TableModel>('tables');
   }
 
   static void setAdmin(Admin admin) {
@@ -163,5 +166,21 @@ class HiveCache {
   static void deleteLiberal(LiberalModel element) {
     final box = Hive.box<LiberalModel>('liberals');
     box.delete(element.id);
+  }
+
+  static void addTables(List<TableModel>? tables) {
+    final box = Hive.box<TableModel>('tables');
+    if (tables != null) {
+      for (TableModel table in tables) {
+        box.put(table.id, table);
+      }
+    }
+  }
+
+  static getTables(currentAcademicYear) {
+    final box = Hive.box<TableModel>('tables');
+    return box.values
+        .where((element) => element.academicYear == currentAcademicYear)
+        .toList();
   }
 }

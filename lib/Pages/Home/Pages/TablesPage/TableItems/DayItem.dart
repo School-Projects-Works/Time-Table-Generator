@@ -373,7 +373,7 @@ class _TableRowState extends State<TableRow> {
                     .first,
               )
             : const TableItem(),
-        Container(
+        const SizedBox(
           height: 100,
           width: 120,
         ),

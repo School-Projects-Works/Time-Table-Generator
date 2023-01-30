@@ -30,6 +30,8 @@ class ConfigDataFlow extends ChangeNotifier {
   String? liberalCourseDay, liberalCoursePeriod;
   String? get getLiberalCourseDay => liberalCourseDay;
   String? get getLiberalCoursePeriod => liberalCoursePeriod;
+  String? liberalLevel;
+  String? get getLiberalLevel => liberalLevel;
 
   void updateConfigurations(ConfigModel newConfigurations) {
     configurations = newConfigurations;
@@ -89,6 +91,7 @@ class ConfigDataFlow extends ChangeNotifier {
     liberalCoursePeriod = configurations.liberalCoursePeriod != null
         ? configurations.liberalCoursePeriod!['period']
         : null;
+    liberalLevel = configurations.liberalLevel;
     notifyListeners();
   }
 
@@ -723,6 +726,13 @@ class ConfigDataFlow extends ChangeNotifier {
 
   void updateHasVenue(bool data) {
     configurations.hasVenues = data;
+    HiveCache.addConfigurations(configurations);
+    updateConfigurations(configurations);
+    updateConfigList();
+  }
+
+  void setLiberalLevel(p0) {
+    configurations.liberalLevel = p0;
     HiveCache.addConfigurations(configurations);
     updateConfigurations(configurations);
     updateConfigList();

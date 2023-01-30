@@ -85,13 +85,13 @@ class ClassDataSource extends DataTableSource {
         DataCell(Text(classItem.level!)),
         DataCell(Text(classItem.type!)),
         DataCell(Text(classItem.name!)),
+        DataCell(Text(classItem.department!)),
         DataCell(ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 100, minWidth: 100),
             child: Text(classItem.size!))),
         DataCell(ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 100, minWidth: 100),
             child: Text(classItem.hasDisability!))),
-        DataCell(Text(classItem.courses!.join(', '))),
       ],
     );
   }

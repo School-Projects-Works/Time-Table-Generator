@@ -79,13 +79,15 @@ class _MyAppState extends State<MyApp> {
 
         var liberal = await HiveCache.getLiberals(currentYear);
         provider.setLiberalList(liberal);
+
+        var tables = await HiveCache.getTables(currentYear);
+        provider.setTables(tables);
       }
     });
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getData();
   }

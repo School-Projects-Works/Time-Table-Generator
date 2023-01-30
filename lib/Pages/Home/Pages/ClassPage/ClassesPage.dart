@@ -39,9 +39,9 @@ class _ClassesPageState extends State<ClassesPage> {
     'Level',
     'Type(Regular/Evening/Weekend)',
     'Class Name',
+    'Department',
     'Class Size',
     'Has Disability',
-    'Courses',
   ];
 
   final _scrollController = ScrollController();

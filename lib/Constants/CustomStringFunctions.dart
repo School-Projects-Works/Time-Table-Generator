@@ -10,4 +10,12 @@ extension StringCasingExtension on String {
       .join(' ');
 
   String trimToLowerCase() => replaceAll(' ', '').toLowerCase();
+
+  String getInitials() => trim()
+      .split(RegExp(' +'))
+      .map((s) => s[0])
+      .take(5)
+      .join()
+      .replaceAll(' ', '')
+      .toLowerCase();
 }
