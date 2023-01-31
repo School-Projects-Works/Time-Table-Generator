@@ -20,20 +20,14 @@ class VenueTimePairModel {
   @HiveField(6)
   String? day;
   @HiveField(7)
-  bool? reg;
+  String? targetedStudents;
   @HiveField(8)
-  bool? eve;
-  @HiveField(9)
-  bool? wnd;
-  @HiveField(10)
   String? period;
-  @HiveField(11)
-  Map<String, dynamic>? dayMap;
-  @HiveField(12)
+  @HiveField(9)
   String? academicYear;
-  @HiveField(13)
+  @HiveField(10)
   String? isSpecialVenue;
-  @HiveField(14)
+  @HiveField(11)
   bool isBooked;
 
   VenueTimePairModel(
@@ -44,11 +38,7 @@ class VenueTimePairModel {
       this.isDisabilityAccessible,
       this.periodMap,
       this.day,
-      this.reg,
-      this.eve,
-      this.wnd,
       this.period,
-      this.dayMap,
       this.academicYear,
       this.isSpecialVenue,
       this.isBooked = false});

@@ -30,7 +30,7 @@ class ClassCoursePairModelAdapter extends TypeAdapter<ClassCoursePairModel> {
       courseCode: fields[10] as String?,
       classId: fields[11] as String?,
       classLevel: fields[12] as String?,
-      classType: fields[13] as String?,
+      targetStudents: fields[13] as String?,
       className: fields[14] as String?,
       classSize: fields[15] as String?,
       classHasDisability: fields[16] as String?,
@@ -70,7 +70,7 @@ class ClassCoursePairModelAdapter extends TypeAdapter<ClassCoursePairModel> {
       ..writeByte(12)
       ..write(obj.classLevel)
       ..writeByte(13)
-      ..write(obj.classType)
+      ..write(obj.targetStudents)
       ..writeByte(14)
       ..write(obj.className)
       ..writeByte(15)

@@ -1,10 +1,8 @@
 // ignore_for_file: file_names, unnecessary_null_comparison
 
 import 'dart:io';
-
 import 'package:aamusted_timetable_generator/Components/BreathingWidget.dart';
 import 'package:aamusted_timetable_generator/Components/CustomDropDown.dart';
-import 'package:aamusted_timetable_generator/SateManager/ConfigDataFlow.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -36,6 +34,7 @@ class _LiberalPageState extends State<LiberalPage> {
     '',
     'Code',
     'Title',
+    'Target Students',
     'Lecturer',
     'Lecturer Email',
   ];
@@ -45,177 +44,69 @@ class _LiberalPageState extends State<LiberalPage> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Consumer<HiveListener>(builder: (context, hive, child) {
-      return Consumer<ConfigDataFlow>(builder: (context, config, child) {
-        return SizedBox(
-          width: double.infinity,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'LIBERAL/AFRICAN STUDIES',
-                    style: GoogleFonts.poppins(
-                      fontSize: 30,
-                      color: secondaryColor,
-                    ),
+      return SizedBox(
+        width: double.infinity,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'LIBERAL/AFRICAN STUDIES',
+                  style: GoogleFonts.poppins(
+                    fontSize: 30,
+                    color: secondaryColor,
                   ),
-                  const SizedBox(width: 50),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: CustomTextFields(
-                            hintText: 'Search Liberal Course',
-                            color: Colors.white,
-                            suffixIcon: const Icon(
-                              Icons.search,
-                              color: Colors.grey,
-                            ),
-                            onChanged: (value) {
-                              hive.filterLiberal(value);
-                            },
+                ),
+                const SizedBox(width: 50),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: CustomTextFields(
+                          hintText: 'Search Liberal Course',
+                          color: Colors.white,
+                          suffixIcon: const Icon(
+                            Icons.search,
+                            color: Colors.grey,
                           ),
+                          onChanged: (value) {
+                            hive.filterLiberal(value);
+                          },
                         ),
-                        const SizedBox(width: 25),
-                        CustomButton(
-                          onPressed: viewTemplate,
-                          text: 'View Template',
-                          radius: 10,
-                          color: Colors.deepOrange,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 6),
-                        ),
-                        const SizedBox(width: 10),
-                        CustomButton(
-                          onPressed: () => importData(hive),
-                          text: 'Import Courses',
-                          radius: 10,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 6),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              const SizedBox(height: 20),
-              if (hive.getLiberals.isNotEmpty)
-                config.getConfigurations.liberalCourseDay == null ||
-                        config.getConfigurations.liberalCoursePeriod == null ||
-                        config.getConfigurations.liberalLevel == null
-                    ? BreathingWidget(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                  child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                        'Select  Day on which the Liberal/African Studies courses will be held:',
-                                        style: GoogleFonts.nunito(
-                                          fontSize: 16,
-                                          color: Colors.black87,
-                                        )),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  SizedBox(
-                                      width: 200,
-                                      child: CustomDropDown(
-                                          onChanged: (p0) {
-                                            var data = config
-                                                .getConfigurations.days!
-                                                .firstWhere((element) =>
-                                                    element['day'] == p0);
-                                            changeLiberalDay(data);
-                                          },
-                                          value: config.getLiberalCourseDay,
-                                          hintText: 'Select day',
-                                          items: config.getConfigurations.days!
-                                              .map((e) => DropdownMenuItem(
-                                                  value: e['day'],
-                                                  child: Text(e['day'])))
-                                              .toList(),
-                                          color: Colors.white))
-                                ],
-                              )),
-                              const SizedBox(width: 20),
-                              Expanded(
-                                  child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                        'Select  Period on which the Liberal/African Studies courses will be held:',
-                                        style: GoogleFonts.nunito(
-                                          fontSize: 16,
-                                          color: Colors.black87,
-                                        )),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  SizedBox(
-                                      width: 200,
-                                      child: CustomDropDown(
-                                          onChanged: (p0) {
-                                            var data = config
-                                                .getConfigurations.periods!
-                                                .firstWhere((element) =>
-                                                    element['period'] == p0);
-                                            changeLiberalPeriod(data);
-                                          },
-                                          value: config.getLiberalCoursePeriod,
-                                          hintText: 'Select period',
-                                          items: config
-                                              .getConfigurations.periods!
-                                              .map((e) => DropdownMenuItem(
-                                                  value: e['period'],
-                                                  child: Text(e['period'])))
-                                              .toList(),
-                                          color: Colors.white))
-                                ],
-                              )),
-                              const SizedBox(width: 20),
-                              Expanded(
-                                  child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                        'Select Level of students offering these courses:',
-                                        style: GoogleFonts.nunito(
-                                          fontSize: 16,
-                                          color: Colors.black87,
-                                        )),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  SizedBox(
-                                      width: 200,
-                                      child: CustomDropDown(
-                                          onChanged: (p0) {
-                                            changeLiberalLevel(p0);
-                                          },
-                                          value: config.getLiberalLevel,
-                                          hintText: 'Level',
-                                          items: ["100", "200", "300", "400"]
-                                              .map((e) => DropdownMenuItem(
-                                                  value: e, child: Text(e)))
-                                              .toList(),
-                                          color: Colors.white))
-                                ],
-                              ))
-                            ],
-                          ),
-                        ),
-                      )
-                    : Container(
+                      ),
+                      const SizedBox(width: 25),
+                      CustomButton(
+                        onPressed: viewTemplate,
+                        text: 'View Template',
+                        radius: 10,
+                        color: Colors.deepOrange,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 6),
+                      ),
+                      const SizedBox(width: 10),
+                      CustomButton(
+                        onPressed: () => importData(hive),
+                        text: 'Import Courses',
+                        radius: 10,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 6),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 20),
+            if (hive.getLiberals.isNotEmpty)
+              hive.getCurrentConfig.liberalCourseDay == null ||
+                      hive.getCurrentConfig.liberalCoursePeriod == null ||
+                      hive.getCurrentConfig.liberalLevel == null
+                  ? BreathingWidget(
+                      child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: Colors.white,
@@ -240,18 +131,16 @@ class _LiberalPageState extends State<LiberalPage> {
                                     width: 200,
                                     child: CustomDropDown(
                                         onChanged: (p0) {
-                                          var data = config
-                                              .getConfigurations.days!
-                                              .firstWhere((element) =>
-                                                  element['day'] == p0);
+                                          var data = hive.getCurrentConfig.days!
+                                              .firstWhere(
+                                                  (element) => element == p0);
                                           changeLiberalDay(data);
                                         },
-                                        value: config.getLiberalCourseDay,
+                                        value: hive.getLiberalCourseDay,
                                         hintText: 'Select day',
-                                        items: config.getConfigurations.days!
+                                        items: hive.getCurrentConfig.days!
                                             .map((e) => DropdownMenuItem(
-                                                value: e['day'],
-                                                child: Text(e['day'])))
+                                                value: e, child: Text(e)))
                                             .toList(),
                                         color: Colors.white))
                               ],
@@ -273,15 +162,15 @@ class _LiberalPageState extends State<LiberalPage> {
                                     width: 200,
                                     child: CustomDropDown(
                                         onChanged: (p0) {
-                                          var data = config
-                                              .getConfigurations.periods!
+                                          var data = hive
+                                              .getCurrentConfig.periods!
                                               .firstWhere((element) =>
                                                   element['period'] == p0);
-                                          changeLiberalPeriod(data);
+                                          changeLiberalPeriod(data['period']);
                                         },
-                                        value: config.getLiberalCoursePeriod,
+                                        value: hive.getLiberalCoursePeriod,
                                         hintText: 'Select period',
-                                        items: config.getConfigurations.periods!
+                                        items: hive.getCurrentConfig.periods!
                                             .map((e) => DropdownMenuItem(
                                                 value: e['period'],
                                                 child: Text(e['period'])))
@@ -308,7 +197,7 @@ class _LiberalPageState extends State<LiberalPage> {
                                         onChanged: (p0) {
                                           changeLiberalLevel(p0);
                                         },
-                                        value: config.getLiberalLevel,
+                                        value: hive.getLiberalLevel,
                                         hintText: 'Level',
                                         items: ["100", "200", "300", "400"]
                                             .map((e) => DropdownMenuItem(
@@ -320,101 +209,203 @@ class _LiberalPageState extends State<LiberalPage> {
                           ],
                         ),
                       ),
-              if (hive.getLiberals.isNotEmpty) const SizedBox(height: 10),
-              if (hive.getFilteredLiberal.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 50),
-                  child: Center(
-                    child: Text(
-                      'No Liberal/African Studies Courses Found',
-                      style: GoogleFonts.nunito(
-                        fontSize: 16,
-                        color: Colors.grey,
+                    )
+                  : Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
                       ),
-                    ),
-                  ),
-                )
-              else
-                SizedBox(
-                  height: size.height - 322,
-                  child: CustomTable(
-                      bottomAction: Row(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
+                      child: Row(
                         children: [
-                          if (hive.getSelectedLiberals.isNotEmpty)
-                            CustomButton(
-                                onPressed: () =>
-                                    deleteSelected(hive.getSelectedLiberals),
-                                text: 'Delete Selected',
-                                color: Colors.red,
-                                radius: 10,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 6)),
-                          const SizedBox(width: 10),
-                          CustomButton(
-                            onPressed: () => clearCourses(),
-                            text: 'Clear Courses',
-                            color: Colors.black,
-                            radius: 10,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 6),
-                          )
+                          Expanded(
+                              child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                    'Select  Day on which the Liberal/African Studies courses will be held:',
+                                    style: GoogleFonts.nunito(
+                                      fontSize: 16,
+                                      color: Colors.black87,
+                                    )),
+                              ),
+                              const SizedBox(width: 10),
+                              SizedBox(
+                                  width: 200,
+                                  child: CustomDropDown(
+                                      onChanged: (p0) {
+                                        var data = hive.getCurrentConfig.days!
+                                            .firstWhere(
+                                                (element) => element == p0);
+                                        changeLiberalDay(data);
+                                      },
+                                      value: hive.getLiberalCourseDay,
+                                      hintText: 'Select day',
+                                      items: hive.getCurrentConfig.days!
+                                          .map((e) => DropdownMenuItem(
+                                              value: e, child: Text(e)))
+                                          .toList(),
+                                      color: Colors.white))
+                            ],
+                          )),
+                          const SizedBox(width: 20),
+                          Expanded(
+                              child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                    'Select  Period on which the Liberal/African Studies courses will be held:',
+                                    style: GoogleFonts.nunito(
+                                      fontSize: 16,
+                                      color: Colors.black87,
+                                    )),
+                              ),
+                              const SizedBox(width: 10),
+                              SizedBox(
+                                  width: 200,
+                                  child: CustomDropDown(
+                                      onChanged: (p0) {
+                                        var data = hive
+                                            .getCurrentConfig.periods!
+                                            .firstWhere((element) =>
+                                                element['period'] == p0);
+                                        changeLiberalPeriod(data['period']);
+                                      },
+                                      value: hive.getLiberalCoursePeriod,
+                                      hintText: 'Select period',
+                                      items: hive.getCurrentConfig.periods!
+                                          .map((e) => DropdownMenuItem(
+                                              value: e['period'],
+                                              child: Text(e['period'])))
+                                          .toList(),
+                                      color: Colors.white))
+                            ],
+                          )),
+                          const SizedBox(width: 20),
+                          Expanded(
+                              child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                    'Select Level of students offering these courses:',
+                                    style: GoogleFonts.nunito(
+                                      fontSize: 16,
+                                      color: Colors.black87,
+                                    )),
+                              ),
+                              const SizedBox(width: 10),
+                              SizedBox(
+                                  width: 200,
+                                  child: CustomDropDown(
+                                      onChanged: (p0) {
+                                        changeLiberalLevel(p0);
+                                      },
+                                      value: hive.getLiberalLevel,
+                                      hintText: 'Level',
+                                      items: ["100", "200", "300", "400"]
+                                          .map((e) => DropdownMenuItem(
+                                              value: e, child: Text(e)))
+                                          .toList(),
+                                      color: Colors.white))
+                            ],
+                          ))
                         ],
                       ),
-                      arrowHeadColor: Colors.black,
-                      dragStartBehavior: DragStartBehavior.start,
-                      controller: _scrollController,
-                      controller2: _scrollController2,
-                      showFirstLastButtons: true,
-                      border: hive.getFilteredLiberal.isNotEmpty
-                          ? const TableBorder(
-                              horizontalInside:
-                                  BorderSide(color: Colors.grey, width: 1),
-                              top: BorderSide(color: Colors.grey, width: 1),
-                              bottom: BorderSide(color: Colors.grey, width: 1))
-                          : const TableBorder(),
-                      dataRowHeight: 45,
-                      showCheckboxColumn: false,
-                      source: LiberalDataSource(
-                        context,
-                      ),
-                      rowsPerPage: hive.getFilteredLiberal.length > 10
-                          ? 10
-                          : hive.getFilteredLiberal.isEmpty
-                              ? 1
-                              : hive.getFilteredLiberal.length,
-                      columns: columns
-                          .map((e) => DataColumn(
-                                label: e.isEmpty
-                                    ? IconButton(
-                                        onPressed: () {
-                                          hive.addSelectedLiberals(
-                                              hive.getFilteredLiberal);
-                                        },
-                                        icon: Icon(
-                                          hive.getSelectedLiberals.isEmpty
-                                              ? Icons.check_box_outline_blank
-                                              : hive.getFilteredLiberal
-                                                          .length ==
-                                                      hive.getSelectedLiberals
-                                                          .length
-                                                  ? FontAwesomeIcons
-                                                      .solidSquareCheck
-                                                  : FontAwesomeIcons
-                                                      .solidSquareMinus,
-                                        ))
-                                    : Text(
-                                        e,
-                                        style: GoogleFonts.poppins(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14),
-                                      ),
-                              ))
-                          .toList()),
+                    ),
+            if (hive.getLiberals.isNotEmpty) const SizedBox(height: 10),
+            if (hive.getFilteredLiberal.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 50),
+                child: Center(
+                  child: Text(
+                    'No Liberal/African Studies Courses Found',
+                    style: GoogleFonts.nunito(
+                      fontSize: 16,
+                      color: Colors.grey,
+                    ),
+                  ),
                 ),
-            ],
-          ),
-        );
-      });
+              )
+            else
+              SizedBox(
+                height: size.height - 322,
+                child: CustomTable(
+                    bottomAction: Row(
+                      children: [
+                        if (hive.getSelectedLiberals.isNotEmpty)
+                          CustomButton(
+                              onPressed: () =>
+                                  deleteSelected(hive.getSelectedLiberals),
+                              text: 'Delete Selected',
+                              color: Colors.red,
+                              radius: 10,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 6)),
+                        const SizedBox(width: 10),
+                        CustomButton(
+                          onPressed: () => clearCourses(),
+                          text: 'Clear Courses',
+                          color: Colors.black,
+                          radius: 10,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 6),
+                        )
+                      ],
+                    ),
+                    arrowHeadColor: Colors.black,
+                    dragStartBehavior: DragStartBehavior.start,
+                    controller: _scrollController,
+                    controller2: _scrollController2,
+                    showFirstLastButtons: true,
+                    border: hive.getFilteredLiberal.isNotEmpty
+                        ? const TableBorder(
+                            horizontalInside:
+                                BorderSide(color: Colors.grey, width: 1),
+                            top: BorderSide(color: Colors.grey, width: 1),
+                            bottom: BorderSide(color: Colors.grey, width: 1))
+                        : const TableBorder(),
+                    dataRowHeight: 45,
+                    showCheckboxColumn: false,
+                    source: LiberalDataSource(
+                      context,
+                    ),
+                    rowsPerPage: hive.getFilteredLiberal.length > 10
+                        ? 10
+                        : hive.getFilteredLiberal.isEmpty
+                            ? 1
+                            : hive.getFilteredLiberal.length,
+                    columns: columns
+                        .map((e) => DataColumn(
+                              label: e.isEmpty
+                                  ? IconButton(
+                                      onPressed: () {
+                                        hive.addSelectedLiberals(
+                                            hive.getFilteredLiberal);
+                                      },
+                                      icon: Icon(
+                                        hive.getSelectedLiberals.isEmpty
+                                            ? Icons.check_box_outline_blank
+                                            : hive.getFilteredLiberal.length ==
+                                                    hive.getSelectedLiberals
+                                                        .length
+                                                ? FontAwesomeIcons
+                                                    .solidSquareCheck
+                                                : FontAwesomeIcons
+                                                    .solidSquareMinus,
+                                      ))
+                                  : Text(
+                                      e,
+                                      style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14),
+                                    ),
+                            ))
+                        .toList()),
+              ),
+          ],
+        ),
+      );
     });
   }
 
@@ -457,7 +448,7 @@ class _LiberalPageState extends State<LiberalPage> {
               }
               var data = HiveCache.getLiberals(hive.currentAcademicYear);
               hive.setLiberalList(data);
-              Provider.of<ConfigDataFlow>(context, listen: false)
+              Provider.of<HiveListener>(context, listen: false)
                   .updateHasLiberal(true);
               CustomDialog.dismiss();
               CustomDialog.showSuccess(message: 'Data Imported Successfully');
@@ -516,15 +507,15 @@ class _LiberalPageState extends State<LiberalPage> {
             'Selected Liberal/African Studies Courses Deleted Successfully');
   }
 
-  changeLiberalDay(Map<String, dynamic> p1) {
+  changeLiberalDay(String p1) {
     if (p1 != null) {
-      Provider.of<ConfigDataFlow>(context, listen: false).setLiberalDay(p1);
+      Provider.of<HiveListener>(context, listen: false).setLiberalDay(p1);
     }
   }
 
-  changeLiberalPeriod(Map<String, dynamic> p1) {
+  changeLiberalPeriod(String p1) {
     if (p1 != null) {
-      Provider.of<ConfigDataFlow>(context, listen: false).setLiberalPeriod(p1);
+      Provider.of<HiveListener>(context, listen: false).setLiberalPeriod(p1);
     }
   }
 
@@ -558,7 +549,7 @@ class _LiberalPageState extends State<LiberalPage> {
 
   void changeLiberalLevel(p0) {
     if (p0 != null) {
-      Provider.of<ConfigDataFlow>(context, listen: false).setLiberalLevel(p0);
+      Provider.of<HiveListener>(context, listen: false).setLiberalLevel(p0);
     }
   }
 }

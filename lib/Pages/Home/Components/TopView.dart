@@ -8,10 +8,8 @@ import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../../../SateManager/ConfigDataFlow.dart';
 import '../../../SateManager/HiveCache.dart';
 import '../../../SateManager/HiveListener.dart';
-import '../Pages/AboutPage.dart';
 
 class TopView extends StatefulWidget {
   const TopView({Key? key}) : super(key: key);
@@ -65,7 +63,7 @@ class _TopViewState extends State<TopView> {
               ],
             ),
             SizedBox(
-              width: size.width * 0.4,
+              width: size.width * 0.3,
               child: Row(
                 children: [
                   Text(
@@ -88,8 +86,8 @@ class _TopViewState extends State<TopView> {
                             .firstWhere((element) => element.name == value)
                             .id;
                         var config = HiveCache.getConfig(id);
-                        Provider.of<ConfigDataFlow>(context, listen: false)
-                            .updateConfigurations(config);
+                        Provider.of<HiveListener>(context, listen: false)
+                            .updateCurrentConfig(config);
                       },
                       items: mongo.getAcademicList
                           .map((e) => DropdownMenuItem(
@@ -104,56 +102,48 @@ class _TopViewState extends State<TopView> {
                 ],
               ),
             ),
+            SizedBox(
+              width: size.width * 0.3,
+              child: Row(
+                children: [
+                  Text(
+                    'Targeted Students : ',
+                    style: GoogleFonts.poppins(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: CustomDropDown(
+                      hintText: 'Select Targeted Students',
+                      radius: 10,
+                      color: background,
+                      value: mongo.targetedStudents,
+                      onChanged: (value) {
+                        mongo.updateTargetedStudents(value);
+                      },
+                      items: ['Regular', 'Weekend', 'Evening', 'Sandwich']
+                          .map((e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(
+                                e,
+                                style: GoogleFonts.nunito(),
+                              )))
+                          .toList(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             if (mongo.getAcademicList.isNotEmpty)
               SizedBox(
                   height: 50,
                   child: CustomButton(
-                      onPressed: addNewAcademic, text: 'Add Academic Year')),
+                      onPressed: addNewAcademic, text: 'Add Configurations')),
             const SizedBox(
               width: 10,
             ),
-            Row(
-              children: [
-                IconButton(
-                    tooltip: 'About',
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const AboutPage()));
-                    },
-                    icon: const Icon(
-                      Icons.info,
-                      color: Colors.blue,
-                    )),
-                const SizedBox(
-                  width: 10,
-                ),
-                IconButton(
-                    tooltip: 'Help',
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(
-                        builder: (context) {
-                          return const HelpPage();
-                        },
-                      ));
-                    },
-                    icon: const Icon(
-                      Icons.help,
-                      color: Colors.red,
-                    )),
-                const SizedBox(
-                  width: 10,
-                ),
-                IconButton(
-                    tooltip: 'Sign Out',
-                    onPressed: () {},
-                    icon: const Icon(Icons.logout)),
-                const SizedBox(
-                  width: 10,
-                ),
-              ],
-            )
           ],
         ),
       );

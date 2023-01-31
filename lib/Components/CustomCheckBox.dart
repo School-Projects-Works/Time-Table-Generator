@@ -11,314 +11,225 @@ class CustomCheckBox extends StatelessWidget {
       required this.title,
       required this.onTap,
       this.isChecked = false,
-      this.regularChecked = false,
-      this.eveningChecked = false,
-      this.weekendChecked = false,
-      this.onRegular,
-      this.onEvening,
-      this.onWeekend,
-      this.hasDropDown = false,
       this.startVal,
       this.endVal,
       this.onStartChanged,
-      this.onEndChanged})
+      this.alwaysChecked = false,
+      this.onEndChanged,
+      this.hasTime = false})
       : super(key: key);
   final bool isChecked;
   final String title;
   final VoidCallback onTap;
-  final bool regularChecked, eveningChecked, weekendChecked;
-  final VoidCallback? onRegular, onEvening, onWeekend;
-  final bool hasDropDown;
+  final bool hasTime, alwaysChecked;
   final String? startVal, endVal;
   final Function(dynamic)? onStartChanged, onEndChanged;
 
   @override
   Widget build(BuildContext context) {
-    if (hasDropDown) {
-      return Column(
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InkWell(
-                onTap: onTap,
-                child: Row(
-                  children: [
-                    isChecked
-                        ? const Icon(
-                            Icons.check_box,
-                            color: secondaryColor,
-                          )
-                        : const Icon(
-                            Icons.check_box_outline_blank,
-                            color: secondaryColor,
-                          ),
-                    const SizedBox(width: 10),
-                    Text(
-                      title,
-                      style: GoogleFonts.nunito(
-                        fontSize: 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w700,
-                      ),
+    return Column(
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            InkWell(
+              onTap: onTap,
+              child: Row(
+                children: [
+                  isChecked
+                      ? const Icon(
+                          Icons.check_box,
+                          color: secondaryColor,
+                        )
+                      : const Icon(
+                          Icons.check_box_outline_blank,
+                          color: secondaryColor,
+                        ),
+                  const SizedBox(width: 10),
+                  Text(
+                    title,
+                    style: GoogleFonts.nunito(
+                      fontSize: 20,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w700,
                     ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 200),
+            if (hasTime && (isChecked || alwaysChecked))
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomDropDown(
+                            items: time
+                                .map((e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(
+                                        e,
+                                        style: GoogleFonts.nunito(
+                                            color: Colors.black54),
+                                      ),
+                                    ))
+                                .toList(),
+                            color: Colors.white,
+                            value: startVal,
+                            onChanged: onStartChanged,
+                            hintText: 'Select Start',
+                          ),
+                        ),
+                        const SizedBox(width: 40),
+                        Expanded(
+                          child: CustomDropDown(
+                            items: time
+                                .map((e) => DropdownMenuItem(
+                                      value: e,
+                                      child: Text(
+                                        e,
+                                        style: GoogleFonts.nunito(
+                                            color: Colors.black54),
+                                      ),
+                                    ))
+                                .toList(),
+                            color: Colors.white,
+                            value: endVal,
+                            onChanged: onEndChanged,
+                            hintText: 'Select End',
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 15),
                   ],
                 ),
               ),
-              //const Spacer(),
-              const SizedBox(width: 150),
-              if (isChecked)
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomDropDown(
-                              items: time
-                                  .map((e) => DropdownMenuItem(
-                                        value: e,
-                                        child: Text(
-                                          e,
-                                          style: GoogleFonts.nunito(
-                                              color: Colors.black54),
-                                        ),
-                                      ))
-                                  .toList(),
-                              color: Colors.white,
-                              value: startVal,
-                              onChanged: onStartChanged,
-                              hintText: 'Select Start',
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: CustomDropDown(
-                              items: time
-                                  .map((e) => DropdownMenuItem(
-                                        value: e,
-                                        child: Text(
-                                          e,
-                                          style: GoogleFonts.nunito(
-                                              color: Colors.black54),
-                                        ),
-                                      ))
-                                  .toList(),
-                              color: Colors.white,
-                              value: endVal,
-                              onChanged: onEndChanged,
-                              hintText: 'Select End',
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 15),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            onTap: onRegular,
-                            child: Row(
-                              children: [
-                                regularChecked
-                                    ? const Icon(
-                                        Icons.check_box,
-                                        color: primaryColor,
-                                      )
-                                    : const Icon(
-                                        Icons.check_box_outline_blank,
-                                        color: primaryColor,
-                                      ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Regular',
-                                  style: GoogleFonts.nunito(
-                                    fontSize: 18,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          InkWell(
-                            onTap: onEvening,
-                            child: Row(
-                              children: [
-                                eveningChecked
-                                    ? const Icon(
-                                        Icons.check_box,
-                                        color: primaryColor,
-                                      )
-                                    : const Icon(
-                                        Icons.check_box_outline_blank,
-                                        color: primaryColor,
-                                      ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Evening',
-                                  style: GoogleFonts.nunito(
-                                    fontSize: 18,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          InkWell(
-                            onTap: onWeekend,
-                            child: Row(
-                              children: [
-                                weekendChecked
-                                    ? const Icon(
-                                        Icons.check_box,
-                                        color: primaryColor,
-                                      )
-                                    : const Icon(
-                                        Icons.check_box_outline_blank,
-                                        color: primaryColor,
-                                      ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  'Weekend',
-                                  style: GoogleFonts.nunito(
-                                    fontSize: 18,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-            ],
-          ),
-        ],
-      );
-    } else {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          InkWell(
-            onTap: onTap,
-            child: Row(
-              children: [
-                isChecked
-                    ? const Icon(
-                        Icons.check_box,
-                        color: secondaryColor,
-                      )
-                    : const Icon(
-                        Icons.check_box_outline_blank,
-                        color: secondaryColor,
-                      ),
-                const SizedBox(width: 10),
-                Text(
-                  title,
-                  style: GoogleFonts.nunito(
-                    fontSize: 20,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Spacer(),
-          if (isChecked)
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InkWell(
-                  onTap: onRegular,
-                  child: Row(
-                    children: [
-                      regularChecked
-                          ? const Icon(
-                              Icons.check_box,
-                              color: primaryColor,
-                            )
-                          : const Icon(
-                              Icons.check_box_outline_blank,
-                              color: primaryColor,
-                            ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Regular',
-                        style: GoogleFonts.nunito(
-                          fontSize: 18,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                InkWell(
-                  onTap: onEvening,
-                  child: Row(
-                    children: [
-                      eveningChecked
-                          ? const Icon(
-                              Icons.check_box,
-                              color: primaryColor,
-                            )
-                          : const Icon(
-                              Icons.check_box_outline_blank,
-                              color: primaryColor,
-                            ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Evening',
-                        style: GoogleFonts.nunito(
-                          fontSize: 18,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-                InkWell(
-                  onTap: onWeekend,
-                  child: Row(
-                    children: [
-                      weekendChecked
-                          ? const Icon(
-                              Icons.check_box,
-                              color: primaryColor,
-                            )
-                          : const Icon(
-                              Icons.check_box_outline_blank,
-                              color: primaryColor,
-                            ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Weekend',
-                        style: GoogleFonts.nunito(
-                          fontSize: 18,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-        ],
-      );
-    }
+          ],
+        ),
+      ],
+    );
+    //   } else {
+    //     return Row(
+    //       mainAxisSize: MainAxisSize.min,
+    //       children: [
+    //         InkWell(
+    //           onTap: onTap,
+    //           child: Row(
+    //             children: [
+    //               isChecked
+    //                   ? const Icon(
+    //                       Icons.check_box,
+    //                       color: secondaryColor,
+    //                     )
+    //                   : const Icon(
+    //                       Icons.check_box_outline_blank,
+    //                       color: secondaryColor,
+    //                     ),
+    //               const SizedBox(width: 10),
+    //               Text(
+    //                 title,
+    //                 style: GoogleFonts.nunito(
+    //                   fontSize: 20,
+    //                   color: Colors.black,
+    //                   fontWeight: FontWeight.w700,
+    //                 ),
+    //               ),
+    //             ],
+    //           ),
+    //         ),
+    //         const Spacer(),
+    //         if (isChecked)
+    //           Row(
+    //             mainAxisSize: MainAxisSize.min,
+    //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //             children: [
+    //               InkWell(
+    //                 onTap: onRegular,
+    //                 child: Row(
+    //                   children: [
+    //                     regularChecked
+    //                         ? const Icon(
+    //                             Icons.check_box,
+    //                             color: primaryColor,
+    //                           )
+    //                         : const Icon(
+    //                             Icons.check_box_outline_blank,
+    //                             color: primaryColor,
+    //                           ),
+    //                     const SizedBox(width: 8),
+    //                     Text(
+    //                       'Regular',
+    //                       style: GoogleFonts.nunito(
+    //                         fontSize: 18,
+    //                         color: Colors.black,
+    //                         fontWeight: FontWeight.w300,
+    //                       ),
+    //                     ),
+    //                   ],
+    //                 ),
+    //               ),
+    //               const SizedBox(width: 10),
+    //               InkWell(
+    //                 onTap: onEvening,
+    //                 child: Row(
+    //                   children: [
+    //                     eveningChecked
+    //                         ? const Icon(
+    //                             Icons.check_box,
+    //                             color: primaryColor,
+    //                           )
+    //                         : const Icon(
+    //                             Icons.check_box_outline_blank,
+    //                             color: primaryColor,
+    //                           ),
+    //                     const SizedBox(width: 8),
+    //                     Text(
+    //                       'Evening',
+    //                       style: GoogleFonts.nunito(
+    //                         fontSize: 18,
+    //                         color: Colors.black,
+    //                         fontWeight: FontWeight.w300,
+    //                       ),
+    //                     ),
+    //                   ],
+    //                 ),
+    //               ),
+    //               const SizedBox(width: 10),
+    //               InkWell(
+    //                 onTap: onWeekend,
+    //                 child: Row(
+    //                   children: [
+    //                     weekendChecked
+    //                         ? const Icon(
+    //                             Icons.check_box,
+    //                             color: primaryColor,
+    //                           )
+    //                         : const Icon(
+    //                             Icons.check_box_outline_blank,
+    //                             color: primaryColor,
+    //                           ),
+    //                     const SizedBox(width: 8),
+    //                     Text(
+    //                       'Weekend',
+    //                       style: GoogleFonts.nunito(
+    //                         fontSize: 18,
+    //                         color: Colors.black,
+    //                         fontWeight: FontWeight.w300,
+    //                       ),
+    //                     ),
+    //                   ],
+    //                 ),
+    //               ),
+    //             ],
+    //           ),
+    //       ],
+    //     );
+    //   }
+    // }
   }
 }

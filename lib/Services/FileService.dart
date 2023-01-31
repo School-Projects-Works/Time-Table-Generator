@@ -96,7 +96,7 @@ class ImportServices {
     List<ClassModel> classes = rows.skip(1).map<ClassModel>((row) {
       return ClassModel(
         level: row[0] != null ? row[0]!.value.toString() : '',
-        type: row[1] != null ? row[1]!.value.toString() : 'Regular',
+        targetStudents: row[1] != null ? row[1]!.value.toString() : '',
         name: row[2] != null ? row[2]!.value.toString() : '',
         department: row[3] != null ? row[3]!.value.toString() : '',
         size: row[4] != null ? row[4]!.value.toString() : '10',

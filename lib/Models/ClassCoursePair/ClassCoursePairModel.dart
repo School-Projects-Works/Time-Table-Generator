@@ -31,7 +31,7 @@ class ClassCoursePairModel {
   @HiveField(12)
   String? classLevel;
   @HiveField(13)
-  String? classType;
+  String? targetStudents;
   @HiveField(14)
   String? className;
   @HiveField(15)
@@ -57,7 +57,7 @@ class ClassCoursePairModel {
     this.courseCode,
     this.classId,
     this.classLevel,
-    this.classType,
+    this.targetStudents,
     this.className,
     this.classSize,
     this.classHasDisability,

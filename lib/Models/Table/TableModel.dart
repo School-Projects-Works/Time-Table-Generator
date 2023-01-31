@@ -14,7 +14,7 @@ class TableModel {
   @HiveField(3)
   String? period;
   @HiveField(4)
-  Map<String, dynamic>? dayMap;
+  String? targetStudents;
   @HiveField(5)
   Map<String, dynamic>? periodMap;
 
@@ -49,14 +49,12 @@ class TableModel {
   @HiveField(19)
   String? className;
   @HiveField(20)
-  String? classType;
-  @HiveField(21)
   String? department;
-  @HiveField(22)
+  @HiveField(21)
   String? classSize;
-  @HiveField(23)
+  @HiveField(22)
   String? classHasDisability;
-  @HiveField(24)
+  @HiveField(23)
   String? classId;
 
   TableModel({
@@ -64,7 +62,6 @@ class TableModel {
     this.academicYear,
     this.day,
     this.period,
-    this.dayMap,
     this.periodMap,
     this.courseCode,
     this.courseId,
@@ -80,7 +77,7 @@ class TableModel {
     this.isSpecialVenue,
     this.classLevel,
     this.className,
-    this.classType,
+    this.targetStudents,
     this.department,
     this.classSize,
     this.classHasDisability,

@@ -19,6 +19,8 @@ class LiberalModel {
   String? academicYear;
   @HiveField(6)
   String? level;
+  @HiveField(7)
+  String? targetStudents;
 
   LiberalModel(
       {this.code,
@@ -27,5 +29,6 @@ class LiberalModel {
       this.lecturerEmail,
       this.id,
       this.academicYear,
-      this.level});
+      this.level,
+      this.targetStudents});
 }

@@ -2,7 +2,6 @@
 import 'dart:io';
 import 'package:aamusted_timetable_generator/Constants/Constant.dart';
 import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
-import 'package:aamusted_timetable_generator/SateManager/ConfigDataFlow.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -218,7 +217,7 @@ class _VenuePageState extends State<VenuePage> {
               }
               var data = HiveCache.getVenues(hive.currentAcademicYear);
               hive.setVenueList(data);
-              Provider.of<ConfigDataFlow>(context, listen: false)
+              Provider.of<HiveListener>(context, listen: false)
                   .updateHasVenue(true);
               CustomDialog.dismiss();
               CustomDialog.showSuccess(message: 'Data Imported Successfully');

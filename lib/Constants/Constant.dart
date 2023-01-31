@@ -15,7 +15,7 @@ class Constant {
   static String classSize = "Class Size";
   static String hasDisability = "Has Disable(Yes/No)";
   static String courses = "Course (Course Code Only) [Separate with (,)]";
-  static String type = "Type(Regular/Evening/Weekend)";
+  static String type = "Type(Regular/Evening/Weekend/Sandwich)";
 
   static String roomName = "Room";
   static String capacity = "Capacity";
@@ -27,6 +27,7 @@ class Constant {
     courseTitle,
     creditHours,
     specialVenue,
+    type,
     department,
     level,
     lecturerName,
@@ -52,6 +53,7 @@ class Constant {
   static List<String> liberalExcelHeaderOrder = [
     courseCode,
     courseTitle,
+    type,
     level,
     lecturerName,
     lecturerEmail

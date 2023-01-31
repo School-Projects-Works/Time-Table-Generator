@@ -86,6 +86,7 @@ class LiberalDataSource extends DataTableSource {
             constraints: const BoxConstraints(maxWidth: 100, minWidth: 100),
             child: Text(liberalItem.code!))),
         DataCell(Text(liberalItem.title!)),
+        DataCell(Text(liberalItem.targetStudents!)),
         DataCell(Text(liberalItem.lecturerName!)),
         DataCell(Text(liberalItem.lecturerEmail!)),
       ],

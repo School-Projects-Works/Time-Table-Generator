@@ -52,7 +52,8 @@ class _HomePageState extends State<HomePage> {
                               color: background,
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(20))),
-                          child: hive.getAcademicList.isNotEmpty
+                          child: hive.getAcademicList.isNotEmpty &&
+                                  hive.getCurrentConfig.id != null
                               ? IndexedStack(
                                   index: nav.page,
                                   children: const [

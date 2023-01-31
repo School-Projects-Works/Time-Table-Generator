@@ -1,10 +1,7 @@
 // ignore_for_file: file_names
 
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:aamusted_timetable_generator/Models/Class/ClassModel.dart';
-import 'package:aamusted_timetable_generator/SateManager/ConfigDataFlow.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +10,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:open_app_file/open_app_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
 import '../../../../Components/CustomButton.dart';
 import '../../../../Components/CustomTable.dart';
 import '../../../../Components/SmartDialog.dart';
@@ -220,8 +215,7 @@ class _ClassesPageState extends State<ClassesPage> {
               }
               var data = HiveCache.getClasses(hive.currentAcademicYear);
               hive.setClassList(data);
-              Provider.of<ConfigDataFlow>(context, listen: false)
-                  .updateHasClass(true);
+              hive.updateHasClass(true);
               CustomDialog.dismiss();
               CustomDialog.showSuccess(message: 'Data Imported Successfully');
             } else {

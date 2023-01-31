@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 import 'Pages/ContainerPage.dart';
-import 'SateManager/ConfigDataFlow.dart';
 import 'SateManager/HiveCache.dart';
 import 'SateManager/HiveListener.dart';
 import 'SateManager/NavigationProvider.dart';
@@ -38,7 +37,6 @@ void main() async {
     ChangeNotifierProvider(
       create: (context) => NavigationProvider(),
     ),
-    ChangeNotifierProvider(create: (context) => ConfigDataFlow()),
     ChangeNotifierProvider(create: (context) => HiveListener()),
   ], child: const MyApp()));
 }
@@ -57,14 +55,8 @@ class _MyAppState extends State<MyApp> {
       var academic = HiveCache.getAcademics();
       if (academic.isNotEmpty) {
         var provider = Provider.of<HiveListener>(context, listen: false);
-        var configProvider =
-            Provider.of<ConfigDataFlow>(context, listen: false);
-        configProvider.updateConfigList();
-
         provider.setAcademicList(academic);
-        String? id = provider.academicList.first.id;
-        var config = await HiveCache.getConfig(id);
-        configProvider.updateConfigurations(config);
+        provider.updateConfigList();
 
         var currentYear = provider.currentAcademicYear;
 

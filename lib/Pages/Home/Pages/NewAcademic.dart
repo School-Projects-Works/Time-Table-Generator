@@ -5,7 +5,6 @@ import 'package:aamusted_timetable_generator/Components/SmartDialog.dart';
 import 'package:aamusted_timetable_generator/Constants/CustomStringFunctions.dart';
 import 'package:aamusted_timetable_generator/Models/Academic/AcademicModel.dart';
 import 'package:aamusted_timetable_generator/Models/Config/ConfigModel.dart';
-import 'package:aamusted_timetable_generator/SateManager/ConfigDataFlow.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveCache.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +63,7 @@ class _NewAcademicState extends State<NewAcademic> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Create New Academic Year and Semester under which you can add courses, Students, Venues and generate timetable for that semester',
+                          'Create New Academic Year, Semester and Targeted Students under which you can add courses, Students, Venues and generate timetable for that semester',
                           style: GoogleFonts.nunito(
                               color: Colors.black, fontSize: 20),
                         ),
@@ -161,6 +160,9 @@ class _NewAcademicState extends State<NewAcademic> {
                           ),
                         ),
                         const SizedBox(
+                          height: 30,
+                        ),
+                        const SizedBox(
                           height: 40,
                         ),
                         SizedBox(
@@ -185,6 +187,7 @@ class _NewAcademicState extends State<NewAcademic> {
 
   void saveAcademic() {
     if (year != null && semester != null) {
+      var provider = Provider.of<HiveListener>(context, listen: false);
       CustomDialog.showLoading(message: 'Saving Academic Year');
       String id = "$year$semester".trimToLowerCase();
       AcademicModel academicModel = AcademicModel(
@@ -197,18 +200,16 @@ class _NewAcademicState extends State<NewAcademic> {
       if (results == null) {
         var data = HiveCache.saveAcademic(academicModel);
         if (data.isNotEmpty) {
-          Provider.of<HiveListener>(context, listen: false)
-              .setAcademicList(data);
+          provider.setAcademicList(data);
           ConfigModel configurations = ConfigModel();
           configurations.academicName = academicModel.name;
           configurations.academicYear = academicModel.year;
           configurations.academicSemester = academicModel.semester;
-          configurations.id = academicModel.id;
+          configurations.id =
+              '${academicModel.id}_${provider.targetedStudents.trimToLowerCase()}';
+          configurations.targetedStudents = provider.targetedStudents;
           HiveCache.addConfigurations(configurations);
-          Provider.of<ConfigDataFlow>(context, listen: false)
-              .updateConfigurations(configurations);
-          Provider.of<ConfigDataFlow>(context, listen: false)
-              .updateConfigList();
+          Provider.of<HiveListener>(context, listen: false).updateConfigList();
           CustomDialog.dismiss();
           CustomDialog.showSuccess(
             message: 'Academic Year Saved Successfully',
@@ -227,7 +228,7 @@ class _NewAcademicState extends State<NewAcademic> {
       }
     } else {
       CustomDialog.showError(
-        message: 'Please select a year and semester',
+        message: 'Please select a year , semester and targeted students',
       );
     }
   }

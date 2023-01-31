@@ -6,7 +6,6 @@ import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:aamusted_timetable_generator/Components/SmartDialog.dart';
 import 'package:aamusted_timetable_generator/Components/TextInputs.dart';
 import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
-import 'package:aamusted_timetable_generator/SateManager/ConfigDataFlow.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveCache.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:aamusted_timetable_generator/Services/FileService.dart';
@@ -36,6 +35,7 @@ class _CoursesPageState extends State<CoursesPage> {
     'Title',
     'Credit Hours',
     'Special Venue',
+    'Target Students',
     'Department',
     'Level',
     'Lecturer',
@@ -239,7 +239,7 @@ class _CoursesPageState extends State<CoursesPage> {
               }
               var data = HiveCache.getCourses(hive.currentAcademicYear);
               hive.setCourseList(data);
-              Provider.of<ConfigDataFlow>(context, listen: false)
+              Provider.of<HiveListener>(context, listen: false)
                   .updateHasCourse(true);
               CustomDialog.dismiss();
               CustomDialog.showSuccess(message: 'Data Imported Successfully');

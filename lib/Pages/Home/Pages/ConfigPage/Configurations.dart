@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../../Components/CustomDropDown.dart';
-import '../../../../SateManager/ConfigDataFlow.dart';
-import '../../../../SateManager/HiveCache.dart';
 import '../../../../SateManager/HiveListener.dart';
 import 'DaysSection.dart';
 import 'PeriodSection.dart';
@@ -23,101 +21,66 @@ class _ConfigurationState extends State<Configuration> {
   String? loadFrom;
   @override
   Widget build(BuildContext context) {
-    return Consumer<ConfigDataFlow>(builder: (context, configs, child) {
+    return Consumer<HiveListener>(builder: (context, hive, child) {
       return SizedBox(
         width: double.infinity,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Configurations',
-                    style: GoogleFonts.poppins(
-                      fontSize: 40,
-                      color: secondaryColor,
-                      fontWeight: FontWeight.bold,
-                    ),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Configurations',
+                  style: GoogleFonts.poppins(
+                    fontSize: 40,
+                    color: secondaryColor,
+                    fontWeight: FontWeight.bold,
                   ),
-                  SizedBox(
-                    width: 400,
-                    child: Row(
-                      children: [
-                        Text('Load From: ',
-                            style: GoogleFonts.poppins(
-                              fontSize: 20,
-                              color: secondaryColor,
-                            )),
-                        Expanded(
-                          child: CustomDropDown(
-                            items: configs.getConfigList!
-                                .map((e) => DropdownMenuItem(
-                                      value: e,
-                                      child: Text(
-                                        e,
-                                        style: GoogleFonts.nunito(),
-                                      ),
-                                    ))
-                                .toList(),
-                            value: loadFrom,
-                            label: 'Load configurations from',
-                            color: Colors.white,
-                            onChanged: (value) {
-                              var data = HiveCache.getConfigList();
-                              var id = data
-                                  .firstWhere((element) =>
-                                      element.academicName == value)
-                                  .id;
-                              var config = HiveCache.getConfig(id);
-                              Provider.of<ConfigDataFlow>(context,
-                                      listen: false)
-                                  .updateConfigurations(config);
-                              setState(() {
-                                loadFrom = value;
-                              });
-                            },
-                          ),
-                        ),
+                ),
+                const SizedBox(width: 30),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        DaysSection(),
+                        PeriodSection(),
                       ],
                     ),
-                  )
-                ],
+                  ],
+                ),
               ),
-              const SizedBox(height: 20),
-              Wrap(
-                children: const [
-                  DaysSection(),
-                  PeriodSection(),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 400,
-                    child: CustomButton(
-                      onPressed: saveConfig,
-                      text: 'Save Configurations',
-                      color: secondaryColor,
-                    ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 400,
+                  child: CustomButton(
+                    onPressed: saveConfig,
+                    text: 'Save Configurations',
+                    color: secondaryColor,
                   ),
-                ],
-              )
-            ],
-          ),
+                ),
+              ],
+            )
+          ],
         ),
       );
     });
   }
 
   void saveConfig() {
-    var data = Provider.of<ConfigDataFlow>(context, listen: false);
     var hiveData = Provider.of<HiveListener>(context, listen: false);
-    data.saveConfig(hiveData);
+    hiveData.saveConfig();
   }
 }

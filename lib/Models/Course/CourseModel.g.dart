@@ -28,13 +28,14 @@ class CourseModelAdapter extends TypeAdapter<CourseModel> {
       academicYear: fields[8] as String?,
       venues: (fields[9] as List?)?.cast<String>(),
       level: fields[10] as String?,
+      targetStudents: fields[11] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, CourseModel obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.code)
       ..writeByte(1)
@@ -56,7 +57,9 @@ class CourseModelAdapter extends TypeAdapter<CourseModel> {
       ..writeByte(9)
       ..write(obj.venues)
       ..writeByte(10)
-      ..write(obj.level);
+      ..write(obj.level)
+      ..writeByte(11)
+      ..write(obj.targetStudents);
   }
 
   @override

@@ -21,7 +21,6 @@ class TableModelAdapter extends TypeAdapter<TableModel> {
       academicYear: fields[1] as String?,
       day: fields[2] as String?,
       period: fields[3] as String?,
-      dayMap: (fields[4] as Map?)?.cast<String, dynamic>(),
       periodMap: (fields[5] as Map?)?.cast<String, dynamic>(),
       courseCode: fields[6] as String?,
       courseId: fields[7] as String?,
@@ -37,18 +36,18 @@ class TableModelAdapter extends TypeAdapter<TableModel> {
       isSpecialVenue: fields[17] as String?,
       classLevel: fields[18] as String?,
       className: fields[19] as String?,
-      classType: fields[20] as String?,
-      department: fields[21] as String?,
-      classSize: fields[22] as String?,
-      classHasDisability: fields[23] as String?,
-      classId: fields[24] as String?,
+      targetStudents: fields[4] as String?,
+      department: fields[20] as String?,
+      classSize: fields[21] as String?,
+      classHasDisability: fields[22] as String?,
+      classId: fields[23] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, TableModel obj) {
     writer
-      ..writeByte(25)
+      ..writeByte(24)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -58,7 +57,7 @@ class TableModelAdapter extends TypeAdapter<TableModel> {
       ..writeByte(3)
       ..write(obj.period)
       ..writeByte(4)
-      ..write(obj.dayMap)
+      ..write(obj.targetStudents)
       ..writeByte(5)
       ..write(obj.periodMap)
       ..writeByte(6)
@@ -90,14 +89,12 @@ class TableModelAdapter extends TypeAdapter<TableModel> {
       ..writeByte(19)
       ..write(obj.className)
       ..writeByte(20)
-      ..write(obj.classType)
-      ..writeByte(21)
       ..write(obj.department)
-      ..writeByte(22)
+      ..writeByte(21)
       ..write(obj.classSize)
-      ..writeByte(23)
+      ..writeByte(22)
       ..write(obj.classHasDisability)
-      ..writeByte(24)
+      ..writeByte(23)
       ..write(obj.classId);
   }
 

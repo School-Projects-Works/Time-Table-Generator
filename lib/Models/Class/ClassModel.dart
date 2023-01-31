@@ -10,7 +10,7 @@ class ClassModel {
   @HiveField(1)
   String? level;
   @HiveField(2)
-  String? type;
+  String? targetStudents;
   @HiveField(3)
   String? name;
   @HiveField(4)
@@ -27,12 +27,12 @@ class ClassModel {
   ClassModel({
     this.id,
     this.level,
-    this.type,
     this.name,
     this.size,
     this.hasDisability,
     this.department,
     this.createdAt,
     this.academicYear,
+    this.targetStudents,
   });
 }

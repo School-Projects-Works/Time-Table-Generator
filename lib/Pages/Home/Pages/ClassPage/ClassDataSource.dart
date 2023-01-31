@@ -83,7 +83,7 @@ class ClassDataSource extends DataTableSource {
           ),
         )),
         DataCell(Text(classItem.level!)),
-        DataCell(Text(classItem.type!)),
+        DataCell(Text(classItem.targetStudents!)),
         DataCell(Text(classItem.name!)),
         DataCell(Text(classItem.department!)),
         DataCell(ConstrainedBox(

@@ -24,21 +24,17 @@ class VenueTimePairModelAdapter extends TypeAdapter<VenueTimePairModel> {
       isDisabilityAccessible: fields[4] as String?,
       periodMap: (fields[5] as Map?)?.cast<String, dynamic>(),
       day: fields[6] as String?,
-      reg: fields[7] as bool?,
-      eve: fields[8] as bool?,
-      wnd: fields[9] as bool?,
-      period: fields[10] as String?,
-      dayMap: (fields[11] as Map?)?.cast<String, dynamic>(),
-      academicYear: fields[12] as String?,
-      isSpecialVenue: fields[13] as String?,
-      isBooked: fields[14] as bool,
-    );
+      period: fields[8] as String?,
+      academicYear: fields[9] as String?,
+      isSpecialVenue: fields[10] as String?,
+      isBooked: fields[11] as bool,
+    )..targetedStudents = fields[7] as String?;
   }
 
   @override
   void write(BinaryWriter writer, VenueTimePairModel obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -54,20 +50,14 @@ class VenueTimePairModelAdapter extends TypeAdapter<VenueTimePairModel> {
       ..writeByte(6)
       ..write(obj.day)
       ..writeByte(7)
-      ..write(obj.reg)
+      ..write(obj.targetedStudents)
       ..writeByte(8)
-      ..write(obj.eve)
-      ..writeByte(9)
-      ..write(obj.wnd)
-      ..writeByte(10)
       ..write(obj.period)
-      ..writeByte(11)
-      ..write(obj.dayMap)
-      ..writeByte(12)
+      ..writeByte(9)
       ..write(obj.academicYear)
-      ..writeByte(13)
+      ..writeByte(10)
       ..write(obj.isSpecialVenue)
-      ..writeByte(14)
+      ..writeByte(11)
       ..write(obj.isBooked);
   }
 

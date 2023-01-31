@@ -24,13 +24,14 @@ class LiberalModelAdapter extends TypeAdapter<LiberalModel> {
       id: fields[4] as String?,
       academicYear: fields[5] as String?,
       level: fields[6] as String?,
+      targetStudents: fields[7] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, LiberalModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.code)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class LiberalModelAdapter extends TypeAdapter<LiberalModel> {
       ..writeByte(5)
       ..write(obj.academicYear)
       ..writeByte(6)
-      ..write(obj.level);
+      ..write(obj.level)
+      ..writeByte(7)
+      ..write(obj.targetStudents);
   }
 
   @override

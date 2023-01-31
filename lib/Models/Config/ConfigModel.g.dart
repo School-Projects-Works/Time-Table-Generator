@@ -21,26 +21,26 @@ class ConfigModelAdapter extends TypeAdapter<ConfigModel> {
       academicName: fields[1] as String?,
       academicYear: fields[2] as String?,
       academicSemester: fields[3] as String?,
-      days: (fields[4] as List?)
-          ?.map((dynamic e) => (e as Map).cast<String, dynamic>())
-          .toList(),
+      days: (fields[4] as List?)?.cast<String>(),
       periods: (fields[5] as List?)
           ?.map((dynamic e) => (e as Map).cast<String, dynamic>())
           .toList(),
-      liberalCourseDay: (fields[6] as Map?)?.cast<String, dynamic>(),
+      liberalCourseDay: fields[6] as String?,
       liberalCoursePeriod: (fields[7] as Map?)?.cast<String, dynamic>(),
       hasLiberalCourse: fields[8] as bool,
       hasCourse: fields[9] as bool,
       hasClass: fields[10] as bool,
       hasVenues: fields[11] as bool,
       liberalLevel: fields[12] as String?,
+      targetedStudents: fields[13] as String?,
+      breakTime: (fields[14] as Map?)?.cast<String, dynamic>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, ConfigModel obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(15)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -66,7 +66,11 @@ class ConfigModelAdapter extends TypeAdapter<ConfigModel> {
       ..writeByte(11)
       ..write(obj.hasVenues)
       ..writeByte(12)
-      ..write(obj.liberalLevel);
+      ..write(obj.liberalLevel)
+      ..writeByte(13)
+      ..write(obj.targetedStudents)
+      ..writeByte(14)
+      ..write(obj.breakTime);
   }
 
   @override

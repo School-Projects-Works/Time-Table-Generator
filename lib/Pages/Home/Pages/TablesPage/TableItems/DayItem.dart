@@ -1,12 +1,12 @@
 import 'package:aamusted_timetable_generator/Constants/CustomStringFunctions.dart';
 import 'package:aamusted_timetable_generator/Models/Table/TableModel.dart';
 import 'package:aamusted_timetable_generator/Pages/Home/Pages/TablesPage/TableItems/TableItem.dart';
+import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-
-import '../../../../../SateManager/ConfigDataFlow.dart';
 import '../../../../../Styles/DiagonalWidget.dart';
 import '../../../../../Styles/colors.dart';
 
@@ -23,8 +23,8 @@ class _DayItemState extends State<DayItem> {
   @override
   Widget build(BuildContext context) {
     var group = groupBy(widget.tables, (element) => element.venue);
-    return Consumer<ConfigDataFlow>(builder: (context, config, child) {
-      var periods = config.configurations.periods;
+    return Consumer<HiveListener>(builder: (context, hive, child) {
+      var periods = hive.getCurrentConfig.periods;
       return Container(
         width: double.infinity,
         padding: const EdgeInsets.all(10),
@@ -173,7 +173,7 @@ class _DayItemState extends State<DayItem> {
                                   ],
                                 ),
                               ),
-                              if (periods!
+                              if (periods
                                   .where((element) => element['period']
                                       .toString()
                                       .contains('2'))
