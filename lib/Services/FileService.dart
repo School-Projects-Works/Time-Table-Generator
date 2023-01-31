@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'dart:io';
+import 'package:aamusted_timetable_generator/Components/SmartDialog.dart';
 import 'package:aamusted_timetable_generator/Constants/Constant.dart';
 import 'package:aamusted_timetable_generator/Constants/CustomStringFunctions.dart';
 import 'package:aamusted_timetable_generator/Models/Venue/VenueModel.dart';
@@ -8,11 +9,21 @@ import 'package:aamusted_timetable_generator/Services/ExcelSheetSettings.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import '../Models/Class/ClassModel.dart';
 import '../Models/Course/CourseModel.dart';
 import '../Models/Course/LiberalModel.dart';
+
+class GlobalFunctions {
+  static TimeOfDay timeFromString(String input) {
+    DateFormat formatter = DateFormat("h:mm a");
+    DateTime time = formatter.parse(input);
+    return TimeOfDay.fromDateTime(time);
+  }
+}
 
 class FileService {
   static Future<String?> pickExcelFIle() async {
@@ -29,7 +40,7 @@ class ExcelService {
   static bool validateExcelFIleByColumns(Excel? excel, List<String> columns) {
     if (excel == null) return false;
     // GEt the header row
-    List<Data?> headerRow = excel.tables[excel.getDefaultSheet()]!.row(0);
+    List<Data?> headerRow = excel.tables[excel.getDefaultSheet()]!.row(1);
     List<String> fileColumns =
         headerRow.map<String>((data) => data!.value.toString()).toList();
     return listEquals(fileColumns, columns);
@@ -54,18 +65,39 @@ class ExcelService {
 class ImportServices {
   static Future<List<CourseModel>?> importCourses(Excel? excel) async {
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
-    List<CourseModel> courses = rows.skip(1).map<CourseModel>((row) {
+    List<CourseModel> courses = rows.skip(2).map<CourseModel>((row) {
       return CourseModel(
           code: row[0] != null ? row[0]!.value.toString() : '',
           title: row[1] != null ? row[1]!.value.toString() : '',
           creditHours: row[2] != null ? row[2]!.value.toString() : '3',
           specialVenue: row[3] != null ? row[3]!.value.toString() : 'No',
-          department: row[4] != null ? row[4]!.value.toString() : '',
-          level: row[5] != null ? row[5]!.value.toString() : '',
-          lecturerName: row[6] != null ? row[6]!.value.toString() : '',
-          lecturerEmail: row[7] != null ? row[7]!.value.toString() : '',
-          id: row[0] != null && row[4] != null
-              ? '${row[0]!.value.toString().trimToLowerCase()}_${row[4]!.value.toString().getInitials()}'
+          targetStudents: row[4] != null
+              ? row[4]!.value.toString().trimToLowerCase() == 'sandwich' ||
+                      row[4]!.value.toString().trimToLowerCase().contains('san')
+                  ? 'Sandwich'
+                  : row[4]!.value.toString().trimToLowerCase() == 'evening' ||
+                          row[4]!
+                              .value
+                              .toString()
+                              .trimToLowerCase()
+                              .contains('ev')
+                      ? 'Evening'
+                      : row[4]!.value.toString().trimToLowerCase() ==
+                                  'weekend' ||
+                              row[4]!
+                                  .value
+                                  .toString()
+                                  .trimToLowerCase()
+                                  .contains('wee')
+                          ? "Weekend"
+                          : 'Regular'
+              : '',
+          department: row[5] != null ? row[5]!.value.toString() : '',
+          level: row[6] != null ? row[6]!.value.toString() : '',
+          lecturerName: row[7] != null ? row[7]!.value.toString() : '',
+          lecturerEmail: row[8] != null ? row[8]!.value.toString() : '',
+          id: row[0] != null && row[5] != null
+              ? '${row[0]!.value.toString().trimToLowerCase()}_${row[5]!.value.toString().getInitials()}'
               : '',
           venues: []);
     }).toList();
@@ -75,7 +107,7 @@ class ImportServices {
 
   static Future<List<VenueModel>?> importVenues(Excel? excel) async {
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
-    List<VenueModel> venues = rows.skip(1).map<VenueModel>((row) {
+    List<VenueModel> venues = rows.skip(2).map<VenueModel>((row) {
       return VenueModel(
         name: row[0] != null ? row[0]!.value.toString() : '',
         capacity: row[1] != null ? row[1]!.value.toString() : '100',
@@ -93,10 +125,29 @@ class ImportServices {
 
   static Future<List<ClassModel>?> importClasses(Excel? excel) async {
     var rows = excel!.tables[excel.getDefaultSheet()]!.rows;
-    List<ClassModel> classes = rows.skip(1).map<ClassModel>((row) {
+    List<ClassModel> classes = rows.skip(2).map<ClassModel>((row) {
       return ClassModel(
         level: row[0] != null ? row[0]!.value.toString() : '',
-        targetStudents: row[1] != null ? row[1]!.value.toString() : '',
+        targetStudents: row[4] != null
+            ? row[1]!.value.toString().trimToLowerCase() == 'sandwich' ||
+                    row[1]!.value.toString().trimToLowerCase().contains('san')
+                ? 'Sandwich'
+                : row[1]!.value.toString().trimToLowerCase() == 'evening' ||
+                        row[1]!
+                            .value
+                            .toString()
+                            .trimToLowerCase()
+                            .contains('ev')
+                    ? 'Evening'
+                    : row[1]!.value.toString().trimToLowerCase() == 'weekend' ||
+                            row[1]!
+                                .value
+                                .toString()
+                                .trimToLowerCase()
+                                .contains('wee')
+                        ? "Weekend"
+                        : 'Regular'
+            : '',
         name: row[2] != null ? row[2]!.value.toString() : '',
         department: row[3] != null ? row[3]!.value.toString() : '',
         size: row[4] != null ? row[4]!.value.toString() : '10',
@@ -124,7 +175,7 @@ class ImportServices {
       workbook.dispose();
       return file;
     } catch (e) {
-      print('Error=====$e');
+      CustomDialog.showError(message: e.toString());
     }
     return file;
   }
@@ -163,7 +214,7 @@ class ImportServices {
       workbook.dispose();
       return file;
     } catch (e) {
-      print('Error=====$e');
+      CustomDialog.showError(message: e.toString());
     }
   }
 
@@ -180,18 +231,37 @@ class ImportServices {
       workbook.dispose();
       return file;
     } catch (e) {
-      print('Error=====$e');
+      CustomDialog.showError(message: e.toString());
     }
   }
 
   static Future<List<LiberalModel>> importLiberal(Excel excel) async {
     var rows = excel.tables[excel.getDefaultSheet()]!.rows;
-    List<LiberalModel> liberals = rows.skip(1).map<LiberalModel>((row) {
+    List<LiberalModel> liberals = rows.skip(2).map<LiberalModel>((row) {
       return LiberalModel(
         id: row[0] != null ? row[0]!.value.toString().trimToLowerCase() : '',
         code: row[0] != null ? row[0]!.value.toString() : '',
         title: row[1] != null ? row[1]!.value.toString() : '',
-        level: row[2] != null ? row[2]!.value.toString() : '',
+        targetStudents: row[4] != null
+            ? row[2]!.value.toString().trimToLowerCase() == 'sandwich' ||
+                    row[2]!.value.toString().trimToLowerCase().contains('san')
+                ? 'Sandwich'
+                : row[2]!.value.toString().trimToLowerCase() == 'evening' ||
+                        row[2]!
+                            .value
+                            .toString()
+                            .trimToLowerCase()
+                            .contains('ev')
+                    ? 'Evening'
+                    : row[2]!.value.toString().trimToLowerCase() == 'weekend' ||
+                            row[2]!
+                                .value
+                                .toString()
+                                .trimToLowerCase()
+                                .contains('wee')
+                        ? "Weekend"
+                        : 'Regular'
+            : '',
         lecturerName: row[3] != null ? row[3]!.value.toString() : '',
         lecturerEmail: row[4] != null ? row[4]!.value.toString() : '',
       );

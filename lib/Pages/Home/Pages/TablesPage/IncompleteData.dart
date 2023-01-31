@@ -154,7 +154,8 @@ class _IncompleteDataState extends State<IncompleteData> {
                           if (hive.getCurrentConfig.hasLiberalCourse &&
                               (hive.getCurrentConfig.liberalCourseDay == null ||
                                   hive.getCurrentConfig.liberalCoursePeriod ==
-                                      null))
+                                      null ||
+                                  hive.getCurrentConfig.liberalLevel == null))
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [

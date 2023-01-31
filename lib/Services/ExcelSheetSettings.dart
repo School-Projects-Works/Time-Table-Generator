@@ -48,17 +48,20 @@ class ExcelSheetSettings {
     int start = 0;
     final ExcelSheetProtectionOption options = ExcelSheetProtectionOption();
     options.all = true;
+    //Let merge the first row cells and put there instructions
+    sheet.getRangeByName('${listOfAlpha[0]}1:${listOfAlpha[end - 1]}1')
+      ..merge()
+      ..setText(
+          'Please do not Temper or edit the column headings.Do not delete any column or change the order of the columns')
+      ..cellStyle = instructionStyle(book, '$sheetName header')
+      ..rowHeight = 50;
+
     for (start; start < end; start++) {
-      sheet.getRangeByName('${listOfAlpha[start]}1').setText(headings[start]);
-      sheet
-          .getRangeByName('${listOfAlpha[start]}2:${listOfAlpha[start]}1000')
-          .cellStyle
-          .locked = false;
+      sheet.getRangeByName('${listOfAlpha[start]}2').setText(headings[start]);
     }
-    sheet
-        .getRangeByName('${listOfAlpha[0]}1:${listOfAlpha[end - 1]}1')
-        .cellStyle = headerStyle(book, sheetName);
-    sheet.protect('Password', options);
+    sheet.getRangeByName('${listOfAlpha[0]}2:${listOfAlpha[end - 1]}2')
+      ..cellStyle = headerStyle(book, sheetName)
+      ..rowHeight = 30;
     for (int i = 1; i <= columnCount; i++) {
       sheet.autoFitColumn(i);
     }

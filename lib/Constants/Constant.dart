@@ -8,7 +8,7 @@ class Constant {
   static String specialVenue =
       "Special Venue(Specify Venue,eg:Wood Lab,Computer Lab)";
   static String lecturerEmail = "Lecturer Email";
-  static String department = "Department";
+  static String department = "Programme (Full Name)";
 
   static String level = "Level";
   static String className = "Class Name";
@@ -54,7 +54,6 @@ class Constant {
     courseCode,
     courseTitle,
     type,
-    level,
     lecturerName,
     lecturerEmail
   ];

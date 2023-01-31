@@ -26,8 +26,8 @@ class CustomDialog {
       maskColor: Colors.transparent,
       builder: (_) {
         return Container(
-          width: 400,
-          height: 230,
+          width: 450,
+          height: 250,
           padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
               color: Colors.white,
@@ -41,45 +41,48 @@ class CustomDialog {
                 ),
               ]),
           alignment: Alignment.center,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Transform.translate(
-                offset: const Offset(0, -40),
-                child: const CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.red,
-                  child: Icon(
-                    Icons.error,
-                    size: 50,
-                    color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Transform.translate(
+                  offset: const Offset(0, -40),
+                  child: const CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.red,
+                    child: Icon(
+                      Icons.error,
+                      size: 50,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.nunito(color: Colors.black, fontSize: 15),
-              ),
-              const Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: secondaryColor,
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  maxLines: 4,
+                  style: GoogleFonts.nunito(color: Colors.black, fontSize: 15),
+                ),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: secondaryColor,
+                      ),
+                      child: Text(
+                        'Okay',
+                        style: GoogleFonts.nunito(color: Colors.white),
+                      ),
+                      onPressed: () => SmartDialog.dismiss(),
                     ),
-                    child: Text(
-                      'Okay',
-                      style: GoogleFonts.nunito(color: Colors.white),
-                    ),
-                    onPressed: () => SmartDialog.dismiss(),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 5),
-            ],
+                  ],
+                ),
+                const SizedBox(height: 5),
+              ],
+            ),
           ),
         );
       },
@@ -91,8 +94,8 @@ class CustomDialog {
       maskColor: Colors.transparent,
       builder: (_) {
         return Container(
-          width: 400,
-          height: 230,
+          width: 450,
+          height: 250,
           padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
               color: Colors.white,
@@ -106,45 +109,49 @@ class CustomDialog {
                 ),
               ]),
           alignment: Alignment.center,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Transform.translate(
-                offset: const Offset(0, -40),
-                child: const CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.green,
-                  child: Icon(
-                    Icons.check,
-                    size: 50,
-                    color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Transform.translate(
+                  offset: const Offset(0, -40),
+                  child: const CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.green,
+                    child: Icon(
+                      Icons.check,
+                      size: 50,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.nunito(color: Colors.black, fontSize: 15),
-              ),
-              const Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: secondaryColor,
+                Text(
+                  message,
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.nunito(color: Colors.black, fontSize: 15),
+                ),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: secondaryColor,
+                      ),
+                      child: Text(
+                        'Okay',
+                        style: GoogleFonts.nunito(color: Colors.white),
+                      ),
+                      onPressed: () => SmartDialog.dismiss(),
                     ),
-                    child: Text(
-                      'Okay',
-                      style: GoogleFonts.nunito(color: Colors.white),
-                    ),
-                    onPressed: () => SmartDialog.dismiss(),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 5),
-            ],
+                  ],
+                ),
+                const SizedBox(height: 5),
+              ],
+            ),
           ),
         );
       },

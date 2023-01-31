@@ -36,7 +36,7 @@ class _CoursesPageState extends State<CoursesPage> {
     'Credit Hours',
     'Special Venue',
     'Target Students',
-    'Department',
+    'Programme',
     'Level',
     'Lecturer',
     'Lecturer Email',
@@ -253,7 +253,9 @@ class _CoursesPageState extends State<CoursesPage> {
           CustomDialog.showError(message: 'Error Importing Data');
         }
       } else {
-        CustomDialog.showError(message: 'Invalid Excel File Selected');
+        CustomDialog.showError(
+            message:
+                'Invalid Excel File Selected.\nPlease make sure you have not tempered Excel file headings.');
       }
     }
   }

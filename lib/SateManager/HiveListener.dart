@@ -154,9 +154,11 @@ class HiveListener extends ChangeNotifier {
   List<CourseModel> get getFilteredCourses => filteredCourses;
   List<CourseModel> get getCourseList => courseList;
   void setCourseList(List<CourseModel> list) {
-    courseList = list;
-    filteredCourses = list;
-    hasSpecialCourseError = list.any((element) =>
+    var currentCourses =
+        list.where((element) => element.targetStudents == tStudents).toList();
+    courseList = currentCourses;
+    filteredCourses = currentCourses;
+    hasSpecialCourseError = currentCourses.any((element) =>
         element.specialVenue!.toLowerCase() != "no" && element.venues!.isEmpty);
     selectedCourse = [];
     notifyListeners();
@@ -472,7 +474,7 @@ class HiveListener extends ChangeNotifier {
     generateLiberalsTables();
 
     //now we get only regular classCoursePairs and create their tables
-    generateRegularTables(libLevel!, libDays!, libPeriods!['period']);
+    // generateRegularTables(libLevel!, libDays!, libPeriods!['period']);
 
     HiveCache.addTables(tables);
     tables = HiveCache.getTables(currentAcademicYear);
@@ -520,7 +522,7 @@ class HiveListener extends ChangeNotifier {
       ltp.id = '${lib.id}$libDays${libPeriods['period']}'.trimToLowerCase();
       ltp.lecturerName = lib.lecturerName;
       ltp.lecturerEmail = lib.lecturerEmail;
-      ltp.level = lib.level;
+      ltp.level = liberalLevel;
       libTimePairs.add(ltp);
     }
     return libTimePairs;
@@ -725,6 +727,7 @@ class HiveListener extends ChangeNotifier {
         }
       }
     }
+    print('length of tables is ${tables!.length}');
   }
 
   void setTables(tb) {

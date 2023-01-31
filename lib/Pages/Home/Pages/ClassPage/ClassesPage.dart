@@ -34,7 +34,7 @@ class _ClassesPageState extends State<ClassesPage> {
     'Level',
     'Type(Regular/Evening/Weekend)',
     'Class Name',
-    'Department',
+    'Programme',
     'Class Size',
     'Has Disability',
   ];
