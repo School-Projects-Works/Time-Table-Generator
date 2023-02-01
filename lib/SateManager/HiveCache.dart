@@ -183,4 +183,16 @@ class HiveCache {
         .where((element) => element.academicYear == currentAcademicYear)
         .toList();
   }
+
+  static void deleteTables(currentAcademicYear, String tStudents) {
+    final box = Hive.box<TableModel>('tables');
+    List<TableModel> tables = box.values
+        .where((element) =>
+            element.academicYear == currentAcademicYear &&
+            element.targetStudents == tStudents)
+        .toList();
+    for (TableModel table in tables) {
+      box.delete(table.id);
+    }
+  }
 }

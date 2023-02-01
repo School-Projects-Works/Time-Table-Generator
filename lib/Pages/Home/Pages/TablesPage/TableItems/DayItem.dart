@@ -5,7 +5,6 @@ import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import '../../../../../Models/Config/PeriodModel.dart';
 import '../../../../../Services/FileService.dart';
@@ -63,8 +62,8 @@ class _DayItemState extends State<DayItem> {
 
   @override
   Widget build(BuildContext context) {
-    var group = groupBy(widget.tables, (element) => element.venue);
     return Consumer<HiveListener>(builder: (context, hive, child) {
+      var group = groupBy(widget.tables, (element) => element.venue);
       return FutureBuilder<List<PeriodModel>>(
           future: workOnPeriod(),
           builder: (context, snapshot) {
@@ -167,29 +166,29 @@ class _DayItemState extends State<DayItem> {
                                   ),
                                 if (breakPeriod != null)
                                   Container(
-                                      width: 150,
-                                      height: 70,
-                                      padding: const EdgeInsets.all(5),
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        border: Border.all(color: Colors.black),
+                                    height: 70,
+                                    width: 90,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border(
+                                        top: BorderSide(color: Colors.black),
                                       ),
-                                      child: Column(
-                                        children: [
-                                          Text(breakPeriod!.period!,
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 20,
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold)),
-                                          Text(
-                                              '${breakPeriod!.startTime!} - ${breakPeriod!.endTime!}',
-                                              style: GoogleFonts.poppins(
-                                                  fontSize: 15,
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold)),
-                                        ],
-                                      )),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Text(breakPeriod!.startTime!,
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 20,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold)),
+                                        Text(breakPeriod!.endTime!,
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 15,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold)),
+                                      ],
+                                    ),
+                                  ),
                                 if (secondPeriods.isNotEmpty)
                                   Row(
                                     children: secondPeriods
@@ -230,15 +229,94 @@ class _DayItemState extends State<DayItem> {
                             )
                           ],
                         ),
-                        ...group.entries
-                            .map((e) => TableRow(
-                                  tables: e.value,
-                                  venue: e.key,
-                                  breakPeriod: breakPeriod,
-                                  firstPeriod: firstPeriods,
-                                  secondPeriod: secondPeriods,
-                                ))
-                            .toList(),
+                        if (widget.tables.isNotEmpty)
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                children: group.keys
+                                    .map(
+                                      (e) => TableItem(
+                                        venue: e,
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                              if (firstPeriods.isNotEmpty)
+                                Column(
+                                  children: group.keys
+                                      .map(
+                                        (venue) => Row(
+                                          children: firstPeriods.map((period) {
+                                            var table = widget.tables
+                                                .firstWhereOrNull((element) =>
+                                                    element.venue == venue &&
+                                                    element.period ==
+                                                        period.period);
+                                            if (table != null) {
+                                              return TableItem(
+                                                table: table,
+                                              );
+                                            } else {
+                                              return const TableItem();
+                                            }
+                                          }).toList(),
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              if (breakPeriod != null)
+                                SizedBox(
+                                  width: 90,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 20),
+                                        child: RotatedBox(
+                                          quarterTurns: 3,
+                                          child: Text(
+                                            'BREAK',
+                                            style: GoogleFonts.poppins(
+                                                fontSize: 40,
+                                                color: Colors.black,
+                                                wordSpacing: 10,
+                                                letterSpacing: 100,
+                                                fontWeight: FontWeight.bold),
+                                            textAlign: TextAlign.center,
+                                            textDirection: TextDirection.ltr,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              if (secondPeriods.isNotEmpty)
+                                Column(
+                                  children: group.keys
+                                      .map(
+                                        (venue) => Row(
+                                          children: secondPeriods.map((period) {
+                                            var table = widget.tables
+                                                .firstWhereOrNull((element) =>
+                                                    element.venue == venue &&
+                                                    element.period ==
+                                                        period.period);
+                                            if (table != null) {
+                                              return TableItem(
+                                                table: table,
+                                              );
+                                            } else {
+                                              return const TableItem();
+                                            }
+                                          }).toList(),
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                            ],
+                          )
                       ]),
                 ),
               ),

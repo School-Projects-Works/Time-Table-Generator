@@ -1,4 +1,6 @@
 // ignore_for_file: file_names
+import 'dart:math';
+
 import 'package:aamusted_timetable_generator/Components/SmartDialog.dart';
 import 'package:aamusted_timetable_generator/Constants/CustomStringFunctions.dart';
 import 'package:aamusted_timetable_generator/Models/Class/ClassModel.dart';
@@ -11,6 +13,7 @@ import 'package:aamusted_timetable_generator/Models/VenueTimePair/VenueTimePairM
 import 'package:aamusted_timetable_generator/SateManager/HiveCache.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:string_similarity/string_similarity.dart';
 import '../Models/Academic/AcademicModel.dart';
 import '../Models/Config/ConfigModel.dart';
 import '../Models/Config/PeriodModel.dart';
@@ -450,6 +453,8 @@ class HiveListener extends ChangeNotifier {
   List<TableModel>? get getTables => tables;
   void generateTables() {
     tables = [];
+    //clear Hive database where academic year is currentAcademicYear and target student is currentTargetStudent
+    HiveCache.deleteTables(currentAcademicYear, tStudents);
 
     var days = currentConfig.days;
     var libLevel = currentConfig.liberalLevel;
@@ -457,9 +462,9 @@ class HiveListener extends ChangeNotifier {
     var libDays = currentConfig.liberalCourseDay;
     var libPeriods = currentConfig.liberalCoursePeriod;
     venueTimePairs = getVTP(days, periods);
-    // print('length of venueTimePairs: ${venueTimePairs!.length}');
+    //print('length of venueTimePairs: ${venueTimePairs!.length}');
     libTimePairs = getLTP(libDays, libPeriods);
-    // print('length of libTimePairs: ${libTimePairs!.length}');
+    //print('length of libTimePairs: ${libTimePairs!.length}');
     classCoursePairs = getCCP();
     //print('length of classCoursePairs: ${classCoursePairs!.length}');
 
@@ -475,9 +480,10 @@ class HiveListener extends ChangeNotifier {
 
     //now we get only regular classCoursePairs and create their tables
     // generateRegularTables(libLevel!, libDays!, libPeriods!['period']);
+    generateSpecialVenueTable(libDays, libPeriods!['period'], libLevel);
 
-    HiveCache.addTables(tables);
-    tables = HiveCache.getTables(currentAcademicYear);
+    // HiveCache.addTables(tables);
+    // tables = HiveCache.getTables(currentAcademicYear);
     notifyListeners();
   }
 
@@ -531,40 +537,48 @@ class HiveListener extends ChangeNotifier {
   List<ClassCoursePairModel> getCCP() {
     List<ClassCoursePairModel> classCoursePairs = [];
     for (var stuClass in classList) {
-      var courses = courseList
-          .where((element) =>
-              element.department!.trimToLowerCase() ==
-                  stuClass.department!.trimToLowerCase() &&
-              element.level!.trim() == stuClass.level!.trim())
-          .toList();
-      for (var txt in courses) {
-        CourseModel course = courseList.firstWhere(
-            (element) =>
-                element.code.toString().trimToLowerCase() ==
-                txt.toString().trimToLowerCase(),
-            orElse: () => CourseModel());
-        if (course.code != null) {
-          ClassCoursePairModel ccp = ClassCoursePairModel();
-          ccp.classId = stuClass.id;
-          ccp.courseCode = course.code;
-          ccp.courseTitle = course.title;
-          ccp.creditHours = course.creditHours;
-          ccp.academicYear = course.academicYear;
-          ccp.id = '${stuClass.id}${course.id}'.trimToLowerCase();
-          ccp.courseId = course.id;
-          ccp.className = stuClass.name;
-          ccp.department = stuClass.department;
-          ccp.classLevel = stuClass.level;
-          ccp.venues = course.venues;
-          ccp.lecturerName = course.lecturerName;
-          ccp.lecturerEmail = course.lecturerEmail;
-          ccp.specialVenue = course.specialVenue;
-          ccp.classHasDisability = stuClass.hasDisability;
-          ccp.classSize = stuClass.size;
-          ccp.targetStudents = stuClass.targetStudents;
-
-          classCoursePairs.add(ccp);
+      List<CourseModel> courses = [];
+      for (var course in courseList) {
+        var depSimilarity = stuClass.department!
+            .trimToLowerCase()
+            .similarityTo(course.department!.trimToLowerCase());
+        var levSimilarity = stuClass.level!
+            .trimToLowerCase()
+            .similarityTo(course.level!.trimToLowerCase());
+        if (depSimilarity > 0.7 && levSimilarity > 0.8) {
+          courses.add(course);
         }
+      }
+      if (courses.isNotEmpty) {
+        for (CourseModel txt in courses) {
+          CourseModel course = txt;
+          if (course.code != null) {
+            ClassCoursePairModel ccp = ClassCoursePairModel();
+            ccp.classId = stuClass.id;
+            ccp.courseCode = course.code;
+            ccp.courseTitle = course.title;
+            ccp.creditHours = course.creditHours;
+            ccp.academicYear = course.academicYear;
+            ccp.id = '${stuClass.id}${course.id}'.trimToLowerCase();
+            ccp.courseId = course.id;
+            ccp.className = stuClass.name;
+            ccp.department = stuClass.department;
+            ccp.classLevel = stuClass.level;
+            ccp.venues = course.venues;
+            ccp.lecturerName = course.lecturerName;
+            ccp.lecturerEmail = course.lecturerEmail;
+            ccp.specialVenue = course.specialVenue;
+            ccp.classHasDisability = stuClass.hasDisability;
+            ccp.classSize = stuClass.size;
+            ccp.targetStudents = stuClass.targetStudents;
+            classCoursePairs.add(ccp);
+          }
+        }
+      } else {
+        CustomDialog.showError(
+            message:
+                'No course found for ${stuClass.name} Please check the spelling of the Department and Level');
+        break;
       }
     }
 
@@ -727,7 +741,6 @@ class HiveListener extends ChangeNotifier {
         }
       }
     }
-    print('length of tables is ${tables!.length}');
   }
 
   void setTables(tb) {
@@ -1166,5 +1179,35 @@ class HiveListener extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  void generateSpecialVenueTable(
+      String? libDays, String? libPeriod, String? libLevel) {
+    var specialClassCoursePair = classCoursePairs!
+        .where((element) => element.venues!.isNotEmpty)
+        .toList();
+    print(specialClassCoursePair.length);
+    for (ClassCoursePairModel ccp in specialClassCoursePair) {
+      while (!ccp.isAssigned) {
+        var venues = ccp.venues;
+        Random random = Random();
+
+        int index = random.nextInt(venues!.length);
+        for (VenueTimePairModel vtp in venueTimePairs!) {
+          if (vtp.venueName == venues[index]) {
+            if (vtp.day == libDays &&
+                vtp.period == libPeriod &&
+                ccp.classLevel == libLevel) {
+            } else {
+              var table = returnTable(vtp, ccp);
+              tables!.add(table);
+              vtp.isBooked = true;
+              ccp.isAssigned = true;
+              break;
+            }
+          }
+        }
+      }
+    }
   }
 }

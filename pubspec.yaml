@@ -35,6 +35,7 @@ dependencies:
   syncfusion_flutter_xlsio: ^20.4.44-beta
   http: ^0.13.5
   url_launcher: ^6.1.8
+  string_similarity: ^2.0.0
 
 
 
