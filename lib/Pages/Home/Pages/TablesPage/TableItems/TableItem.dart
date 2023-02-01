@@ -1,14 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pdf/src/pdf/rect.dart';
 import '../../../../../Models/Table/TableModel.dart';
+import 'package:pdf/widgets.dart' as pw;
 
-class TableItem extends StatefulWidget {
-  const TableItem({super.key, this.venue, this.table});
+class TableItem extends StatefulWidget implements pw.Widget {
+  TableItem({super.key, this.venue, this.table});
   final String? venue;
   final TableModel? table;
 
   @override
   State<TableItem> createState() => _TableItemState();
+
+  @override
+  PdfRect? box;
+
+  @override
+  void debugPaint(pw.Context context) {
+    // TODO: implement debugPaint
+  }
+
+  @override
+  void layout(pw.Context context, pw.BoxConstraints constraints,
+      {bool parentUsesSize = false}) {
+    // TODO: implement layout
+  }
+
+  @override
+  void paint(pw.Context context) {
+    // TODO: implement paint
+  }
 }
 
 class _TableItemState extends State<TableItem> {

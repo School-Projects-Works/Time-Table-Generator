@@ -63,7 +63,9 @@ class _DayItemState extends State<DayItem> {
   @override
   Widget build(BuildContext context) {
     return Consumer<HiveListener>(builder: (context, hive, child) {
-      var group = groupBy(widget.tables, (element) => element.venue);
+      var data = widget.tables;
+      data.shuffle();
+      var group = groupBy(data, (element) => element.venue);
       return FutureBuilder<List<PeriodModel>>(
           future: workOnPeriod(),
           builder: (context, snapshot) {
@@ -178,7 +180,7 @@ class _DayItemState extends State<DayItem> {
                                       children: [
                                         Text(breakPeriod!.startTime!,
                                             style: GoogleFonts.poppins(
-                                                fontSize: 20,
+                                                fontSize: 15,
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.bold)),
                                         Text(breakPeriod!.endTime!,
@@ -258,7 +260,7 @@ class _DayItemState extends State<DayItem> {
                                                 table: table,
                                               );
                                             } else {
-                                              return const TableItem();
+                                              return TableItem();
                                             }
                                           }).toList(),
                                         ),
@@ -282,7 +284,7 @@ class _DayItemState extends State<DayItem> {
                                                 fontSize: 40,
                                                 color: Colors.black,
                                                 wordSpacing: 10,
-                                                letterSpacing: 100,
+                                                letterSpacing: 30,
                                                 fontWeight: FontWeight.bold),
                                             textAlign: TextAlign.center,
                                             textDirection: TextDirection.ltr,
@@ -308,7 +310,7 @@ class _DayItemState extends State<DayItem> {
                                                 table: table,
                                               );
                                             } else {
-                                              return const TableItem();
+                                              return TableItem();
                                             }
                                           }).toList(),
                                         ),
@@ -323,176 +325,5 @@ class _DayItemState extends State<DayItem> {
             );
           });
     });
-  }
-}
-
-class TableRow extends StatefulWidget {
-  const TableRow(
-      {super.key,
-      required this.tables,
-      this.venue,
-      this.breakPeriod,
-      required this.firstPeriod,
-      required this.secondPeriod});
-  final List<TableModel> tables;
-  final String? venue;
-  final PeriodModel? breakPeriod;
-  final List<PeriodModel> firstPeriod, secondPeriod;
-  @override
-  State<TableRow> createState() => _TableRowState();
-}
-
-class _TableRowState extends State<TableRow> {
-  List<TableModel> firstSet = [];
-  List<TableModel> secondSet = [];
-  PeriodModel? breakPeriod;
-  Future<List<TableModel>> workOnPeriod() async {
-    var table = widget.tables;
-    if (widget.breakPeriod != null) {
-      firstSet = [];
-      secondSet = [];
-      table.sort((a, b) => GlobalFunctions.timeFromString(
-              a.periodMap!['startTime']!)
-          .hour
-          .compareTo(
-              GlobalFunctions.timeFromString(b.periodMap!['startTime']!).hour));
-
-      if (breakPeriod != null) {
-        for (TableModel tab in table) {
-          //we check if period start time is less than break time
-          if (GlobalFunctions.timeFromString(tab.periodMap!['startTime']!)
-                  .hour <
-              GlobalFunctions.timeFromString(breakPeriod!.startTime!).hour) {
-            firstSet.add(tab);
-          } else if (GlobalFunctions.timeFromString(
-                      tab.periodMap!['startTime']!)
-                  .hour >
-              GlobalFunctions.timeFromString(breakPeriod!.startTime!).hour) {
-            secondSet.add(tab);
-          }
-        }
-      } else {
-        firstSet = table;
-      }
-    }
-    return table!;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    workOnPeriod();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<List<TableModel>>(
-        future: workOnPeriod(),
-        builder: (context, snapshot) {
-          //print break period
-          if (widget.breakPeriod != null) {
-            breakPeriod = widget.breakPeriod;
-          }
-          //print second period
-          for (var o in widget.secondPeriod) {
-            print(o.period);
-          }
-          return Row(
-            children: [
-              TableItem(
-                venue: widget.venue,
-              ),
-              if (widget.firstPeriod.isNotEmpty)
-                Row(children: [
-                  for (PeriodModel period in widget.firstPeriod)
-                    widget.tables.firstWhereOrNull(
-                                (element) => element.period == period.period) !=
-                            null
-                        ? TableItem(
-                            table: widget.tables.firstWhere(
-                                (element) => element.period == period.period),
-                          )
-                        : const TableItem()
-                ]),
-
-              if (breakPeriod != null)
-                const SizedBox(
-                  height: 100,
-                  width: 120,
-                ),
-              if (widget.secondPeriod.isNotEmpty)
-                Row(
-                  children: [
-                    for (PeriodModel period in widget.secondPeriod)
-                      widget.tables.firstWhereOrNull((element) =>
-                                  element.period == period.period) !=
-                              null
-                          ? TableItem(
-                              table: widget.tables.firstWhere(
-                                  (element) => element.period == period.period),
-                            )
-                          : const TableItem()
-                  ],
-                ),
-              // widget.tables
-              //         .where((element) =>
-              //             element.period.toString().trimToLowerCase().contains('1'))
-              //         .isNotEmpty
-              //     ? TableItem(
-              //         table: widget.tables
-              //             .where((element) => element.period
-              //                 .toString()
-              //                 .trimToLowerCase()
-              //                 .contains('1'))
-              //             .first,
-              //       )
-              //     : const TableItem(),
-              // widget.tables
-              //         .where((element) =>
-              //             element.period.toString().trimToLowerCase().contains('2'))
-              //         .isNotEmpty
-              //     ? TableItem(
-              //         table: widget.tables
-              //             .where((element) => element.period
-              //                 .toString()
-              //                 .trimToLowerCase()
-              //                 .contains('2'))
-              //             .first,
-              //       )
-              //     : const TableItem(),
-              // const SizedBox(
-              //   height: 100,
-              //   width: 120,
-              //   child: Text('Lunch', style: TextStyle(fontSize: 20)),
-              // ),
-              // widget.tables
-              //         .where((element) =>
-              //             element.period.toString().trimToLowerCase().contains('3'))
-              //         .isNotEmpty
-              //     ? TableItem(
-              //         table: widget.tables
-              //             .where((element) => element.period
-              //                 .toString()
-              //                 .trimToLowerCase()
-              //                 .contains('3'))
-              //             .first,
-              //       )
-              //     : const TableItem(),
-              // widget.tables
-              //         .where((element) =>
-              //             element.period.toString().trimToLowerCase().contains('4'))
-              //         .isNotEmpty
-              //     ? TableItem(
-              //         table: widget.tables
-              //             .where((element) => element.period
-              //                 .toString()
-              //                 .trimToLowerCase()
-              //                 .contains('4'))
-              //             .first,
-              //       )
-              //     : const TableItem(),
-            ],
-          );
-        });
   }
 }

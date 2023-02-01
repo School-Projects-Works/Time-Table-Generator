@@ -156,7 +156,7 @@ class HiveCache {
     box.put(element.id, element);
   }
 
-  static getLiberals(currentAcademicYear) {
+  static List<LiberalModel> getLiberals(currentAcademicYear) {
     final box = Hive.box<LiberalModel>('liberals');
     return box.values
         .where((element) => element.academicYear == currentAcademicYear)

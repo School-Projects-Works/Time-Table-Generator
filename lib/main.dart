@@ -1,3 +1,4 @@
+import 'package:aamusted_timetable_generator/Models/Course/LiberalModel.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -69,7 +70,7 @@ class _MyAppState extends State<MyApp> {
         var venues = await HiveCache.getVenues(currentYear);
         provider.setVenueList(venues);
 
-        var liberal = await HiveCache.getLiberals(currentYear);
+        var liberal = HiveCache.getLiberals(currentYear);
         provider.setLiberalList(liberal);
 
         var tables = await HiveCache.getTables(currentYear);

@@ -58,7 +58,7 @@ class CustomCheckBox extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 200),
+            if (hasTime) const SizedBox(width: 200),
             if (hasTime && (isChecked || alwaysChecked))
               Expanded(
                 child: Column(
