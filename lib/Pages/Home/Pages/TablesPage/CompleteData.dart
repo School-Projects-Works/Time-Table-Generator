@@ -7,20 +7,13 @@ import 'package:aamusted_timetable_generator/Models/Table/TableModel.dart';
 import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pdf/src/pdf/rect.dart';
 import 'package:provider/provider.dart';
 import '../../../../Services/FileService.dart';
 import 'TableItems/DayItem.dart';
-import 'package:pdf/widgets.dart' as pw;
 
-class CompleteData extends StatefulWidget {
+class CompleteData extends StatelessWidget {
   const CompleteData({super.key});
 
-  @override
-  State<CompleteData> createState() => _CompleteDataState();
-}
-
-class _CompleteDataState extends State<CompleteData> {
   @override
   Widget build(BuildContext context) {
     return Consumer<HiveListener>(builder: (context, hive, child) {
@@ -59,8 +52,8 @@ class _CompleteDataState extends State<CompleteData> {
   }
 }
 
-class TablesWidget extends StatelessWidget implements pw.Widget {
-  TablesWidget(
+class TablesWidget extends StatelessWidget {
+  const TablesWidget(
       {super.key,
       required this.table,
       required this.hive,
@@ -91,24 +84,5 @@ class TablesWidget extends StatelessWidget implements pw.Widget {
         }).toList(),
       ),
     );
-  }
-
-  @override
-  PdfRect? box;
-
-  @override
-  void debugPaint(pw.Context context) {
-    // TODO: implement debugPaint
-  }
-
-  @override
-  void layout(pw.Context context, pw.BoxConstraints constraints,
-      {bool parentUsesSize = false}) {
-    // TODO: implement layout
-  }
-
-  @override
-  void paint(pw.Context context) {
-    // TODO: implement paint
   }
 }

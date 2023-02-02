@@ -20,6 +20,7 @@ import '../../../../Services/FileService.dart';
 import '../../../../Styles/DiagonalWidget.dart';
 import '../../../../Styles/colors.dart';
 import 'package:pdf/pdf.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class TimeTablePage extends StatefulWidget {
@@ -31,6 +32,10 @@ class TimeTablePage extends StatefulWidget {
 
 class _TimeTablePageState extends State<TimeTablePage> {
   bool startFilter = false;
+  //Create an instance of ScreenshotController
+  ScreenshotController screenshotController = ScreenshotController();
+  final stateKey = GlobalKey<_TimeTablePageState>();
+
   @override
   Widget build(BuildContext context) {
     return Consumer<HiveListener>(builder: (context, hive, child) {
@@ -153,7 +158,14 @@ class _TimeTablePageState extends State<TimeTablePage> {
               ],
             ),
             const SizedBox(height: 20),
-            isIncomplete ? const IncompleteData() : const CompleteData()
+            Expanded(
+              child: Screenshot(
+                controller: screenshotController,
+                child: isIncomplete
+                    ? const IncompleteData()
+                    : const CompleteData(),
+              ),
+            ),
           ],
         ),
       );
@@ -194,64 +206,21 @@ class _TimeTablePageState extends State<TimeTablePage> {
       color: PdfColors.black,
       fontWeight: pw.FontWeight.bold,
     );
+    // var image = await screenshotController.capture();
+    var image = await screenshotController.captureFromWidget(Builder(
+      key: stateKey,
+      builder: (context) => const CompleteData(),
+    ));
     pdf.addPage(pw.Page(
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(10),
         orientation: pw.PageOrientation.landscape,
         clip: false,
         build: (pw.Context context) {
-          return pw.Center(
-            child: pw.Column(
-              mainAxisAlignment: pw.MainAxisAlignment.center,
-              crossAxisAlignment: pw.CrossAxisAlignment.center,
-              children: hive.getCurrentConfig.days!.map((e) {
-                var data1 =
-                    table!.where((element) => element.day == e).toList();
-                if (data1.isEmpty) {
-                  return pw.Container();
-                } else {
-                  return pw.Container(
-                    width: double.infinity,
-                    padding: const pw.EdgeInsets.all(10),
-                    child: pw.Padding(
-                      padding: const pw.EdgeInsets.symmetric(vertical: 20),
-                      child: pw.Column(
-                          mainAxisSize: pw.MainAxisSize.min,
-                          mainAxisAlignment: pw.MainAxisAlignment.start,
-                          crossAxisAlignment: pw.CrossAxisAlignment.start,
-                          children: [
-                            pw.Align(
-                                alignment: pw.Alignment.center,
-                                child: pw.Text('AKENTEN APPIAH-MENKA',
-                                    style: headerText)),
-                            pw.Align(
-                              alignment: pw.Alignment.center,
-                              child: pw.Text(
-                                  'UNIVERSITY OF SKILLS TRAINING AND ENTREPRENEURIAL DEVELOPMENT',
-                                  style: normalText),
-                            ),
-                            // pw.Align(
-                            //   alignment: pw.Alignment.center,
-                            //   child: pw.Text(
-                            //       'PROVISIONAL LECTURE TIMETABLE FOR REGULAR PROGRAMMES FOR ${sem.toString().toUpperCase()}, ${year.toString().toUpperCase()} ACADEMIC YEAR ',
-                            //       style: boldText),
-                            // ),
-
-                            TablesWidget(
-                              hive: hive,
-                              periods: periods,
-                              table: data1,
-                            )
-                          ]),
-                    ),
-                  );
-                }
-              }).toList(),
-            ),
-          ); // Center
+          return pw.Image(pw.MemoryImage(image));
         })); //
     Directory appDocDir = await getApplicationDocumentsDirectory();
-    String fileName = '${appDocDir.path}/table.pdf';
+    String fileName = '${appDocDir.path}/table_time_taBLE.pdf';
     final file = File(fileName);
     await file.writeAsBytes(await pdf.save());
   }
