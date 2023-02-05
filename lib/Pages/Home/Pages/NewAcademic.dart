@@ -32,32 +32,40 @@ class _NewAcademicState extends State<NewAcademic> {
         alignment: Alignment.center,
         width: double.infinity,
         color: Colors.transparent,
-        child: Stack(
-          children: [
-            if (nav.page == 7)
-              Positioned(
-                  top: 10,
-                  right: 10,
-                  child: InkWell(
-                    onTap: () {
-                      Provider.of<NavigationProvider>(context, listen: false)
-                          .setPage(0);
-                    },
-                    child: const CircleAvatar(
-                      backgroundColor: Colors.red,
-                      child: Icon(
-                        Icons.close,
-                        color: Colors.white,
-                      ),
+        child: Center(
+          child: Container(
+            width: size.width * .6,
+            color: Colors.white,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (nav.page == 6)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Transform.translate(
+                          offset: const Offset(0, -10),
+                          child: InkWell(
+                            onTap: () {
+                              Provider.of<NavigationProvider>(context,
+                                      listen: false)
+                                  .setPage(0);
+                            },
+                            child: const CircleAvatar(
+                              backgroundColor: Colors.red,
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  )),
-            Center(
-              child: Card(
-                elevation: 10,
-                child: SizedBox(
-                  width: size.width * .5,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
+                  Padding(
+                    padding: const EdgeInsets.all(30),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
@@ -170,16 +178,16 @@ class _NewAcademicState extends State<NewAcademic> {
                           child: CustomButton(
                             onPressed: saveAcademic,
                             text: 'Save Academic Year',
-                            color: primaryColor,
+                            color: secondaryColor,
                           ),
                         )
                       ],
                     ),
                   ),
-                ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       );
     });

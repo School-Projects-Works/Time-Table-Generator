@@ -1084,6 +1084,7 @@ class HiveListener extends ChangeNotifier {
       }
       CustomDialog.dismiss();
       CustomDialog.showSuccess(message: 'Configuration Saved Successfully');
+      clearTables();
     }
     notifyListeners();
   }
@@ -1343,5 +1344,27 @@ class HiveListener extends ChangeNotifier {
         }
       }
     }
+  }
+
+  void clearTables() {
+    if (tables!.isNotEmpty) {
+      //we clear the tables from hive database
+      HiveCache.clearTables();
+      //we clear the tables from the list
+      tables!.clear();
+      //we clear the venue time pairs
+      venueTimePairs!.clear();
+      //we clear the class course pairs
+      classCoursePairs!.clear();
+      notifyListeners();
+    } else {
+      notifyListeners();
+    }
+  }
+
+  void exportTables() {
+    //Export tables to firebase cloud Firestore
+
+    notifyListeners();
   }
 }

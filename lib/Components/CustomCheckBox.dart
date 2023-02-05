@@ -58,7 +58,7 @@ class CustomCheckBox extends StatelessWidget {
                 ],
               ),
             ),
-            if (hasTime) const SizedBox(width: 200),
+            if (hasTime) const SizedBox(width: 150),
             if (hasTime && (isChecked || alwaysChecked))
               Expanded(
                 child: Column(
@@ -113,123 +113,5 @@ class CustomCheckBox extends StatelessWidget {
         ),
       ],
     );
-    //   } else {
-    //     return Row(
-    //       mainAxisSize: MainAxisSize.min,
-    //       children: [
-    //         InkWell(
-    //           onTap: onTap,
-    //           child: Row(
-    //             children: [
-    //               isChecked
-    //                   ? const Icon(
-    //                       Icons.check_box,
-    //                       color: secondaryColor,
-    //                     )
-    //                   : const Icon(
-    //                       Icons.check_box_outline_blank,
-    //                       color: secondaryColor,
-    //                     ),
-    //               const SizedBox(width: 10),
-    //               Text(
-    //                 title,
-    //                 style: GoogleFonts.nunito(
-    //                   fontSize: 20,
-    //                   color: Colors.black,
-    //                   fontWeight: FontWeight.w700,
-    //                 ),
-    //               ),
-    //             ],
-    //           ),
-    //         ),
-    //         const Spacer(),
-    //         if (isChecked)
-    //           Row(
-    //             mainAxisSize: MainAxisSize.min,
-    //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //             children: [
-    //               InkWell(
-    //                 onTap: onRegular,
-    //                 child: Row(
-    //                   children: [
-    //                     regularChecked
-    //                         ? const Icon(
-    //                             Icons.check_box,
-    //                             color: primaryColor,
-    //                           )
-    //                         : const Icon(
-    //                             Icons.check_box_outline_blank,
-    //                             color: primaryColor,
-    //                           ),
-    //                     const SizedBox(width: 8),
-    //                     Text(
-    //                       'Regular',
-    //                       style: GoogleFonts.nunito(
-    //                         fontSize: 18,
-    //                         color: Colors.black,
-    //                         fontWeight: FontWeight.w300,
-    //                       ),
-    //                     ),
-    //                   ],
-    //                 ),
-    //               ),
-    //               const SizedBox(width: 10),
-    //               InkWell(
-    //                 onTap: onEvening,
-    //                 child: Row(
-    //                   children: [
-    //                     eveningChecked
-    //                         ? const Icon(
-    //                             Icons.check_box,
-    //                             color: primaryColor,
-    //                           )
-    //                         : const Icon(
-    //                             Icons.check_box_outline_blank,
-    //                             color: primaryColor,
-    //                           ),
-    //                     const SizedBox(width: 8),
-    //                     Text(
-    //                       'Evening',
-    //                       style: GoogleFonts.nunito(
-    //                         fontSize: 18,
-    //                         color: Colors.black,
-    //                         fontWeight: FontWeight.w300,
-    //                       ),
-    //                     ),
-    //                   ],
-    //                 ),
-    //               ),
-    //               const SizedBox(width: 10),
-    //               InkWell(
-    //                 onTap: onWeekend,
-    //                 child: Row(
-    //                   children: [
-    //                     weekendChecked
-    //                         ? const Icon(
-    //                             Icons.check_box,
-    //                             color: primaryColor,
-    //                           )
-    //                         : const Icon(
-    //                             Icons.check_box_outline_blank,
-    //                             color: primaryColor,
-    //                           ),
-    //                     const SizedBox(width: 8),
-    //                     Text(
-    //                       'Weekend',
-    //                       style: GoogleFonts.nunito(
-    //                         fontSize: 18,
-    //                         color: Colors.black,
-    //                         fontWeight: FontWeight.w300,
-    //                       ),
-    //                     ),
-    //                   ],
-    //                 ),
-    //               ),
-    //             ],
-    //           ),
-    //       ],
-    //     );
-    //   }
-    // }
   }
 }

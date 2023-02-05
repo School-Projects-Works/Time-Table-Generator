@@ -90,7 +90,7 @@ class CustomTextFields extends StatelessWidget {
         ),
         prefixIconColor: secondaryColor,
         suffixIconColor: secondaryColor,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 5),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
         labelStyle: GoogleFonts.nunito(
             color: Colors.black45, fontWeight: FontWeight.bold, fontSize: 14),
         labelText: label,
@@ -116,8 +116,7 @@ class UpperCaseTextFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
-    if (RegExp("[a-zA-Z,]").hasMatch(newValue.text) &&
-        newValue.text.length <= 3) {
+    if (RegExp("[a-zA-Z,]").hasMatch(newValue.text)) {
       return TextEditingValue(
         text: newValue.text.toUpperCase(),
         selection: newValue.selection,

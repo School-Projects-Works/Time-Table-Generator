@@ -16,7 +16,6 @@ class PeriodSection extends StatelessWidget {
       return Column(
         children: [
           Container(
-              width: size.width * 0.55,
               color: Colors.white,
               margin: const EdgeInsets.all(10),
               padding: const EdgeInsets.all(15),
@@ -126,7 +125,6 @@ class PeriodSection extends StatelessWidget {
                 ],
               )),
           Container(
-            width: size.width * 0.55,
             color: Colors.white,
             margin: const EdgeInsets.symmetric(horizontal: 10),
             padding: const EdgeInsets.all(15),

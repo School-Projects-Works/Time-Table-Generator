@@ -56,6 +56,7 @@ class _VenuePageState extends State<VenuePage> {
                   style: GoogleFonts.poppins(
                     fontSize: 30,
                     color: secondaryColor,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(width: 50),
@@ -79,8 +80,8 @@ class _VenuePageState extends State<VenuePage> {
                       CustomButton(
                         onPressed: viewTemplate,
                         text: 'View Template',
-                        radius: 10,
-                        color: Colors.deepOrange,
+                        radius: 5,
+                        color: primaryColor,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 6),
                       ),
@@ -88,7 +89,7 @@ class _VenuePageState extends State<VenuePage> {
                       CustomButton(
                         onPressed: () => importData(hive),
                         text: 'Import Venues',
-                        radius: 10,
+                        radius: 5,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 6),
                       ),
@@ -112,8 +113,8 @@ class _VenuePageState extends State<VenuePage> {
                 ),
               )
             else
-              SizedBox(
-                height: size.height - 216,
+              Expanded(
+                // height: size.height - 216,
                 child: CustomTable(
                   bottomAction: Row(
                     children: [

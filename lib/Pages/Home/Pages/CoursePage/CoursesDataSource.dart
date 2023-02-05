@@ -51,7 +51,7 @@ class CoursesDataSource extends DataTableSource {
             return Colors.blue.withOpacity(.2);
           }
           if (isSpecialVenue && hasVenue) {
-            return Colors.green;
+            return primaryColor.withOpacity(.4);
           } else if (isSpecialVenue && !hasVenue) {
             return Colors.red.withOpacity(.6);
           } else if (Provider.of<HiveListener>(context, listen: false)
@@ -134,24 +134,29 @@ class CoursesDataSource extends DataTableSource {
             ),
           )),
         if (isSpecialVenue && hasVenue)
-          DataCell(InkWell(
-            onTap: () => setSpecialVenue(course),
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      course.venues!.join(' or '),
-                      style: textStyle,
-                    ),
-                    const SizedBox(width: 5),
-                    const Icon(Icons.check)
-                  ],
+          DataCell(ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 400),
+            child: InkWell(
+              onTap: () => setSpecialVenue(course),
+              child: Container(
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          course.venues!.join(' or '),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: textStyle,
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      const Icon(Icons.check)
+                    ],
+                  ),
                 ),
               ),
             ),

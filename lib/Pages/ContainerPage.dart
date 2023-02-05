@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:aamusted_timetable_generator/Pages/Exports/ExportMainPage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
@@ -45,7 +46,7 @@ class _ContainerPageState extends State<ContainerPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 20,
+              height: 40,
               child: MoveWindow(
                 child: Container(
                   alignment: Alignment.centerRight,
@@ -84,6 +85,7 @@ class _ContainerPageState extends State<ContainerPage> {
                     AuthPage(),
                     HomePage(),
                     NewPassword(),
+                    ExportPage()
                   ],
                 ),
               ),

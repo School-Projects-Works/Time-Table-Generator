@@ -195,4 +195,9 @@ class HiveCache {
       box.delete(table.id);
     }
   }
+
+  static void clearTables() {
+    final box = Hive.box<TableModel>('tables');
+    box.clear();
+  }
 }

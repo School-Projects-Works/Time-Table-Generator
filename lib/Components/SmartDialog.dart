@@ -1,4 +1,5 @@
 // ignore_for_file: file_names
+import 'package:aamusted_timetable_generator/Components/CustomButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -68,15 +69,10 @@ class CustomDialog {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: secondaryColor,
-                      ),
-                      child: Text(
-                        'Okay',
-                        style: GoogleFonts.nunito(color: Colors.white),
-                      ),
+                    CustomButton(
+                      text: 'Okay',
                       onPressed: () => SmartDialog.dismiss(),
+                      color: primaryColor,
                     ),
                   ],
                 ),
@@ -137,15 +133,10 @@ class CustomDialog {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: secondaryColor,
-                      ),
-                      child: Text(
-                        'Okay',
-                        style: GoogleFonts.nunito(color: Colors.white),
-                      ),
+                    CustomButton(
+                      text: 'Okay',
                       onPressed: () => SmartDialog.dismiss(),
+                      color: primaryColor,
                     ),
                   ],
                 ),
@@ -211,27 +202,16 @@ class CustomDialog {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: secondaryColor,
-                    ),
-                    onPressed: onPressed,
-                    child: Text(
-                      buttonText,
-                      style: GoogleFonts.nunito(color: Colors.white),
-                    ),
+                  CustomButton(
+                    text: buttonText,
+                    onPressed: onPressed!,
+                    color: secondaryColor,
                   ),
                   const SizedBox(
                     width: 20,
                   ),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: secondaryColor,
-                    ),
-                    child: Text(
-                      buttonText2 ?? 'Cancel',
-                      style: GoogleFonts.nunito(color: Colors.white),
-                    ),
+                  CustomButton(
+                    text: buttonText2 ?? 'Cancel',
                     onPressed: () {
                       if (onPressed2 != null) {
                         onPressed2.call();
@@ -239,6 +219,7 @@ class CustomDialog {
                         SmartDialog.dismiss();
                       }
                     },
+                    color: primaryColor,
                   ),
                 ],
               ),

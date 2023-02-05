@@ -37,6 +37,8 @@ class ConfigModel {
   String? targetedStudents;
   @HiveField(14)
   Map<String, dynamic>? breakTime;
+  @HiveField(15)
+  List<Map<String, String>>? headings;
 
   ConfigModel({
     this.id,
@@ -54,61 +56,6 @@ class ConfigModel {
     this.liberalLevel,
     this.targetedStudents,
     this.breakTime,
+    this.headings,
   });
-
-  ConfigModel copyWith({
-    String? id,
-    String? academicName,
-    String? academicYear,
-    String? academicSemester,
-    List<String>? days,
-    List<Map<String, dynamic>>? periods,
-    String? liberalCourseDay,
-    Map<String, dynamic>? liberalCoursePeriod,
-    bool? hasLiberalCourse,
-    bool? hasCourse,
-    bool? hasClass,
-    bool? hasVenues,
-    String? liberalLevel,
-    String? targetedStudents,
-    Map<String, dynamic>? breakTime,
-  }) {
-    return ConfigModel(
-      id: id ?? this.id,
-      academicName: academicName ?? this.academicName,
-      academicYear: academicYear ?? this.academicYear,
-      academicSemester: academicSemester ?? this.academicSemester,
-      days: days ?? this.days,
-      periods: periods ?? this.periods,
-      liberalCourseDay: liberalCourseDay ?? this.liberalCourseDay,
-      liberalCoursePeriod: liberalCoursePeriod ?? this.liberalCoursePeriod,
-      hasLiberalCourse: hasLiberalCourse ?? this.hasLiberalCourse,
-      hasCourse: hasCourse ?? this.hasCourse,
-      hasClass: hasClass ?? this.hasClass,
-      hasVenues: hasVenues ?? this.hasVenues,
-      liberalLevel: liberalLevel ?? this.liberalLevel,
-      targetedStudents: targetedStudents ?? this.targetedStudents,
-      breakTime: breakTime ?? this.breakTime,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'academicName': academicName,
-      'academicYear': academicYear,
-      'academicSemester': academicSemester,
-      'days': days,
-      'periods': periods,
-      'liberalCourseDay': liberalCourseDay,
-      'liberalCoursePeriod': liberalCoursePeriod,
-      'hasLiberalCourse': hasLiberalCourse,
-      'hasCourse': hasCourse,
-      'hasClass': hasClass,
-      'hasVenues': hasVenues,
-      'liberalLevel': liberalLevel,
-      'targetedStudents': targetedStudents,
-      'breakTime': breakTime,
-    };
-  }
 }

@@ -50,47 +50,13 @@ class _AuthPageState extends State<AuthPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text('Welcome to',
-                          style: GoogleFonts.roboto(
-                              color: Colors.white,
-                              fontSize: 30,
-                              fontWeight: FontWeight.w500)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Transform.rotate(
-                              angle: 6.1,
-                              child: Text(
-                                'A',
-                                style: GoogleFonts.adamina(
-                                    fontSize: 60, fontWeight: FontWeight.w700),
-                              )),
-                          Text(
-                            'Tt',
-                            style: GoogleFonts.pacifico(
-                                fontSize: 60,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700),
-                          ),
-                          Transform.rotate(
-                              angle: 6.1,
-                              child: Text(
-                                'G',
-                                style: GoogleFonts.russoOne(
-                                    fontSize: 60,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w700),
-                              ))
-                        ],
+                      Image.asset(
+                        'assets/logo_white.png',
+                        height: 200,
+                        width: 200,
                       ),
-                      Text('Aamusted Timetable Generator',
-                          style: GoogleFonts.roboto(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500)),
                       const SizedBox(
-                        height: 20,
+                        height: 40,
                       ),
                       Container(
                         padding: const EdgeInsets.all(10),
@@ -154,7 +120,7 @@ class _AuthPageState extends State<AuthPage> {
                     children: [
                       Text('LOGIN',
                           style: GoogleFonts.alfaSlabOne(
-                              color: Colors.black,
+                              color: secondaryColor,
                               fontSize: 40,
                               fontWeight: FontWeight.w500)),
                       const Divider(
@@ -228,7 +194,7 @@ class _AuthPageState extends State<AuthPage> {
                         height: 20,
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 50),
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: CustomButton(
                           text: 'Log in',
                           onPressed: signIn,

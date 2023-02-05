@@ -11,7 +11,7 @@ class CustomButton extends StatefulWidget {
       required this.text,
       this.color = secondaryColor,
       this.padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      this.radius = 20})
+      this.radius = 5})
       : super(key: key);
   final VoidCallback onPressed;
   final String text;
@@ -38,15 +38,10 @@ class _CustomButtonState extends State<CustomButton> {
       child: Container(
           padding: widget.padding,
           decoration: BoxDecoration(
-              color: onHover ? Colors.white : widget.color,
-              borderRadius: BorderRadius.circular(widget.radius),
-              border: Border.all(color: onHover ? widget.color : Colors.white),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(.2),
-                    offset: const Offset(0, 5),
-                    blurRadius: 10)
-              ]),
+            color: onHover ? Colors.white : widget.color,
+            borderRadius: BorderRadius.circular(widget.radius),
+            border: Border.all(color: onHover ? widget.color : Colors.white),
+          ),
           child: Center(
             child: Text(
               widget.text,

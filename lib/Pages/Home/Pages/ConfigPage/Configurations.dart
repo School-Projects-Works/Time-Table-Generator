@@ -5,7 +5,6 @@ import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../../../../Components/CustomDropDown.dart';
 import '../../../../SateManager/HiveListener.dart';
 import 'DaysSection.dart';
 import 'PeriodSection.dart';
@@ -52,7 +51,7 @@ class _ConfigurationState extends State<Configuration> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
                         DaysSection(),
-                        PeriodSection(),
+                        Expanded(child: PeriodSection()),
                       ],
                     ),
                   ],

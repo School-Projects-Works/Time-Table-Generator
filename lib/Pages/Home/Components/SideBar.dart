@@ -33,90 +33,88 @@ class _SideBardState extends State<SideBard> {
                     blurRadius: 5,
                     offset: const Offset(0, 3))
               ]),
-          child: SingleChildScrollView(
-            child: IntrinsicHeight(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: MediaQuery.of(context).size.height - 110,
-                ),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 5,
+          child: IntrinsicHeight(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height - 110,
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  SideBarItem(
+                      onTap: () {
+                        if (nav.sideWidth == 60) {
+                          nav.setSideWidth(200);
+                        } else {
+                          nav.setSideWidth(60);
+                        }
+                      },
+                      isSelected: false,
+                      title: '',
+                      icon: Icons.menu),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  SideBarItem(
+                      onTap: () {
+                        nav.setPage(0);
+                      },
+                      isSelected: nav.page == 0,
+                      title: 'Configurations',
+                      icon: Icons.settings),
+                  SideBarItem(
+                      onTap: () {
+                        nav.setPage(1);
+                      },
+                      isSelected: nav.page == 1,
+                      title: 'Courses',
+                      icon: Icons.menu_book_outlined),
+                  SideBarItem(
+                      onTap: () {
+                        nav.setPage(2);
+                      },
+                      isSelected: nav.page == 2,
+                      title: 'Classes',
+                      icon: FontAwesomeIcons.chalkboardUser),
+                  SideBarItem(
+                      onTap: () {
+                        nav.setPage(3);
+                      },
+                      isSelected: nav.page == 3,
+                      title: 'Liberal/African',
+                      icon: FontAwesomeIcons.book),
+                  SideBarItem(
+                      onTap: () {
+                        nav.setPage(4);
+                      },
+                      isSelected: nav.page == 4,
+                      title: 'Venues',
+                      icon: FontAwesomeIcons.locationDot),
+                  SideBarItem(
+                      onTap: () {
+                        nav.setPage(5);
+                      },
+                      isSelected: nav.page == 5,
+                      title: 'Timetable',
+                      icon: FontAwesomeIcons.table),
+                  const Divider(
+                    color: primaryColor,
+                    thickness: 5,
+                  ),
+                  const Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Version 1.0.0',
+                      style: GoogleFonts.roboto(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w300,
+                          color: Colors.white),
                     ),
-                    SideBarItem(
-                        onTap: () {
-                          if (nav.sideWidth == 60) {
-                            nav.setSideWidth(200);
-                          } else {
-                            nav.setSideWidth(60);
-                          }
-                        },
-                        isSelected: false,
-                        title: '',
-                        icon: Icons.menu),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    SideBarItem(
-                        onTap: () {
-                          nav.setPage(0);
-                        },
-                        isSelected: nav.page == 0,
-                        title: 'Configurations',
-                        icon: Icons.settings),
-                    SideBarItem(
-                        onTap: () {
-                          nav.setPage(1);
-                        },
-                        isSelected: nav.page == 1,
-                        title: 'Courses',
-                        icon: Icons.menu_book_outlined),
-                    SideBarItem(
-                        onTap: () {
-                          nav.setPage(2);
-                        },
-                        isSelected: nav.page == 2,
-                        title: 'Classes',
-                        icon: FontAwesomeIcons.chalkboardUser),
-                    SideBarItem(
-                        onTap: () {
-                          nav.setPage(3);
-                        },
-                        isSelected: nav.page == 3,
-                        title: 'Liberal/African',
-                        icon: FontAwesomeIcons.book),
-                    SideBarItem(
-                        onTap: () {
-                          nav.setPage(4);
-                        },
-                        isSelected: nav.page == 4,
-                        title: 'Venues',
-                        icon: FontAwesomeIcons.locationDot),
-                    SideBarItem(
-                        onTap: () {
-                          nav.setPage(5);
-                        },
-                        isSelected: nav.page == 5,
-                        title: 'Timetable',
-                        icon: FontAwesomeIcons.table),
-                    const Divider(
-                      color: primaryColor,
-                      thickness: 5,
-                    ),
-                    const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Version 1.0.0',
-                        style: GoogleFonts.roboto(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w300,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ));

@@ -38,6 +38,8 @@ dependencies:
   string_similarity: ^2.0.0
   syncfusion_flutter_pdf: ^20.4.48
   pdf:
+  firebase_core: ^2.4.1
+  cloud_firestore: ^4.3.1
  
 
 
@@ -54,10 +56,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
-
+  assets:
+    - assets/
+    
 
 #flutter pub run flutter_native_splash:create
 #flutter packages pub run build_runner build --delete-conflicting-outputs

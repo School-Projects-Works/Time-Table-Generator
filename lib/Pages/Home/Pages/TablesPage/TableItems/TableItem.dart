@@ -1,3 +1,4 @@
+import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../../Models/Table/TableModel.dart';
@@ -36,27 +37,28 @@ class _TableItemState extends State<TableItem> {
                 textAlign:
                     widget.table == null ? TextAlign.start : TextAlign.center,
                 style: GoogleFonts.nunito(
-                    fontSize: 16,
+                    fontSize: 14,
                     color: Colors.black,
-                    fontWeight: FontWeight.w600),
+                    fontWeight: FontWeight.bold),
               ),
             if (widget.table != null)
               Text(
-                widget.table!.className == null
-                    ? "Liberal/African Studies (${widget.table!.classLevel ?? ''})"
-                    : '${widget.table!.className ?? ''} (${widget.table!.classLevel ?? ''})',
+                widget.table!.className == null ||
+                        widget.table!.className!.isEmpty
+                    ? "Liberal/African Studies"
+                    : '${widget.table!.className ?? 'Liberal/African Studies'} (${widget.table!.classLevel ?? ''})',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.nunito(
-                    fontSize: 16,
-                    color: Colors.green,
+                    fontSize: 15,
+                    color: Colors.black,
                     fontWeight: FontWeight.bold),
               ),
             if (widget.table != null)
               Text(
                 widget.table!.courseCode!,
                 style: GoogleFonts.nunito(
-                    fontSize: 16,
-                    color: Colors.red,
+                    fontSize: 15,
+                    color: secondaryColor,
                     fontWeight: FontWeight.bold),
               ),
             if (widget.table != null)
@@ -66,19 +68,19 @@ class _TableItemState extends State<TableItem> {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.nunito(
-                    fontSize: 9,
+                    fontSize: 12,
                     color: Colors.black,
-                    fontWeight: FontWeight.w600),
+                    fontWeight: FontWeight.bold),
               ),
             if (widget.table != null)
               Text(
-                '(${widget.table!.lecturerName!})',
+                '-${widget.table!.lecturerName!}-',
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: GoogleFonts.nunito(
                     fontSize: 12,
-                    color: Colors.black,
+                    color: secondaryColor.withOpacity(.5),
                     fontWeight: FontWeight.bold),
               ),
           ],

@@ -34,13 +34,16 @@ class ConfigModelAdapter extends TypeAdapter<ConfigModel> {
       liberalLevel: fields[12] as String?,
       targetedStudents: fields[13] as String?,
       breakTime: (fields[14] as Map?)?.cast<String, dynamic>(),
+      headings: (fields[15] as List?)
+          ?.map((dynamic e) => (e as Map).cast<String, String>())
+          .toList(),
     );
   }
 
   @override
   void write(BinaryWriter writer, ConfigModel obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -70,7 +73,9 @@ class ConfigModelAdapter extends TypeAdapter<ConfigModel> {
       ..writeByte(13)
       ..write(obj.targetedStudents)
       ..writeByte(14)
-      ..write(obj.breakTime);
+      ..write(obj.breakTime)
+      ..writeByte(15)
+      ..write(obj.headings);
   }
 
   @override

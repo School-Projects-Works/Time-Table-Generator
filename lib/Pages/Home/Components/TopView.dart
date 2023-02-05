@@ -31,37 +31,7 @@ class _TopViewState extends State<TopView> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Transform.rotate(
-                    angle: 6.1,
-                    child: Text(
-                      'A',
-                      style: GoogleFonts.adamina(
-                          color: secondaryColor,
-                          fontSize: 50,
-                          fontWeight: FontWeight.w700),
-                    )),
-                Text(
-                  'Tt',
-                  style: GoogleFonts.pacifico(
-                      fontSize: 50,
-                      color: primaryColor,
-                      fontWeight: FontWeight.w700),
-                ),
-                Transform.rotate(
-                    angle: 6.1,
-                    child: Text(
-                      'G',
-                      style: GoogleFonts.russoOne(
-                          fontSize: 50,
-                          color: secondaryColor,
-                          fontWeight: FontWeight.w700),
-                    ))
-              ],
-            ),
+            Image.asset('assets/logo.png', height: 80),
             SizedBox(
               width: size.width * 0.3,
               child: Row(
@@ -151,6 +121,6 @@ class _TopViewState extends State<TopView> {
   }
 
   void addNewAcademic() {
-    Provider.of<NavigationProvider>(context, listen: false).setPage(7);
+    Provider.of<NavigationProvider>(context, listen: false).setPage(6);
   }
 }

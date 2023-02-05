@@ -174,6 +174,8 @@ class _DayItemState extends State<DayItem> {
                                       color: Colors.white,
                                       border: Border(
                                         top: BorderSide(color: Colors.black),
+                                        bottom: BorderSide(
+                                            color: Colors.black, width: 2),
                                       ),
                                     ),
                                     child: Column(
@@ -260,7 +262,7 @@ class _DayItemState extends State<DayItem> {
                                                 table: table,
                                               );
                                             } else {
-                                              return TableItem();
+                                              return const TableItem();
                                             }
                                           }).toList(),
                                         ),
@@ -310,7 +312,7 @@ class _DayItemState extends State<DayItem> {
                                                 table: table,
                                               );
                                             } else {
-                                              return TableItem();
+                                              return const TableItem();
                                             }
                                           }).toList(),
                                         ),

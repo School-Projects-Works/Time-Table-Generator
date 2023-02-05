@@ -59,6 +59,7 @@ class _LiberalPageState extends State<LiberalPage> {
                   style: GoogleFonts.poppins(
                     fontSize: 30,
                     color: secondaryColor,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(width: 50),
@@ -82,8 +83,8 @@ class _LiberalPageState extends State<LiberalPage> {
                       CustomButton(
                         onPressed: viewTemplate,
                         text: 'View Template',
-                        radius: 10,
-                        color: Colors.deepOrange,
+                        radius: 5,
+                        color: primaryColor,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 6),
                       ),
@@ -91,7 +92,7 @@ class _LiberalPageState extends State<LiberalPage> {
                       CustomButton(
                         onPressed: () => importData(hive),
                         text: 'Import Courses',
-                        radius: 10,
+                        radius: 5,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 6),
                       ),
@@ -328,8 +329,8 @@ class _LiberalPageState extends State<LiberalPage> {
                 ),
               )
             else
-              SizedBox(
-                height: size.height - 322,
+              Expanded(
+                //height: size.height - 322,
                 child: CustomTable(
                     bottomAction: Row(
                       children: [

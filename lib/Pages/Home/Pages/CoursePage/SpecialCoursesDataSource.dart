@@ -1,4 +1,5 @@
 import 'package:aamusted_timetable_generator/Pages/Home/Pages/CoursePage/setSpecialVenuePage.dart';
+import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -50,7 +51,7 @@ class SpecialCourseDataSource extends DataTableSource {
               return Colors.blue.withOpacity(.2);
             }
             if (hasVenue) {
-              return Colors.green;
+              return primaryColor;
             } else if (!hasVenue) {
               return Colors.red.withOpacity(.6);
             } else if (Provider.of<HiveListener>(context, listen: false)

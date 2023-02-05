@@ -61,6 +61,7 @@ class _ClassesPageState extends State<ClassesPage> {
                   style: GoogleFonts.poppins(
                     fontSize: 30,
                     color: secondaryColor,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(width: 50),
@@ -84,8 +85,8 @@ class _ClassesPageState extends State<ClassesPage> {
                       CustomButton(
                         onPressed: viewTemplate,
                         text: 'View Template',
-                        radius: 10,
-                        color: Colors.deepOrange,
+                        radius: 5,
+                        color: primaryColor,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 6),
                       ),
@@ -93,7 +94,7 @@ class _ClassesPageState extends State<ClassesPage> {
                       CustomButton(
                         onPressed: () => importData(hive),
                         text: 'Import Classes',
-                        radius: 10,
+                        radius: 5,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 6),
                       ),
@@ -117,8 +118,8 @@ class _ClassesPageState extends State<ClassesPage> {
                 ),
               )
             else
-              SizedBox(
-                height: size.height - 205,
+              Expanded(
+                //height: size.height - 205,
                 child: CustomTable(
                   bottomAction: Row(
                     children: [

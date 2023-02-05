@@ -35,23 +35,21 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const TopView(),
-            Row(
-              children: [
-                const SideBard(),
-                Consumer<HiveListener>(builder: (context, hive, child) {
-                  return Expanded(
-                    child: Card(
-                      elevation: 10,
-                      color: background,
+            Expanded(
+              child: Row(
+                children: [
+                  const SideBard(),
+                  Consumer<HiveListener>(builder: (context, hive, child) {
+                    return Expanded(
                       child: Container(
-                          height: size.height - 135,
+                          height: size.height,
                           margin: const EdgeInsets.only(
                               left: 10, top: 10, right: 5, bottom: 5),
                           width: double.infinity,
                           decoration: const BoxDecoration(
                               color: background,
                               borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(20))),
+                                  topLeft: Radius.circular(10))),
                           child: hive.getAcademicList.isNotEmpty &&
                                   hive.getCurrentConfig.id != null
                               ? IndexedStack(
@@ -63,13 +61,14 @@ class _HomePageState extends State<HomePage> {
                                     LiberalPage(),
                                     VenuePage(),
                                     TimeTablePage(),
+                                    NewAcademic()
                                   ],
                                 )
                               : const NewAcademic()),
-                    ),
-                  );
-                })
-              ],
+                    );
+                  })
+                ],
+              ),
             )
           ],
         ),
