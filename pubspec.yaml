@@ -38,8 +38,7 @@ dependencies:
   string_similarity: ^2.0.0
   syncfusion_flutter_pdf: ^20.4.48
   pdf:
-  firebase_core: ^2.4.1
-  cloud_firestore: ^4.3.1
+
  
 
 

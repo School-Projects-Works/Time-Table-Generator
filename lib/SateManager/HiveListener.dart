@@ -748,14 +748,13 @@ class HiveListener extends ChangeNotifier {
           table.classLevel = ltp.level;
           table.department = '';
           table.creditHours = '';
-          table.targetStudents = '';
+          table.targetStudents = targetedStudents;
           table.classHasDisability = '';
           table.classSize = '';
           table.venueHasDisability = vtp.isDisabilityAccessible;
           table.classId = '';
           table.courseId = ltp.id;
           table.className = '';
-
           tables!.add(table);
           vtp.isBooked = true;
           break;

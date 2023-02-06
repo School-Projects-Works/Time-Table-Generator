@@ -1,4 +1,6 @@
-import 'package:aamusted_timetable_generator/Models/Course/LiberalModel.dart';
+import 'dart:convert';
+
+import 'package:aamusted_timetable_generator/Models/Table/TableModel.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -11,6 +13,7 @@ import 'SateManager/HiveCache.dart';
 import 'SateManager/HiveListener.dart';
 import 'SateManager/NavigationProvider.dart';
 import 'Styles/colors.dart';
+import 'package:http/http.dart' as http;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -73,8 +76,23 @@ class _MyAppState extends State<MyApp> {
         var liberal = HiveCache.getLiberals(currentYear);
         provider.setLiberalList(liberal);
 
-        var tables = await HiveCache.getTables(currentYear);
+        List<TableModel> tables = await HiveCache.getTables(currentYear);
         provider.setTables(tables);
+        //let make http request to send tables to firebase
+        // if (tables.isNotEmpty) {
+        //   var table = tables.first;
+        //   var client = http.Client();
+        //   try {
+        //     var response = await client.post(
+        //       Uri.parse(
+        //           'http://127.0.0.1:5001/aamusted-timetable/us-central1/app/api/create'),
+        //       body: table.toJson(),
+        //     );
+        //     print(response.body);
+        //   } finally {
+        //     client.close();
+        //   }
+        // }
       }
     });
   }
