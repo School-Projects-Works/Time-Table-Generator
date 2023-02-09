@@ -1,4 +1,4 @@
-
+import 'package:aamusted_timetable_generator/Pages/Home/Pages/CoursePage/special_courses_data_source.dart';
 import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../Components/custom_table.dart';
 import '../../../../SateManager/hive_listener.dart';
-import 'SpecialCoursesDataSource.dart';
 
 class ListOfSpecialCourse extends StatefulWidget {
   const ListOfSpecialCourse({super.key});

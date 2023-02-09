@@ -38,7 +38,6 @@ class _VenuePageState extends State<VenuePage> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     return Consumer<HiveListener>(builder: (context, hive, child) {
       return SizedBox(
         width: double.infinity,

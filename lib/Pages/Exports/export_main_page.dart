@@ -1017,8 +1017,8 @@ class _ExportPageState extends State<ExportPage> {
   }
 
   bool isByteArrayTooLarge(Uint8List bytes) {
-    int _firestoreSizeLimit = 1024 * 1024;
-    return bytes.length > _firestoreSizeLimit;
+    int firestoreSizeLimit = 1024 * 1024;
+    return bytes.length > firestoreSizeLimit;
   }
 
   Future<Uint8List?> storeResizedImageInFirestore(Uint8List imageBytes) async {

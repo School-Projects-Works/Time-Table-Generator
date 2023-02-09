@@ -7,7 +7,7 @@ class DiagonalLinePainter extends CustomPainter {
       ..color = Colors.black
       ..strokeWidth = 5;
 
-    canvas.drawLine(Offset(0, 0), Offset(size.width, size.height), paint);
+    canvas.drawLine(const Offset(0, 0), Offset(size.width, size.height), paint);
   }
 
   @override
@@ -23,7 +23,7 @@ class DiagonalLinePainterPdf extends CustomPainter {
       ..color = Colors.black
       ..strokeWidth = 5;
 
-    canvas.drawLine(Offset(0, 0), Offset(size.width, size.height), paint);
+    canvas.drawLine(const Offset(0, 0), Offset(size.width, size.height), paint);
   }
 
   @override

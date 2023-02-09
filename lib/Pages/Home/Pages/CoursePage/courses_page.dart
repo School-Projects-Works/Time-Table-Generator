@@ -18,7 +18,7 @@ import '../../../../Components/custom_table.dart';
 import '../../../../Constants/constant.dart';
 import '../../../../SateManager/hive_listener.dart';
 import '../../../../Styles/colors.dart';
-import 'CoursesDataSource.dart';
+import 'courses_data_source.dart';
 
 class CoursesPage extends StatefulWidget {
   const CoursesPage({Key? key}) : super(key: key);
