@@ -1,13 +1,11 @@
-// ignore_for_file: file_names
-
-import 'package:aamusted_timetable_generator/Models/Course/CourseModel.dart';
-import 'package:aamusted_timetable_generator/Pages/Home/Pages/CoursePage/setSpecialVenuePage.dart';
-import 'package:aamusted_timetable_generator/SateManager/HiveListener.dart';
+import 'package:aamusted_timetable_generator/Models/Course/course_model.dart';
+import 'package:aamusted_timetable_generator/Pages/Home/Pages/CoursePage/set_special_venue_page.dart';
 import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../../../../Components/BreathingWidget.dart';
+import '../../../../Components/_breathing_widget.dart';
+import '../../../../SateManager/hive_listener.dart';
 
 class CoursesDataSource extends DataTableSource {
   final BuildContext context;
