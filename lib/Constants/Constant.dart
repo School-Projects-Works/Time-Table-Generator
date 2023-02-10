@@ -57,4 +57,20 @@ class Constant {
     lecturerName,
     lecturerEmail
   ];
+
+  static List<String> academicYear = [
+    for (int i = DateTime.now().year; i < DateTime.now().year + 10; i++)
+      '$i - ${i + 1}'
+  ];
+  //let create semester and student typ
+  static List<String> semesters = [
+    'Semester 1',
+    'Semester 2',
+  ];
+  static List<String> studentTypes = [
+    'Regular',
+    'Evening',
+    'Weekend',
+    'Sandwich'
+  ];
 }

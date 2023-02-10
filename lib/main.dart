@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:aamusted_timetable_generator/Models/Table/TableModel.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -8,12 +5,11 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
-import 'Pages/ContainerPage.dart';
-import 'SateManager/HiveCache.dart';
-import 'SateManager/HiveListener.dart';
-import 'SateManager/NavigationProvider.dart';
+import 'Pages/container_page.dart';
+import 'SateManager/hive_cache.dart';
+import 'SateManager/hive_listener.dart';
+import 'SateManager/navigation_provider.dart';
 import 'Styles/colors.dart';
-import 'package:http/http.dart' as http;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,44 +52,22 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   Future<void> getData() async {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      var academic = HiveCache.getAcademics();
-      if (academic.isNotEmpty) {
-        var provider = Provider.of<HiveListener>(context, listen: false);
-        provider.setAcademicList(academic);
-        provider.updateConfigList();
+      var provider = Provider.of<HiveListener>(context, listen: false);
+      provider.updateConfigList();
+      var courses = await HiveCache.getCourses();
+      provider.setCourseList(courses);
 
-        var currentYear = provider.currentAcademicYear;
+      var classes = await HiveCache.getClasses();
+      provider.setClassList(classes);
 
-        var courses = await HiveCache.getCourses(currentYear);
-        provider.setCourseList(courses);
+      var venues = await HiveCache.getVenues();
+      provider.setVenueList(venues);
 
-        var classes = await HiveCache.getClasses(currentYear);
-        provider.setClassList(classes);
+      var liberal = HiveCache.getLiberals();
+      provider.setLiberalList(liberal);
 
-        var venues = await HiveCache.getVenues(currentYear);
-        provider.setVenueList(venues);
-
-        var liberal = HiveCache.getLiberals(currentYear);
-        provider.setLiberalList(liberal);
-
-        List<TableModel> tables = await HiveCache.getTables(currentYear);
-        provider.setTables(tables);
-        //let make http request to send tables to firebase
-        // if (tables.isNotEmpty) {
-        //   var table = tables.first;
-        //   var client = http.Client();
-        //   try {
-        //     var response = await client.post(
-        //       Uri.parse(
-        //           'http://127.0.0.1:5001/aamusted-timetable/us-central1/app/api/create'),
-        //       body: table.toJson(),
-        //     );
-        //     print(response.body);
-        //   } finally {
-        //     client.close();
-        //   }
-        // }
-      }
+      var tables = HiveCache.getTables();
+      provider.setTable(tables);
     });
   }
 
