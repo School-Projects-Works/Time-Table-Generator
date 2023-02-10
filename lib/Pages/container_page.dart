@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 import 'package:aamusted_timetable_generator/Pages/Exports/export_main_page.dart';
+import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
@@ -12,6 +13,8 @@ import '../Components/background.dart';
 import '../SateManager/navigation_provider.dart';
 import 'Auth/auth_page.dart';
 import 'Auth/new_password.dart';
+import 'Home/Pages/about_page.dart';
+import 'Home/Pages/help_page.dart';
 import 'Home/home_page.dart';
 
 class ContainerPage extends StatefulWidget {
@@ -52,7 +55,7 @@ class _ContainerPageState extends State<ContainerPage> {
                   alignment: Alignment.centerRight,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-                  color: const Color(0xff363E45),
+                  color: secondaryColor,
                   child: Row(
                     children: [
                       Expanded(
@@ -67,6 +70,46 @@ class _ContainerPageState extends State<ContainerPage> {
                             ),
                           ],
                         ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: IconButton(
+                            padding: EdgeInsets.zero,
+                            tooltip: 'Help',
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                PageRouteBuilder(
+                                  opaque: false, // set to false
+                                  pageBuilder: (_, __, ___) => const HelpPage(),
+                                ),
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.help,
+                              color: Colors.white,
+                            )),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: IconButton(
+                            padding: EdgeInsets.zero,
+                            tooltip: 'About Us',
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                PageRouteBuilder(
+                                  opaque: false, // set to false
+                                  pageBuilder: (_, __, ___) =>
+                                      const AboutPage(),
+                                ),
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.people,
+                              color: Colors.white,
+                            )),
+                      ),
+                      const SizedBox(
+                        width: 50,
                       ),
                       const Expanded(flex: 1, child: ActionControls()),
                     ],
@@ -85,7 +128,7 @@ class _ContainerPageState extends State<ContainerPage> {
                     AuthPage(),
                     HomePage(),
                     NewPassword(),
-                    ExportPage()
+                    ExportPage(),
                   ],
                 ),
               ),

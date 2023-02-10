@@ -1,5 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:collection/collection.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+// ignore: depend_on_referenced_packages
+import 'package:image/image.dart' as img;
+import 'package:provider/provider.dart';
 import 'package:aamusted_timetable_generator/Components/custom_button.dart';
 import 'package:aamusted_timetable_generator/Components/smart_dialog.dart';
 import 'package:aamusted_timetable_generator/Components/text_inputs.dart';
@@ -7,20 +18,11 @@ import 'package:aamusted_timetable_generator/Constants/custom_string_functions.d
 import 'package:aamusted_timetable_generator/Models/Table/table_model.dart';
 import 'package:aamusted_timetable_generator/Services/publish_data.dart';
 import 'package:aamusted_timetable_generator/Styles/colors.dart';
-import 'package:collection/collection.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'package:image/image.dart' as img;
 import '../../Models/Config/period_model.dart';
 import '../../SateManager/hive_listener.dart';
 import '../../SateManager/navigation_provider.dart';
 import '../../Services/file_service.dart';
 import '../../Styles/diagonal_widget.dart';
-import 'package:http/http.dart' as http;
 
 class ExportPage extends StatefulWidget {
   const ExportPage({super.key});

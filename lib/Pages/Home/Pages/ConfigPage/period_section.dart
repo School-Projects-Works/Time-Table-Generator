@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../../../../Components/custom_checkBox.dart';
+import '../../../../Components/custom_check_box.dart';
 import '../../../../SateManager/hive_listener.dart';
 
 class PeriodSection extends StatelessWidget {
