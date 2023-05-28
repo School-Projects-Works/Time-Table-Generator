@@ -19,8 +19,8 @@ import '../Models/Course/liberal_model.dart';
 
 class GlobalFunctions {
   static TimeOfDay timeFromString(String input) {
-    DateFormat formatter = DateFormat("h:mm a");
-    DateTime time = formatter.parse(input);
+    DateFormat formatter = DateFormat("hh:mm a");
+    DateTime time = formatter.parseUTC(input);
     return TimeOfDay.fromDateTime(time);
   }
 }

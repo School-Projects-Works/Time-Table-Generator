@@ -5,9 +5,9 @@ import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:window_manager/window_manager.dart';
 import '../Components/action_controls.dart';
 import '../Components/background.dart';
 import '../SateManager/navigation_provider.dart';
@@ -50,7 +50,7 @@ class _ContainerPageState extends State<ContainerPage> {
           children: [
             SizedBox(
               height: 40,
-              child: MoveWindow(
+              child: DragToMoveArea(
                 child: Container(
                   alignment: Alignment.centerRight,
                   padding:

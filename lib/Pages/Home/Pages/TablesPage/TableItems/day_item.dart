@@ -30,27 +30,37 @@ class _DayItemState extends State<DayItem> {
     if (periods != null) {
       firstPeriods = [];
       secondPeriods = [];
-      periods.sort((a, b) => GlobalFunctions.timeFromString(a.startTime!)
-          .hour
-          .compareTo(GlobalFunctions.timeFromString(b.startTime!).hour));
+
+      periods.sort((a, b) {
+        TimeOfDay aTime = GlobalFunctions.timeFromString(a.startTime!);
+        TimeOfDay bTime = GlobalFunctions.timeFromString(b.startTime!);
+        return aTime.hour.compareTo(bTime.hour);
+      });
+
       //split periods at where breakTime is
       breakPeriod = periods.firstWhereOrNull((element) =>
           element.period!.trimToLowerCase() == 'break'.trimToLowerCase());
       if (breakPeriod != null) {
         for (PeriodModel period in periods) {
           //we check if period start time is less than break time
+
           if (GlobalFunctions.timeFromString(period.startTime!).hour <
               GlobalFunctions.timeFromString(breakPeriod!.startTime!).hour) {
             firstPeriods.add(period);
-          } else if (GlobalFunctions.timeFromString(period.startTime!).hour >
-              GlobalFunctions.timeFromString(breakPeriod!.startTime!).hour) {
-            secondPeriods.add(period);
+          } else {
+            if (GlobalFunctions.timeFromString(period.startTime!).hour >
+                GlobalFunctions.timeFromString(breakPeriod!.startTime!).hour) {
+              secondPeriods.add(period);
+            }
           }
         }
       } else {
         firstPeriods = periods;
       }
     }
+
+    // let print the first and second periods
+
     return periods!;
   }
 
