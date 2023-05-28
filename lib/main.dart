@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -14,6 +15,7 @@ import 'Styles/colors.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
+
   await HiveCache.init();
   HiveCache.createAdmin();
   await windowManager.maximize();
@@ -86,7 +88,9 @@ class _MyAppState extends State<MyApp> {
           PointerDeviceKind.mouse,
           PointerDeviceKind.touch,
           PointerDeviceKind.stylus,
-          PointerDeviceKind.unknown
+          PointerDeviceKind.unknown,
+          PointerDeviceKind.trackpad,
+          PointerDeviceKind.invertedStylus
         },
       ),
       title: 'AAMUSTED TIMETABLE GENERATOR',
