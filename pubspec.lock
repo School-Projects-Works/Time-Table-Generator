@@ -93,10 +93,10 @@ packages:
     dependency: "direct dev"
     description:
       name: build_runner
-      sha256: "220ae4553e50d7c21a17c051afc7b183d28a24a420502e842f303f8e4e6edced"
+      sha256: "5e1929ad37d48bd382b124266cb8e521de5548d406a45a5ae6656c13dab73e37"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.4"
+    version: "2.4.5"
   build_runner_core:
     dependency: transitive
     description:
@@ -243,14 +243,23 @@ packages:
       url: "https://github.com/Emmanuelfrimpong/flutter_file_picker.git"
     source: git
     version: "5.3.2"
+  firedart:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: c4893a9a1c28eacd909ed5ca10b9202c379686d1
+      url: "https://github.com/BST-Forked-Projects/firedart.git"
+    source: git
+    version: "0.9.2+1"
   fixnum:
     dependency: transitive
     description:
       name: fixnum
-      sha256: "04be3e934c52e082558cc9ee21f42f5c1cd7a1262f4c63cd0357c08d5bba81ec"
+      sha256: "25517a4deb0c03aa0f32fd12db525856438902d9c16536311e76cdc57b31d7d1"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "1.1.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -276,10 +285,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_smart_dialog
-      sha256: da7ed8fe78e301e3c2cdaa533d13ed3edcf1853c1ba1a7383b481739569f7b2a
+      sha256: acf66eb7b10ebb3173ef6f40040c0808d4fd56ade885cc850657b5463d3b602a
       url: "https://pub.dev"
     source: hosted
-    version: "4.9.0+6"
+    version: "4.9.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -318,10 +327,18 @@ packages:
     dependency: "direct main"
     description:
       name: google_fonts
-      sha256: "2776c66b3e97c6cdd58d1bd3281548b074b64f1fd5c8f82391f7456e38849567"
+      sha256: db5efba8106bd784a92c96cfd81716f4e06baab54e37de858488e9a00a764cad
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.5"
+    version: "5.0.0"
+  googleapis_auth:
+    dependency: transitive
+    description:
+      name: googleapis_auth
+      sha256: af7c3a3edf9d0de2e1e0a77e994fae0a581c525fa7012af4fa0d4a52ed9484da
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.1"
   graphs:
     dependency: transitive
     description:
@@ -330,6 +347,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  grpc:
+    dependency: transitive
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: cc422e7891f6099639339b01a816b838f64833c7
+      url: "https://github.com/BST-Forked-Projects/grpc-dart.git"
+    source: git
+    version: "3.2.0-dev"
   hive:
     dependency: "direct main"
     description:
@@ -362,6 +388,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  http2:
+    dependency: transitive
+    description:
+      name: http2
+      sha256: "3f1286baeae57e96f4bd156cb07ab39ad96cf0d1537eed80dbc65d00447b4e0e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   http_multi_server:
     dependency: transitive
     description:
@@ -618,6 +652,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.4"
+  protobuf:
+    dependency: transitive
+    description:
+      name: protobuf
+      sha256: "01dd9bd0fa02548bf2ceee13545d4a0ec6046459d847b6b061d8a27237108a08"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   provider:
     dependency: "direct main"
     description:
@@ -747,34 +789,34 @@ packages:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: "998d242c1f022eccf53f414a4343af34ab980700fee36cef8f78d94538ca749f"
+      sha256: "4aa69e3541d38810533b1455aa38997a89755f9928e16ef813b62b2e8bcc398c"
       url: "https://pub.dev"
     source: hosted
-    version: "21.2.6"
+    version: "21.2.9"
   syncfusion_flutter_pdf:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_pdf
-      sha256: a4bbc46cbdb628d11167331a945826d3d4f9b91bad3cb91ce2fd4b54e060e08f
+      sha256: "97b1c8880b8840bed7ac301cd5f3ef5cc4f062ce79a3eb6615eba59b33200d1c"
       url: "https://pub.dev"
     source: hosted
-    version: "21.2.6"
+    version: "21.2.9"
   syncfusion_flutter_xlsio:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_xlsio
-      sha256: "66f8aa6fe99510000ccf88cf8291fd8cb53f5b95d25da1fbd830ae6876b0be80"
+      sha256: d92b84584f7007efb43d7d0bcfd6a8b882c03fcdb593c5bb41ead63e8cbe6e52
       url: "https://pub.dev"
     source: hosted
-    version: "21.2.6"
+    version: "21.2.9"
   syncfusion_officecore:
     dependency: transitive
     description:
       name: syncfusion_officecore
-      sha256: d518ceccfec9fd3a105f35e950400a48bedd374b4a256f4ca1529574128644d6
+      sha256: "46ce6d6058438ee24bc00c0c98b8ae4dcb2f43daabf8d9f6fe2699555fe6ed08"
       url: "https://pub.dev"
     source: hosted
-    version: "21.2.6"
+    version: "21.2.9"
   term_glyph:
     dependency: transitive
     description:

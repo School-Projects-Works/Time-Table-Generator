@@ -36,13 +36,13 @@ class _HelpPageState extends State<HelpPage> {
                     text: 'Back'),
               ),
               const SizedBox(height: 20),
-              Expanded(
+              const Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text('Help'),
+                      Text('Help'),
                     ],
                   ),
                 ),

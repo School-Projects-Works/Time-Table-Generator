@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, depend_on_referenced_packages
 
 import 'package:aamusted_timetable_generator/Components/smart_dialog.dart';
 import 'package:aamusted_timetable_generator/Constants/custom_string_functions.dart';

@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, unnecessary_null_comparison
+// ignore_for_file: file_names, unnecessary_null_comparison, depend_on_referenced_packages
 
 import 'dart:io';
 import 'package:aamusted_timetable_generator/Components/_breathing_widget.dart';

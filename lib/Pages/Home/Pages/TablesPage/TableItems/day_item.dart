@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:aamusted_timetable_generator/Constants/custom_string_functions.dart';
 import 'package:aamusted_timetable_generator/Models/Table/table_item_model.dart';
 import 'package:aamusted_timetable_generator/Pages/Home/Pages/TablesPage/TableItems/table_item.dart';

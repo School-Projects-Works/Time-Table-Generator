@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:io';
 import 'package:aamusted_timetable_generator/Constants/constant.dart';
 import 'package:aamusted_timetable_generator/Models/Venue/venue_model.dart';

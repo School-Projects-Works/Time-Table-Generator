@@ -407,7 +407,7 @@ class CustomTableState extends State<CustomTable> {
                               sortAscending: widget.sortAscending,
                               onSelectAll: widget.onSelectAll,
                               decoration: const BoxDecoration(),
-                              dataRowHeight: widget.dataRowHeight,
+                              dataRowMinHeight: widget.dataRowHeight,
                               headingRowHeight: widget.headingRowHeight,
                               horizontalMargin: widget.horizontalMargin,
                               checkboxHorizontalMargin:

@@ -40,14 +40,14 @@ class _ConfigurationState extends State<Configuration> {
               ],
             ),
             const SizedBox(height: 20),
-            Expanded(
+            const Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         DaysSection(),
                         Expanded(child: PeriodSection()),
                       ],
