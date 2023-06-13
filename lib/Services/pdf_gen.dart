@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:aamusted_timetable_generator/Constants/custom_string_functions.dart';
 import 'package:flutter/services.dart';
@@ -44,11 +45,11 @@ class PDFGenerate {
     PdfPage page = document.pages.add();
     //create title font
     PdfFont titleFont =
-        PdfStandardFont(PdfFontFamily.timesRoman, 18, style: PdfFontStyle.bold);
+        PdfStandardFont(PdfFontFamily.timesRoman, 16, style: PdfFontStyle.bold);
     //create subtitle font
     PdfFont subtitleFont = PdfStandardFont(
       PdfFontFamily.timesRoman,
-      14,
+      12,
     );
     // measure the title text
     Size titleSize = titleFont.measureString(schoolName!);
@@ -115,6 +116,33 @@ class PDFGenerate {
             (titleSize.height * 2) + subtitleSize.height + 20,
             page.getClientSize().width,
             tableNameSize.height));
+    page.graphics.drawLine(
+        PdfPen(PdfColor(140, 0, 59, 255), width: 2),
+        Offset(
+            0,
+            (titleSize.height * 2) +
+                subtitleSize.height +
+                tableNameSize.height +
+                20),
+        Offset(
+            page.getClientSize().width,
+            (titleSize.height * 2) +
+                subtitleSize.height +
+                tableNameSize.height +
+                20));
+//let add watermark from an image to the center of the page
+// load image from assets
+    var image = await rootBundle.load('assets/mark.png');
+    //create image from loaded image
+    PdfBitmap imageBitmap = PdfBitmap(image.buffer.asUint8List());
+    //draw image to the center of the page with full image size
+    page.graphics.drawImage(
+        imageBitmap,
+        Rect.fromLTWH(
+            (page.getClientSize().width / 2) - (imageBitmap.width / 2),
+            (page.getClientSize().height / 2) - (imageBitmap.height / 2),
+            imageBitmap.width.toDouble(),
+            imageBitmap.height.toDouble()));
 
     //create a table
     PdfGrid grid = PdfGrid();
@@ -272,10 +300,10 @@ class PDFGenerate {
         }
       }
       if (breakPeriod != null) {
-        header.cells[firstPeriods.length + 1].value = '';
+        row.cells[firstPeriods.length + 1].value = '';
         PdfGridCellStyle gridStyle = PdfGridCellStyle();
         gridStyle.borders.all = PdfPen(PdfColor(0, 0, 0, 0));
-        header.cells[firstPeriods.length + 1].style = gridStyle;
+        row.cells[firstPeriods.length + 1].style = gridStyle;
       }
       for (int j = 0; j < firstPeriods.length; j++) {
         //get the table item for the day and period
@@ -307,7 +335,8 @@ class PDFGenerate {
             page.getClientSize().height));
     //add footer text immediately after the grid
     //create footer element
-
+    //let measure the grid size
+    double gridSize = measureGridHeight(grid);
     //create footer style
     PdfFont footerFont = PdfStandardFont(
       PdfFontFamily.timesRoman,
@@ -324,6 +353,18 @@ class PDFGenerate {
             alignment: PdfTextAlignment.center,
             wordWrap: PdfWordWrapType.word,
             lineAlignment: PdfVerticalAlignment.middle));
+    //add footer text to page immediately after the grid
+    footerTextElement.draw(
+        page: page,
+        bounds: Rect.fromLTWH(
+            0,
+            (titleSize.height * 2) +
+                subtitleSize.height +
+                tableNameSize.height +
+                30 +
+                gridSize,
+            page.getClientSize().width,
+            footerSize.height));
 
 //Save and dispose the PDF document
 //create a folder in the device storage if not exist
@@ -365,13 +406,13 @@ class PDFGenerate {
             top: PdfPen(PdfColor(0, 0, 0, 0)),
             left: PdfPen(PdfColor(0, 0, 0, 0)),
             right: PdfPen(PdfColor(0, 0, 0, 0))),
-        font: PdfStandardFont(PdfFontFamily.timesRoman, 13,
+        font: PdfStandardFont(PdfFontFamily.timesRoman, 12,
             style: PdfFontStyle.bold),
         textBrush: PdfBrushes.black);
     grid.rows.add();
     grid.rows[1].cells[0].value = courseCode;
     grid.rows[1].cells[0].style = PdfGridCellStyle(
-        cellPadding: PdfPaddings(left: 0, right: 0, top: 0, bottom: 0),
+        cellPadding: PdfPaddings(left: 0, right: 0, top: -5, bottom: 0),
         format: format,
         borders: PdfBorders(
             bottom: PdfPen(PdfColor(0, 0, 0, 0)),
@@ -384,7 +425,7 @@ class PDFGenerate {
     grid.rows.add();
     grid.rows[2].cells[0].value = '(${courseTitle.toString().toTitleCase()})';
     grid.rows[2].cells[0].style = PdfGridCellStyle(
-        cellPadding: PdfPaddings(left: 0, right: 0, top: 0, bottom: 0),
+        cellPadding: PdfPaddings(left: 0, right: 0, top: -5, bottom: 0),
         format: format,
         borders: PdfBorders(
             bottom: PdfPen(PdfColor(0, 0, 0, 0)),
@@ -399,7 +440,7 @@ class PDFGenerate {
     grid.rows.add();
     grid.rows[3].cells[0].value = '-${lecturerName.toString().toTitleCase()}-';
     grid.rows[3].cells[0].style = PdfGridCellStyle(
-        cellPadding: PdfPaddings(left: 0, right: 0, top: 0, bottom: 0),
+        cellPadding: PdfPaddings(left: 0, right: 0, top: -5, bottom: 0),
         format: format,
         borders: PdfBorders(
             bottom: PdfPen(PdfColor(0, 0, 0, 0)),
@@ -417,7 +458,21 @@ class PDFGenerate {
     //set vertical alignment center
     cell.stringFormat.lineAlignment = PdfVerticalAlignment.middle;
     //set cell padding
-    cell.style.cellPadding =
-        PdfPaddings(left: 5, right: 5, top: 10, bottom: 10);
+    cell.style.cellPadding = PdfPaddings(left: 5, right: 5, top: 5, bottom: 5);
+  }
+
+  static double measureGridHeight(PdfGrid grid) {
+    double height = 0;
+    for (int i = 0; i < grid.rows.count; i++) {
+      PdfGridRow row = grid.rows[i];
+      double rowHeight = 0;
+      for (int j = 0; j < row.cells.count; j++) {
+        PdfGridCell cell = row.cells[j];
+        double cellSize = cell.height;
+        rowHeight = max(rowHeight, cellSize);
+      }
+      height += rowHeight;
+    }
+    return height;
   }
 }

@@ -39,9 +39,8 @@ class _ExportPageState extends State<ExportPage> {
   final descriptionController = TextEditingController(
       text:
           'PROVISIONAL LECTURE TIMETABLE FOR REGULAR PROGRAMMES FOR 2022/2023 ACADEMIC YEAR ');
-  final footerController = TextEditingController();
-  Uint8List? signature;
-  String? schoolName, tableDescription, tableFooter;
+
+  String? schoolName, tableDescription;
 
   var boldText = const TextStyle(
     fontSize: 13,
@@ -139,11 +138,9 @@ class _ExportPageState extends State<ExportPage> {
                               PDFGenerate.generatePDF(
                                 schoolName: schoolNameController.text,
                                 tableDesc: descriptionController.text,
-                                signature: signature,
                                 tables: tables,
                                 periods: periods,
                                 days: hive.getCurrentConfig.days!,
-                                footer: footerController.text,
                               );
                               // PublishData.exportData(
                               //   context: context,
@@ -253,92 +250,6 @@ class _ExportPageState extends State<ExportPage> {
                                 },
                               ),
                               const SizedBox(height: 20),
-                              Text(
-                                'Table Footer',
-                                textAlign: TextAlign.start,
-                                style: GoogleFonts.nunito(
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              CustomTextFields(
-                                controller: footerController,
-                                maxLines: 3,
-                                isCapitalized: true,
-                                hintText: 'Enter Table Footer',
-                                onChanged: (value) {
-                                  setState(() {
-                                    tableFooter = value;
-                                  });
-                                },
-                              ),
-                              const SizedBox(height: 40),
-                              Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'Table Signature (Optional)',
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                              //upload signature
-                              const SizedBox(height: 10),
-                              Align(
-                                  alignment: Alignment.center,
-                                  child: TextButton.icon(
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: primaryColor,
-                                        padding: const EdgeInsets.all(16.0),
-                                      ),
-                                      onPressed: () => uploadSignature(),
-                                      icon: const Icon(
-                                        FontAwesomeIcons.upload,
-                                        color: Colors.white,
-                                      ),
-                                      label: Text(
-                                        'Upload Signature',
-                                        style: GoogleFonts.poppins(
-                                            color: Colors.white),
-                                      ))),
-                              const SizedBox(height: 10),
-                              if (signature != null)
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: Image.memory(
-                                    signature!,
-                                    width: 120,
-                                    height: 120,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              if (signature != null)
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: IconButton(
-                                      style: ButtonStyle(
-                                          foregroundColor:
-                                              MaterialStateColor.resolveWith(
-                                                  (states) => Colors.red),
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                                  Colors.red)),
-                                      onPressed: () {
-                                        setState(() {
-                                          signature = null;
-                                        });
-                                      },
-                                      icon: const Icon(
-                                        Icons.delete,
-                                        color: Colors.red,
-                                        size: 30,
-                                      )),
-                                ),
-                              //const SizedBox(height: 20),
                             ]),
                       ),
                     ),
@@ -906,53 +817,6 @@ class _ExportPageState extends State<ExportPage> {
                                                       )
                                                     ],
                                                   ),
-                                                  Align(
-                                                    alignment: Alignment.center,
-                                                    child: Text(
-                                                        tableFooter ?? '',
-                                                        style:
-                                                            GoogleFonts.nunito(
-                                                                fontSize: 15,
-                                                                color: Colors
-                                                                    .black,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500)),
-                                                  ),
-                                                  Align(
-                                                    alignment:
-                                                        Alignment.bottomRight,
-                                                    child: Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          if (signature != null)
-                                                            Text(
-                                                              'Timetable Source:',
-                                                              style: GoogleFonts.poppins(
-                                                                  fontSize: 15,
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                          if (signature != null)
-                                                            Image.memory(
-                                                              signature!,
-                                                              width: 100,
-                                                              height: 100,
-                                                            ),
-                                                          const SizedBox(
-                                                              height: 5),
-                                                        ]),
-                                                  )
                                                 ],
                                               ),
                                             ),
@@ -972,22 +836,6 @@ class _ExportPageState extends State<ExportPage> {
         );
       }),
     );
-  }
-
-  uploadSignature() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      allowedExtensions: ['png', 'jpg', 'jpeg'],
-      allowMultiple: false,
-    );
-    if (result != null) {
-      setState(() {
-        var file = File(result.files.first.path!);
-        signature = file.readAsBytesSync();
-      });
-    } else {
-      // User canceled the picker
-    }
   }
 
   void exportTables(HiveListener hive) async {
