@@ -1202,7 +1202,10 @@ class HiveListener extends ChangeNotifier {
     notifyListeners();
   }
 
+  String? filter;
+  String? get getFilter => filter;
   void filterTableItems(String? value) {
+    filter = value;
     if (value != null) {
       var check = value.trimToLowerCase();
       filteredTableItems = tableItems
@@ -1235,8 +1238,12 @@ class HiveListener extends ChangeNotifier {
             return TableItemModel.fromMap(e);
           }).toList()
         : [];
-    filteredTableItems = tableItems;
-    notifyListeners();
+    if (filter != null) {
+      filterTableItems(filter);
+    } else {
+      filteredTableItems = tableItems;
+      notifyListeners();
+    }
   }
 
   String tableType = 'Provisional';
@@ -1262,6 +1269,60 @@ class HiveListener extends ChangeNotifier {
       HiveCache.deleteTable(table!.id!);
       var data = HiveCache.getTables();
       setTable(data);
+    }
+  }
+
+  TableItemModel? selectedItem;
+  TableItemModel? get getSelectItem => selectedItem;
+  void setSelectedItem(TableItemModel? value) {
+    selectedItem = value;
+    notifyListeners();
+  }
+
+  void swapTableItems(TableItemModel? selectedItem, TableItemModel? newItem) {
+    if (selectedItem != null) {
+      var selectedIndex = tableItems.indexOf(selectedItem);
+      var newIndex = tableItems.indexOf(newItem!);
+      //swap the following values
+      // venue, day, period, venueId, periodMap
+      // and save them back to the database
+      if (newItem.id != null || newItem.className != null) {
+        var venue = selectedItem.venue;
+        var day = selectedItem.day;
+        var period = selectedItem.period;
+        var venueId = selectedItem.venueId;
+        var periodMap = selectedItem.periodMap;
+        selectedItem.venue = newItem.venue;
+        selectedItem.day = newItem.day;
+        selectedItem.period = newItem.period;
+        selectedItem.venueId = newItem.venueId;
+        selectedItem.periodMap = newItem.periodMap;
+        newItem.venue = venue;
+        newItem.day = day;
+        newItem.period = period;
+        newItem.venueId = venueId;
+        newItem.periodMap = periodMap;
+        //put them back to the list of table items and save them back to the database
+
+        tableItems[selectedIndex] = selectedItem;
+        tableItems[newIndex] = newItem;
+      } else {
+        //just change the venue, day, period, venueId, periodMap of the selected item
+        selectedItem.venue = newItem.venue;
+        selectedItem.day = newItem.day;
+        selectedItem.period = newItem.period;
+        selectedItem.venueId = newItem.venueId;
+        selectedItem.periodMap = newItem.periodMap;
+        tableItems[selectedIndex] = selectedItem;
+      }
+      table!.tableItems = tableItems.map((e) {
+        return e.toMap();
+      }).toList();
+      HiveCache.saveTable(table!);
+      // get tables back
+      var data = HiveCache.getTables();
+      setTable(data);
+      notifyListeners();
     }
   }
 }

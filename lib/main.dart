@@ -1,3 +1,4 @@
+import 'package:firedart/firedart.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -11,10 +12,12 @@ import 'SateManager/hive_listener.dart';
 import 'SateManager/navigation_provider.dart';
 import 'Styles/colors.dart';
 
+const apiKey = "AIzaSyAyikO-Ug5yj-I3Kt_K8-6PeFb0KgsNSBE";
+const projectId = "aamusted-timetable";
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
-
+  Firestore.initialize(apiKey);
   await HiveCache.init();
   HiveCache.createAdmin();
   await windowManager.maximize();

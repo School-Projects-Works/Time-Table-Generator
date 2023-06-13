@@ -121,7 +121,7 @@ class TableItemModel {
       'day': day ?? '',
       'period': period ?? '',
       'targetStudents': targetStudents ?? '',
-      'periodMap': periodMap as Map<String, dynamic>,
+      'periodMap': periodMap as Map<dynamic, dynamic>,
       'courseCode': courseCode ?? '',
       'courseId': courseId ?? '',
       'lecturerName': lecturerName ?? '',

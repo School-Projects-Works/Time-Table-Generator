@@ -77,6 +77,7 @@ class TablesWidget extends StatelessWidget {
           return DayItem(
             day: e,
             periods: periods,
+            data: table,
             tables: table
                 .where((element) =>
                     element.day!.toLowerCase().trimToLowerCase() ==

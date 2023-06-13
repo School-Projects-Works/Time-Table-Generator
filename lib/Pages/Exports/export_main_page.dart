@@ -22,6 +22,7 @@ import '../../Models/Config/period_model.dart';
 import '../../SateManager/hive_listener.dart';
 import '../../SateManager/navigation_provider.dart';
 import '../../Services/file_service.dart';
+import '../../Services/pdf_gen.dart';
 import '../../Styles/diagonal_widget.dart';
 
 class ExportPage extends StatefulWidget {
@@ -135,8 +136,7 @@ class _ExportPageState extends State<ExportPage> {
                             //check if school name and description is not empty
                             if (schoolNameController.text.isNotEmpty &&
                                 descriptionController.text.isNotEmpty) {
-                              PublishData.exportData(
-                                context: context,
+                              PDFGenerate.generatePDF(
                                 schoolName: schoolNameController.text,
                                 tableDesc: descriptionController.text,
                                 signature: signature,
@@ -145,6 +145,16 @@ class _ExportPageState extends State<ExportPage> {
                                 days: hive.getCurrentConfig.days!,
                                 footer: footerController.text,
                               );
+                              // PublishData.exportData(
+                              //   context: context,
+                              //   schoolName: schoolNameController.text,
+                              //   tableDesc: descriptionController.text,
+                              //   signature: signature,
+                              //   tables: tables,
+                              //   periods: periods,
+                              //   days: hive.getCurrentConfig.days!,
+                              //   footer: footerController.text,
+                              // );
                             } else {
                               CustomDialog.showError(
                                   message:
@@ -982,40 +992,6 @@ class _ExportPageState extends State<ExportPage> {
 
   void exportTables(HiveListener hive) async {
     CustomDialog.showLoading(message: 'Exporting Table to the Web....');
-    TableModel? table = hive.getTable;
-    table!.tableFooter = footerController.text;
-    table.tableSchoolName = schoolNameController.text;
-    table.tableDescription = descriptionController.text;
-
-    if (signature != null) {
-      Uint8List? newFile;
-      if (isByteArrayTooLarge(signature!)) {
-        newFile = await storeResizedImageInFirestore(signature!);
-      } else {
-        newFile = signature;
-      }
-      table.signature = uint8ListToBase64(newFile!);
-    }
-
-    //print('Table Model===${table.toMap()}');
-    var client = http.Client();
-    try {
-      var response = await client.post(
-        Uri.parse(
-            'http://127.0.0.1:5001/aamusted-timetable/us-central1/app/api/create'),
-        body: table.toJson(),
-      );
-      CustomDialog.dismiss();
-      if (response.statusCode == 200) {
-        CustomDialog.showSuccess(message: 'Table exported successfully');
-      } else {
-        CustomDialog.showError(
-            message: 'Table could not be exported\n ${response.body}');
-      }
-    } finally {
-      client.close();
-      CustomDialog.dismiss();
-    }
   }
 
   bool isByteArrayTooLarge(Uint8List bytes) {
