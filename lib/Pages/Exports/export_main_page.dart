@@ -1,24 +1,19 @@
-import 'dart:convert';
-import 'dart:io';
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 // ignore: depend_on_referenced_packages
-import 'package:image/image.dart' as img;
 import 'package:provider/provider.dart';
 import 'package:aamusted_timetable_generator/Components/custom_button.dart';
 import 'package:aamusted_timetable_generator/Components/smart_dialog.dart';
 import 'package:aamusted_timetable_generator/Components/text_inputs.dart';
 import 'package:aamusted_timetable_generator/Constants/custom_string_functions.dart';
-import 'package:aamusted_timetable_generator/Models/Table/table_model.dart';
 import 'package:aamusted_timetable_generator/Services/publish_data.dart';
 import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import '../../Models/Config/period_model.dart';
+import '../../Models/Table/table_item_model.dart';
 import '../../SateManager/hive_listener.dart';
 import '../../SateManager/navigation_provider.dart';
 import '../../Services/file_service.dart';
@@ -64,7 +59,27 @@ class _ExportPageState extends State<ExportPage> {
                 .map((e) => PeriodModel.fromMap(e))
                 .toList()
             : [];
-        var tables = hive.getFilteredTableItems;
+        var tables = hive.tableItems;
+        var days = hive.getCurrentConfig.days;
+        // get all individual lectures
+        List<String> lecturers = [];
+        var courses = hive.getCourseList;
+        // we get all unique  lecturers from the course
+        for (var course in courses) {
+          if (!lecturers.contains(course.lecturerName)) {
+            lecturers.add(course.lecturerName!);
+          }
+        }
+
+        //now we get all unique classes
+        List<String> classes = [];
+        var classList = hive.getClassList;
+        for (var classId in classList) {
+          if (!classes.contains(classId.id)) {
+            classes.add(classId.id!);
+          }
+        }
+
         if (hive.getCurrentConfig.breakTime != null) {
           periods.add(PeriodModel.fromMap(hive.getCurrentConfig.breakTime!));
         }
@@ -112,55 +127,7 @@ class _ExportPageState extends State<ExportPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Expanded(
-                      child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CustomButton(
-                          onPressed: () {
-                            CustomDialog.showInfo(
-                                message:
-                                    'Please Note that if this Table already Exist on the web, it will be overwritten.',
-                                buttonText: 'Got it',
-                                onPressed: () {
-                                  CustomDialog.dismiss();
-                                  exportTables(hive);
-                                });
-                          },
-                          text: 'Publish to Web'),
-                      const SizedBox(width: 20),
-                      CustomButton(
-                          color: primaryColor,
-                          onPressed: () {
-                            //check if school name and description is not empty
-                            if (schoolNameController.text.isNotEmpty &&
-                                descriptionController.text.isNotEmpty) {
-                              PDFGenerate.generatePDF(
-                                schoolName: schoolNameController.text,
-                                tableDesc: descriptionController.text,
-                                tables: tables,
-                                periods: periods,
-                                days: hive.getCurrentConfig.days!,
-                              );
-                              // PublishData.exportData(
-                              //   context: context,
-                              //   schoolName: schoolNameController.text,
-                              //   tableDesc: descriptionController.text,
-                              //   signature: signature,
-                              //   tables: tables,
-                              //   periods: periods,
-                              //   days: hive.getCurrentConfig.days!,
-                              //   footer: footerController.text,
-                              // );
-                            } else {
-                              CustomDialog.showError(
-                                  message:
-                                      'Please fill in school name and description');
-                            }
-                          },
-                          text: 'Export to PDF')
-                    ],
-                  )),
+                  const Spacer(),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkWell(
@@ -817,6 +784,118 @@ class _ExportPageState extends State<ExportPage> {
                                                       )
                                                     ],
                                                   ),
+                                                  const SizedBox(height: 40),
+                                                  if (schoolNameController
+                                                          .text.isNotEmpty &&
+                                                      descriptionController
+                                                          .text.isNotEmpty)
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        ElevatedButton(
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                            backgroundColor:
+                                                                secondaryColor,
+                                                          ),
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .symmetric(
+                                                                    vertical:
+                                                                        10,
+                                                                    horizontal:
+                                                                        10),
+                                                            child: Text(
+                                                                'Publish to web',
+                                                                style: GoogleFonts.nunito(
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color: Colors
+                                                                        .white)),
+                                                          ),
+                                                          onPressed: () {
+                                                            CustomDialog
+                                                                .showInfo(
+                                                                    message:
+                                                                        'Please Note that if this Table already Exist on the web, it will be overwritten.',
+                                                                    buttonText:
+                                                                        'Got it',
+                                                                    onPressed:
+                                                                        () {
+                                                                      CustomDialog
+                                                                          .dismiss();
+                                                                      //exportTables(hive);
+                                                                    });
+                                                          },
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 20),
+                                                        PopupMenuButton(
+                                                            color: Colors.white,
+                                                            onSelected: (value) =>
+                                                                exportSelected(
+                                                                    value,
+                                                                    periods:
+                                                                        periods,
+                                                                    days: days,
+                                                                    tables:
+                                                                        tables,
+                                                                    classes:
+                                                                        classes,
+                                                                    lecturers:
+                                                                        lecturers),
+                                                            child: Container(
+                                                              color:
+                                                                  primaryColor,
+                                                              padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      15,
+                                                                  vertical: 8),
+                                                              child: Text(
+                                                                  'Export to PDF',
+                                                                  style: GoogleFonts.nunito(
+                                                                      fontSize:
+                                                                          16,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: Colors
+                                                                          .white)),
+                                                            ),
+                                                            itemBuilder:
+                                                                (context) {
+                                                              return const [
+                                                                PopupMenuItem(
+                                                                  value: 1,
+                                                                  child: Text(
+                                                                      'All'),
+                                                                ),
+                                                                PopupMenuItem(
+                                                                  value: 2,
+                                                                  child: Text(
+                                                                      'For Lecturers'),
+                                                                ),
+                                                                PopupMenuItem(
+                                                                  value: 3,
+                                                                  child: Text(
+                                                                      'For Classes'),
+                                                                ),
+                                                                PopupMenuItem(
+                                                                  value: 4,
+                                                                  child: Text(
+                                                                      'For Levels'),
+                                                                ),
+                                                              ];
+                                                            }),
+                                                      ],
+                                                    )
                                                 ],
                                               ),
                                             ),
@@ -838,26 +917,83 @@ class _ExportPageState extends State<ExportPage> {
     );
   }
 
-  void exportTables(HiveListener hive) async {
-    CustomDialog.showLoading(message: 'Exporting Table to the Web....');
+  exportSelected(
+    int value, {
+    List<TableItemModel>? tables,
+    List<String>? days,
+    List<PeriodModel>? periods,
+    List<String>? classes,
+    List<String>? lecturers,
+  }) {
+    if (schoolNameController.text.isNotEmpty &&
+        descriptionController.text.isNotEmpty) {
+      switch (value) {
+        case 1:
+          PublishData.exportData(
+            context: context,
+            schoolName: schoolNameController.text,
+            tableDesc: descriptionController.text,
+            tables: tables!,
+            periods: periods!,
+            days: days!,
+          );
+
+        case 2:
+          var group =
+              groupBy(tables!, (TableItemModel data) => data.lecturerName);
+          PDFGenerate.generatePDF(
+            schoolName: schoolNameController.text,
+            tableDesc: descriptionController.text,
+            tables: group,
+            periods: periods!,
+            days: days!,
+          );
+          break;
+        case 3:
+          var group = groupBy(tables!, (TableItemModel data) => data.className);
+          PDFGenerate.generatePDF(
+            schoolName: schoolNameController.text,
+            tableDesc: descriptionController.text,
+            tables: group,
+            periods: periods!,
+            days: days!,
+          );
+          break;
+        case 4:
+          var group =
+              groupBy(tables!, (TableItemModel data) => data.classLevel);
+          PDFGenerate.generatePDF(
+            schoolName: schoolNameController.text,
+            tableDesc: descriptionController.text,
+            tables: group,
+            periods: periods!,
+            days: days!,
+          );
+          break;
+        default:
+          break;
+      }
+    } else {
+      CustomDialog.showError(
+          message: 'Please fill in school name and description');
+    }
   }
 
-  bool isByteArrayTooLarge(Uint8List bytes) {
-    int firestoreSizeLimit = 1024 * 1024;
-    return bytes.length > firestoreSizeLimit;
-  }
-
-  Future<Uint8List?> storeResizedImageInFirestore(Uint8List imageBytes) async {
-    final image = img.decodeImage(imageBytes);
-    final resizedImage = img.copyResize(image!, width: 512, height: 512);
-    final bytes = img.encodePng(resizedImage);
-
-    return Uint8List.fromList(bytes);
-  }
-
-  String uint8ListToBase64(Uint8List uint8List) {
-    String base64String = base64Encode(uint8List);
-    String header = 'data:image/png;base64,';
-    return header + base64String;
+  exportBy(
+    List<String>? days,
+    List<PeriodModel>? periods,
+    List<TableItemModel>? tables,
+    String? key,
+  ) {
+    CustomDialog.dismiss();
+    var filteredTables =
+        tables!.where((element) => element.lecturerName == key).toList();
+    PDFGenerate.generatePDF(
+      schoolName: schoolNameController.text,
+      tableDesc: descriptionController.text,
+      tables: {key.toString(): filteredTables},
+      periods: periods!,
+      days: days!,
+    );
   }
 }

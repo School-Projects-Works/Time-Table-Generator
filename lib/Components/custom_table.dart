@@ -318,6 +318,7 @@ class CustomTableState extends State<CustomTable> {
     var constraints = MediaQuery.of(context).size;
 
     return Card(
+        elevation: 0,
         semanticContainer: true,
         child: VsScrollbar(
           controller: widget.controller2,

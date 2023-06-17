@@ -119,18 +119,25 @@ class _HomePageState extends State<HomePage> {
                                   color: background,
                                   borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(10))),
-                              child: IndexedStack(
-                                index: nav.page,
-                                children: const [
-                                  // NewAcademic(),
-                                  Configuration(),
-                                  CoursesPage(),
-                                  ClassesPage(),
-                                  LiberalPage(),
-                                  VenuePage(),
-                                  TimeTablePage(),
-                                ],
-                              )),
+                              child: LayoutBuilder(
+                                  builder: (context, constraints) {
+                                switch (nav.page) {
+                                  case 0:
+                                    return const Configuration();
+                                  case 1:
+                                    return const CoursesPage();
+                                  case 2:
+                                    return const ClassesPage();
+                                  case 3:
+                                    return const LiberalPage();
+                                  case 4:
+                                    return const VenuePage();
+                                  case 5:
+                                    return const TimeTablePage();
+                                  default:
+                                    return Container();
+                                }
+                              })),
                         );
                       })
                     ],

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:aamusted_timetable_generator/Components/smart_dialog.dart';
 import 'package:collection/collection.dart';
 import 'package:aamusted_timetable_generator/Constants/custom_string_functions.dart';
 import 'package:flutter/services.dart';
@@ -7,24 +8,26 @@ import 'package:syncfusion_flutter_pdf/pdf.dart';
 import '../Models/Config/period_model.dart';
 import '../Models/Table/table_item_model.dart';
 import 'file_service.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PDFGenerate {
   static Future<void> generatePDF(
       {String? schoolName,
       String? tableDesc,
-      Uint8List? signature,
-      String? footer,
       required List<PeriodModel> periods,
-      required List<TableItemModel> tables,
+      required Map<String?, List<TableItemModel>> tables,
       required List<String> days}) async {
-    // group table items by class
-    Map<String, List<TableItemModel>> groupedTables =
-        groupBy(tables, (TableItemModel table) => table.className!);
-    //for each class create a table
-    for (var key in groupedTables.keys) {
-      List<TableItemModel> data = groupedTables[key]!;
-      createTable(key, data, periods, schoolName, tableDesc, signature, footer);
+    CustomDialog.showLoading(message: 'Generating PDF...Please wait');
+    for (var key in tables.keys) {
+      List<TableItemModel> data = tables[key]!;
+      createTable(key!, data, periods, schoolName, tableDesc);
     }
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    Directory directory = Directory('${appDocDir.path}/Tables');
+    CustomDialog.dismiss();
+    CustomDialog.showSuccess(
+        message:
+            'PDF Generated Successfully, Locate files at ${directory.path}');
   }
 
   static void createTable(
@@ -33,8 +36,6 @@ class PDFGenerate {
     List<PeriodModel> periods,
     String? schoolName,
     String? tableDesc,
-    Uint8List? signature,
-    String? footer,
   ) async {
     PdfDocument document = PdfDocument();
     //Set the page size
@@ -317,7 +318,8 @@ class PDFGenerate {
               className: tableItem.className,
               lecturerName: tableItem.lecturerName,
               courseCode: tableItem.courseCode,
-              courseTitle: tableItem.courseTitle);
+              courseTitle: tableItem.courseTitle,
+              venue: tableItem.venue);
         }
       }
     }
@@ -333,47 +335,16 @@ class PDFGenerate {
                 30,
             page.getClientSize().width,
             page.getClientSize().height));
-    //add footer text immediately after the grid
-    //create footer element
-    //let measure the grid size
-    double gridSize = measureGridHeight(grid);
-    //create footer style
-    PdfFont footerFont = PdfStandardFont(
-      PdfFontFamily.timesRoman,
-      10,
-    );
-    // measure the title text
-    Size footerSize = titleFont.measureString(footer!);
-    //wrap title text
-    PdfTextElement footerTextElement = PdfTextElement(
-        text: footer,
-        font: footerFont,
-        brush: PdfBrushes.black,
-        format: PdfStringFormat(
-            alignment: PdfTextAlignment.center,
-            wordWrap: PdfWordWrapType.word,
-            lineAlignment: PdfVerticalAlignment.middle));
-    //add footer text to page immediately after the grid
-    footerTextElement.draw(
-        page: page,
-        bounds: Rect.fromLTWH(
-            0,
-            (titleSize.height * 2) +
-                subtitleSize.height +
-                tableNameSize.height +
-                30 +
-                gridSize,
-            page.getClientSize().width,
-            footerSize.height));
 
 //Save and dispose the PDF document
 //create a folder in the device storage if not exist
-    Directory directory = Directory('${Directory.current.path}/Tables');
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    Directory directory = Directory('${appDocDir.path}/Tables');
     if (!await directory.exists()) {
       await directory.create();
     }
     //now let save the pdf file in the folder
-    String path = Directory('${Directory.current.path}/Tables').path;
+    String path = Directory('${appDocDir.path}/Tables').path;
     String fileName = '$path/${tableName.trimToLowerCase()}.pdf';
     File(fileName).writeAsBytes(await document.save());
     document.dispose();
@@ -383,7 +354,8 @@ class PDFGenerate {
       {String? className,
       String? courseCode,
       String? courseTitle,
-      String? lecturerName}) {
+      String? lecturerName,
+      String? venue}) {
     // two text elements with different font
     PdfGrid grid = PdfGrid();
     //create grid style and remove cell border
@@ -452,6 +424,19 @@ class PDFGenerate {
           10,
         ),
         textBrush: PdfSolidBrush(PdfColor(140, 0, 59, 255)));
+    grid.rows.add();
+    grid.rows[4].cells[0].value = '{${venue.toString().toUpperCase()}}';
+    grid.rows[4].cells[0].style = PdfGridCellStyle(
+        cellPadding: PdfPaddings(left: 0, right: 0, top: -5, bottom: 0),
+        format: format,
+        borders: PdfBorders(
+            bottom: PdfPen(PdfColor(0, 0, 0, 0)),
+            top: PdfPen(PdfColor(0, 0, 0, 0)),
+            left: PdfPen(PdfColor(0, 0, 0, 0)),
+            right: PdfPen(PdfColor(0, 0, 0, 0))),
+        font: PdfStandardFont(PdfFontFamily.timesRoman, 11,
+            style: PdfFontStyle.bold),
+        textBrush: PdfBrushes.forestGreen);
     cell.value = grid;
     // set cell text alignment to center
     cell.stringFormat.alignment = PdfTextAlignment.left;

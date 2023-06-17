@@ -519,6 +519,7 @@ class HiveListener extends ChangeNotifier {
     libTimePairs = getLTP(libDays, libPeriods);
     //print('length of libTimePairs: ${libTimePairs!.length}');
     classCoursePairs = getCCP();
+    print('length of classCoursePairs: ${classCoursePairs!.length}');
     //print('length of classCoursePairs: ${classCoursePairs!.length}');
 
     //Now we have to generate all the possible combinations of the above
@@ -531,17 +532,19 @@ class HiveListener extends ChangeNotifier {
     //now let randomly pick libTimePairs.length venueTimePairs with the highest capacity where the venueTimePairs day and period matches the libTimePairs day and period
     var libList = generateLiberalsTables();
     items.addAll(libList);
+    print('length after libList: ${items.length}');
     //print('Before special length of tables is ${tables!.length}');
     //now we get only regular classCoursePairs and create their tables
     // generateRegularTables(libLevel!, libDays!, libPeriods!['period']);
-    var speList =
-        generateSpecialVenueTable(libDays, libPeriods!['period'], libLevel);
-    items.addAll(speList);
+    generateSpecialVenueTable(libDays, libPeriods!['period'], libLevel,
+        tables: items);
+    print('length after specialVenue: ${items.length}');
 
     //now let generate the rest of the table
-    var restList =
-        generateRestOfTables(libDays, libPeriods['period'], libLevel);
-    items.addAll(restList);
+    generateRestOfTables(libDays, libPeriods['period'], libLevel,
+        tables: items);
+    print('length after restOfTables: ${items.length}');
+
     if (items.isNotEmpty) {
       String id = '$_currentAcademicYear$semester$tStudents$tableType'
           .hashCode
@@ -559,6 +562,7 @@ class HiveListener extends ChangeNotifier {
     //let get the tables from the cache
     var data = HiveCache.getTables();
     setTable(data);
+    //print('Length of tables: ${data.length}');
     //print('length of tables: ${tables!.length}');
     //print('length of items: ${items.length}');
 
@@ -1078,36 +1082,67 @@ class HiveListener extends ChangeNotifier {
     }
   }
 
-  List<TableItemModel> generateSpecialVenueTable(
-      String? libDays, String? libPeriod, String? libLevel) {
-    List<TableItemModel> items = [];
+  generateSpecialVenueTable(
+      String? libDays, String? libPeriod, String? libLevel,
+      {List<TableItemModel>? tables}) {
     var specialClassCoursePair = classCoursePairs!
         .where((element) => element.venues!.isNotEmpty)
         .toList();
+    int count = specialClassCoursePair.length;
     //print('Special Course Length: ${specialClassCoursePair.length}');
-    for (ClassCoursePairModel ccp in specialClassCoursePair) {
-      var venues = ccp.venues;
-
+    while (count > 0) {
+      print('Count: $count');
+      var ccp = specialClassCoursePair
+          .firstWhereOrNull((element) => element.isAssigned != true);
+      var venues = ccp!.venues;
       for (String v in venues!) {
-        if (!ccp.isAssigned) {
-          for (VenueTimePairModel vtp in venueTimePairs!) {
-            if (vtp.venueName == v) {
-              if (!vtp.isBooked) {
-                if (vtp.day == libDays &&
-                    vtp.period == libPeriod &&
-                    ccp.classLevel == libLevel) {
-                } else {
-                  if (!ccp.isAssigned) {
+        for (VenueTimePairModel vtp in venueTimePairs!) {
+          if (vtp.venueName == v) {
+            if (!vtp.isBooked) {
+              if (vtp.day == libDays &&
+                  vtp.period == libPeriod &&
+                  ccp.classLevel == libLevel) {
+                continue;
+              } else {
+                if (!ccp.isAssigned) {
+                  var p = vtp.period.toString().trimToLowerCase();
+                  var d = vtp.day.toString().trimToLowerCase();
+                  var alreadyTables = tables!.where((element) {
+                    var p1 = element.period.toString().trimToLowerCase();
+                    var d1 = element.day.toString().trimToLowerCase();
+                    return p1 == p && d1 == d;
+                  }).toList();
+                  //all tables i get all items that has the same period as the current period
+                  //and i check if lecturer name in the list
+                  if (alreadyTables.isNotEmpty) {
+                    var lName= ccp.lecturerName.toString().trimToLowerCase();
+                    var cName= ccp.classId.toString().trimToLowerCase();
+                    var alreadyTable = alreadyTables.firstWhereOrNull(
+                        (element){
+                          var lName1= element.lecturerName.toString().trimToLowerCase();
+                          var cName1= element.classId.toString().trimToLowerCase();
+                          return lName1 == lName || cName1 == cName;
+                        });
+                    //print('Already Table: $alreadyTable');
+                    if (alreadyTable == null) {
+                      var table = returnTable(vtp, ccp);
+                      tables.add(table);
+                      vtp.isBooked = true;
+                      ccp.isAssigned = true;
+                      count--;
+
+                    } else {
+                      continue;
+                    }
+                  } else {
                     var table = returnTable(vtp, ccp);
-                    items.add(table);
+                    tables.add(table);
                     vtp.isBooked = true;
                     ccp.isAssigned = true;
+                    count--;
                   }
                 }
               }
-            }
-            if (ccp.isAssigned) {
-              break;
             }
           }
         }
@@ -1115,13 +1150,12 @@ class HiveListener extends ChangeNotifier {
           break;
         }
       }
+      //print('CCP List Length: $count');
     }
-    return items;
   }
 
-  List<TableItemModel> generateRestOfTables(
-      String? libDays, String? libPeriod, String? libLevel) {
-    List<TableItemModel> items = [];
+  generateRestOfTables(String? libDays, String? libPeriod, String? libLevel,
+      {List<TableItemModel>? tables}) {
     for (ClassCoursePairModel ccp in classCoursePairs!) {
       if (!ccp.isAssigned) {
         for (var venueTimePair in venueTimePairs!) {
@@ -1141,11 +1175,30 @@ class HiveListener extends ChangeNotifier {
                     venueTimePair.isDisabilityAccessible
                         .toString()
                         .trimToLowerCase()) {
-                  var table = returnTable(venueTimePair, ccp);
-                  items.add(table);
-                  venueTimePair.isBooked = true;
-                  ccp.isAssigned = true;
-                  break;
+                  var p = venueTimePair.periodMap!['id'];
+                  var alreadyTables = tables!
+                      .where((element) => element.periodMap!['id'] == p)
+                      .toList();
+                  //all tables i get all items that has the same period as the current period
+                  //and i check if lecturer name in the list
+
+                  if (alreadyTables.isNotEmpty) {
+                    var alreadyTable = alreadyTables.firstWhereOrNull(
+                        (element) =>
+                            element.lecturerName == ccp.lecturerName ||
+                            element.classId == ccp.classId);
+                    if (alreadyTable == null) {
+                      var table = returnTable(venueTimePair, ccp);
+                      tables.add(table);
+                      venueTimePair.isBooked = true;
+                      ccp.isAssigned = true;
+                    }
+                  } else {
+                    var table = returnTable(venueTimePair, ccp);
+                    tables.add(table);
+                    venueTimePair.isBooked = true;
+                    ccp.isAssigned = true;
+                  }
                 }
               }
             }
@@ -1164,11 +1217,28 @@ class HiveListener extends ChangeNotifier {
                         int.tryParse(ccp.classSize!)! &&
                     int.tryParse(venueTimePair.venueCapacity!)! <=
                         int.tryParse(ccp.classSize!)! + 30) {
-                  var table = returnTable(venueTimePair, ccp);
-                  items.add(table);
-                  venueTimePair.isBooked = true;
-                  ccp.isAssigned = true;
-                  break;
+                  //now we check if the class has disability and the venue is disability accessible
+                  var p = venueTimePair.periodMap!['id'];
+                  var alreadyTables = tables!
+                      .where((element) => element.periodMap!['id'] == p)
+                      .toList();
+                  if (alreadyTables.isNotEmpty) {
+                    var alreadyTable = alreadyTables.firstWhereOrNull(
+                        (element) =>
+                            element.lecturerName == ccp.lecturerName ||
+                            element.classId == ccp.classId);
+                    if (alreadyTable == null) {
+                      var table = returnTable(venueTimePair, ccp);
+                      tables.add(table);
+                      venueTimePair.isBooked = true;
+                      ccp.isAssigned = true;
+                    }
+                  } else {
+                    var table = returnTable(venueTimePair, ccp);
+                    tables.add(table);
+                    venueTimePair.isBooked = true;
+                    ccp.isAssigned = true;
+                  }
                 }
               }
             }
@@ -1182,18 +1252,32 @@ class HiveListener extends ChangeNotifier {
               if (!(ccp.classLevel!.trimToLowerCase() == libLevel &&
                   venueTimePair.day == libDays &&
                   venueTimePair.period == libPeriod)) {
-                var table = returnTable(venueTimePair, ccp);
-                items.add(table);
-                venueTimePair.isBooked = true;
-                ccp.isAssigned = true;
-                break;
+                var p = venueTimePair.periodMap!['id'];
+                var alreadyTables = tables!
+                    .where((element) => element.periodMap!['id'] == p)
+                    .toList();
+                if (alreadyTables.isNotEmpty) {
+                  var alreadyTable = alreadyTables.firstWhereOrNull((element) =>
+                      element.lecturerName == ccp.lecturerName ||
+                      element.classId == ccp.classId);
+                  if (alreadyTable == null) {
+                    var table = returnTable(venueTimePair, ccp);
+                    tables.add(table);
+                    venueTimePair.isBooked = true;
+                    ccp.isAssigned = true;
+                  }
+                } else {
+                  var table = returnTable(venueTimePair, ccp);
+                  tables.add(table);
+                  venueTimePair.isBooked = true;
+                  ccp.isAssigned = true;
+                }
               }
             }
           }
         }
       }
     }
-    return items;
   }
 
   void exportTables() {
@@ -1244,6 +1328,7 @@ class HiveListener extends ChangeNotifier {
       filteredTableItems = tableItems;
       notifyListeners();
     }
+    print('length ${tableItems.length}');
   }
 
   String tableType = 'Provisional';

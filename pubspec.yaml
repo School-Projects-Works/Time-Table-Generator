@@ -31,6 +31,7 @@ dependencies:
   url_launcher: ^6.1.11
   string_similarity: ^2.0.0
   syncfusion_flutter_pdf: ^21.2.9
+  dropdown_search: ^5.0.6
   firedart:
     git:
       url: https://github.com/BST-Forked-Projects/firedart.git

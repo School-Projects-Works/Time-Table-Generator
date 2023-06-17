@@ -1,13 +1,13 @@
 // ignore_for_file: depend_on_referenced_packages
-
 import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
 import 'dart:typed_data';
 import 'package:aamusted_timetable_generator/Components/smart_dialog.dart';
 import 'package:aamusted_timetable_generator/Constants/custom_string_functions.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:open_app_file/open_app_file.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'dart:math' as math;
@@ -20,8 +20,6 @@ class PublishData {
       {required BuildContext context,
       String? schoolName,
       String? tableDesc,
-      Uint8List? signature,
-      String? footer,
       required List<PeriodModel> periods,
       required List<TableItemModel> tables,
       required List<String> days}) async {
@@ -69,19 +67,22 @@ class PublishData {
           build: (pw.Context context) => <pw.Widget>[
                 if (data.isNotEmpty)
                   headerWidget(
-                      day: day,
-                      data: group,
-                      firstPeriods: firstPeriods,
-                      secondPeriods: secondPeriods,
-                      breakPeriod: breakPeriod,
-                      schoolName: schoolName,
-                      tableDesc: tableDesc,
-                      footer: footer,
-                      signature: signature),
+                    day: day,
+                    data: group,
+                    firstPeriods: firstPeriods,
+                    secondPeriods: secondPeriods,
+                    breakPeriod: breakPeriod,
+                    schoolName: schoolName,
+                    tableDesc: tableDesc,
+                  ),
               ]));
     }
     Directory appDocDir = await getApplicationDocumentsDirectory();
-    String fileName = '${appDocDir.path}/table.pdf';
+    Directory directory = Directory('${appDocDir.path}/Tables');
+    if (!await directory.exists()) {
+      await directory.create();
+    }
+    String fileName = '${directory.path}/timetable_all.pdf';
     final file = File(fileName);
     await file.writeAsBytes(await pdf.save());
     CustomDialog.dismiss();
