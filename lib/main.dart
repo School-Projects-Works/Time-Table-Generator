@@ -57,16 +57,12 @@ class _MyAppState extends State<MyApp> {
       provider.updateConfigList();
       var courses = await HiveCache.getCourses();
       provider.setCourseList(courses);
-
       var classes = await HiveCache.getClasses();
       provider.setClassList(classes);
-
       var venues = await HiveCache.getVenues();
       provider.setVenueList(venues);
-
       var liberal = HiveCache.getLiberals();
       provider.setLiberalList(liberal);
-
       var tables = HiveCache.getTables();
       provider.setTable(tables);
     });
