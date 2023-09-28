@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'hive_cache.dart';
 
 class NavigationProvider extends ChangeNotifier {
-  int _currentIndex = HiveCache.getIsLoggedIn()! ? 1 : 0;
+  int _currentIndex = 0;
   int get currentIndex => _currentIndex;
   void setCurrentIndex(int index) {
     _currentIndex = index;

@@ -1,8 +1,7 @@
 import 'dart:math' as math;
-import 'package:aamusted_timetable_generator/Styles/colors.dart';
 import 'package:flutter/gestures.dart' show DragStartBehavior;
 import 'package:flutter/material.dart';
-import 'package:vs_scrollbar/vs_scrollbar.dart';
+
 
 class CustomTable extends StatefulWidget {
   CustomTable({
@@ -319,20 +318,7 @@ class CustomTableState extends State<CustomTable> {
 
     return Card(
         semanticContainer: true,
-        child: VsScrollbar(
-          controller: widget.controller2,
-          showTrackOnHover: true, // default false
-          isAlwaysShown: true, // default false
-          scrollbarFadeDuration: const Duration(
-              milliseconds: 500), // default : Duration(milliseconds: 300)
-          scrollbarTimeToFade: const Duration(
-              milliseconds: 800), // default : Duration(milliseconds: 600)
-          style: const VsScrollbarStyle(
-            hoverThickness: 12.0, // default 12.0
-            radius: Radius.circular(2), // default Radius.circular(8.0)
-            thickness: 10.0, // [ default 8.0 ]
-            color: primaryColor, // default ColorScheme Theme
-          ),
+        
           child: SingleChildScrollView(
             controller: widget.controller2,
             child: Padding(
@@ -371,24 +357,8 @@ class CustomTableState extends State<CustomTable> {
                         ),
                       ),
                     ),
-                  VsScrollbar(
-                    controller: widget.controller,
-                    showTrackOnHover: true, // default false
-                    isAlwaysShown: true, // default false
-                    scrollbarFadeDuration: const Duration(
-                        milliseconds:
-                            500), // default : Duration(milliseconds: 300)
-                    scrollbarTimeToFade: const Duration(
-                        milliseconds:
-                            800), // default : Duration(milliseconds: 600)
-                    style: const VsScrollbarStyle(
-                      hoverThickness: 12.0, // default 12.0
-                      radius:
-                          Radius.circular(2), // default Radius.circular(8.0)
-                      thickness: 10.0, // [ default 8.0 ]
-                      color: secondaryColor, // default ColorScheme Theme
-                    ),
-                    child: SingleChildScrollView(
+                 
+                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       primary: widget.primary,
                       controller: widget.controller,
@@ -422,7 +392,7 @@ class CustomTableState extends State<CustomTable> {
                         ),
                       ),
                     ),
-                  ),
+                  
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -457,6 +427,6 @@ class CustomTableState extends State<CustomTable> {
               ),
             ),
           ),
-        ));
+        );
   }
 }

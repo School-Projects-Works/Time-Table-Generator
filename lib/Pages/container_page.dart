@@ -11,8 +11,6 @@ import 'package:window_manager/window_manager.dart';
 import '../Components/action_controls.dart';
 import '../Components/background.dart';
 import '../SateManager/navigation_provider.dart';
-import 'Auth/auth_page.dart';
-import 'Auth/new_password.dart';
 import 'Home/Pages/about_page.dart';
 import 'Home/Pages/help_page.dart';
 import 'Home/home_page.dart';
@@ -125,9 +123,8 @@ class _ContainerPageState extends State<ContainerPage> {
                   alignment: Alignment.center,
                   index: nav.currentIndex,
                   children: const [
-                    AuthPage(),
+                    // AuthPage(),
                     HomePage(),
-                    NewPassword(),
                     ExportPage(),
                   ],
                 ),

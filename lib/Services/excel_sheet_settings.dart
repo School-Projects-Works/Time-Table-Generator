@@ -12,7 +12,6 @@ class ExcelSheetSettings {
       required this.columnCount,
       required this.headings,
       this.sheetName = 'Sheet1'});
-
   final listOfAlpha = [
     'A',
     'B',
