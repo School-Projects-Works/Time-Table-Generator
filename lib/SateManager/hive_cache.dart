@@ -22,7 +22,6 @@ class HiveCache {
     Hive.registerAdapter(VenueModelAdapter());
     Hive.registerAdapter(LiberalModelAdapter());
     Hive.registerAdapter(TableModelAdapter());
-
     await Hive.openBox<AdminModel>('admins');
     await Hive.openBox<ConfigModel>('config');
     await Hive.openBox<CourseModel>('courses');

@@ -1,5 +1,4 @@
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
-
 import '../Styles/excel_header_style.dart';
 
 class ExcelSheetSettings {

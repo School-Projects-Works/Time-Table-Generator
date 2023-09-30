@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 import '../../config/routes/routes.dart';
-import '../../global/constants/academic_years.dart';
+import '../../global/constants/constant_list.dart';
 
 class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({
@@ -58,14 +58,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with WindowListener {
           key: viewKey,
           appBar: NavigationAppBar(
             automaticallyImplyLeading: false,
-            // title: () {
-            //   return const DragToMoveArea(
-            //     child: Align(
-            //       alignment: AlignmentDirectional.centerStart,
-            //       child: Text('AAMUSTED Timetable Generator'),
-            //     ),
-            //   );
-            // }(),
+            
             actions: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
               Container(
                 decoration:
@@ -198,7 +191,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with WindowListener {
             size: const NavigationPaneSize(compactWidth: 60, openWidth: 150),
             selected: SideBar(context: context).calculateSelectedIndex(),
             header: SizedBox(
-              height: kOneLineTileHeight,
+              height: 120,
               child: ShaderMask(
                 shaderCallback: (rect) {
                   final color = appTheme.color.defaultBrushFor(
@@ -211,12 +204,11 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with WindowListener {
                     ],
                   ).createShader(rect);
                 },
-                child: const FlutterLogo(
-                  style: FlutterLogoStyle.horizontal,
-                  size: 80.0,
-                  textColor: Colors.white,
-                  duration: Duration.zero,
-                ),
+                child: Image.asset(
+                  appTheme.logo,
+                  fit: BoxFit.contain,
+
+                )
               ),
             ),
             displayMode: appTheme.displayMode,

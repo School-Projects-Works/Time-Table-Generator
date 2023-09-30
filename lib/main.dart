@@ -1,4 +1,5 @@
 // import 'package:flutter/gestures.dart';
+import 'package:aamusted_timetable_generator/data/user_cases/database_usecase.dart';
 import 'package:aamusted_timetable_generator/utils/theme.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
@@ -144,7 +145,7 @@ bool get isDesktop {
 }
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  DatabaseUseCase().init();
   // if it's not on the web, windows or android, load the accent color
   if (!kIsWeb &&
       [

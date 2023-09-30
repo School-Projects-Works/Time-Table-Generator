@@ -3,6 +3,8 @@ import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
+import '../generated/assets.dart';
+
 enum NavigationIndicators { sticky, end }
 
 class AppTheme extends ChangeNotifier {
@@ -13,10 +15,17 @@ class AppTheme extends ChangeNotifier {
     notifyListeners();
   }
 
+  String _logo= Assets.assetsLogoLight;
+  String get logo => _logo;
   ThemeMode _mode = ThemeMode.system;
   ThemeMode get mode => _mode;
   set mode(ThemeMode mode) {
     _mode = mode;
+     if (mode == ThemeMode.dark) {
+      _logo = Assets.assetsLogoDart;
+    } else if (mode == ThemeMode.light) {
+      _logo = Assets.assetsLogoLight;
+    }
     notifyListeners();
   }
 

@@ -3,7 +3,23 @@ class Assets {
   Assets._();
 
   static const String assetsBack = 'assets/back.jpg';
+  static const String assetsFluentIcons = 'assets/FluentIcons.ttf';
   static const String assetsLogo = 'assets/logo.png';
+  static const String assetsLogoDart = 'assets/logo_dart.png';
+  static const String assetsLogoLight = 'assets/logo_light.png';
   static const String assetsLogoWhite = 'assets/logo_white.png';
+  static const String robotoLICENSE = 'assets/Roboto/LICENSE.txt';
+  static const String robotoRobotoBlack = 'assets/Roboto/Roboto-Black.ttf';
+  static const String robotoRobotoBlackItalic = 'assets/Roboto/Roboto-BlackItalic.ttf';
+  static const String robotoRobotoBold = 'assets/Roboto/Roboto-Bold.ttf';
+  static const String robotoRobotoBoldItalic = 'assets/Roboto/Roboto-BoldItalic.ttf';
+  static const String robotoRobotoItalic = 'assets/Roboto/Roboto-Italic.ttf';
+  static const String robotoRobotoLight = 'assets/Roboto/Roboto-Light.ttf';
+  static const String robotoRobotoLightItalic = 'assets/Roboto/Roboto-LightItalic.ttf';
+  static const String robotoRobotoMedium = 'assets/Roboto/Roboto-Medium.ttf';
+  static const String robotoRobotoMediumItalic = 'assets/Roboto/Roboto-MediumItalic.ttf';
+  static const String robotoRobotoRegular = 'assets/Roboto/Roboto-Regular.ttf';
+  static const String robotoRobotoThin = 'assets/Roboto/Roboto-Thin.ttf';
+  static const String robotoRobotoThinItalic = 'assets/Roboto/Roboto-ThinItalic.ttf';
 
 }

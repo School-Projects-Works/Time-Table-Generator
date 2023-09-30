@@ -1,72 +1,71 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'config_model.dart';
+part of 'configuration_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class ConfigModelAdapter extends TypeAdapter<ConfigModel> {
+class ConfigurationModelAdapter extends TypeAdapter<ConfigurationModel> {
   @override
-  final int typeId = 2;
+  final int typeId = 10;
 
   @override
-  ConfigModel read(BinaryReader reader) {
+  ConfigurationModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return ConfigModel(
+    return ConfigurationModel(
       id: fields[0] as String?,
-      academicName: fields[1] as String?,
-      academicYear: fields[2] as String?,
-      academicSemester: fields[3] as String?,
-      days: (fields[4] as List?)?.cast<String>(),
-      periods: (fields[5] as List?)
+      academicYear: fields[1] as String?,
+      academicSemester: fields[2] as String?,
+      days: (fields[3] as List).cast<String>(),
+      periods: (fields[4] as List)
+          .map((dynamic e) => (e as Map).cast<String, dynamic>())
+          .toList(),
+      liberalCourseDay: fields[5] as String?,
+      liberalCoursePeriod: (fields[6] as Map?)?.cast<String, dynamic>(),
+      hasLiberalCourse: fields[7] as bool,
+      hasCourse: fields[8] as bool,
+      hasClass: fields[9] as bool,
+      liberalLevel: fields[10] as String?,
+      targetedStudents: fields[11] as String?,
+      breakTime: (fields[12] as List?)
           ?.map((dynamic e) => (e as Map).cast<String, dynamic>())
           ?.toList(),
-      liberalCourseDay: fields[6] as String?,
-      liberalCoursePeriod: (fields[7] as Map?)?.cast<String, dynamic>(),
-      hasLiberalCourse: fields[8] as bool,
-      hasCourse: fields[9] as bool,
-      hasClass: fields[10] as bool,
-      liberalLevel: fields[11] as String?,
-      targetedStudents: fields[12] as String?,
-      breakTime: (fields[13] as Map?)?.cast<String, dynamic>(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, ConfigModel obj) {
+  void write(BinaryWriter writer, ConfigurationModel obj) {
     writer
-      ..writeByte(14)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.academicName)
-      ..writeByte(2)
       ..write(obj.academicYear)
-      ..writeByte(3)
+      ..writeByte(2)
       ..write(obj.academicSemester)
-      ..writeByte(4)
+      ..writeByte(3)
       ..write(obj.days)
-      ..writeByte(5)
+      ..writeByte(4)
       ..write(obj.periods)
-      ..writeByte(6)
+      ..writeByte(5)
       ..write(obj.liberalCourseDay)
-      ..writeByte(7)
+      ..writeByte(6)
       ..write(obj.liberalCoursePeriod)
-      ..writeByte(8)
+      ..writeByte(7)
       ..write(obj.hasLiberalCourse)
-      ..writeByte(9)
+      ..writeByte(8)
       ..write(obj.hasCourse)
-      ..writeByte(10)
+      ..writeByte(9)
       ..write(obj.hasClass)
-      ..writeByte(11)
+      ..writeByte(10)
       ..write(obj.liberalLevel)
-      ..writeByte(12)
+      ..writeByte(11)
       ..write(obj.targetedStudents)
-      ..writeByte(13)
+      ..writeByte(12)
       ..write(obj.breakTime);
   }
 
@@ -76,7 +75,7 @@ class ConfigModelAdapter extends TypeAdapter<ConfigModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ConfigModelAdapter &&
+      other is ConfigurationModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
