@@ -53,13 +53,12 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with WindowListener {
         setState(() {});
       }
     }
-    return DragToMoveArea(
-      child: NavigationView(
-          key: viewKey,
-          appBar: NavigationAppBar(
-            automaticallyImplyLeading: false,
-            
-            actions: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+    return NavigationView(
+        key: viewKey,
+        appBar: NavigationAppBar(
+          automaticallyImplyLeading: false,
+          actions: DragToMoveArea(
+            child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
               Container(
                 decoration:
                     BoxDecoration(border: Border.all(color: Colors.black)),
@@ -179,43 +178,43 @@ class _MyHomePageState extends ConsumerState<MyHomePage> with WindowListener {
               const WindowButtons(),
             ]),
           ),
-          paneBodyBuilder: (item, child) {
-            final name =
-                item?.key is ValueKey ? (item!.key as ValueKey).value : null;
-            return FocusTraversalGroup(
-              key: ValueKey('body$name'),
-              child: widget.child,
-            );
-          },
-          pane: NavigationPane(
-            size: const NavigationPaneSize(compactWidth: 60, openWidth: 150),
-            selected: SideBar(context: context).calculateSelectedIndex(),
-            header: SizedBox(
-              height: 120,
-              child: ShaderMask(
-                shaderCallback: (rect) {
-                  final color = appTheme.color.defaultBrushFor(
-                    theme.brightness,
-                  );
-                  return LinearGradient(
-                    colors: [
-                      color,
-                      color,
-                    ],
-                  ).createShader(rect);
-                },
-                child: Image.asset(
-                  appTheme.logo,
-                  fit: BoxFit.contain,
+        ),
+        paneBodyBuilder: (item, child) {
+          final name =
+              item?.key is ValueKey ? (item!.key as ValueKey).value : null;
+          return FocusTraversalGroup(
+            key: ValueKey('body$name'),
+            child: widget.child,
+          );
+        },
+        pane: NavigationPane(
+          size: const NavigationPaneSize(compactWidth: 60, openWidth: 150),
+          selected: SideBar(context: context).calculateSelectedIndex(),
+          header: SizedBox(
+            height: 120,
+            child: ShaderMask(
+              shaderCallback: (rect) {
+                final color = appTheme.color.defaultBrushFor(
+                  theme.brightness,
+                );
+                return LinearGradient(
+                  colors: [
+                    color,
+                    color,
+                  ],
+                ).createShader(rect);
+              },
+              child: Image.asset(
+                appTheme.logo,
+                fit: BoxFit.contain,
 
-                )
-              ),
+              )
             ),
-            displayMode: appTheme.displayMode,
-            indicator: const StickyNavigationIndicator(),
-            items: SideBar(context: context).getItems(),
-          )),
-    );
+          ),
+          displayMode: appTheme.displayMode,
+          indicator: const StickyNavigationIndicator(),
+          items: SideBar(context: context).getItems(),
+        ));
   }
 
   @override

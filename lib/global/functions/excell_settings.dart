@@ -6,11 +6,13 @@ class ExcelSettings {
   final List<String> headings;
   final String sheetName;
   final int sheetAt;
+  final String? instructions;
   ExcelSettings(
       {required this.book,
       required this.columnCount,
       this.sheetAt = 0,
       required this.headings,
+      this.instructions, 
       this.sheetName = 'Sheet1'});
   final listOfAlpha = [
     'A',
@@ -58,7 +60,7 @@ class ExcelSettings {
     //Let merge the first row cells and put there instructions
     sheet.getRangeByName('${listOfAlpha[0]}1:${listOfAlpha[end - 1]}1')
       ..merge()
-      ..setText(
+      ..setText(instructions??
           'Please do not Temper or edit the column headings. Do not delete any column or change the order of the columns. You only Adjust the Column width to fit your data')
       ..cellStyle = instructionStyle(book, '$sheetName header')
       ..rowHeight = 50

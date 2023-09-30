@@ -1,3 +1,4 @@
+import 'package:aamusted_timetable_generator/views/liberal_courses/liberal_courses_page.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import '../../views/config_page/config_page.dart';
@@ -20,7 +21,9 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
       GoRoute(path: '/', builder: (context, state) =>  const ConfigPage()),
 
       /// data
-      GoRoute(path: '/data', builder: (context, state) =>  const DataPage()),
+      GoRoute(path: '/allocations', builder: (context, state) =>  const DataPage()),
+      //liberal course
+       GoRoute(path: '/liberal', builder: (context, state) =>  const LiberalCoursesPage()),
       /// venues
       GoRoute(path: '/venues', builder: (context, state) =>  Container()),
       /// tables

@@ -38,4 +38,6 @@ class ExcelFileProvider extends StateNotifier<void> {
       }
     }
   }
+
+  void importAllocationData(BuildContext context) {}
 }

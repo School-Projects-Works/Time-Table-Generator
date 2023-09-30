@@ -1,7 +1,6 @@
 import 'package:aamusted_timetable_generator/riverpod/excel_file_provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'tabs/class_screen.dart';
 
 class DataPage extends ConsumerStatefulWidget {
@@ -23,12 +22,6 @@ class _DataPageState extends ConsumerState<DataPage> {
       text: const Text('Courses'),
       semanticLabel: '',
       icon: const Icon(FluentIcons.double_bookmark),
-      body: const ClassScreen(),
-    ),
-    Tab(
-      text: const Text('Liberal Courses'),
-      semanticLabel: '',
-      icon: const Icon(FluentIcons.publish_course),
       body: const ClassScreen(),
     ),
   ];
@@ -55,17 +48,10 @@ class _DataPageState extends ConsumerState<DataPage> {
                       onPressed: () {
                         ref
                             .read(excelFileProvider.notifier)
-                            .generateAllocationExcelFile(context);
+                            .importAllocationData(context);
                       }),
                   const SizedBox(width: 10),
-                  FilledButton(
-                      child: const Text('Import Liberal'),
-                      onPressed: () {
-                        ref
-                            .read(excelFileProvider.notifier)
-                            .generateLiberalExcelFile(context);
-                      }),
-                  const SizedBox(width: 10),
+                
                   Button(
                       style: ButtonStyle(
                           border:
@@ -77,16 +63,7 @@ class _DataPageState extends ConsumerState<DataPage> {
                             .generateAllocationExcelFile(context);
                       }),
                   const SizedBox(width: 10),
-                  Button(
-                      style: ButtonStyle(
-                          border:
-                              ButtonState.all(BorderSide(color: Colors.green))),
-                      child: const Text('Liberal Template'),
-                      onPressed: () {
-                        ref
-                            .read(excelFileProvider.notifier)
-                            .generateLiberalExcelFile(context);
-                      }),
+                 
                 ],
               ),
             ),

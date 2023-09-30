@@ -1,10 +1,18 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
+import 'package:aamusted_timetable_generator/data/models/classes/classes_model.dart';
+import 'package:aamusted_timetable_generator/data/models/courses/courses_model.dart';
+import 'package:aamusted_timetable_generator/data/models/lecturers/lecturer_model.dart';
 import 'package:aamusted_timetable_generator/data/repos/data_repo.dart';
 import 'package:aamusted_timetable_generator/global/constants/constant_list.dart';
+import 'package:aamusted_timetable_generator/global/functions/validate_excel_file.dart';
 import 'package:aamusted_timetable_generator/global/widgets/custom_dialog.dart';
+import 'package:excel/excel.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
+import '../../Services/file_service.dart';
 import '../../global/functions/excell_settings.dart';
 
 class DataUseCase extends ExcelFileRepo {
@@ -77,8 +85,41 @@ class DataUseCase extends ExcelFileRepo {
       workbook.dispose();
       return file;
     } catch (e) {
+
       MyDialog(context: context, title: 'Error', message: e.toString()).error();
       return null;
     }
+  }
+
+  @override
+  Future<(List<ClassesModel>, List<CoursesModel>, List<LecturersModel>)> readAllocationExcelFile(BuildContext context)async {
+    try{
+      String? pickedFilePath = await FileService.pickExcelFIle();
+      List<ClassesModel> classes = [];
+      List<CoursesModel> courses = [];
+      List<LecturersModel> lecturers = [];
+      if (pickedFilePath != null) {
+        var bytes = File(pickedFilePath).readAsBytesSync();
+        Excel excel= Excel.decodeBytes(List<int>.from(bytes));
+        // get classes sheet
+        var classesSheet = excel.tables['Classes']!;
+        if(validateExcel(classesSheet, classHeader)){
+
+        }
+        // get allocations sheet
+        var allocationsSheet = excel.tables['Allocations']!;
+        if(validateExcel(allocationsSheet, courseAllocationHeader)){
+
+        }
+        return Future.value((classes,courses,lecturers));
+      }else{
+        return Future.value((List<ClassesModel>.empty(),List<CoursesModel>.empty(),List<LecturersModel>.empty()));
+      }
+
+    }catch(e){     
+      MyDialog(context: context, title: 'Error', message: e.toString()).error();
+      return Future.value((List<ClassesModel>.empty(),List<CoursesModel>.empty(),List<LecturersModel>.empty()));
+    }
+    
   }
 }

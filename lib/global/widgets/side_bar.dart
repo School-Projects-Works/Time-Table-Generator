@@ -22,13 +22,24 @@ class SideBar {
       },
     ),
     PaneItem(
-      key: const ValueKey('/data'),
-      icon: const Icon(FluentIcons.database),
-      title: const Text('Data'),
+      key: const ValueKey('/allocations'),
+      icon: const Icon(FluentIcons.list),
+      title: const Text('Allocations'),
       body: const SizedBox.shrink(),
       onTap: (){
-        if (GoRouterState.of(context).uri.toString() != '/data') {
-          context.go('/data');
+        if (GoRouterState.of(context).uri.toString() != '/allocations') {
+          context.go('/allocations');
+        }
+      },
+    ),
+    PaneItem(
+      key: const ValueKey('/liberal'),
+      icon: const Icon(FluentIcons.book_answers),
+      title: const Text('Liberal Courses'),
+      body: const SizedBox.shrink(),
+      onTap: (){
+        if (GoRouterState.of(context).uri.toString() != '/liberal') {
+          context.go('/liberal');
         }
       },
     ),
