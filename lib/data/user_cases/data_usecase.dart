@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:aamusted_timetable_generator/data/models/classes/classes_model.dart';
 import 'package:aamusted_timetable_generator/data/models/courses/courses_model.dart';
 import 'package:aamusted_timetable_generator/data/models/lecturers/lecturer_model.dart';
+import 'package:aamusted_timetable_generator/data/models/liberal/liberal_corurses_model.dart';
+import 'package:aamusted_timetable_generator/data/models/venues/venues_model.dart';
 import 'package:aamusted_timetable_generator/data/repos/data_repo.dart';
 import 'package:aamusted_timetable_generator/global/constants/constant_list.dart';
 import 'package:aamusted_timetable_generator/global/functions/validate_excel_file.dart';
@@ -24,19 +26,20 @@ class DataUseCase extends ExcelFileRepo {
       myDialog.loading();
       final Workbook workbook = Workbook();
       ExcelSettings(
-        book: workbook,
-        sheetName: 'Classes',
-        columnCount: classHeader.length,
-        headings: classHeader,
-        sheetAt: 0,
-      ).sheetSettings();
+          book: workbook,
+          sheetName: 'Classes',
+          columnCount: classHeader.length,
+          headings: classHeader,
+          sheetAt: 0,
+          instructions:classInstructions ).sheetSettings();
       ExcelSettings(
-        book: workbook,
-        sheetName: 'Allocations',
-        columnCount: courseAllocationHeader.length,
-        headings: courseAllocationHeader,
-        sheetAt: 1,
-      ).sheetSettings();
+          book: workbook,
+          sheetName: 'Allocations',
+          columnCount: courseAllocationHeader.length,
+          headings: courseAllocationHeader,
+          sheetAt: 1,
+          instructions: courseInstructions
+          ).sheetSettings();
 
       Directory directory = await getApplicationDocumentsDirectory();
       String path = '${directory.path}/AllocationTemplate.xlsx';
@@ -70,6 +73,11 @@ class DataUseCase extends ExcelFileRepo {
         sheetName: 'Liberal',
         columnCount: liberalAllocationHeader.length,
         headings: liberalAllocationHeader,
+        instructions: [
+          'Please do not tamper with this sheet headers',
+          'Please specify the level of students for the set of courses eg. 100,200,300,400, Masters, PhD',
+          'Please specify the study mode for the set of courses eg. Regular, Weekend, Evening, Sandwich, Distance Learning',
+        ],
         sheetAt: 0,
       ).sheetSettings();
       Directory directory = await getApplicationDocumentsDirectory();
@@ -85,41 +93,89 @@ class DataUseCase extends ExcelFileRepo {
       workbook.dispose();
       return file;
     } catch (e) {
-
       MyDialog(context: context, title: 'Error', message: e.toString()).error();
       return null;
     }
   }
 
   @override
-  Future<(List<ClassesModel>, List<CoursesModel>, List<LecturersModel>)> readAllocationExcelFile(BuildContext context)async {
-    try{
+  Future<(List<ClassesModel>, List<CoursesModel>, List<LecturersModel>)>
+      readAllocationExcelFile(BuildContext context) async {
+    try {
       String? pickedFilePath = await FileService.pickExcelFIle();
       List<ClassesModel> classes = [];
       List<CoursesModel> courses = [];
       List<LecturersModel> lecturers = [];
       if (pickedFilePath != null) {
         var bytes = File(pickedFilePath).readAsBytesSync();
-        Excel excel= Excel.decodeBytes(List<int>.from(bytes));
+        Excel excel = Excel.decodeBytes(List<int>.from(bytes));
         // get classes sheet
         var classesSheet = excel.tables['Classes']!;
-        if(validateExcel(classesSheet, classHeader)){
-
-        }
+        if (validateExcel(classesSheet, classHeader)) {}
         // get allocations sheet
         var allocationsSheet = excel.tables['Allocations']!;
-        if(validateExcel(allocationsSheet, courseAllocationHeader)){
-
-        }
-        return Future.value((classes,courses,lecturers));
-      }else{
-        return Future.value((List<ClassesModel>.empty(),List<CoursesModel>.empty(),List<LecturersModel>.empty()));
+        if (validateExcel(allocationsSheet, courseAllocationHeader)) {}
+        return Future.value((classes, courses, lecturers));
+      } else {
+        return Future.value((
+          List<ClassesModel>.empty(),
+          List<CoursesModel>.empty(),
+          List<LecturersModel>.empty()
+        ));
       }
-
-    }catch(e){     
+    } catch (e) {
       MyDialog(context: context, title: 'Error', message: e.toString()).error();
-      return Future.value((List<ClassesModel>.empty(),List<CoursesModel>.empty(),List<LecturersModel>.empty()));
+      return Future.value((
+        List<ClassesModel>.empty(),
+        List<CoursesModel>.empty(),
+        List<LecturersModel>.empty()
+      ));
     }
-    
+  }
+
+  @override
+  Future<File?> generateVenueExcelFile(BuildContext context)async {
+   try {
+      final Workbook workbook = Workbook();
+      ExcelSettings(
+        book: workbook,
+        sheetName: 'Venues',
+        columnCount: venueHeader.length,
+        headings: venueHeader,
+        instructions: [
+          'Please do not tamper with this sheet headers',
+          'Specify yes/no for venue disablity friendly',
+          'Specify yes if the venue is a special venue (Computer lap, drawing lab, etc). Leave blank if not',
+        ],
+        sheetAt: 0,
+      ).sheetSettings();
+      Directory directory = await getApplicationDocumentsDirectory();
+      String path = '${directory.path}/venue.xlsx';
+      File file = File(path);
+      if (!file.existsSync()) {
+        file.createSync();
+      } else {
+        file.deleteSync();
+        file.createSync();
+      }
+      file.writeAsBytesSync(workbook.saveAsStream());
+      workbook.dispose();
+      return file;
+    } catch (e) {
+      MyDialog(context: context, title: 'Error', message: e.toString()).error();
+      return null;
+    }
+  }
+
+  @override
+  Future<List<LiberalCoursesModel>> readLiberalExcelFile(BuildContext context)async {
+    // TODO: implement readLiberalExcelFile
+    return [];
+  }
+
+  @override
+  Future<List<VenuesModel>> readVenueExcelFile(BuildContext context)async {
+    // TODO: implement readVenueExcelFile
+    return [];
   }
 }

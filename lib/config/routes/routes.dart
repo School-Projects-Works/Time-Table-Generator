@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../views/config_page/config_page.dart';
 import '../../views/data_page/data_page.dart';
 import '../../views/home/home_page.dart';
+import '../../views/venue/venue_page.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -25,7 +26,7 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
       //liberal course
        GoRoute(path: '/liberal', builder: (context, state) =>  const LiberalCoursesPage()),
       /// venues
-      GoRoute(path: '/venues', builder: (context, state) =>  Container()),
+      GoRoute(path: '/venues', builder: (context, state) =>  const VenuesPage()),
       /// tables
       GoRoute(path: '/tables', builder: (context, state) =>  Container()),
 

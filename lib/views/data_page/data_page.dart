@@ -63,7 +63,17 @@ class _DataPageState extends ConsumerState<DataPage> {
                             .generateAllocationExcelFile(context);
                       }),
                   const SizedBox(width: 10),
-                 
+                  
+                         FilledButton(
+                          //red button
+                        style: ButtonStyle(
+                            backgroundColor:
+                                ButtonState.all(Colors.red.withOpacity(.8))),
+                        child: const Text('Clear All'),
+                        onPressed: () {
+                          //Todo clear all
+                        }),
+                        const SizedBox(width: 10),
                 ],
               ),
             ),

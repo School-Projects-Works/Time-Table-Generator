@@ -40,4 +40,18 @@ class ExcelFileProvider extends StateNotifier<void> {
   }
 
   void importAllocationData(BuildContext context) {}
+
+  void generateVenueExcelTemplate(BuildContext context) async{
+    var file = await DataUseCase().generateVenueExcelFile(context);
+    if (file != null) {
+      if (mounted) {
+        MyDialog(
+                context: context,
+                title: 'Success',
+                message: 'Venue template generated successfully')
+            .success();
+        await OpenAppFile.open(file.path);
+      }
+    }
+  }
 }

@@ -43,6 +43,7 @@ dependencies:
   excel: ^2.1.0
   path_provider: ^2.1.1
   data_table_2: ^2.5.8
+  uuid: ^4.1.0
 
  
 

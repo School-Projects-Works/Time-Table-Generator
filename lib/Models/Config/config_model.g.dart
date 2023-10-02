@@ -24,7 +24,7 @@ class ConfigModelAdapter extends TypeAdapter<ConfigModel> {
       days: (fields[4] as List?)?.cast<String>(),
       periods: (fields[5] as List?)
           ?.map((dynamic e) => (e as Map).cast<String, dynamic>())
-          ?.toList(),
+          .toList(),
       liberalCourseDay: fields[6] as String?,
       liberalCoursePeriod: (fields[7] as Map?)?.cast<String, dynamic>(),
       hasLiberalCourse: fields[8] as bool,

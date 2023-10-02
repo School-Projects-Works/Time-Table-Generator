@@ -25,7 +25,7 @@ class TableModelAdapter extends TypeAdapter<TableModel> {
       config: (fields[5] as Map?)?.cast<String, dynamic>(),
       tableItems: (fields[6] as List?)
           ?.map((dynamic e) => (e as Map).cast<String, dynamic>())
-          ?.toList(),
+          .toList(),
       tableType: fields[7] as String?,
       tableSchoolName: fields[8] as String?,
       tableDescription: fields[9] as String?,
