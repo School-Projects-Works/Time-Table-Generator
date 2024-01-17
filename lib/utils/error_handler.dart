@@ -1,4 +1,4 @@
-import 'package:aamusted_timetable_generator/global/widgets/custom_dialog.dart';
+import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 class ErorHandler{
