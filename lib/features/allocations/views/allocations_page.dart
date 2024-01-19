@@ -1,9 +1,9 @@
-
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/widget/custom_button.dart';
+import '../provider/allocation_template_provider.dart';
 import 'tabs/classes_section.dart';
 import 'tabs/courses_tabs.dart';
 import 'tabs/lecturers_tab.dart';
@@ -16,7 +16,6 @@ class AllocationPage extends ConsumerStatefulWidget {
 }
 
 class _AllocationPageState extends ConsumerState<AllocationPage> {
-
   List<Tab> tabs = [
     Tab(
       text: const Text('Clases'),
@@ -27,13 +26,13 @@ class _AllocationPageState extends ConsumerState<AllocationPage> {
     Tab(
       text: const Text('Courses'),
       semanticLabel: '',
-      icon:  const Icon(FluentIcons.book_answers),
+      icon: const Icon(FluentIcons.book_answers),
       body: const CoursesTabs(),
     ),
-     Tab(
+    Tab(
       text: const Text('Lecturers'),
       semanticLabel: '',
-      icon:  const Icon(FluentIcons.user_clapper),
+      icon: const Icon(FluentIcons.user_clapper),
       body: const LecturersTab(),
     ),
   ];
@@ -57,19 +56,24 @@ class _AllocationPageState extends ConsumerState<AllocationPage> {
                           fontSize: 20, fontWeight: FontWeight.bold)),
                   const Spacer(),
                   CustomButton(
-                    icon: FluentIcons.import,
-                    text: 'Import Allocations' ,                                       
+                      icon: FluentIcons.import,
+                      color: Colors.green,
+                      radius: 10,
+                      text: 'Import Allocations',
                       onPressed: () {
-                        //Todo import allocations
+                        ref
+                            .read(allocationTemplateProvider.notifier)
+                            .importAllocations(ref);
                       }),
                   const SizedBox(width: 10),
                   CustomButton(
-                    icon: FluentIcons.file_template,
-                    text: 'Download Template' ,
+                      icon: FluentIcons.file_template,
+                      radius: 10,
+                      text: 'Download Template',
                       onPressed: () {
-                        // ref
-                        //     .read(excelFileProvider.notifier)
-                        //     .generateAllocationExcelFile(context);
+                        ref
+                            .read(allocationTemplateProvider.notifier)
+                            .downloadTemplate();
                       }),
                   const SizedBox(width: 10),
                   FilledButton(

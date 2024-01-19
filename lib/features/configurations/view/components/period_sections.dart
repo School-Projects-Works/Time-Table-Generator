@@ -1,7 +1,7 @@
+import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/data/constants/constant_data.dart';
-import '../../../../core/widget/custom_dialog.dart';
 import '../../../main/provider/main_provider.dart';
 import '../../provider/config_provider.dart';
 import '../../provider/period_time_provider.dart';
@@ -99,12 +99,11 @@ class _PeriodsSectionState extends ConsumerState<PeriodsSection> {
                                                         .removePeriod(e);
                                                   }
                                                 } else {
-                                                  MyDialog(
-                                                    context: context,
-                                                    title: 'Error',
-                                                    message:
-                                                        'Please set up Period 1 before you proceed',
-                                                  ).error();
+                                                  CustomDialog.showError(
+                                                      
+                                                      message:
+                                                          'Please set up Period 1 before you proceed');
+                                                 
                                                 }
                                                 break;
                                               case 'Period 3':
@@ -133,12 +132,10 @@ class _PeriodsSectionState extends ConsumerState<PeriodsSection> {
                                                         .removePeriod(e);
                                                   }
                                                 } else {
-                                                  MyDialog(
-                                                    context: context,
-                                                    title: 'Error',
-                                                    message:
-                                                        'Please set up Period 2 before you proceed',
-                                                  ).error();
+                                                  CustomDialog.showError(
+                                                      message:
+                                                          'Please set up Period 2 before you proceed');
+                                                 
                                                 }
                                                 break;
                                               case 'Period 4':
@@ -167,12 +164,10 @@ class _PeriodsSectionState extends ConsumerState<PeriodsSection> {
                                                         .removePeriod(e);
                                                   }
                                                 } else {
-                                                  MyDialog(
-                                                    context: context,
-                                                    title: 'Error',
-                                                    message:
-                                                        'Please set up Period 3 before you proceed',
-                                                  ).error();
+                                                  CustomDialog.showError(
+                                                      message:
+                                                          'Please set up Period 3 before you proceed');
+                                                 
                                                 }
                                                 break;
                                               case 'Break':

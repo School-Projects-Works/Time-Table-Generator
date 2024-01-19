@@ -1,7 +1,6 @@
 import 'package:aamusted_timetable_generator/core/data/constants/constant_data.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../provider/config_provider.dart';
 
 class LiberalSection extends ConsumerStatefulWidget {
@@ -12,35 +11,34 @@ class LiberalSection extends ConsumerStatefulWidget {
 }
 
 class _LiberalSectionState extends ConsumerState<LiberalSection> {
-
   @override
   Widget build(BuildContext context) {
-       var configs = ref.watch(configurationProvider);
+    var configs = ref.watch(configurationProvider);
     return Expanded(
       flex: 1,
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 25, horizontal: 10),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                'Leberial Courses'.toUpperCase(),
-                style: FluentTheme.of(context).typography.subtitle,
-              ),
-              Text(
-                'Set day, period and level of students who will offer Liberal Courses if any',
-                style: FluentTheme.of(context).typography.body,
-              ),
-              const SizedBox(height: 10),
-              const Divider(
-                style: DividerThemeData(
-                  thickness: 10,
+        child: SingleChildScrollView(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  'Leberial Courses'.toUpperCase(),
+                  style: FluentTheme.of(context).typography.subtitle,
                 ),
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: LayoutBuilder(builder: (context, constraints) {
+                Text(
+                  'Set day, period and level of students who will offer Liberal Courses if any',
+                  style: FluentTheme.of(context).typography.body,
+                ),
+                const SizedBox(height: 10),
+                const Divider(
+                  style: DividerThemeData(
+                    thickness: 10,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                LayoutBuilder(builder: (context, constraints) {
                   var periods = configs.periods
                       .where(
                         (element) => element['period'] != 'Break',
@@ -179,12 +177,10 @@ class _LiberalSectionState extends ConsumerState<LiberalSection> {
                       ],
                     );
                   }
-                }),
-              )
-            ]),
+                })
+              ]),
+        ),
       ),
     );
- 
- 
   }
 }

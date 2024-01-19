@@ -5,8 +5,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 class ConfigUsecase extends ConfigRepo {
   @override
   Future<(bool, ConfigModel?, String?)> addConfigurations(
-      ConfigModel configurations) {
+      ConfigModel configurations)async {
     try {
+      await Hive.openBox<ConfigModel>('config');
       final box = Hive.box<ConfigModel>('config');
       box.put(configurations.id, configurations);
       return Future.value((true, configurations, 'Configurations added successfully'));
@@ -24,9 +25,12 @@ class ConfigUsecase extends ConfigRepo {
   }
 
   @override
-  Future<List<ConfigModel>> getConfigurations() {
+  Future<List<ConfigModel>> getConfigurations()async {
     try {
+      await  Hive.openBox<ConfigModel>('config');
       final box = Hive.box<ConfigModel>('config');
+      //open box
+    //  box.open();
       List<ConfigModel> config = box.values.toList();
       return Future.value(config);
     } catch (e) {
@@ -39,6 +43,7 @@ class ConfigUsecase extends ConfigRepo {
   Future<(bool, ConfigModel?, String?)> updateConfigurations(
       ConfigModel configurations) {
     try {
+      Hive.openBox<ConfigModel>('config');
       final box = Hive.box<ConfigModel>('config');
       box.put(configurations.id, configurations);
       return Future.value((true, configurations, 'Configurations updated successfully'));

@@ -24,7 +24,7 @@ dependencies:
   hive_flutter: ^1.1.0
   intl: ^0.18.1
   open_app_file: ^4.0.2
-  syncfusion_flutter_xlsio: ^23.1.38
+  syncfusion_flutter_xlsio: ^23.2.7
   http: ^1.1.0
   url_launcher: ^6.1.14
   string_similarity: ^2.0.0

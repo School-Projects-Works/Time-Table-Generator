@@ -135,7 +135,7 @@ class _CustomTableState<TResult extends Object>
             ),
           ),
         )),
-        if (widget.showPagination)
+        if (widget.showPagination && widget.data.isNotEmpty)
           CustomTableFooter<TResult>(
             data: widget.data,
             pageSize: widget.pageSize,

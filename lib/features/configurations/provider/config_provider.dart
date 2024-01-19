@@ -96,13 +96,9 @@ class ConfigurationNotifier extends StateNotifier<ConfigModel> {
   }
 
   void saveConfiguration(BuildContext context, WidgetRef ref) async {
-    MyDialog myDialog = MyDialog(context: context, message: '', title: '');
     try {
-      //show loading
-      myDialog.toast()
-        ..message = 'Saving configuration..'
-        ..title = 'Please wait'
-        ..loading();
+      CustomDialog.dismiss();
+      CustomDialog.showLoading(message: 'Saving configuration..');
       var breakTime = state.periods
           .where((element) => element['period'] == 'Break')
           .toList();
@@ -117,76 +113,41 @@ class ConfigurationNotifier extends StateNotifier<ConfigModel> {
           await ConfigUsecase().addConfigurations(state);
       if (success) {
         ref.invalidate(configFutureProvider);
-        if (mounted) {
-          myDialog.closeLoading();
-          // show success dialog
-          myDialog
-            ..message = message ?? 'Configuration saved successfully'
-            ..title = 'Success'
-            ..success();
-        }
+        CustomDialog.dismiss();
+        CustomDialog.showSuccess(
+            message: message ?? 'Configuration saved successfully');
       } else {
-        if (mounted) {
-          myDialog.closeLoading();
-          // show success dialog
-          myDialog
-            ..message =
-                message ?? 'An error occurred while saving configuration'
-            ..title = 'Error'
-            ..error();
-        }
+        CustomDialog.dismiss();
+        CustomDialog.showError(message: message ?? 'An error occurred');
       }
     } catch (error) {
-      if (mounted) {
-        myDialog.closeLoading();
-        myDialog
-          ..message = 'An error occurred while saving configuration'
-          ..title = 'Error'
-          ..error();
-      }
+      CustomDialog.dismiss();
+      CustomDialog.showError(message: 'An error occurred');
     }
   }
 
   void deleteConfiguration(BuildContext context, WidgetRef ref) async {
-    MyDialog myDialog = MyDialog(context: context, message: '', title: '');
     try {
-      //show loading
-      myDialog
-        ..message = 'Deleting configuration..'
-        ..title = 'Please wait'
-        ..loading();
+      CustomDialog.dismiss();
+      CustomDialog.showLoading(message: 'Deleting configuration..');
 
       var (success, _, message) =
           await ConfigUsecase().deleteConfigurations(state.id!);
       if (!success) {
-        if (mounted) {
-          myDialog.closeLoading();
-          // show success dialog
-          myDialog
-            ..message =
-                message ?? 'An error occurred while deleting configuration'
-            ..title = 'Error'
-            ..error();
-        }
+        CustomDialog.dismiss();
+        CustomDialog.showError(
+            message:
+                message ?? 'An error occurred while deleting configuration');
       } else {
         ref.invalidate(configFutureProvider);
-        if (mounted) {
-          myDialog.closeLoading();
-          // show success dialog
-          myDialog
-            ..message = message ?? 'Configuration deleted successfully'
-            ..title = 'Success'
-            ..success();
-        }
+        CustomDialog.dismiss();
+        CustomDialog.showSuccess(
+            message: message ?? 'Configuration deleted successfully');
       }
     } catch (error) {
-      if (mounted) {
-        myDialog.closeLoading();
-        myDialog
-          ..message = 'An error occured while deleting configuration'
-          ..title = 'Error'
-          ..error();
-      }
+      CustomDialog.dismiss();
+      CustomDialog.showError(
+          message: 'An error occurred while deleting configuration');
     }
   }
 

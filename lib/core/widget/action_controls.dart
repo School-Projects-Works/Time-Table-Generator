@@ -82,21 +82,11 @@ class _ActionControlsState extends State<ActionControls> with WindowListener {
   void onWindowClose() async {
     bool isPreventClose = await windowManager.isPreventClose();
     if (isPreventClose) {
-      if (mounted) {
-        MyDialog myDialog = MyDialog(
-            context: context,
-            message: 'Are you sure you want to close this window?',
-            title: 'Exit',            confirmButtonText: 'Yes',
-            confirmButtonPress: () {
-              //close dialog
-
-              windowManager.destroy();
-            });
-        myDialog
-          ..message = 'Are you sure you want to close this window?'
-          ..title = 'Exit'
-          ..confirmation();
-      }
+      CustomDialog.showInfo(message: 'Are you sure you want to close this window?', buttonText: 'Yes',onPressed: (){
+        CustomDialog.dismiss();
+        windowManager.destroy();
+      });
+ 
     }
   }
 }

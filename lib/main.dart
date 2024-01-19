@@ -1,7 +1,8 @@
-import 'package:aamusted_timetable_generator/utils/theme.dart';
+
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:system_theme/system_theme.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:window_manager/window_manager.dart';
@@ -47,7 +48,7 @@ void main() async {
 
   runApp(const ProviderScope(child: MyApp()));
 }
-final _appTheme = AppTheme();
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -75,17 +76,19 @@ class MyApp extends StatelessWidget {
             ),
           ),
           
-          builder: (context, child) {
-            return NavigationPaneTheme(
-              data: const NavigationPaneThemeData(
+          // builder: (context, child) {
+          //   return NavigationPaneTheme(
+          //     data: const NavigationPaneThemeData(
                
-              ),
-              child: child!,
-            );
-          },
+          //     ),
+          //     child: child!,
+          //   );
+          // },
+           builder: FlutterSmartDialog.init(),
           routeInformationParser: router.routeInformationParser,
           routerDelegate: router.routerDelegate,
           routeInformationProvider: router.routeInformationProvider,
+          
         );
     
   }

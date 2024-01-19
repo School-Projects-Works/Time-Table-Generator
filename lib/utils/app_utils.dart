@@ -1,9 +1,12 @@
+import 'package:excel/excel.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
-class AppUtils{
-  
-static int compareTimeOfDay(TimeOfDay time1, TimeOfDay time2) {
+
+class AppUtils {
+  static int compareTimeOfDay(TimeOfDay time1, TimeOfDay time2) {
     if (time1.hour < time2.hour) {
       return -1;
     } else if (time1.hour > time2.hour) {
@@ -26,8 +29,27 @@ static int compareTimeOfDay(TimeOfDay time1, TimeOfDay time2) {
     return TimeOfDay.fromDateTime(format.parse(tod));
   }
 
-    static String getId() {
+  static String getId() {
     var id = const Uuid().v1();
     return id.hashCode.toString();
+  }
+
+  static Future<String?> pickExcelFIle() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['xls', 'xlsx'],
+      allowMultiple: false,
+    );
+    return result?.files.single.path;
+  }
+
+  static bool validateExcel(List<Data?>? headerRow, List<String> columns) {
+    if (headerRow == null) return false;
+    // GEt the header row
+    List<String> fileColumns =
+        headerRow.map<String>((data) => data!.value.toString()).toList();
+    print('file columns: $fileColumns');
+    print('columns: $columns');
+    return listEquals(fileColumns, columns);
   }
 }

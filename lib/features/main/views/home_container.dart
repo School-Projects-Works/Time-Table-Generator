@@ -193,15 +193,15 @@ class _MyHomePageState extends ConsumerState<MainPage> with WindowListener {
   @override
   void onWindowClose() async {
     bool isPreventClose = await windowManager.isPreventClose();
-    if (isPreventClose && mounted) {
-      MyDialog(
-          context: context,
-          title: 'Confirm close',
+    if (isPreventClose) {
+      CustomDialog.showInfo(
           message: 'Are you sure you want to close this window?',
-          confirmButtonText: 'Yes',
-          confirmButtonPress: () {
+          buttonText: 'Yes',
+          onPressed: () {
             windowManager.destroy();
-          }).confirmation();
+            CustomDialog.dismiss();
+          });
+      
     }
   }
 }
