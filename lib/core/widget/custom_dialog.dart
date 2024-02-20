@@ -31,7 +31,7 @@ class CustomDialog {
           height: 250,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Theme.of(context).colorScheme.surface,
+              color: Colors.white,
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.5),
@@ -104,7 +104,7 @@ class CustomDialog {
           height: 250,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Theme.of(_).colorScheme.surface,
+               color: Colors.white,
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.5),
@@ -183,7 +183,7 @@ class CustomDialog {
           height: 230,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Theme.of(_).colorScheme.surface,
+              color: Colors.white,
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.5),

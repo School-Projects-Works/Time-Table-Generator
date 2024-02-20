@@ -1,11 +1,13 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/allocations/usecase/allocation_usecase.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_app_file/open_app_file.dart';
 
 import '../../main/provider/main_provider.dart';
+import 'classes/usecase/classes_usecase.dart';
+import 'courses/usecase/courses_usecase.dart';
+import 'lecturer/usecase/lecturer_usecase.dart';
 
 final allocationTemplateProvider =
     StateNotifierProvider<AllocationTemplateProvider, void>((ref) {
@@ -33,24 +35,33 @@ class AllocationTemplateProvider extends StateNotifier<void> {
     String? pickedFilePath = await AppUtils.pickExcelFIle();
     if (pickedFilePath != null) {
       CustomDialog.showLoading(message: 'Importing allocations...');
-      var (success, (classes, courses, lecturers), message) =
+      var (success, (courses, classes, lecturers), message) =
           await _allocationUsecase.importAllocation(
               path: pickedFilePath,
               academicYear: ref.watch(academicYearProvider),
               semester: ref.watch(semesterProvider),
               targetStudents: ref.watch(studentTypeProvider));
-      print('class size ${classes.length}');
-      for (var classs in classes) {
-        print('----------------------------------------------');
-        print(classs);
-        print('----------------------------------------------');
-      }
       if (success) {
+        var save = await ClassesUsecase().addClasses(classes);
+        if (save) {
+          ref.read(classesDataProvider.notifier).addClass(classes);
+        }
+        save = await CoursesUseCase().addCourses(courses);
+        if (save) {
+          ref.read(coursesDataProvider.notifier).addCourses(courses);
+        }
+        save = await LecturerUseCase().addLectures(lecturers);
+        if (save) {
+          ref.read(lecturersDataProvider.notifier).addLecturers(lecturers);
+        }
+
         CustomDialog.dismiss();
-        CustomDialog.showSuccess(message: 'Allocations imported successfully');
+        CustomDialog.showSuccess(
+            message: message ?? 'Allocations imported successfully');
       } else {
         CustomDialog.dismiss();
-        CustomDialog.showError(message: 'Failed to import allocations');
+        CustomDialog.showError(
+            message: message ?? 'Failed to import allocations');
       }
     }
   }

@@ -1,16 +1,13 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/main/views/components/window_buttons.dart';
 import 'package:aamusted_timetable_generator/generated/assets.dart';
-import 'package:aamusted_timetable_generator/utils/theme.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 import '../../../config/routes/routes.dart';
 import '../../../core/data/constants/constant_data.dart';
 import '../provider/main_provider.dart';
 import 'components/side_bar.dart';
-
 
 class MainPage extends ConsumerStatefulWidget {
   const MainPage({
@@ -47,12 +44,12 @@ class _MyHomePageState extends ConsumerState<MainPage> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
-
     if (widget.shellContext != null) {
       if (router.canPop() == false) {
         setState(() {});
       }
     }
+    var dataFuture = ref.watch(dbDataFutureProvider);
     return NavigationView(
         key: viewKey,
         appBar: NavigationAppBar(
@@ -89,9 +86,9 @@ class _MyHomePageState extends ConsumerState<MainPage> with WindowListener {
                                 },
                                 items: academicYears
                                     .map((e) => ComboBoxItem(
-                                  value: e,
-                                  child: Text(e),
-                                ))
+                                          value: e,
+                                          child: Text(e),
+                                        ))
                                     .toList(),
                               ),
                             ],
@@ -119,11 +116,11 @@ class _MyHomePageState extends ConsumerState<MainPage> with WindowListener {
                                         semester;
                                   }
                                 },
-                                items:semesters
+                                items: semesters
                                     .map((e) => ComboBoxItem(
-                                  value: e,
-                                  child: Text(e),
-                                ))
+                                          value: e,
+                                          child: Text(e),
+                                        ))
                                     .toList(),
                               ),
                             ],
@@ -154,9 +151,9 @@ class _MyHomePageState extends ConsumerState<MainPage> with WindowListener {
                                 },
                                 items: studentTypes
                                     .map((e) => ComboBoxItem(
-                                  value: e,
-                                  child: Text(e),
-                                ))
+                                          value: e,
+                                          child: Text(e),
+                                        ))
                                     .toList(),
                               ),
                             ],
@@ -171,11 +168,21 @@ class _MyHomePageState extends ConsumerState<MainPage> with WindowListener {
         ),
         paneBodyBuilder: (item, child) {
           final name =
-          item?.key is ValueKey ? (item!.key as ValueKey).value : null;
-          return FocusTraversalGroup(
-            key: ValueKey('body$name'),
-            child: widget.child,
-          );
+              item?.key is ValueKey ? (item!.key as ValueKey).value : null;
+          return dataFuture.when(
+              data: (data) {
+                return FocusTraversalGroup(
+                  key: ValueKey('body$name'),
+                  child: widget.child,
+                );
+              },
+              loading: () => const Center(
+                    child:
+                        SizedBox(width: 50, height: 50, child: ProgressRing()),
+                  ),
+              error: (error, statck) {
+                return const Text('Error getting data from datatbase');
+              });
         },
         pane: NavigationPane(
           size: const NavigationPaneSize(compactWidth: 60, openWidth: 150),
@@ -184,7 +191,6 @@ class _MyHomePageState extends ConsumerState<MainPage> with WindowListener {
             height: 120,
             child: Image.asset(Assets.assetsLogo),
           ),
-         
           indicator: const StickyNavigationIndicator(),
           items: SideBar(context: context).getItems(),
         ));
@@ -201,7 +207,6 @@ class _MyHomePageState extends ConsumerState<MainPage> with WindowListener {
             windowManager.destroy();
             CustomDialog.dismiss();
           });
-      
     }
   }
 }

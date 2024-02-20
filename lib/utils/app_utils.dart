@@ -48,8 +48,7 @@ class AppUtils {
     // GEt the header row
     List<String> fileColumns =
         headerRow.map<String>((data) => data!.value.toString()).toList();
-    print('file columns: $fileColumns');
-    print('columns: $columns');
+   
     return listEquals(fileColumns, columns);
   }
 }

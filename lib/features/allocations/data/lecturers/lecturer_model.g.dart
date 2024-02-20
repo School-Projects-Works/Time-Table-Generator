@@ -8,7 +8,7 @@ part of 'lecturer_model.dart';
 
 class LecturerModelAdapter extends TypeAdapter<LecturerModel> {
   @override
-  final int typeId = 2;
+  final int typeId = 3;
 
   @override
   LecturerModel read(BinaryReader reader) {
@@ -26,13 +26,14 @@ class LecturerModelAdapter extends TypeAdapter<LecturerModel> {
       department: fields[6] as String?,
       academicYear: fields[8] as String?,
       academicSemester: fields[12] as String?,
+      targetedStudents: fields[13] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, LecturerModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,7 +51,9 @@ class LecturerModelAdapter extends TypeAdapter<LecturerModel> {
       ..writeByte(8)
       ..write(obj.academicYear)
       ..writeByte(12)
-      ..write(obj.academicSemester);
+      ..write(obj.academicSemester)
+      ..writeByte(13)
+      ..write(obj.targetedStudents);
   }
 
   @override

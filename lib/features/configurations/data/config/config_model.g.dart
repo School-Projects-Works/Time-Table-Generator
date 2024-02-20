@@ -33,7 +33,7 @@ class ConfigModelAdapter extends TypeAdapter<ConfigModel> {
       targetedStudents: fields[11] as String?,
       breakTime: (fields[12] as List?)
           ?.map((dynamic e) => (e as Map).cast<String, dynamic>())
-          ?.toList(),
+          .toList(),
     );
   }
 

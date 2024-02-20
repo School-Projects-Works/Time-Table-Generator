@@ -5,7 +5,10 @@ abstract class BaseTableRow<TType extends Object> {
   TType item;
   int index;
   bool isSelected;
+  Color? color;
   void Function(bool?)? selectRow;
+  Function(bool?) onHover;
+  bool isHovered;
   BuildContext context;
   BaseTableRow({
     required this.item,
@@ -13,19 +16,24 @@ abstract class BaseTableRow<TType extends Object> {
     required this.context,
     this.isSelected = false,
     this.selectRow,
+    required this.onHover,
+    this.isHovered = false,
+    this.color
   });
   Widget buildCell(TType item, int columnIndex, BuildContext context,
       {bool rowsSelectable = false, required List<CustomTableColumn> columns});
 }
 
 class CustomTableRow<TType extends Object> extends BaseTableRow {
-  CustomTableRow({
-    required super.item,
-    required super.index,
-    required super.context,
-    super.isSelected,
-    super.selectRow,
-  });
+  CustomTableRow(
+      {required super.item,
+      required super.index,
+      required super.context,
+      super.isSelected,
+      super.selectRow,
+      required super.onHover,
+      super.color,
+      super.isHovered});
 
   @override
   Widget buildCell(Object item, int columnIndex, BuildContext context,
@@ -33,8 +41,10 @@ class CustomTableRow<TType extends Object> extends BaseTableRow {
     Widget rowItem = Container(
       height: 52,
       decoration: BoxDecoration(
+        color: color==null?
+        isHovered ? Colors.blue.withOpacity(.2) : null: isHovered ? Colors.red.withOpacity(.2):color,
         border: Border(
-          bottom: BorderSide(width: 1, color: Theme.of(context).dividerColor),
+          bottom: BorderSide(width: 1, color: Colors.grey.withOpacity(.6)),
         ),
       ),
       child: Ink(
@@ -86,6 +96,11 @@ class CustomTableRow<TType extends Object> extends BaseTableRow {
       ),
     );
 
-    return rowItem;
+    return InkWell(
+        onTap: () {
+          selectRow!(true);
+        },
+        onHover: onHover,
+        child: rowItem);
   }
 }

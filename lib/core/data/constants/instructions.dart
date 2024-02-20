@@ -13,6 +13,6 @@ final List<String> courseInstructions = [
   'Enter the Department name in cell next to the cell with "Department" as heading. eg. "Information Technology Education"\n NB: Department name should be the same for both classes and allocations sheets',
   'NB: If a course requires a SPECIAL VENUE such as Computer Lab, Wood lab, etc. Enter the type of venue in the special venue column. eg. "Computer Lab", "Wood Lab", etc. If not, leave the cell empty',
   'Please enter the level of the class. eg. 100, 200, 300, 400. Enter Masters for masters classes and repeat the same for all classes with the same level',
-  'NB: If a course is lectured by more than ONE lecturer, enter the names of the lecturers separated by a SEMI-COMMA (;) and put in bracket the classes they teach(A,B,C).eg Dr. Joshua Dagadu(A,B,C,D);Mr. Oliver Buansi(E,F,G,H,I),etc. ',
+  'NB: If a course is lectured by more than ONE lecturer, enter the names of the lecturers separated by a SEMI-COMMA (;) and put in square-bracket the classes they teach[A,B,C].eg Dr. Joshua Dagadu[A,B,C,D];Mr. Oliver Buansi[E,F,G,H,I],etc. ',
   'NOTE: the class should be the class code which matches a class code in the classes sheet. eg. (ITE 100A, ITE 100B, ITE 100C).'
 ];

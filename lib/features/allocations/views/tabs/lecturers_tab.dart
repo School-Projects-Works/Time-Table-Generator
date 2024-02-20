@@ -1,9 +1,9 @@
-import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/widget/custom_input.dart';
 import '../../../../core/widget/table/widgets/custom_table.dart';
+import '../../data/lecturers/lecturer_model.dart';
 
 class LecturersTab extends ConsumerStatefulWidget {
   const LecturersTab({super.key});
@@ -18,7 +18,7 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(20),
-      child: CustomTable<CourseModel>(
+      child: CustomTable<LecturerModel>(
         header: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           SizedBox(
             width: 600,
