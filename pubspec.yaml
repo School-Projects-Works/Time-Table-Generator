@@ -36,9 +36,10 @@ dependencies:
   syncfusion_flutter_pdf: ^21.2.6
   pdf:
   google_fonts: ^4.0.5
-  file_picker:
-    git:
-      url: https://github.com/Emmanuelfrimpong/flutter_file_picker.git
+  file_picker: ^6.1.1
+  # file_picker:
+  #   git:
+  #     url: https://github.com/Emmanuelfrimpong/flutter_file_picker.git
 
  
 
