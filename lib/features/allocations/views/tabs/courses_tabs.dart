@@ -131,7 +131,7 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
 
                 CustomTableColumn(
                   title: 'Lecturer',
-                  width: 400,
+                  width: 200,
                   cellBuilder: (item) => Text(
                     item.lecturerName ?? '',
                     style: tableTextStyle,
@@ -155,51 +155,59 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                 ),
                 CustomTableColumn(
                   title: 'Special Venues',
-                  width: 300,
-                  cellBuilder: (item) => Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.red, width: 1),
-                    ),
-                    child: fluent.Row(
-                      children: [
-                        Expanded(
-                          child: item.specialVenue != null &&
-                                  (item.venues != null &&
-                                      item.venues!.isNotEmpty)
-                              ? Text(
-                                  item.venues != null
-                                      ? item.venues!.join(',')
-                                      : '',
-                                  style: tableTextStyle,
-                                )
-                              : Text(
-                                  item.specialVenue!,
-                                  style: tableTextStyle,
-                                ),
-                        ),
-                        //click to select icon
-                        fluent.Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(2),
-                              color: Colors.red,
-                              //shadow
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(.5),
-                                  spreadRadius: 1,
-                                  blurRadius: 1,
-                                  offset: const Offset(0, 1),
-                                ),
-                              ],
+                  width: 400,
+                  cellBuilder: (item) =>
+                      item.specialVenue != null && item.specialVenue!.isNotEmpty
+                          ? Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 2),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(color: Colors.red, width: 1),
+                              ),
+                              child: fluent.Row(
+                                children: [
+                                  Expanded(
+                                    child: item.specialVenue != null &&
+                                            (item.venues != null &&
+                                                item.venues!.isNotEmpty)
+                                        ? Text(
+                                            item.venues != null
+                                                ? item.venues!.join(',')
+                                                : '',
+                                            style: tableTextStyle.copyWith(
+                                                color: Colors.green,
+                                                fontSize: 12),
+                                          )
+                                        : Text(
+                                            item.specialVenue!,
+                                            style: tableTextStyle,
+                                          ),
+                                  ),
+                                  //click to select icon
+                                  fluent.Container(
+                                      padding: const EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(2),
+                                        color: Colors.red,
+                                        //shadow
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(.5),
+                                            spreadRadius: 1,
+                                            blurRadius: 1,
+                                            offset: const Offset(0, 1),
+                                          ),
+                                        ],
+                                      ),
+                                      child: const Icon(Icons.add))
+                                ],
+                              ),
+                            )
+                          : Text(
+                              'Not Required',
+                              style: tableTextStyle,
                             ),
-                            child: const Icon(Icons.add))
-                      ],
-                    ),
-                  ),
                 ),
                 // delete button
                 CustomTableColumn(

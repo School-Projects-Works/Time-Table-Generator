@@ -30,9 +30,37 @@ class CoursesUseCase extends CoursesRepo {
   }
 
   @override
-  Future<bool> deleteAllCourses(String academicYear, String academicSemester, String targetedStudents, String department) {
-    // TODO: implement deleteAllCourses
-    throw UnimplementedError();
+  Future<bool> deleteAllCourses(String academicYear, String academicSemester, String targetedStudents, String department)async {
+       try {
+      final Box<CourseModel> courseBox =
+          await Hive.openBox<CourseModel>('courses');
+      //check if box is open
+      if (!courseBox.isOpen) {
+        await Hive.openBox('courses');
+      }
+      //get all classes where academic year and semester is the same
+      if (department.toLowerCase() == 'All'.toLowerCase()) {
+        var allClassesToDelete = courseBox.values
+            .where((element) =>
+                element.academicYear == academicYear &&
+                element.targetStudents == targetedStudents &&
+                element.academicSemester == academicSemester)
+            .toList();
+        await courseBox.deleteAll(allClassesToDelete.map((e) => e.id).toList());
+        return true;
+      }
+      var allCourseToDelete = courseBox.values
+          .where((element) =>
+              element.academicYear == academicYear &&
+              element.targetStudents == targetedStudents &&
+              element.department == department &&
+              element.academicSemester == academicSemester)
+          .toList();
+      await courseBox.deleteAll(allCourseToDelete.map((e) => e.id).toList());
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   @override

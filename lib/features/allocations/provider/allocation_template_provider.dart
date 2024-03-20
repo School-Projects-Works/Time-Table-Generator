@@ -65,4 +65,28 @@ class AllocationTemplateProvider extends StateNotifier<void> {
       }
     }
   }
+
+  void clearAllAllocations(WidgetRef ref, String department) async {
+    CustomDialog.dismiss();
+    CustomDialog.showLoading(message: 'Clearing all allocations...');
+    var academicYear = ref.watch(academicYearProvider);
+    var academicSemester = ref.watch(semesterProvider);
+    var targetedStudents = ref.watch(studentTypeProvider);
+    var success = await ClassesUsecase().deleteAllClasses(
+        academicYear, academicSemester, targetedStudents, department);
+    if (success) {
+      ref.read(classesDataProvider.notifier).setClasses([]);
+    }
+    success = await CoursesUseCase().deleteAllCourses(
+        academicYear, academicSemester, targetedStudents, department);
+    if (success) {
+      ref.read(coursesDataProvider.notifier).setCourses([]);
+    }
+    success = await LecturerUseCase().deleteAllLecturers(
+        academicYear, academicSemester, targetedStudents, department);
+    if (success) {
+      ref.read(lecturersDataProvider.notifier).setLecturers([]);
+    }
+
+  }
 }

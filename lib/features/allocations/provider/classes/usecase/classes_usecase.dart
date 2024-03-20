@@ -40,7 +40,7 @@ class ClassesUsecase extends ClassesRepo {
         await Hive.openBox('classes');
       }
       //get all classes where academic year and semester is the same
-      if (department == 'All') {
+      if (department.toLowerCase() == 'All'.toLowerCase()) {
         var allClassesToDelete = classBox.values
             .where((element) =>
                 element.academicYear == academicYear &&

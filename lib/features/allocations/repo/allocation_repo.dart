@@ -12,4 +12,5 @@ abstract class AllocationRepo {
   Future<(bool ,CourseModel?, String ?)> detleteCourse();
   Future<(bool ,ClassModel?, String ?)> detleteClass();
   Future<(bool ,LecturerModel?, String ?)> detleteLecturer();
+  
 }
