@@ -1,11 +1,18 @@
+import 'package:aamusted_timetable_generator/core/widget/table/data/models/custom_table_columns_model.dart';
+import 'package:aamusted_timetable_generator/features/venues/data/venue_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../config/theme/theme.dart';
+import '../../../core/widget/custom_dialog.dart';
+import '../../../core/widget/custom_input.dart';
+import '../../../core/widget/table/data/models/custom_table_rows_model.dart';
+import '../../../core/widget/table/widgets/custom_table.dart';
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
+
+import '../providers/venue_provider.dart';
 
 class VenuePage extends ConsumerStatefulWidget {
   const VenuePage({super.key});
-
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _VenuePageState();
 }
@@ -13,6 +20,10 @@ class VenuePage extends ConsumerStatefulWidget {
 class _VenuePageState extends ConsumerState<VenuePage> {
   @override
   Widget build(BuildContext context) {
+    final venues = ref.watch(venueProvider);
+    final venuesNotifier = ref.read(venueProvider.notifier);
+    var tableTextStyle = getTextStyle(
+        color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500);
     return Container(
         color: Colors.grey.withOpacity(.1),
         child: Padding(
@@ -34,256 +45,197 @@ class _VenuePageState extends ConsumerState<VenuePage> {
                       child: Container(
                     color: Colors.white,
                     child: Expanded(
-            child: CustomTable<>(
-              header: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                            'Please Note: all courses with special venues will be highlighted in red untill you add venued to them',
-                            style: getTextStyle(
-                                color: Colors.red,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500)),
-                      ],
-                    ),
-                    SizedBox(
-                      width: 600,
-                      child: CustomTextFields(
-                        hintText: 'Search for a course',
-                        suffixIcon: const Icon(fluent.FluentIcons.search),
-                        onChanged: (value) {
-                          coursesNotifier.search(value);
-                        },
-                      ),
-                    ),
-                  ]),
-              isAllRowsSelected: true,
-              currentIndex: courses.currentPageItems.isNotEmpty
-                  ? courses.items.indexOf(courses.currentPageItems[0]) + 1
-                  : 0,
-              lastIndex: courses.pageSize * (courses.currentPage + 1),
-              pageSize: courses.pageSize,
-              onPageSizeChanged: (value) {
-                coursesNotifier.onPageSizeChange(value!);
-              },
-              onPreviousPage: courses.hasPreviousPage
-                  ? () {
-                      coursesNotifier.previousPage();
-                    }
-                  : null,
-              onNextPage: courses.hasNextPage
-                  ? () {
-                      coursesNotifier.nextPage();
-                    }
-                  : null,
-              rows: [
-                for (int i = 0; i < courses.currentPageItems.length; i++)
-                  CustomTableRow(
-                    item: courses.currentPageItems[i],
-                    context: context,
-                    index: i,
-                    color: courses.currentPageItems[i].specialVenue != null &&
-                            courses
-                                .currentPageItems[i].specialVenue!.isNotEmpty &&
-                            (courses.currentPageItems[i].venues == null ||
-                                courses.currentPageItems[i].venues!.isEmpty)
-                        ? Colors.red
-                        : null,
-                    isHovered: ref.watch(courseItemHovered) ==
-                        courses.currentPageItems[i],
-                    selectRow: (value) {},
-                    isSelected: false,
-                    onHover: (value) {
-                      if (value ?? false) {
-                        ref.read(courseItemHovered.notifier).state =
-                            courses.currentPageItems[i];
-                      }
-                    },
-                  )
-              ],
-              showColumnHeadersAtFooter: true,
-              data: courses.items,
-              columns: [
-                CustomTableColumn(
-                  title: 'Course Code',
-                  width: 100,
-                  cellBuilder: (item) => Text(
-                    item.code ?? '',
-                    style: tableTextStyle,
-                  ),
-                ),
-                CustomTableColumn(
-                  title: 'Course Name',
-                  width: 200,
-                  cellBuilder: (item) => Text(
-                    item.title ?? '',
-                    style: tableTextStyle,
-                  ),
-                ),
-                CustomTableColumn(
-                  title: 'C.H',
-                  width: 50,
-                  cellBuilder: (item) => Text(
-                    item.creditHours ?? '',
-                    style: tableTextStyle,
-                  ),
-                ),
-
-                CustomTableColumn(
-                  title: 'Lecturer',
-                  width: 400,
-                  cellBuilder: (item) => Text(
-                    item.lecturerName ?? '',
-                    style: tableTextStyle,
-                  ),
-                ),
-                CustomTableColumn(
-                  title: 'Level',
-                  width: 80,
-                  cellBuilder: (item) => Text(
-                    item.level ?? '',
-                    style: tableTextStyle,
-                  ),
-                ),
-                CustomTableColumn(
-                  title: 'Department',
-                  //width: 200,
-                  cellBuilder: (item) => Text(
-                    item.department ?? '',
-                    style: tableTextStyle,
-                  ),
-                ),
-                CustomTableColumn(
-                  title: 'Special Venues',
-                  width: 300,
-                  cellBuilder: (item) => Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 12, horizontal: 2),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.red, width: 1),
-                    ),
-                    child: fluent.Row(
-                      children: [
-                        Expanded(
-                          child: item.specialVenue != null &&
-                                  (item.venues != null &&
-                                      item.venues!.isNotEmpty)
-                              ? Text(
-                                  item.venues != null
-                                      ? item.venues!.join(',')
-                                      : '',
-                                  style: tableTextStyle,
-                                )
-                              : Text(
-                                  item.specialVenue!,
-                                  style: tableTextStyle,
+                      child: CustomTable<VenueModel>(
+                        header: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                      'Please Note: all venues with special venues will be highlighted in red untill you add venued to them',
+                                      style: getTextStyle(
+                                          color: Colors.red,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500)),
+                                ],
+                              ),
+                              SizedBox(
+                                width: 600,
+                                child: CustomTextFields(
+                                  hintText: 'Search for a venue',
+                                  suffixIcon:
+                                      const Icon(fluent.FluentIcons.search),
+                                  onChanged: (value) {
+                                    venuesNotifier.search(value);
+                                  },
                                 ),
-                        ),
-                        //click to select icon
-                        fluent.Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(2),
-                              color: Colors.red,
-                              //shadow
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(.5),
-                                  spreadRadius: 1,
-                                  blurRadius: 1,
-                                  offset: const Offset(0, 1),
+                              ),
+                            ]),
+                        isAllRowsSelected: true,
+                        currentIndex: venues.currentPageItems.isNotEmpty
+                            ? venues.items.indexOf(venues.currentPageItems[0]) +
+                                1
+                            : 0,
+                        lastIndex: venues.pageSize * (venues.currentPage + 1),
+                        pageSize: venues.pageSize,
+                        onPageSizeChanged: (value) {
+                          venuesNotifier.onPageSizeChange(value!);
+                        },
+                        onPreviousPage: venues.hasPreviousPage
+                            ? () {
+                                venuesNotifier.previousPage();
+                              }
+                            : null,
+                        onNextPage: venues.hasNextPage
+                            ? () {
+                                venuesNotifier.nextPage();
+                              }
+                            : null,
+                        rows: [
+                          for (int i = 0;
+                              i < venues.currentPageItems.length;
+                              i++)
+                            CustomTableRow(
+                              item: venues.currentPageItems[i],
+                              context: context,
+                              index: i,
+                              isHovered: ref.watch(venueItemHovered) ==
+                                  venues.currentPageItems[i],
+                              selectRow: (value) {},
+                              isSelected: false,
+                              onHover: (value) {
+                                if (value ?? false) {
+                                  ref.read(venueItemHovered.notifier).state =
+                                      venues.currentPageItems[i];
+                                }
+                              },
+                            )
+                        ],
+                        showColumnHeadersAtFooter: true,
+                        data: venues.items,
+                        columns: [
+                          CustomTableColumn(
+                            title: 'Venue Id',
+                            width: 100,
+                            cellBuilder: (item) => Text(
+                              item.id ?? '',
+                              style: tableTextStyle,
+                            ),
+                          ),
+                          CustomTableColumn(
+                            title: 'Venue Name',
+                            width: 200,
+                            cellBuilder: (item) => Text(
+                              item.name ?? '',
+                              style: tableTextStyle,
+                            ),
+                          ),
+                          CustomTableColumn(
+                            title: 'Capacity',
+                            width: 150,
+                            cellBuilder: (item) => Text(
+                              '${item.capacity ?? 0}',
+                              style: tableTextStyle,
+                            ),
+                          ),
+
+                          CustomTableColumn(
+                            title: 'Is Special',
+                            width: 400,
+                            cellBuilder: (item) => Text(
+                              item.isSpecialVenue ?? false ? 'Yes' : 'No',
+                              style: tableTextStyle,
+                            ),
+                          ),
+                          CustomTableColumn(
+                            title: 'Is Disability Access',
+                            width: 400,
+                            cellBuilder: (item) => Text(
+                              item.disabilityAccess ?? false ? 'Yes' : 'No',
+                              style: tableTextStyle,
+                            ),
+                          ),
+
+                          // delete button
+                          CustomTableColumn(
+                            title: 'Action',
+                            //width: 100,
+                            cellBuilder: (item) => Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    CustomDialog.showInfo(
+                                        message:
+                                            'Are you sure you want to delete this venue?',
+                                        buttonText: 'Yes| Delete',
+                                        onPressed: () {
+                                          venuesNotifier.deleteVenue(item);
+                                        });
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(2),
+                                      color: Colors.red,
+                                      //shadow
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(.5),
+                                          spreadRadius: 1,
+                                          blurRadius: 1,
+                                          offset: const Offset(0, 1),
+                                        ),
+                                      ],
+                                    ),
+                                    child: const Icon(
+                                      Icons.delete,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
+                                //edit button
+                                const SizedBox(width: 10),
+                                GestureDetector(
+                                  onTap: () {
+                                    CustomDialog.showInfo(
+                                        message:
+                                            'Are you sure you want to edit this Venue?',
+                                        buttonText: 'Yes| Edit',
+                                        onPressed: () {
+                                          venuesNotifier.editVenue(item);
+                                        });
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(2),
+                                      color: Colors.blue,
+                                      //shadow
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(.5),
+                                          spreadRadius: 1,
+                                          blurRadius: 1,
+                                          offset: const Offset(0, 1),
+                                        ),
+                                      ],
+                                    ),
+                                    child: const Icon(
+                                      Icons.edit,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                            child: const Icon(Icons.add))
-                      ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-                // delete button
-                CustomTableColumn(
-                  title: 'Action',
-                  //width: 100,
-                  cellBuilder: (item) => Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          CustomDialog.showInfo(
-                              message:
-                                  'Are you sure you want to delete this course?',
-                              buttonText: 'Yes| Delete',
-                              onPressed: () {
-                                coursesNotifier.deleteCourse(item);
-                              });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(2),
-                            color: Colors.red,
-                            //shadow
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(.5),
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0, 1),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                      //edit button
-                      const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: () {
-                          CustomDialog.showInfo(
-                              message:
-                                  'Are you sure you want to edit this Course?',
-                              buttonText: 'Yes| Edit',
-                              onPressed: () {
-                                coursesNotifier.editCourse(item);
-                              });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(2),
-                            color: Colors.blue,
-                            //shadow
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(.5),
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0, 1),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-       ,
                   ))
                 ])));
   }

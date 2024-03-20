@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/main/views/components/window_buttons.dart';
 import 'package:aamusted_timetable_generator/generated/assets.dart';
@@ -181,6 +183,7 @@ class _MyHomePageState extends ConsumerState<MainPage> with WindowListener {
                         SizedBox(width: 50, height: 50, child: ProgressRing()),
                   ),
               error: (error, statck) {
+                print(error);
                 return const Text('Error getting data from datatbase');
               });
         },

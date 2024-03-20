@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/data/constants/constant_data.dart';
 import '../../allocations/data/lecturers/lecturer_model.dart';
 import '../../allocations/provider/courses/usecase/courses_usecase.dart';
+import '../../venues/data/venue_model.dart';
+import '../../venues/usecase/venue_usecase.dart';
 
 final academicYearProvider =
     StateProvider<String>((ref) => academicYears.first);
@@ -35,7 +37,11 @@ final dbDataFutureProvider = FutureProvider<void>((ref) async {
   //order lecturers by lecturer name
   lecturers.sort((a, b) => a.lecturerName!.compareTo(b.lecturerName!));
   ref.read(lecturersDataProvider.notifier).setLecturers(lecturers);
-  //? get config from db
+  //? get venue from db
+  var venues = await VenueUseCase().getVenues();
+//order venues by venue name
+  venues.sort((a, b) => a.name!.compareTo(b.name!));
+  ref.read(venuesDataProvider.notifier).setVenues(venues);
 });
 
 final classesDataProvider =
@@ -93,10 +99,32 @@ class LecturersDataProvider extends StateNotifier<List<LecturerModel>> {
   }
 
   void addLecturers(List<LecturerModel> lecturers) {
+    state = [];
     state = [...state, ...lecturers];
   }
 
   void deleteLecturer(String id) {
+    state = state.where((element) => element.id != id).toList();
+  }
+}
+
+final venuesDataProvider =
+    StateNotifierProvider<VenuesDataProvider, List<VenueModel>>((ref) {
+  return VenuesDataProvider();
+});
+
+class VenuesDataProvider extends StateNotifier<List<VenueModel>> {
+  VenuesDataProvider() : super([]);
+
+  void setVenues(List<VenueModel> venues) {
+    state = venues;
+  }
+
+  void addVenues(List<VenueModel> venues) {
+    state = [...state, ...venues];
+  }
+
+  void deleteVenue(String id) {
     state = state.where((element) => element.id != id).toList();
   }
 }

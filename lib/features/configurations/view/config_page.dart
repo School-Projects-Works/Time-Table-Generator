@@ -19,7 +19,6 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
     var currentConfig = ref.watch(configurationProvider);
     var config = ref.watch(configFutureProvider);
     return config.when(data: (data) {
-     // ref.read(configurationProvider.notifier).setConfig(data);
       return Container(
         color: Colors.grey.withOpacity(.1),
         child: Padding(
@@ -52,13 +51,13 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                         onPressed: () {
                           CustomDialog.showInfo(
                               message:
-                                  'You can now generate your timetable with the current configuration',
+                                  'Are you sure you want to save this configuration?',
                               buttonText: 'Yes',
                               onPressed: () {
                                 ref
                                     .read(configurationProvider.notifier)
                                     .saveConfiguration(context, ref);
-                                CustomDialog.dismiss();
+                               
                               });
                         },
                         child: const Padding(
@@ -70,9 +69,9 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                     const SizedBox(width: 10),
                     Button(
                         style: ButtonStyle(
-                          border: ButtonState.all(
-                            BorderSide(
-                              color: Colors.red,
+                          shape: ButtonState.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
                             ),
                           ),
                         ),
@@ -132,6 +131,7 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
       );
     }, error: (e, s) {
       return Container(
+        alignment: Alignment.center,
         color: Colors.grey.withOpacity(.1),
         child: const Center(
           child: Text('Error loading configurations'),
