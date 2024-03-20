@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+
 part 'courses_model.g.dart';
 
 @HiveType(typeId: 2)
@@ -12,9 +13,9 @@ class CourseModel {
   @HiveField(3)
   String? specialVenue;
   @HiveField(4)
-  String? lecturerName;
+  String? lecturerId;
   @HiveField(5)
-  String? lecturerEmail;
+  String? lecturerName;
   @HiveField(6)
   String? department;
   @HiveField(7)
@@ -35,8 +36,8 @@ class CourseModel {
     this.title,
     this.creditHours,
     this.specialVenue,
+    this.lecturerId,
     this.lecturerName,
-    this.lecturerEmail,
     this.department,
     this.id,
     this.academicYear,

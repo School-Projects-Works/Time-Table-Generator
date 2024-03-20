@@ -2,6 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../config/theme/theme.dart';
 import '../../../core/widget/custom_button.dart';
 import '../provider/allocation_template_provider.dart';
 import 'tabs/classes_section.dart';
@@ -52,8 +53,8 @@ class _AllocationPageState extends ConsumerState<AllocationPage> {
               child: Row(
                 children: [
                   Text('Course Allocations'.toUpperCase(),
-                      style: GoogleFonts.roboto(
-                          fontSize: 20, fontWeight: FontWeight.bold)),
+                      style: getTextStyle(
+                          fontSize: 35, fontWeight: FontWeight.bold)),
                   const Spacer(),
                   CustomButton(
                       icon: FluentIcons.import,

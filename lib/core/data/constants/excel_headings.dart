@@ -6,18 +6,23 @@ final List<String> classHeader = [
   'hasDisabled (Yes/No)'
 ];
 final List<String> courseAllocationHeader = [
-  'Code',
+  'Course Code',
   'Course Title',
   'Level',
-  'Lecturer',
   'Credit Hours',
-  'Special Venue'
+  'Special Venue',
+  'Lecturer ID',
+  'Lecturer Name',
+  'Lecturer Email (Optional)',
+  'Lecturer Classes',
 ];
 
 final List<String> liberalAllocationHeader = [
   'Code',
   'Course Title',
-  'Lecturer',
+  'Lecturer ID',
+  'Lecturer Name',
+  'Lecturer Email (Optional)',
 ];
 final List<String> venueHeader = [
   'Venue',

@@ -1,10 +1,11 @@
 import 'package:aamusted_timetable_generator/config/theme/theme.dart';
+import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_input.dart';
 import 'package:aamusted_timetable_generator/core/widget/table/widgets/custom_table.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/classes/class_model.dart';
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:fluent_ui/fluent_ui.dart' as fluent;
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../../core/widget/table/data/models/custom_table_columns_model.dart';
 import '../../../../core/widget/table/data/models/custom_table_rows_model.dart';
 import '../../provider/classes/provider/class_provider.dart';
@@ -35,7 +36,7 @@ class _ClassesTabState extends ConsumerState<ClassesTab> {
                   width: 600,
                   child: CustomTextFields(
                     hintText: 'Search for a class',
-                    suffixIcon: const Icon(FluentIcons.search),
+                    suffixIcon: const Icon(fluent.FluentIcons.search),
                     onChanged: (value) {
                       classNotifier.search(value);
                     },
@@ -92,7 +93,7 @@ class _ClassesTabState extends ConsumerState<ClassesTab> {
                 ),
                 CustomTableColumn(
                   title: 'Class Name',
-                  width: 200,
+                  //width: 200,
                   cellBuilder: (item) => Text(
                     item.name ?? '',
                     style: tableTextStyle,
@@ -100,7 +101,7 @@ class _ClassesTabState extends ConsumerState<ClassesTab> {
                 ),
                 CustomTableColumn(
                   title: 'Class Size',
-                  width: 100,
+                  width: 200,
                   cellBuilder: (item) => Text(
                     item.size ?? '',
                     style: tableTextStyle,
@@ -108,7 +109,7 @@ class _ClassesTabState extends ConsumerState<ClassesTab> {
                 ),
                 CustomTableColumn(
                   title: 'Class Level',
-                  width: 100,
+                  width: 200,
                   cellBuilder: (item) => Text(
                     item.level ?? '',
                     style: tableTextStyle,
@@ -131,10 +132,77 @@ class _ClassesTabState extends ConsumerState<ClassesTab> {
                 ),
                 // delete button
                 CustomTableColumn(
-                  title: 'Delete',
-                  cellBuilder: (item) => IconButton(
-                    icon: const Icon(FluentIcons.delete),
-                    onPressed: () {},
+                  title: 'Action',
+                  cellBuilder: (item) => Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          CustomDialog.showInfo(
+                              message:
+                                  'Are you sure you want to delete this class?',
+                              buttonText: 'Yes| Delete',
+                              onPressed: () {
+                                classNotifier.deleteClass(item);
+                              });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(2),
+                            color: Colors.red,
+                            //shadow
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(.5),
+                                spreadRadius: 1,
+                                blurRadius: 1,
+                                offset: const Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                      //edit button
+                      const SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: () {
+                          CustomDialog.showInfo(
+                              message:
+                                  'Are you sure you want to edit this class?',
+                              buttonText: 'Yes| Edit',
+                              onPressed: () {
+                                classNotifier.editClass(item);
+                              });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(2),
+                            color: Colors.blue,
+                            //shadow
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(.5),
+                                spreadRadius: 1,
+                                blurRadius: 1,
+                                offset: const Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

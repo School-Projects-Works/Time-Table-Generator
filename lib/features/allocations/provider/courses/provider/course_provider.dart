@@ -98,6 +98,10 @@ class CourseNotifier extends StateNotifier<TableModel<CourseModel>> {
               element.code!.toLowerCase().contains(query.toLowerCase()) ||
               element.level!.toLowerCase().contains(query.toLowerCase()) ||
               element.id!.toLowerCase().contains(query.toLowerCase()) ||
+              element.lecturerName!
+                  .toLowerCase()
+                  .contains(query.toLowerCase()) ||
+              element.title!.toLowerCase().contains(query.toLowerCase()) ||
               element.department!.toLowerCase().contains(query.toLowerCase()))
           .toList();
       List<List<CourseModel>> pages = [];
@@ -128,6 +132,10 @@ class CourseNotifier extends StateNotifier<TableModel<CourseModel>> {
           hasPreviousPage: state.currentPage > 0);
     }
   }
+
+  void deleteCourse(CourseModel item) {}
+
+  void editCourse(CourseModel item) {}
 }
 
 final courseItemHovered = StateProvider<CourseModel?>((ref) => null);

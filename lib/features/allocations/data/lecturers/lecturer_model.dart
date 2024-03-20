@@ -7,27 +7,24 @@ class LecturerModel {
   @HiveField(0)
   String? id;
   @HiveField(1)
-  String? name;
-  @HiveField(2)
   List<String>? courses;
-  @HiveField(3)
+  @HiveField(2)
   List<String>? classes;
-  @HiveField(4)
+  @HiveField(3)
   String? lecturerName;
-  @HiveField(5)
+  @HiveField(4)
   String? lecturerEmail;
-  @HiveField(6)
+  @HiveField(5)
   String? department;
-  @HiveField(8)
+  @HiveField(6)
   String? academicYear;
-  @HiveField(12)
+  @HiveField(7)
   String? academicSemester;
-  @HiveField(13)
+  @HiveField(8)
   String? targetedStudents;
 
   LecturerModel({
     this.id,
-    this.name,
     this.courses,
     this.classes,
     this.lecturerName,

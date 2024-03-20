@@ -97,7 +97,6 @@ class ClassesNotifier extends StateNotifier<TableModel<ClassModel>> {
           .where((element) =>
               element.name!.toLowerCase().contains(query.toLowerCase()) ||
               element.level!.toLowerCase().contains(query.toLowerCase()) ||
-             
               element.id!.toLowerCase().contains(query.toLowerCase()) ||
               element.department!.toLowerCase().contains(query.toLowerCase()))
           .toList();
@@ -130,8 +129,11 @@ class ClassesNotifier extends StateNotifier<TableModel<ClassModel>> {
     }
   }
 
- }
+  void deleteClass(ClassModel item) {}
 
- final classItemHovered = StateProvider<ClassModel?>((ref) {
-   return null;
- });
+  void editClass(ClassModel item) {}
+}
+
+final classItemHovered = StateProvider<ClassModel?>((ref) {
+  return null;
+});

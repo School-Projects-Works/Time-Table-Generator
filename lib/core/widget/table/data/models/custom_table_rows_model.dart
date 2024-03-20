@@ -10,16 +10,15 @@ abstract class BaseTableRow<TType extends Object> {
   Function(bool?) onHover;
   bool isHovered;
   BuildContext context;
-  BaseTableRow({
-    required this.item,
-    required this.index,
-    required this.context,
-    this.isSelected = false,
-    this.selectRow,
-    required this.onHover,
-    this.isHovered = false,
-    this.color
-  });
+  BaseTableRow(
+      {required this.item,
+      required this.index,
+      required this.context,
+      this.isSelected = false,
+      this.selectRow,
+      required this.onHover,
+      this.isHovered = false,
+      this.color});
   Widget buildCell(TType item, int columnIndex, BuildContext context,
       {bool rowsSelectable = false, required List<CustomTableColumn> columns});
 }
@@ -41,8 +40,13 @@ class CustomTableRow<TType extends Object> extends BaseTableRow {
     Widget rowItem = Container(
       height: 52,
       decoration: BoxDecoration(
-        color: color==null?
-        isHovered ? Colors.blue.withOpacity(.2) : null: isHovered ? Colors.red.withOpacity(.2):color,
+        color: color == null
+            ? isHovered
+                ? Colors.blue.withOpacity(.2)
+                : null
+            : isHovered
+                ? Colors.red.withOpacity(.2)
+                : color!.withOpacity(.6),
         border: Border(
           bottom: BorderSide(width: 1, color: Colors.grey.withOpacity(.6)),
         ),

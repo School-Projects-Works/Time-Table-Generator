@@ -21,8 +21,8 @@ class CourseModelAdapter extends TypeAdapter<CourseModel> {
       title: fields[1] as String?,
       creditHours: fields[2] as String?,
       specialVenue: fields[3] as String?,
-      lecturerName: fields[4] as String?,
-      lecturerEmail: fields[5] as String?,
+      lecturerId: fields[4] as String?,
+      lecturerName: fields[5] as String?,
       department: fields[6] as String?,
       id: fields[7] as String?,
       academicYear: fields[8] as String?,
@@ -46,9 +46,9 @@ class CourseModelAdapter extends TypeAdapter<CourseModel> {
       ..writeByte(3)
       ..write(obj.specialVenue)
       ..writeByte(4)
-      ..write(obj.lecturerName)
+      ..write(obj.lecturerId)
       ..writeByte(5)
-      ..write(obj.lecturerEmail)
+      ..write(obj.lecturerName)
       ..writeByte(6)
       ..write(obj.department)
       ..writeByte(7)

@@ -33,7 +33,7 @@ final dbDataFutureProvider = FutureProvider<void>((ref) async {
   var lecturers = await LecturerUseCase()
       .getLectures(academicYear, academicSemester, targetedStudents);
   //order lecturers by lecturer name
-  lecturers.sort((a, b) => a.name!.compareTo(b.name!));
+  lecturers.sort((a, b) => a.lecturerName!.compareTo(b.lecturerName!));
   ref.read(lecturersDataProvider.notifier).setLecturers(lecturers);
   //? get config from db
 });

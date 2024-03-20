@@ -1,37 +1,40 @@
-import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';
-import 'package:aamusted_timetable_generator/features/allocations/provider/courses/provider/course_provider.dart';
-import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../config/theme/theme.dart';
-import '../../../../core/widget/custom_dialog.dart';
-import '../../../../core/widget/custom_input.dart';
-import '../../../../core/widget/table/data/models/custom_table_columns_model.dart';
-import '../../../../core/widget/table/data/models/custom_table_rows_model.dart';
-import '../../../../core/widget/table/widgets/custom_table.dart';
+import '../../../config/theme/theme.dart';
 
-class CoursesTabs extends ConsumerStatefulWidget {
-  const CoursesTabs({super.key});
+class VenuePage extends ConsumerStatefulWidget {
+  const VenuePage({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _CoursesTabsState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _VenuePageState();
 }
 
-class _CoursesTabsState extends ConsumerState<CoursesTabs> {
+class _VenuePageState extends ConsumerState<VenuePage> {
   @override
   Widget build(BuildContext context) {
-    var courses = ref.watch(courseProvider);
-    var coursesNotifier = ref.read(courseProvider.notifier);
-    var tableTextStyle = getTextStyle(
-        color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500);
     return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Expanded(
-            child: CustomTable<CourseModel>(
+        color: Colors.grey.withOpacity(.1),
+        child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(children: [
+                        Text('Available Venues'.toUpperCase(),
+                            style: getTextStyle(
+                                fontSize: 35, fontWeight: FontWeight.bold)),
+                        const Spacer(),
+                      ])),
+                  const SizedBox(height: 20),
+                  Expanded(
+                      child: Container(
+                    color: Colors.white,
+                    child: Expanded(
+            child: CustomTable<>(
               header: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -280,8 +283,8 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
               ],
             ),
           ),
-        ],
-      ),
-    );
+       ,
+                  ))
+                ])));
   }
 }

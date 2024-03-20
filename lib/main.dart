@@ -74,15 +74,6 @@ class MyApp extends StatelessWidget {
               glowFactor: is10footScreen(context) ? 2.0 : 0.0,
             ),
           ),
-          
-          // builder: (context, child) {
-          //   return NavigationPaneTheme(
-          //     data: const NavigationPaneThemeData(
-               
-          //     ),
-          //     child: child!,
-          //   );
-          // },
            builder: FlutterSmartDialog.init(),
           routeInformationParser: router.routeInformationParser,
           routerDelegate: router.routerDelegate,

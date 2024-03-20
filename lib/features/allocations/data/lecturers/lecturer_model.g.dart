@@ -18,41 +18,38 @@ class LecturerModelAdapter extends TypeAdapter<LecturerModel> {
     };
     return LecturerModel(
       id: fields[0] as String?,
-      name: fields[1] as String?,
-      courses: (fields[2] as List?)?.cast<String>(),
-      classes: (fields[3] as List?)?.cast<String>(),
-      lecturerName: fields[4] as String?,
-      lecturerEmail: fields[5] as String?,
-      department: fields[6] as String?,
-      academicYear: fields[8] as String?,
-      academicSemester: fields[12] as String?,
-      targetedStudents: fields[13] as String?,
+      courses: (fields[1] as List?)?.cast<String>(),
+      classes: (fields[2] as List?)?.cast<String>(),
+      lecturerName: fields[3] as String?,
+      lecturerEmail: fields[4] as String?,
+      department: fields[5] as String?,
+      academicYear: fields[6] as String?,
+      academicSemester: fields[7] as String?,
+      targetedStudents: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, LecturerModel obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.name)
-      ..writeByte(2)
       ..write(obj.courses)
-      ..writeByte(3)
+      ..writeByte(2)
       ..write(obj.classes)
-      ..writeByte(4)
+      ..writeByte(3)
       ..write(obj.lecturerName)
-      ..writeByte(5)
+      ..writeByte(4)
       ..write(obj.lecturerEmail)
-      ..writeByte(6)
+      ..writeByte(5)
       ..write(obj.department)
-      ..writeByte(8)
+      ..writeByte(6)
       ..write(obj.academicYear)
-      ..writeByte(12)
+      ..writeByte(7)
       ..write(obj.academicSemester)
-      ..writeByte(13)
+      ..writeByte(8)
       ..write(obj.targetedStudents);
   }
 

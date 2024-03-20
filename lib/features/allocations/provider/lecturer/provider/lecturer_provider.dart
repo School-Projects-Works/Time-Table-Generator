@@ -95,7 +95,7 @@ class LectuereNotifier extends StateNotifier<TableModel<LecturerModel>> {
     } else {
       var data = state.items
           .where((element) =>
-              element.name!.toLowerCase().contains(query.toLowerCase()) ||
+             
               element.lecturerName!.toLowerCase().contains(query.toLowerCase()) ||
               element.id!.toLowerCase().contains(query.toLowerCase()) ||
               element.department!.toLowerCase().contains(query.toLowerCase()))
@@ -128,4 +128,11 @@ class LectuereNotifier extends StateNotifier<TableModel<LecturerModel>> {
           hasPreviousPage: state.currentPage > 0);
     }
   }
+
+  void deleteClass(LecturerModel item) {}
+
+  void editClass(LecturerModel item) {}
 }
+final lecturertemHovered = StateProvider<LecturerModel?>((ref) {
+  return null;
+});
