@@ -58,7 +58,7 @@ class _AllocationPageState extends ConsumerState<AllocationPage> {
                 children: [
                   Text('Course Allocations'.toUpperCase(),
                       style: getTextStyle(
-                          fontSize: 35, fontWeight: FontWeight.bold)),
+                          fontSize: 30, fontWeight: FontWeight.bold)),
                   const Spacer(),
                   CustomButton(
                       icon: fluent.FluentIcons.import,

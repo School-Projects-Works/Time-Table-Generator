@@ -6,34 +6,34 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/data/constants/constant_data.dart';
 import '../../allocations/data/lecturers/lecturer_model.dart';
 import '../../allocations/provider/courses/usecase/courses_usecase.dart';
+import '../../liberal/data/liberal/liberal_model.dart';
 import '../../venues/data/venue_model.dart';
 import '../../venues/usecase/venue_usecase.dart';
 
 final academicYearProvider =
     StateProvider<String>((ref) => academicYears.first);
 final semesterProvider = StateProvider<String>((ref) => semesters.first);
-final studentTypeProvider = StateProvider<String>((ref) => studentTypes.first);
+
 
 final dbDataFutureProvider = FutureProvider<void>((ref) async {
   String academicYear = ref.watch(academicYearProvider);
   String academicSemester = ref.watch(semesterProvider);
-  String targetedStudents = ref.watch(studentTypeProvider);
 
   //? get classes from db
   var classes = await ClassesUsecase()
-      .getClasses(academicYear, academicSemester, targetedStudents);
+      .getClasses(academicYear, academicSemester);
   //order classes by class name
   classes.sort((a, b) => a.name!.compareTo(b.name!));
   ref.read(classesDataProvider.notifier).setClasses(classes);
   //? get courses from db
   var courses = await CoursesUseCase()
-      .getCourses(academicYear, academicSemester, targetedStudents);
+      .getCourses(academicYear, academicSemester);
   //order courses by course name
   courses.sort((a, b) => a.code!.compareTo(b.code!));
   ref.read(coursesDataProvider.notifier).setCourses(courses);
   //? get lecturers from db
   var lecturers = await LecturerUseCase()
-      .getLectures(academicYear, academicSemester, targetedStudents);
+      .getLectures(academicYear, academicSemester);
   //order lecturers by lecturer name
   lecturers.sort((a, b) => a.lecturerName!.compareTo(b.lecturerName!));
   ref.read(lecturersDataProvider.notifier).setLecturers(lecturers);
@@ -99,8 +99,17 @@ class LecturersDataProvider extends StateNotifier<List<LecturerModel>> {
   }
 
   void addLecturers(List<LecturerModel> lecturers) {
-    state = [];
-    state = [...state, ...lecturers];
+    //add to state or replace if already exist
+    List<LecturerModel> newState = [];
+    for (var element in lecturers) {
+        state = state.map((e) {
+          if (e.id == element.id) {
+            return element;
+          }
+          return e;
+        }).toList();
+      
+    }
   }
 
   void deleteLecturer(String id) {
@@ -126,5 +135,35 @@ class VenuesDataProvider extends StateNotifier<List<VenueModel>> {
 
   void deleteVenue(String id) {
     state = state.where((element) => element.id != id).toList();
+  }
+}
+
+final liberalsDataProvider =
+    StateNotifierProvider<LiberalDataProvider, List<LiberalModel>>(
+  (ref) => LiberalDataProvider(),
+);
+
+class LiberalDataProvider extends StateNotifier<List<LiberalModel>> {
+  LiberalDataProvider() : super([]);
+
+  void setLiberals(List<LiberalModel> data) {
+    state = data;
+  }
+
+  void addLiberal(List<LiberalModel> data) {
+    state = [...state, ...data];
+  }
+
+  void deleteLiberal(String id) {
+    state = state.where((element) => element.id != id).toList();
+  }
+
+  void updateLiberal(LiberalModel data) {
+    state = state.map((e) {
+      if (e.id == data.id) {
+        return data;
+      }
+      return e;
+    }).toList();
   }
 }

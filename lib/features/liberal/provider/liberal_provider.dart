@@ -1,38 +1,42 @@
+import 'dart:math';
+
 import 'package:aamusted_timetable_generator/core/data/table_model.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
-import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
-import 'package:aamusted_timetable_generator/features/venues/data/venue_model.dart';
-import 'package:aamusted_timetable_generator/features/venues/usecase/venue_usecase.dart';
-import 'package:aamusted_timetable_generator/utils/app_utils.dart';
+import 'package:aamusted_timetable_generator/features/liberal/data/liberal/liberal_model.dart';
+import 'package:aamusted_timetable_generator/features/liberal/usecase/liberal_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_app_file/open_app_file.dart';
 
-final venueProvider =
-    StateNotifierProvider<VenueNotifier, TableModel<VenueModel>>((ref) {
-  return VenueNotifier(ref.watch(venuesDataProvider));
+import '../../../utils/app_utils.dart';
+import '../../allocations/provider/lecturer/usecase/lecturer_usecase.dart';
+import '../../main/provider/main_provider.dart';
+
+final liberalProvider =
+    StateNotifierProvider<LiberalNotifier, TableModel<LiberalModel>>((ref) {
+  return LiberalNotifier(ref.watch(liberalsDataProvider));
 });
 
-class VenueNotifier extends StateNotifier<TableModel<VenueModel>> {
-  VenueNotifier(this.venues)
+class LiberalNotifier extends StateNotifier<TableModel<LiberalModel>> {
+  LiberalNotifier(this.liberal)
       : super(TableModel(
           currentPage: 0,
           pageSize: 10,
           selectedRows: [],
           pages: [],
           currentPageItems: [],
-          items: venues,
+          items: liberal,
           hasNextPage: false,
           hasPreviousPage: false,
         )) {
     init();
   }
 
-  final List<VenueModel> venues;
+  final List<LiberalModel> liberal;
 
   void init() {
-    List<List<VenueModel>> pages = [];
+    List<List<LiberalModel>> pages = [];
     state = state.copyWith(
-        items: venues,
+        items: liberal,
         selectedRows: [],
         currentPage: 0,
         pages: pages,
@@ -63,11 +67,11 @@ class VenueNotifier extends StateNotifier<TableModel<VenueModel>> {
     init();
   }
 
-  void selectRow(VenueModel row) {
+  void selectRow(LiberalModel row) {
     state = state.copyWith(selectedRows: [...state.selectedRows, row]);
   }
 
-  void unselectRow(VenueModel row) {
+  void unselectRow(LiberalModel row) {
     state = state.copyWith(selectedRows: [...state.selectedRows..remove(row)]);
   }
 
@@ -99,9 +103,11 @@ class VenueNotifier extends StateNotifier<TableModel<VenueModel>> {
     } else {
       var data = state.items
           .where((element) =>
-              element.name!.toLowerCase().contains(query.toLowerCase()))
+              element.code!.toLowerCase().contains(query.toLowerCase()) ||
+              element.title!.toLowerCase().contains(query.toLowerCase()) ||
+              element.lecturerName!.toLowerCase().contains(query.toLowerCase()))
           .toList();
-      List<List<VenueModel>> pages = [];
+      List<List<LiberalModel>> pages = [];
       state = state.copyWith(
           items: data,
           selectedRows: [],
@@ -130,31 +136,39 @@ class VenueNotifier extends StateNotifier<TableModel<VenueModel>> {
     }
   }
 
-  void deleteVenue(VenueModel item) {}
+  void deleteLiberal(LiberalModel item) {}
 
-  void editVenue(VenueModel item) {}
+  void editLiberal(LiberalModel item) {}
 }
 
-final venueItemHovered = StateProvider<VenueModel?>((ref) => null);
+final liberalItemHovered = StateProvider<LiberalModel?>((ref) => null);
 
-final venueDataImportProvider =
-    StateNotifierProvider<VenueDataImport, void>((ref) => VenueDataImport());
 
-class VenueDataImport extends StateNotifier<void> {
-  VenueDataImport() : super(null);
+final liberalDataImportProvider = StateNotifierProvider<LiberalDataImport, void>((ref) {
+  return LiberalDataImport();
+});
 
-  void importData(WidgetRef ref) async {
-    CustomDialog.showLoading(message: 'Importing Venues....');
+class LiberalDataImport extends StateNotifier<void> {
+  LiberalDataImport() : super(null);
+
+  void importData(WidgetRef ref)async {
+     CustomDialog.showLoading(message: 'Importing Liberal Courses....');
+     var academicYear = ref.watch(academicYearProvider);
+    var academicSemester = ref.watch(semesterProvider);
     //open file picker
     String? pickedFilePath = await AppUtils.pickExcelFIle();
     if (pickedFilePath != null) {
-      var (success, message, venues) =
-          await VenueUseCase().importVenues(pickedFilePath);
+      var (success, message, liberal,lecturers) =
+          await LiberalUseCase().importLiberal(path: pickedFilePath, academicYear: academicYear, semester: academicSemester);
       if (success) {
         //save to db
-        var (success, message) = await VenueUseCase().addVenues(venues!);
+        var (success, message) = await LiberalUseCase().addLiberals(liberal!);
         if (success) {
-          ref.read(venuesDataProvider.notifier).addVenues(venues);
+          ref.read(liberalsDataProvider.notifier).addLiberal(liberal);
+        }
+        var (newSuccess, newMessage) = await LecturerUseCase().appendLectuers(list: lecturers!, year: academicYear, semester: academicSemester);
+        if (newSuccess) {
+          ref.read(lecturersDataProvider.notifier).addLecturers(lecturers);
         }
         CustomDialog.dismiss();
         CustomDialog.showSuccess(message: message);
@@ -165,9 +179,9 @@ class VenueDataImport extends StateNotifier<void> {
     }
   }
 
-  void downloadTemplate() async {
-    CustomDialog.showLoading(message: 'Downloading Venues Template....');
-    var (success, message) = await VenueUseCase().downloadTemplate();
+  void downloadTemplate()async {
+    CustomDialog.showLoading(message: 'Downloading template...');
+     var (success, message) = await LiberalUseCase().downloadTemplate();
     if (success) {
       CustomDialog.dismiss();
       //open file
@@ -178,6 +192,5 @@ class VenueDataImport extends StateNotifier<void> {
       CustomDialog.dismiss();
       CustomDialog.showError(message: message!);
     }
-    //
   }
 }

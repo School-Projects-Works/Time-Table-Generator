@@ -128,39 +128,6 @@ class _MyHomePageState extends ConsumerState<MainPage> with WindowListener {
                             ],
                           ),
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black)),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 2),
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
-                          child: Row(
-                            children: [
-                              const Text('Student Type:'),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              ComboBox(
-                                elevation: 0,
-                                value: ref.watch(studentTypeProvider),
-                                onChanged: (year) {
-                                  if (year != null) {
-                                    ref
-                                        .read(studentTypeProvider.notifier)
-                                        .state = year;
-                                  }
-                                },
-                                items: studentTypes
-                                    .map((e) => ComboBoxItem(
-                                          value: e,
-                                          child: Text(e),
-                                        ))
-                                    .toList(),
-                              ),
-                            ],
-                          ),
-                        ),
                       ]),
                 ),
                 const WindowButtons(),
@@ -183,7 +150,7 @@ class _MyHomePageState extends ConsumerState<MainPage> with WindowListener {
                         SizedBox(width: 50, height: 50, child: ProgressRing()),
                   ),
               error: (error, statck) {
-                print(error);
+               
                 return const Text('Error getting data from datatbase');
               });
         },

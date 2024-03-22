@@ -23,16 +23,15 @@ class LecturerModelAdapter extends TypeAdapter<LecturerModel> {
       lecturerName: fields[3] as String?,
       lecturerEmail: fields[4] as String?,
       department: fields[5] as String?,
-      academicYear: fields[6] as String?,
-      academicSemester: fields[7] as String?,
-      targetedStudents: fields[8] as String?,
+      year: fields[6] as String?,
+      semester: fields[7] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, LecturerModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -46,11 +45,9 @@ class LecturerModelAdapter extends TypeAdapter<LecturerModel> {
       ..writeByte(5)
       ..write(obj.department)
       ..writeByte(6)
-      ..write(obj.academicYear)
+      ..write(obj.year)
       ..writeByte(7)
-      ..write(obj.academicSemester)
-      ..writeByte(8)
-      ..write(obj.targetedStudents);
+      ..write(obj.semester);
   }
 
   @override

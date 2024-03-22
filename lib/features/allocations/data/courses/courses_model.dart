@@ -21,15 +21,15 @@ class CourseModel {
   @HiveField(7)
   String? id;
   @HiveField(8)
-  String? academicYear;
+  String? year;
   @HiveField(9)
   List<String>? venues;
   @HiveField(10)
   String? level;
   @HiveField(11)
-  String? targetStudents;
+  String? studyMode;
   @HiveField(12)
-  String? academicSemester;
+  String? semester;
 
   CourseModel({
     this.code,
@@ -40,10 +40,10 @@ class CourseModel {
     this.lecturerName,
     this.department,
     this.id,
-    this.academicYear,
+    this.year,
     this.venues,
     this.level,
-    this.targetStudents,
-    this.academicSemester,
+    this.studyMode,
+    this.semester,
   });
 }

@@ -17,11 +17,9 @@ class LecturerModel {
   @HiveField(5)
   String? department;
   @HiveField(6)
-  String? academicYear;
+  String? year;
   @HiveField(7)
-  String? academicSemester;
-  @HiveField(8)
-  String? targetedStudents;
+  String? semester;
 
   LecturerModel({
     this.id,
@@ -30,8 +28,7 @@ class LecturerModel {
     this.lecturerName,
     this.lecturerEmail,
     this.department,
-    this.academicYear,
-    this.academicSemester,
-    this.targetedStudents,
+    this.year,
+    this.semester,
   });
 }

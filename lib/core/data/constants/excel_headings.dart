@@ -2,7 +2,7 @@ final List<String> classHeader = [
   'Level',
   'Class Code',
   'Class Size',
-  'Study Mode',
+  'Study Mode (R,E,W)',
   'hasDisabled (Yes/No)'
 ];
 final List<String> courseAllocationHeader = [
@@ -17,9 +17,12 @@ final List<String> courseAllocationHeader = [
   'Lecturer Classes',
 ];
 
-final List<String> liberalAllocationHeader = [
+final List<String> liberalHeader = [
   'Code',
   'Course Title',
+  'Regular (Yes/No)',
+  'Evening (Yes/No)',
+  'Weekend (Yes/No)',
   'Lecturer ID',
   'Lecturer Name',
   'Lecturer Email (Optional)',
@@ -27,6 +30,6 @@ final List<String> liberalAllocationHeader = [
 final List<String> venueHeader = [
   'Venue',
   'Capacity',
-  'isSpecial (Yes/No)',
-  'isDisability Friendly (Yes/No)',
+  'DisabilityAccess (Yes/No)',
+  'isSpecial/Lab (Yes/No)',
 ];

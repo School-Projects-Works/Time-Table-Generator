@@ -1,6 +1,5 @@
 import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
 import '../repo/course_repo.dart';
 
 class CoursesUseCase extends CoursesRepo {
@@ -17,9 +16,9 @@ class CoursesUseCase extends CoursesRepo {
       //remove all courses where academic year and semester is the same
       var allCoursesToDelete = courseBox.values
           .where((element) =>
-              element.academicYear == courses[0].academicYear &&
+              element.year == courses[0].year &&
               element.department == courses[0].department &&
-              element.academicSemester == courses[0].academicSemester)
+              element.semester == courses[0].semester)
           .toList();
       await courseBox.deleteAll(allCoursesToDelete.map((e) => e.id).toList());
       await courseBox.putAll({for (var e in courses) e.id: e});
@@ -30,7 +29,7 @@ class CoursesUseCase extends CoursesRepo {
   }
 
   @override
-  Future<bool> deleteAllCourses(String academicYear, String academicSemester, String targetedStudents, String department)async {
+  Future<bool> deleteAllCourses(String year, String semester, String department)async {
        try {
       final Box<CourseModel> courseBox =
           await Hive.openBox<CourseModel>('courses');
@@ -42,19 +41,17 @@ class CoursesUseCase extends CoursesRepo {
       if (department.toLowerCase() == 'All'.toLowerCase()) {
         var allClassesToDelete = courseBox.values
             .where((element) =>
-                element.academicYear == academicYear &&
-                element.targetStudents == targetedStudents &&
-                element.academicSemester == academicSemester)
+                element.year == year &&              
+                element.semester == semester)
             .toList();
         await courseBox.deleteAll(allClassesToDelete.map((e) => e.id).toList());
         return true;
       }
       var allCourseToDelete = courseBox.values
           .where((element) =>
-              element.academicYear == academicYear &&
-              element.targetStudents == targetedStudents &&
+              element.year == year &&          
               element.department == department &&
-              element.academicSemester == academicSemester)
+              element.semester == semester)
           .toList();
       await courseBox.deleteAll(allCourseToDelete.map((e) => e.id).toList());
       return true;
@@ -70,7 +67,7 @@ class CoursesUseCase extends CoursesRepo {
   }
 
   @override
-  Future<List<CourseModel>> getCourses(String academicYear, String academicSemester, String targetedStudents)async {
+  Future<List<CourseModel>> getCourses(String year, String semester)async {
    try{
       final Box<CourseModel> courseBox =
           await Hive.openBox<CourseModel>('courses');
@@ -81,9 +78,8 @@ class CoursesUseCase extends CoursesRepo {
       //get all courses where academic year and semester is the same
       var allCourses = courseBox.values
           .where((element) =>
-              element.academicYear == academicYear &&
-              element.targetStudents==targetedStudents&&
-              element.academicSemester == academicSemester)
+              element.year == year &&
+              element.semester == semester)
           .toList();
       return allCourses;
    }catch(_){

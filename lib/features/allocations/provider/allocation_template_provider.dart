@@ -38,9 +38,9 @@ class AllocationTemplateProvider extends StateNotifier<void> {
       var (success, (courses, classes, lecturers), message) =
           await _allocationUsecase.importAllocation(
               path: pickedFilePath,
-              academicYear: ref.watch(academicYearProvider),
+              year: ref.watch(academicYearProvider),
               semester: ref.watch(semesterProvider),
-              targetStudents: ref.watch(studentTypeProvider));
+             );
       if (success) {
         var save = await ClassesUsecase().addClasses(classes);
         if (save) {
@@ -71,19 +71,17 @@ class AllocationTemplateProvider extends StateNotifier<void> {
     CustomDialog.showLoading(message: 'Clearing all allocations...');
     var academicYear = ref.watch(academicYearProvider);
     var academicSemester = ref.watch(semesterProvider);
-    var targetedStudents = ref.watch(studentTypeProvider);
     var success = await ClassesUsecase().deleteAllClasses(
-        academicYear, academicSemester, targetedStudents, department);
+        academicYear, academicSemester, department);
     if (success) {
       ref.read(classesDataProvider.notifier).setClasses([]);
     }
-    success = await CoursesUseCase().deleteAllCourses(
-        academicYear, academicSemester, targetedStudents, department);
+    success = await CoursesUseCase().deleteAllCourses(academicYear,academicSemester, department);
     if (success) {
       ref.read(coursesDataProvider.notifier).setCourses([]);
     }
     success = await LecturerUseCase().deleteAllLecturers(
-        academicYear, academicSemester, targetedStudents, department);
+        academicYear, academicSemester, department);
     if (success) {
       ref.read(lecturersDataProvider.notifier).setLecturers([]);
     }

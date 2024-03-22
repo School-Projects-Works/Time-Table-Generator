@@ -19,14 +19,14 @@ class ClassModelAdapter extends TypeAdapter<ClassModel> {
     return ClassModel(
       id: fields[0] as String?,
       level: fields[1] as String?,
+      studyMode: fields[2] as String?,
       name: fields[3] as String?,
       size: fields[4] as String?,
       hasDisability: fields[5] as String?,
       department: fields[6] as String?,
       createdAt: fields[7] as String?,
-      academicYear: fields[8] as String?,
-      targetStudents: fields[2] as String?,
-      academicSemester: fields[9] as String?,
+      year: fields[8] as String?,
+      semester: fields[9] as String?,
     );
   }
 
@@ -39,7 +39,7 @@ class ClassModelAdapter extends TypeAdapter<ClassModel> {
       ..writeByte(1)
       ..write(obj.level)
       ..writeByte(2)
-      ..write(obj.targetStudents)
+      ..write(obj.studyMode)
       ..writeByte(3)
       ..write(obj.name)
       ..writeByte(4)
@@ -51,9 +51,9 @@ class ClassModelAdapter extends TypeAdapter<ClassModel> {
       ..writeByte(7)
       ..write(obj.createdAt)
       ..writeByte(8)
-      ..write(obj.academicYear)
+      ..write(obj.year)
       ..writeByte(9)
-      ..write(obj.academicSemester);
+      ..write(obj.semester);
   }
 
   @override

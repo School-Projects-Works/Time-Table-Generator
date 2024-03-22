@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 part 'config_model.g.dart';
@@ -9,82 +11,90 @@ class ConfigModel {
   @HiveField(0)
   String? id;
   @HiveField(1)
-  String? academicYear;
+  String? year;
   @HiveField(2)
-  String? academicSemester;
+  String? semester;
   @HiveField(3)
-  List<String> days;
+  Map<String, dynamic> regular;
   @HiveField(4)
-  List<Map<String, dynamic>> periods;
-  @HiveField(5)
-  String? liberalCourseDay;
-  @HiveField(6)
-  Map<String, dynamic>? liberalCoursePeriod;
-  @HiveField(7)
-  bool hasLiberalCourse;
-  @HiveField(8)
-  bool hasCourse;
-  @HiveField(9)
-  bool hasClass;
-  @HiveField(10)
-  String? liberalLevel;
-  @HiveField(11)
-  String? targetedStudents;
-  @HiveField(12)
-  List<Map<String, dynamic>>? breakTime;
+  Map<String, dynamic> evening;
   ConfigModel({
     this.id,
-    this.academicYear,
-    this.academicSemester,
-    this.days = const [],
-    this.periods = const [],
-    this.liberalCourseDay,
-    this.liberalCoursePeriod,
-    this.hasLiberalCourse = false,
-    this.hasCourse = false,
-    this.hasClass = false,
-    this.liberalLevel,
-    this.targetedStudents,
-    this.breakTime,
+    this.year,
+    this.semester,
+    required this.regular,
+    required this.evening,
   });
 
   ConfigModel copyWith({
-    String? id,
-    String? academicYear,
-    String? academicSemester,
+    ValueGetter<String?>? id,
+    ValueGetter<String?>? year,
+    ValueGetter<String?>? semester,
+    Map<String, dynamic>? regular,
+    Map<String, dynamic>? evening,
+  }) {
+    return ConfigModel(
+      id: id != null ? id() : this.id,
+      year: year != null ? year() : this.year,
+      semester: semester != null ? semester() : this.semester,
+      regular: regular ?? this.regular,
+      evening: evening ?? this.evening,
+    );
+  }
+}
+
+class StudyModeModel {
+  List<String> days;
+  List<Map<String, dynamic>> periods;
+  String? liberalCourseDay;
+  Map<String, dynamic>? liberalCoursePeriod;
+  bool hasLiberalCourse;
+  bool hasCourse;
+  bool hasClass;
+  String? liberalLevel;
+  String? studyMode;
+  List<Map<String, dynamic>>? breakTime;
+  StudyModeModel({
+     this.days=const [],
+     this.periods=const [],
+    this.liberalCourseDay,
+    this.liberalCoursePeriod,
+     this.hasLiberalCourse=false,
+     this.hasCourse=false,
+     this.hasClass=false,
+    this.liberalLevel,
+    this.studyMode,
+    this.breakTime,
+  });
+
+  StudyModeModel copyWith({
     List<String>? days,
     List<Map<String, dynamic>>? periods,
-    String? liberalCourseDay,
-    Map<String, dynamic>? liberalCoursePeriod,
+    ValueGetter<String?>? liberalCourseDay,
+    ValueGetter<Map<String, dynamic>?>? liberalCoursePeriod,
     bool? hasLiberalCourse,
     bool? hasCourse,
     bool? hasClass,
-    String? liberalLevel,
-    String? targetedStudents,
-    List<Map<String, dynamic>>? breakTime,
+    ValueGetter<String?>? liberalLevel,
+    ValueGetter<String?>? studyMode,
+    ValueGetter<List<Map<String, dynamic>>?>? breakTime,
   }) {
-    return ConfigModel(
-      id: id ?? this.id,
-      academicYear: academicYear ?? this.academicYear,
-      academicSemester: academicSemester ?? this.academicSemester,
+    return StudyModeModel(
       days: days ?? this.days,
       periods: periods ?? this.periods,
-      liberalCourseDay: liberalCourseDay ?? this.liberalCourseDay,
-      liberalCoursePeriod: liberalCoursePeriod ?? this.liberalCoursePeriod,
+      liberalCourseDay: liberalCourseDay != null ? liberalCourseDay() : this.liberalCourseDay,
+      liberalCoursePeriod: liberalCoursePeriod != null ? liberalCoursePeriod() : this.liberalCoursePeriod,
       hasLiberalCourse: hasLiberalCourse ?? this.hasLiberalCourse,
       hasCourse: hasCourse ?? this.hasCourse,
       hasClass: hasClass ?? this.hasClass,
-      liberalLevel: liberalLevel ?? this.liberalLevel,
-      targetedStudents: targetedStudents ?? this.targetedStudents,
-      breakTime: breakTime ?? this.breakTime,
+      liberalLevel: liberalLevel != null ? liberalLevel() : this.liberalLevel,
+      studyMode: studyMode != null ? studyMode() : this.studyMode,
+      breakTime: breakTime != null ? breakTime() : this.breakTime,
     );
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'academicYear': academicYear,
-      'academicSemester': academicSemester,
+    return {
       'days': days,
       'periods': periods,
       'liberalCourseDay': liberalCourseDay,
@@ -93,99 +103,27 @@ class ConfigModel {
       'hasCourse': hasCourse,
       'hasClass': hasClass,
       'liberalLevel': liberalLevel,
-      'targetedStudents': targetedStudents,
+      'studyMode': studyMode,
       'breakTime': breakTime,
     };
   }
 
-  factory ConfigModel.fromMap(Map<String, dynamic> map) {
-    return ConfigModel(
-      id: map['id'] != null ? map['id'] as String : null,
-      academicYear:
-          map['academicYear'] != null ? map['academicYear'] as String : null,
-      academicSemester: map['academicSemester'] != null
-          ? map['academicSemester'] as String
-          : null,
-      days: map['days'] != null
-          ? List<String>.from((map['days'] as List<String>))
-          : [],
-      periods: map['periods'] != null
-          ? List<Map<String, dynamic>>.from(
-              (map['periods'] as List<Map<String, dynamic>>)
-                  .map<Map<String, dynamic>?>(
-                (x) => x,
-              ),
-            )
-          : [],
-      liberalCourseDay: map['liberalCourseDay'] != null
-          ? map['liberalCourseDay'] as String
-          : null,
-      liberalCoursePeriod: map['liberalCoursePeriod'] != null
-          ? Map<String, dynamic>.from(
-              (map['liberalCoursePeriod'] as Map<String, dynamic>))
-          : null,
-      hasLiberalCourse: map['hasLiberalCourse'] as bool,
-      hasCourse: map['hasCourse'] as bool,
-      hasClass: map['hasClass'] as bool,
-      liberalLevel:
-          map['liberalLevel'] != null ? map['liberalLevel'] as String : null,
-      targetedStudents: map['targetedStudents'] != null
-          ? map['targetedStudents'] as String
-          : null,
-      breakTime: map['breakTime'] != null
-          ? List<Map<String, dynamic>>.from(
-              (map['breakTime'] as List<Map<String, dynamic>>)
-                  .map<Map<String, dynamic>?>(
-                (x) => x,
-              ),
-            )
-          : null,
+  factory StudyModeModel.fromMap(Map<String, dynamic> map) {
+    return StudyModeModel(
+      days: List<String>.from(map['days']),
+      periods: List<Map<String, dynamic>>.from(map['periods']?.map((x) => Map<String, dynamic>.from(x))),
+      liberalCourseDay: map['liberalCourseDay'],
+      liberalCoursePeriod: Map<String, dynamic>.from(map['liberalCoursePeriod']),
+      hasLiberalCourse: map['hasLiberalCourse'] ?? false,
+      hasCourse: map['hasCourse'] ?? false,
+      hasClass: map['hasClass'] ?? false,
+      liberalLevel: map['liberalLevel'],
+      studyMode: map['studyMode'],
+      breakTime: map['breakTime'] != null ? List<Map<String, dynamic>>.from(map['breakTime']?.map((x) => Map<String, dynamic>.from(x))) : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory ConfigModel.fromJson(String source) =>
-      ConfigModel.fromMap(json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() {
-    return 'ConfigurationModel(id: $id, academicYear: $academicYear, academicSemester: $academicSemester, days: $days, periods: $periods, liberalCourseDay: $liberalCourseDay, liberalCoursePeriod: $liberalCoursePeriod, hasLiberalCourse: $hasLiberalCourse, hasCourse: $hasCourse, hasClass: $hasClass, liberalLevel: $liberalLevel, targetedStudents: $targetedStudents, breakTime: $breakTime)';
-  }
-
-  @override
-  bool operator ==(covariant ConfigModel other) {
-    if (identical(this, other)) return true;
-
-    return other.id == id &&
-        other.academicYear == academicYear &&
-        other.academicSemester == academicSemester &&
-        listEquals(other.days, days) &&
-        listEquals(other.periods, periods) &&
-        other.liberalCourseDay == liberalCourseDay &&
-        mapEquals(other.liberalCoursePeriod, liberalCoursePeriod) &&
-        other.hasLiberalCourse == hasLiberalCourse &&
-        other.hasCourse == hasCourse &&
-        other.hasClass == hasClass &&
-        other.liberalLevel == liberalLevel &&
-        other.targetedStudents == targetedStudents &&
-        listEquals(other.breakTime, breakTime);
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^
-        academicYear.hashCode ^
-        academicSemester.hashCode ^
-        days.hashCode ^
-        periods.hashCode ^
-        liberalCourseDay.hashCode ^
-        liberalCoursePeriod.hashCode ^
-        hasLiberalCourse.hashCode ^
-        hasCourse.hashCode ^
-        hasClass.hashCode ^
-        liberalLevel.hashCode ^
-        targetedStudents.hashCode ^
-        breakTime.hashCode;
-  }
+  factory StudyModeModel.fromJson(String source) => StudyModeModel.fromMap(json.decode(source));
 }

@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+
 part 'class_model.g.dart';
 
 @HiveType(typeId: 1)
@@ -8,7 +9,7 @@ class ClassModel {
   @HiveField(1)
   String? level;
   @HiveField(2)
-  String? targetStudents;
+  String? studyMode;
   @HiveField(3)
   String? name;
   @HiveField(4)
@@ -20,20 +21,20 @@ class ClassModel {
   @HiveField(7)
   String? createdAt;
   @HiveField(8)
-  String? academicYear;
+  String? year;
   @HiveField(9)
-  String? academicSemester;
+  String? semester;
 
   ClassModel({
     this.id,
     this.level,
+    this.studyMode,
     this.name,
     this.size,
     this.hasDisability,
     this.department,
     this.createdAt,
-    this.academicYear,
-    this.targetStudents,
-    this.academicSemester,
+    this.year,
+    this.semester,
   });
 }

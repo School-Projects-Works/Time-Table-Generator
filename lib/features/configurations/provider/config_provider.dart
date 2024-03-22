@@ -5,27 +5,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../main/provider/main_provider.dart';
 import '../data/config/config_model.dart';
 import '../usecase/config_usecase.dart';
+import '../view/components/evening/provider/evening_config_provider.dart';
+import '../view/components/regular/provider/regular_config_provider.dart';
 
 final configFutureProvider = FutureProvider<ConfigModel>((ref) async {
   String academicYear = ref.watch(academicYearProvider);
   String academicSemester = ref.watch(semesterProvider);
-  String targetedStudents = ref.watch(studentTypeProvider);
   var configs = await ConfigUsecase().getConfigurations();
   var config = configs
       .where((element) =>
-          element.academicYear == academicYear &&
-          element.academicSemester == academicSemester &&
-          element.targetedStudents == targetedStudents)
+          element.year == academicYear && element.semester == academicSemester)
       .toList();
   if (config.isNotEmpty) {
-    ref.read(configurationProvider.notifier).setConfig(config[0]);
-    return config[0];
+    var currentConfig = config[0];
+    var regularConfig = currentConfig.regular;
+    var eveningConfig = currentConfig.evening;
+    ref.read(regularConfigProvider.notifier).mode(regularConfig);
+    ref.read(eveningConfigProvider.notifier).mode(eveningConfig);
+    ref.read(configurationProvider.notifier).setConfig(currentConfig);
+    return currentConfig;
   } else {
-    return ConfigModel(
-      hasClass: false,
-      hasCourse: false,
-      hasLiberalCourse: false,
-    );
+    return ConfigModel(regular: {}, evening: {});
   }
 });
 
@@ -35,79 +35,16 @@ final configurationProvider =
 });
 
 class ConfigurationNotifier extends StateNotifier<ConfigModel> {
-  ConfigurationNotifier() : super(ConfigModel());
-
-  void addDay(String e) {
-    state = state.copyWith(days: [...state.days, e]);
-  }
-
-  void removeDay(String e) {
-    state = state.copyWith(
-        days: state.days.where((element) => element != e).toList());
-  }
-
-  void addPeriod(String e) {
-    //remove period if exist already
-    state = state.copyWith(
-        periods:
-            state.periods.where((element) => element['period'] != e).toList());
-    //add new period
-    state = state.copyWith(periods: [
-      ...state.periods,
-      {'period': e}
-    ]);
-  }
-
-  void removePeriod(String e) {
-    state = state.copyWith(
-        periods:
-            state.periods.where((element) => element['period'] != e).toList());
-  }
-
-  void setPeriodStartTime(String period, String? start) {
-    state = state.copyWith(
-        periods: state.periods
-            .map((e) => e['period'] == period ? {...e, 'startTime': start} : e)
-            .toList());
-  }
-
-  void setPeriodEndTime(String period, String? end) {
-    state = state.copyWith(
-        periods: state.periods
-            .map((e) => e['period'] == period ? {...e, 'endTime': end} : e)
-            .toList());
-  }
-
-  void setLiberalLevel(String? value) {
-    state = state.copyWith(liberalLevel: value);
-  }
-
-  void setLiberalDay(String? value) {
-    state = state.copyWith(liberalCourseDay: value);
-  }
-
-  void setLiberalPeriod(String string) {
-    //get period from periods
-    var period =
-        state.periods.where((element) => element['period'] == string).toList();
-    if (period.isNotEmpty) {
-      state = state.copyWith(liberalCoursePeriod: period[0]);
-    }
-  }
+  ConfigurationNotifier() : super(ConfigModel(regular: {}, evening: {}));
 
   void saveConfiguration(BuildContext context, WidgetRef ref) async {
     try {
       CustomDialog.dismiss();
       CustomDialog.showLoading(message: 'Saving configuration..');
-      var breakTime = state.periods
-          .where((element) => element['period'] == 'Break')
-          .toList();
       state = state.copyWith(
-        id: AppUtils.getId(),
-        academicYear: ref.watch(academicYearProvider),
-        academicSemester: ref.watch(semesterProvider),
-        targetedStudents: ref.watch(studentTypeProvider),
-        breakTime: breakTime.isNotEmpty ? breakTime : [],
+        id: () => AppUtils.getId(),
+        year: () => ref.watch(academicYearProvider),
+        semester: () => ref.watch(semesterProvider),
       );
       var (success, _, message) =
           await ConfigUsecase().addConfigurations(state);
@@ -153,13 +90,19 @@ class ConfigurationNotifier extends StateNotifier<ConfigModel> {
 
   void clearConfig(BuildContext context) {
     state = ConfigModel(
-      hasClass: false,
-      hasCourse: false,
-      hasLiberalCourse: false,
+      regular: {},
+      evening: {},
     );
   }
 
   void setConfig(ConfigModel config) {
     state = config;
+  }
+
+  void studyMode(StudyModeModel regularConfig, StudyModeModel eveningConfig) {
+    state = state.copyWith(
+      regular: regularConfig.toMap(),
+      evening: eveningConfig.toMap(),
+    );
   }
 }

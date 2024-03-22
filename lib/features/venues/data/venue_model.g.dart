@@ -16,12 +16,13 @@ class VenueModelAdapter extends TypeAdapter<VenueModel> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return VenueModel()
-      ..id = fields[0] as String?
-      ..name = fields[1] as String?
-      ..capacity = fields[2] as int?
-      ..disabilityAccess = fields[3] as bool?
-      ..isSpecialVenue = fields[4] as bool?;
+    return VenueModel(
+      id: fields[0] as String?,
+      name: fields[1] as String?,
+      capacity: fields[2] as int?,
+      disabilityAccess: fields[3] as bool?,
+      isSpecialVenue: fields[4] as bool?,
+    );
   }
 
   @override

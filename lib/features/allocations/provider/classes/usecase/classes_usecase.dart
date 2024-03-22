@@ -17,9 +17,9 @@ class ClassesUsecase extends ClassesRepo {
       //re,ove all classes where academic year and semester is the same
       var allClassesToDelete = classBox.values
           .where((element) =>
-              element.academicYear == classes[0].academicYear &&
+              element.year == classes[0].year &&
               element.department == classes[0].department &&
-              element.academicSemester == classes[0].academicSemester)
+              element.semester == classes[0].semester)
           .toList();
       await classBox.deleteAll(allClassesToDelete.map((e) => e.id).toList());
       await classBox.putAll({for (var e in classes) e.id: e});
@@ -31,7 +31,7 @@ class ClassesUsecase extends ClassesRepo {
 
   @override
   Future<bool> deleteAllClasses(
-      String academicYear, String academicSemester,String targetedStudents, String department) async {
+      String year, String semester, String department) async {
     try {
       final Box<ClassModel> classBox =
           await Hive.openBox<ClassModel>('classes');
@@ -43,19 +43,17 @@ class ClassesUsecase extends ClassesRepo {
       if (department.toLowerCase() == 'All'.toLowerCase()) {
         var allClassesToDelete = classBox.values
             .where((element) =>
-                element.academicYear == academicYear &&
-                element.targetStudents==targetedStudents&&
-                element.academicSemester == academicSemester)
+                element.year == year &&             
+                element.semester == semester)
             .toList();
         await classBox.deleteAll(allClassesToDelete.map((e) => e.id).toList());
         return true;
       }
       var allClassesToDelete = classBox.values
           .where((element) =>
-              element.academicYear == academicYear &&
-              element.targetStudents==targetedStudents&&
+              element.year == year &&           
               element.department == department &&
-              element.academicSemester == academicSemester)
+              element.semester == semester)
           .toList();
       await classBox.deleteAll(allClassesToDelete.map((e) => e.id).toList());
       return true;
@@ -72,7 +70,7 @@ class ClassesUsecase extends ClassesRepo {
 
   @override
   Future<List<ClassModel>> getClasses(
-      String academicYear, String academicSemester,String targetedStudents) async {
+      String year, String semester) async {
     try {
       final Box<ClassModel> classBox =
           await Hive.openBox<ClassModel>('classes');
@@ -83,9 +81,8 @@ class ClassesUsecase extends ClassesRepo {
       //get all classes where academic year and semester is the same
       var allClasses = classBox.values
           .where((element) =>
-              element.academicYear == academicYear &&
-              element.targetStudents==targetedStudents&&
-              element.academicSemester == academicSemester)
+              element.year == year &&             
+              element.semester == semester)
           .toList();
       return allClasses;
     } catch (_) {

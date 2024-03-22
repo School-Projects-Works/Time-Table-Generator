@@ -1,17 +1,13 @@
 import 'dart:io';
-
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/classes/class_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/lecturers/lecturer_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/repo/allocation_repo.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
-import 'package:collection/collection.dart';
 import 'package:excel/excel.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
-
 import '../../../core/data/constants/excel_headings.dart';
 import '../../../core/data/constants/instructions.dart';
 import '../../../core/functions/excel_settings.dart';
@@ -89,9 +85,9 @@ class AllocationUseCase extends AllocationRepo {
           )>
       importAllocation(
           {required String path,
-          required String academicYear,
+          required String year,
           required String semester,
-          required String targetStudents}) async {
+          }) async {
     try {
       List<CourseModel> courses = [];
       List<ClassModel> classes = [];
@@ -120,10 +116,10 @@ class AllocationUseCase extends AllocationRepo {
                 level: row[0]!.value.toString(),
                 name: row[1]!.value.toString(),
                 size: row[2]!.value.toString(),
-                targetStudents: targetStudents,
+                
                 department: department,
-                academicSemester: semester,
-                academicYear: academicYear,
+                semester: semester,
+                year: year,
                 hasDisability: row[4] != null && row[4]!.value != null
                     ? row[4]!.value.toString()
                     : 'No',
@@ -183,9 +179,9 @@ class AllocationUseCase extends AllocationRepo {
                 lecturerId: row[5]!.value.toString(),
                 lecturerName: row[6]!.value.toString(),
                 department: department,
-                academicSemester: semester,
-                academicYear: academicYear,
-                targetStudents: targetStudents));
+                semester: semester,
+                year: year
+               ));
             //! End of courses extraction.....................................................
             //? Lecturers extraction.....................................................
             LecturerModel lecturer = LecturerModel();
@@ -233,9 +229,9 @@ class AllocationUseCase extends AllocationRepo {
                   id: id,
                   lecturerName: row[6]!.value.toString(),
                   department: department,
-                  academicSemester: semester,
-                  academicYear: academicYear,
-                  targetedStudents: targetStudents,
+                  semester: semester,
+                  year: year,
+                
                   courses: [row[0]!.value.toString()],
                   classes: lecturerClasses,
                   lecturerEmail: row[7] != null && row[7]!.value != null

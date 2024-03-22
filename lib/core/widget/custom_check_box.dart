@@ -68,7 +68,7 @@ class CustomCheckBox extends StatelessWidget {
                       children: [
                         Expanded(
                           child: CustomDropDown(
-                            items: listOfTime
+                            items: regularTime
                                 .map((e) => DropdownMenuItem(
                                       value: e,
                                       child: Text(
@@ -87,7 +87,7 @@ class CustomCheckBox extends StatelessWidget {
                         const SizedBox(width: 40),
                         Expanded(
                           child: CustomDropDown(
-                            items: listOfTime
+                            items: regularTime
                                 .map((e) => DropdownMenuItem(
                                       value: e,
                                       child: Text(

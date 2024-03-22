@@ -48,7 +48,7 @@ class AppUtils {
     // GEt the header row
     List<String> fileColumns =
         headerRow.map<String>((data) => data!.value.toString()).toList();
-   
+
     return listEquals(fileColumns, columns);
   }
 }

@@ -10,8 +10,7 @@ final academicYears = [
 ];
 final studentTypes = [
   'Regular (inc Masters)',
-  'Week End (inc Masters)',
-  'Sandwich (inc Masters)'
+  'Evening (inc Masters)'
 ];
 
 final levels = [
@@ -21,7 +20,6 @@ final levels = [
   '400',
   'Graduate',
 ];
-
 
 final List<String> daysList = [
   'Monday',
@@ -41,11 +39,7 @@ final List<String> periodList = [
   'Break'
 ];
 
-
-
-final listOfTime = [
-  '6:00 AM',
-  '6:30 AM',
+final regularTime = [
   '7:00 AM',
   '7:30 AM',
   '8:00 AM',
@@ -73,5 +67,17 @@ final listOfTime = [
   '7:00 PM',
   '7:30 PM',
   '8:00 PM',
+];
+final eveningTime = [
+  '4:00 PM',
+  '4:30 PM',
+  '5:00 PM',
+  '5:30 PM',
+  '6:00 PM',
+  '6:30 PM',
+  '7:00 PM',
+  '7:30 PM',
+  '8:00 PM',
   '8:30 PM',
+  '9:00 PM',
 ];

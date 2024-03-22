@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+
 part 'venue_model.g.dart';
 
 @HiveType(typeId: 4)
@@ -13,4 +14,11 @@ class VenueModel {
   bool? disabilityAccess;
   @HiveField(4)
   bool? isSpecialVenue;
+  VenueModel({
+    this.id,
+    this.name,
+    this.capacity,
+    this.disabilityAccess,
+    this.isSpecialVenue,
+  });
 }

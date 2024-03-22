@@ -82,30 +82,30 @@ class ExcelSettings {
         ..cellStyle.locked = false;
       inst.add('');
     } else {
-      if (sheetName == "Liberal") {
-        sheet.getRangeByName('A${inst.length + 1}')
-          ..setText('Level: ')
-          ..cellStyle = headerStyle(book, 'Level', hAlignType: HAlignType.right)
-          ..cellStyle.locked = true;
-        sheet.getRangeByName(
-            '${listOfAlpha[1]}${inst.length + 1}:${listOfAlpha[end - 1]}${inst.length + 1}')
-          ..merge()
-          ..cellStyle.locked = false;
+      // if (sheetName == "Liberal") {
+      //   sheet.getRangeByName('A${inst.length + 1}')
+      //     ..setText('Level: ')
+      //     ..cellStyle = headerStyle(book, 'Level', hAlignType: HAlignType.right)
+      //     ..cellStyle.locked = true;
+      //   sheet.getRangeByName(
+      //       '${listOfAlpha[1]}${inst.length + 1}:${listOfAlpha[end - 1]}${inst.length + 1}')
+      //     ..merge()
+      //     ..cellStyle.locked = false;
 
-        inst.add('');
+      //   inst.add('');
 
-        sheet.getRangeByName('A${inst.length + 1}')
-          ..setText('Study Mode: ')
-          ..cellStyle =
-              headerStyle(book, 'StudyMode', hAlignType: HAlignType.right)
-          ..cellStyle.locked = true;
-        sheet.getRangeByName(
-            '${listOfAlpha[1]}${inst.length + 1}:${listOfAlpha[end - 1]}${inst.length + 1}')
-          ..merge()
-          ..cellStyle.locked = false;
+      //   sheet.getRangeByName('A${inst.length + 1}')
+      //     ..setText('Study Mode: ')
+      //     ..cellStyle =
+      //         headerStyle(book, 'StudyMode', hAlignType: HAlignType.right)
+      //     ..cellStyle.locked = true;
+      //   sheet.getRangeByName(
+      //       '${listOfAlpha[1]}${inst.length + 1}:${listOfAlpha[end - 1]}${inst.length + 1}')
+      //     ..merge()
+      //     ..cellStyle.locked = false;
 
-        inst.add('');
-      }
+      //   inst.add('');
+      // }
     }
 
     for (start; start < end; start++) {
@@ -118,7 +118,7 @@ class ExcelSettings {
 
     inst.add('');
     //get columns range
-    for (int i = inst.length + 1; i <= 200 + inst.length + 1; i++) {
+    for (int i = inst.length + 1; i <= 600 + inst.length + 1; i++) {
       sheet
           .getRangeByName('${listOfAlpha[0]}$i:${listOfAlpha[end - 1]}$i')
           .cellStyle

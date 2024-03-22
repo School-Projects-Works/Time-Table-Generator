@@ -1,36 +1,36 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
+import 'package:aamusted_timetable_generator/features/configurations/view/components/regular/provider/regular_config_provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/data/constants/constant_data.dart';
-import '../../../main/provider/main_provider.dart';
-import '../../provider/config_provider.dart';
-import '../../provider/period_time_provider.dart';
-class PeriodsSection extends ConsumerStatefulWidget {
-  const PeriodsSection({super.key});
+import '../../../../../../core/data/constants/constant_data.dart';
+import '../provider/regular_period_provider.dart';
+
+class RegularPeriodsSection extends ConsumerStatefulWidget {
+  const RegularPeriodsSection({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _PeriodsSectionState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _RegularPeriodsSectionState();
 }
 
-class _PeriodsSectionState extends ConsumerState<PeriodsSection> {
-
+class _RegularPeriodsSectionState extends ConsumerState<RegularPeriodsSection> {
   @override
   Widget build(BuildContext context) {
-       var configs = ref.watch(configurationProvider);
+    var configs = ref.watch(regularConfigProvider);
+    var configsNotifier = ref.read(regularConfigProvider.notifier);
     return Expanded(
-      flex: 2,
       child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 25, horizontal: 10),
+        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                'Periods'.toUpperCase(),
+                'Regular Periods'.toUpperCase(),
                 style: FluentTheme.of(context).typography.subtitle,
               ),
               Text(
-                'Check the periods and set start and end time on which classes will be taken for this targeted Students:(${ref.watch(studentTypeProvider)})',
+                'Check the periods and set start and end time on which classes will be taken for regular students',
                 style: FluentTheme.of(context).typography.body,
               ),
               const SizedBox(height: 10),
@@ -60,16 +60,9 @@ class _PeriodsSectionState extends ConsumerState<PeriodsSection> {
                                             switch (e) {
                                               case 'Period 1':
                                                 if (value!) {
-                                                  ref
-                                                      .read(
-                                                          configurationProvider
-                                                              .notifier)
-                                                      .addPeriod(e);
+                                                  configsNotifier.addPeriod(e);
                                                 } else {
-                                                  ref
-                                                      .read(
-                                                          configurationProvider
-                                                              .notifier)
+                                                  configsNotifier
                                                       .removePeriod(e);
                                                 }
                                                 break;
@@ -86,24 +79,16 @@ class _PeriodsSectionState extends ConsumerState<PeriodsSection> {
                                                     list[0]['endTime'] !=
                                                         null) {
                                                   if (value!) {
-                                                    ref
-                                                        .read(
-                                                            configurationProvider
-                                                                .notifier)
+                                                    configsNotifier
                                                         .addPeriod(e);
                                                   } else {
-                                                    ref
-                                                        .read(
-                                                            configurationProvider
-                                                                .notifier)
+                                                    configsNotifier
                                                         .removePeriod(e);
                                                   }
                                                 } else {
                                                   CustomDialog.showError(
-                                                      
                                                       message:
                                                           'Please set up Period 1 before you proceed');
-                                                 
                                                 }
                                                 break;
                                               case 'Period 3':
@@ -119,23 +104,16 @@ class _PeriodsSectionState extends ConsumerState<PeriodsSection> {
                                                     list[0]['endTime'] !=
                                                         null) {
                                                   if (value!) {
-                                                    ref
-                                                        .read(
-                                                            configurationProvider
-                                                                .notifier)
+                                                    configsNotifier
                                                         .addPeriod(e);
                                                   } else {
-                                                    ref
-                                                        .read(
-                                                            configurationProvider
-                                                                .notifier)
+                                                    configsNotifier
                                                         .removePeriod(e);
                                                   }
                                                 } else {
                                                   CustomDialog.showError(
                                                       message:
                                                           'Please set up Period 2 before you proceed');
-                                                 
                                                 }
                                                 break;
                                               case 'Period 4':
@@ -151,38 +129,24 @@ class _PeriodsSectionState extends ConsumerState<PeriodsSection> {
                                                     list[0]['endTime'] !=
                                                         null) {
                                                   if (value!) {
-                                                    ref
-                                                        .read(
-                                                            configurationProvider
-                                                                .notifier)
+                                                    configsNotifier
                                                         .addPeriod(e);
                                                   } else {
-                                                    ref
-                                                        .read(
-                                                            configurationProvider
-                                                                .notifier)
+                                                    configsNotifier
                                                         .removePeriod(e);
                                                   }
                                                 } else {
                                                   CustomDialog.showError(
                                                       message:
                                                           'Please set up Period 3 before you proceed');
-                                                 
                                                 }
                                                 break;
                                               case 'Break':
                                                 //check if period 4 is checked
                                                 if (value!) {
-                                                  ref
-                                                      .read(
-                                                          configurationProvider
-                                                              .notifier)
-                                                      .addPeriod(e);
+                                                  configsNotifier.addPeriod(e);
                                                 } else {
-                                                  ref
-                                                      .read(
-                                                          configurationProvider
-                                                              .notifier)
+                                                  configsNotifier
                                                       .removePeriod(e);
                                                 }
                                                 break;
@@ -209,15 +173,15 @@ class _PeriodsSectionState extends ConsumerState<PeriodsSection> {
                                                     .toList()[0];
                                                 var startList = ref
                                                     .watch(e == 'Period 1'
-                                                        ? periodOneStartProvider
+                                                        ? regPeriodOneStartProvider
                                                         : e == 'Period 2'
-                                                            ? periodTwoStartProvider
+                                                            ? regPeriodTwoStartProvider
                                                             : e == 'Period 3'
-                                                                ? periodThreeStartProvider
+                                                                ? regPeriodThreeStartProvider
                                                                 : e ==
                                                                         'Period 4'
-                                                                    ? periodFourStartProvider
-                                                                    : breakStartProvider)
+                                                                    ? regPeriodFourStartProvider
+                                                                    : regBreakStartProvider)
                                                     .where((element) =>
                                                         element ==
                                                         period['startTime'])
@@ -228,23 +192,21 @@ class _PeriodsSectionState extends ConsumerState<PeriodsSection> {
                                               }(),
                                               items: ref
                                                   .watch(e == 'Period 1'
-                                                      ? periodOneStartProvider
+                                                      ? regPeriodOneStartProvider
                                                       : e == 'Period 2'
-                                                          ? periodTwoStartProvider
+                                                          ? regPeriodTwoStartProvider
                                                           : e == 'Period 3'
-                                                              ? periodThreeStartProvider
+                                                              ? regPeriodThreeStartProvider
                                                               : e == 'Period 4'
-                                                                  ? periodFourStartProvider
-                                                                  : breakStartProvider)
+                                                                  ? regPeriodFourStartProvider
+                                                                  : regBreakStartProvider)
                                                   .map((e) => ComboBoxItem(
                                                         value: e,
                                                         child: Text(e),
                                                       ))
                                                   .toList(),
                                               onChanged: (value) {
-                                                ref
-                                                    .read(configurationProvider
-                                                        .notifier)
+                                                configsNotifier
                                                     .setPeriodStartTime(
                                                         e, value);
                                               },
@@ -253,7 +215,7 @@ class _PeriodsSectionState extends ConsumerState<PeriodsSection> {
                                         ),
                                       const SizedBox(width: 25),
                                       if (ref
-                                          .watch(configurationProvider)
+                                          .watch(regularConfigProvider)
                                           .periods
                                           .where((element) =>
                                               element['period'] == e)
@@ -274,15 +236,15 @@ class _PeriodsSectionState extends ConsumerState<PeriodsSection> {
                                                     .toList()[0];
                                                 var startList = ref
                                                     .watch(e == 'Period 1'
-                                                        ? periodOneEndProvider
+                                                        ? regPeriodOneEndProvider
                                                         : e == 'Period 2'
-                                                            ? periodTwoEndProvider
+                                                            ? regPeriodTwoEndProvider
                                                             : e == 'Period 3'
-                                                                ? periodThreeEndProvider
+                                                                ? regPeriodThreeEndProvider
                                                                 : e ==
                                                                         'Period 4'
-                                                                    ? periodFourEndProvider
-                                                                    : breakEndProvider)
+                                                                    ? regPeriodFourEndProvider
+                                                                    : regBreakEndProvider)
                                                     .where((element) =>
                                                         element ==
                                                         period['endTime'])
@@ -293,24 +255,23 @@ class _PeriodsSectionState extends ConsumerState<PeriodsSection> {
                                               }(),
                                               items: ref
                                                   .watch(e == 'Period 1'
-                                                      ? periodOneEndProvider
+                                                      ? regPeriodOneEndProvider
                                                       : e == 'Period 2'
-                                                          ? periodTwoEndProvider
+                                                          ? regPeriodTwoEndProvider
                                                           : e == 'Period 3'
-                                                              ? periodThreeEndProvider
+                                                              ? regPeriodThreeEndProvider
                                                               : e == 'Period 4'
-                                                                  ? periodFourEndProvider
-                                                                  : breakEndProvider)
+                                                                  ? regPeriodFourEndProvider
+                                                                  : regBreakEndProvider)
                                                   .map((e) => ComboBoxItem(
                                                         value: e,
                                                         child: Text(e),
                                                       ))
                                                   .toList(),
                                               onChanged: (value) {
-                                                ref
-                                                    .read(configurationProvider
-                                                        .notifier)
-                                                    .setPeriodEndTime(e, value.toString());
+                                                configsNotifier
+                                                    .setPeriodEndTime(
+                                                        e, value.toString());
                                               },
                                             ),
                                           ],
@@ -331,6 +292,5 @@ class _PeriodsSectionState extends ConsumerState<PeriodsSection> {
             ]),
       ),
     );
-  
   }
 }

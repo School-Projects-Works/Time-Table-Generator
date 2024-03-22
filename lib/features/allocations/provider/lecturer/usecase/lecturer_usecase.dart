@@ -14,9 +14,9 @@ class LecturerUseCase extends LectureRepo {
       //re,ove all lecturers where academic year and semester is the same
       var allLecturersToDelete = lecturerBox.values
           .where((element) =>
-              element.academicYear == lecturers[0].academicYear &&
+              element.year == lecturers[0].year &&
               element.department == lecturers[0].department &&
-              element.academicSemester == lecturers[0].academicSemester)
+              element.semester == lecturers[0].semester)
           .toList();
       await lecturerBox
           .deleteAll(allLecturersToDelete.map((e) => e.id).toList());
@@ -28,8 +28,7 @@ class LecturerUseCase extends LectureRepo {
   }
 
   @override
-  Future<bool> deleteAllLectures(String academicYear, String academicSemester,
-      String targetedStudents, String department) {
+  Future<bool> deleteAllLectures(String year, String semester, String department) {
     // TODO: implement deleteAllLectures
     throw UnimplementedError();
   }
@@ -41,29 +40,28 @@ class LecturerUseCase extends LectureRepo {
   }
 
   @override
-  Future<List<LecturerModel>> getLectures(String academicYear,
-      String academicSemester, String targetedStudents) async {
+  Future<List<LecturerModel>> getLectures(String year,
+      String semester) async {
     try {
       final Box<LecturerModel> lecturerBox =
-          Hive.box<LecturerModel>('lecturers');
+          await Hive.openBox<LecturerModel>('lecturers');
       if (!lecturerBox.isOpen) {
         Hive.openBox('lecturers');
       }
       //get all lecturers where academic year and semester is the same
       var allLecturers = lecturerBox.values
           .where((element) =>
-              element.academicYear == academicYear &&
-              element.targetedStudents == targetedStudents &&
-              element.academicSemester == academicSemester)
+              element.year == year &&
+              
+              element.semester == semester)
           .toList();
       return Future.value(allLecturers);
-    } catch (_) {
+    } catch (e) {
       return Future.value([]);
     }
   }
 
-  Future<bool> deleteAllLecturers(String academicYear, String academicSemester,
-      String targetedStudents, String department) async {
+  Future<bool> deleteAllLecturers(String year, String semester, String department) async {
     try {
       final Box<LecturerModel> lecturerBox =
           await Hive.openBox<LecturerModel>('lecturers');
@@ -75,8 +73,8 @@ class LecturerUseCase extends LectureRepo {
       if (department.toLowerCase() == 'All'.toLowerCase()) {
         var allClassesToDelete = lecturerBox.values
             .where((element) =>
-                element.academicYear == academicYear &&
-                element.academicSemester == academicSemester)
+                element.year == year &&
+                element.semester == semester)
             .toList();
         await lecturerBox
             .deleteAll(allClassesToDelete.map((e) => e.id).toList());
@@ -84,15 +82,50 @@ class LecturerUseCase extends LectureRepo {
       }
       var allLecturersToDelete = lecturerBox.values
           .where((element) =>
-              element.academicYear == academicYear &&
+              element.year == year &&
               element.department == department &&
-              element.academicSemester == academicSemester)
+              element.semester == semester)
           .toList();
       await lecturerBox
           .deleteAll(allLecturersToDelete.map((e) => e.id).toList());
       return true;
     } catch (_) {
       return false;
+    }
+  }
+
+  Future<(bool, String)> appendLectuers(
+      {required List<LecturerModel> list,
+      required String year,
+      required String semester}) async {
+    try {
+      final Box<LecturerModel> lecturerBox =
+          await Hive.openBox<LecturerModel>('lecturers');
+      if (!lecturerBox.isOpen) {
+        await Hive.openBox('lecturers');
+      }
+      //save new lectuere or update lecturer courses
+      //get all existing lecturers lecturers
+      var allLecturers = lecturerBox.values.toList();
+      //get all lecturers where academic year and semester is the same
+      var allLecturersToCompare = allLecturers
+          .where((element) =>
+              element.year == year &&
+              element.semester == semester)
+          .toList();
+      for (var element in list) {
+        if (allLecturersToCompare.any((e) => e.id == element.id)) {
+          var lecturer =
+              allLecturersToCompare.firstWhere((e) => e.id == element.id);
+          lecturer.courses = [...lecturer.courses!, ...element.courses!];
+          await lecturerBox.put(lecturer.id, lecturer);
+        }else{
+          await lecturerBox.put(element.id, element);
+        }
+      }
+      return Future.value((true, 'Lecturers added successfully'));
+    } catch (e) {
+      return Future.value((false, e.toString()));
     }
   }
 }

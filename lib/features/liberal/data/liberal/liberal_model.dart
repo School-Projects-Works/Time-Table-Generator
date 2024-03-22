@@ -1,32 +1,37 @@
 import 'package:hive/hive.dart';
+
 part 'liberal_model.g.dart';
 
-@HiveType(typeId: 4)
+@HiveType(typeId: 5)
 class LiberalModel {
   @HiveField(0)
-  String? code;
-  @HiveField(1)
-  String? title;
-  @HiveField(2)
-  String? lecturerName;
-  @HiveField(3)
-  String? lecturerEmail;
-  @HiveField(4)
   String? id;
+  @HiveField(1)
+  String? code;
+  @HiveField(2)
+  String? title;
+  @HiveField(3)
+  String? lecturerId;
+  @HiveField(4)
+  String? lecturerName;
   @HiveField(5)
-  String? academicYear;
+  String? lecturerEmail;
   @HiveField(6)
-  String? targetStudents;
+  String? academicYear;
   @HiveField(7)
+  List<String>? studyMode;
+  @HiveField(8)
   String? academicSemester;
+  LiberalModel({
+    this.id,
+    this.code,
+    this.title,
+    this.lecturerId,
+    this.lecturerName,
+    this.lecturerEmail,
+    this.academicYear,
+    this.studyMode,
+    this.academicSemester,
+  });
 
-  LiberalModel(
-      {this.code,
-      this.title,
-      this.lecturerName,
-      this.lecturerEmail,
-      this.id,
-      this.academicYear,
-      this.targetStudents,
-      this.academicSemester});
 }
