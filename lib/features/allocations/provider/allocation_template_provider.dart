@@ -32,9 +32,9 @@ class AllocationTemplateProvider extends StateNotifier<void> {
 
   void importAllocations(WidgetRef ref) async {
     //open file picker
+    CustomDialog.showLoading(message: 'Importing allocations...');
     String? pickedFilePath = await AppUtils.pickExcelFIle();
     if (pickedFilePath != null) {
-      CustomDialog.showLoading(message: 'Importing allocations...');
       var (success, (courses, classes, lecturers), message) =
           await _allocationUsecase.importAllocation(
               path: pickedFilePath,
@@ -63,6 +63,8 @@ class AllocationTemplateProvider extends StateNotifier<void> {
         CustomDialog.showError(
             message: message ?? 'Failed to import allocations');
       }
+    }else{
+      CustomDialog.dismiss();
     }
   }
 

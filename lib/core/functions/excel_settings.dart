@@ -67,10 +67,10 @@ class ExcelSettings {
         ..cellStyle = insttyle(book, i.toString())
         ..cellStyle.locked = true;
     }
-    if (inst.isNotEmpty) {
-      inst.add('');
-    }
-    if (sheetName != "Liberal" && sheetName != "Venues") {
+    // if (inst.isNotEmpty) {
+    //   inst.add('');
+    // }
+    if (!sheetName.toLowerCase().contains("liberal") && sheetName != "Venues") {
       sheet.getRangeByName('A${inst.length + 1}')
         ..setText('Department: ')
         ..cellStyle = headerStyle(book, '${DateTime.now().millisecond}',
@@ -81,8 +81,32 @@ class ExcelSettings {
         ..merge()
         ..cellStyle.locked = false;
       inst.add('');
+      sheet.getRangeByName('A${inst.length + 1}')
+        ..setText('Study Mode: ')
+        ..cellStyle = headerStyle(book, '${DateTime.now().millisecond}',
+            hAlignType: HAlignType.right)
+        ..cellStyle.locked = true;
+      sheet.getRangeByName('B${inst.length + 1}')
+        ..setText(sheetName.toLowerCase().contains('regular')
+            ? 'REGULAR'.toUpperCase()
+            : 'EVENING'.toUpperCase())
+        ..cellStyle.locked = true;
+      inst.add('');
     } else {
-      // if (sheetName == "Liberal") {
+      if (sheetName.toLowerCase().contains("liberal")) {
+        inst.add('');
+        sheet.getRangeByName('A${inst.length + 1}')
+          ..setText('Study Mode: ')
+          ..cellStyle = headerStyle(book, '${DateTime.now().millisecond}',
+              hAlignType: HAlignType.right)
+          ..cellStyle.locked = true;
+        sheet.getRangeByName('B${inst.length + 1}')
+          ..setText(sheetName.toLowerCase().contains('regular')
+              ? 'REGULAR'.toUpperCase()
+              : 'EVENING'.toUpperCase())
+          ..cellStyle.locked = true;
+        inst.add('');
+      }
       //   sheet.getRangeByName('A${inst.length + 1}')
       //     ..setText('Level: ')
       //     ..cellStyle = headerStyle(book, 'Level', hAlignType: HAlignType.right)

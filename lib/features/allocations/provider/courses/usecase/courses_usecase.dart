@@ -29,7 +29,7 @@ class CoursesUseCase extends CoursesRepo {
   }
 
   @override
-  Future<bool> deleteAllCourses(String year, String semester, String department)async {
+  Future<bool> deleteAllCourses(String academicYear, String academicSemester, String department)async {
        try {
       final Box<CourseModel> courseBox =
           await Hive.openBox<CourseModel>('courses');
@@ -41,17 +41,17 @@ class CoursesUseCase extends CoursesRepo {
       if (department.toLowerCase() == 'All'.toLowerCase()) {
         var allClassesToDelete = courseBox.values
             .where((element) =>
-                element.year == year &&              
-                element.semester == semester)
+                element.year == academicYear &&              
+                element.semester == academicSemester)
             .toList();
         await courseBox.deleteAll(allClassesToDelete.map((e) => e.id).toList());
         return true;
       }
       var allCourseToDelete = courseBox.values
           .where((element) =>
-              element.year == year &&          
+              element.year == academicYear &&          
               element.department == department &&
-              element.semester == semester)
+              element.semester == academicSemester)
           .toList();
       await courseBox.deleteAll(allCourseToDelete.map((e) => e.id).toList());
       return true;
@@ -85,6 +85,23 @@ class CoursesUseCase extends CoursesRepo {
    }catch(_){
       return [];
    }
+  }
+  
+  @override
+  Future<(bool, String?, CourseModel?)> updateCourse(CourseModel course)async {
+    try{
+       final Box<CourseModel> courseBox =
+          await Hive.openBox<CourseModel>('courses');
+      //check if box is open
+      if (!courseBox.isOpen) {
+        await Hive.openBox('courses');
+      }
+      //update course
+      await courseBox.put(course.id, course);
+      return (true, 'Course Updated Successfully', course);
+    }catch(error){
+      return (false, error.toString(), null);
+    }
   }
  
 }

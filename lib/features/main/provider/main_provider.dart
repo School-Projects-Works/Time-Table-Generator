@@ -2,6 +2,7 @@ import 'package:aamusted_timetable_generator/features/allocations/data/classes/c
 import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/provider/classes/usecase/classes_usecase.dart';
 import 'package:aamusted_timetable_generator/features/allocations/provider/lecturer/usecase/lecturer_usecase.dart';
+import 'package:aamusted_timetable_generator/features/liberal/usecase/liberal_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/data/constants/constant_data.dart';
 import '../../allocations/data/lecturers/lecturer_model.dart';
@@ -14,29 +15,35 @@ final academicYearProvider =
     StateProvider<String>((ref) => academicYears.first);
 final semesterProvider = StateProvider<String>((ref) => semesters.first);
 
-
 final dbDataFutureProvider = FutureProvider<void>((ref) async {
   String academicYear = ref.watch(academicYearProvider);
   String academicSemester = ref.watch(semesterProvider);
 
   //? get classes from db
-  var classes = await ClassesUsecase()
-      .getClasses(academicYear, academicSemester);
+  var classes =
+      await ClassesUsecase().getClasses(academicYear, academicSemester);
   //order classes by class name
   classes.sort((a, b) => a.name!.compareTo(b.name!));
   ref.read(classesDataProvider.notifier).setClasses(classes);
   //? get courses from db
-  var courses = await CoursesUseCase()
-      .getCourses(academicYear, academicSemester);
+  var courses =
+      await CoursesUseCase().getCourses(academicYear, academicSemester);
   //order courses by course name
   courses.sort((a, b) => a.code!.compareTo(b.code!));
   ref.read(coursesDataProvider.notifier).setCourses(courses);
   //? get lecturers from db
-  var lecturers = await LecturerUseCase()
-      .getLectures(academicYear, academicSemester);
+  var lecturers =
+      await LecturerUseCase().getLectures(academicYear, academicSemester);
   //order lecturers by lecturer name
   lecturers.sort((a, b) => a.lecturerName!.compareTo(b.lecturerName!));
   ref.read(lecturersDataProvider.notifier).setLecturers(lecturers);
+
+  //? get liberal courses from
+  var lib = await LiberalUseCase()
+      .getLiberals(year: academicYear, sem: academicSemester);
+  // oder lib by course name
+  lib.sort((a, b) => a.title!.compareTo(b.title!));
+  ref.read(liberalsDataProvider.notifier).setLiberals(lib);
   //? get venue from db
   var venues = await VenueUseCase().getVenues();
 //order venues by venue name
@@ -84,6 +91,15 @@ class CoursesDataProvider extends StateNotifier<List<CourseModel>> {
   void deleteCourse(String id) {
     state = state.where((element) => element.id != id).toList();
   }
+
+  void updateCourse(CourseModel courseModel) {
+    state = state.map((e) {
+      if (e.id == courseModel.id) {
+        return courseModel;
+      }
+      return e;
+    }).toList();
+  }
 }
 
 final lecturersDataProvider =
@@ -102,13 +118,12 @@ class LecturersDataProvider extends StateNotifier<List<LecturerModel>> {
     //add to state or replace if already exist
     List<LecturerModel> newState = [];
     for (var element in lecturers) {
-        state = state.map((e) {
-          if (e.id == element.id) {
-            return element;
-          }
-          return e;
-        }).toList();
-      
+      state = state.map((e) {
+        if (e.id == element.id) {
+          return element;
+        }
+        return e;
+      }).toList();
     }
   }
 

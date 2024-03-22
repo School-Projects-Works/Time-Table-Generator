@@ -13,9 +13,9 @@ class CourseModel {
   @HiveField(3)
   String? specialVenue;
   @HiveField(4)
-  String? lecturerId;
+  List<String>? lecturerId;
   @HiveField(5)
-  String? lecturerName;
+  List<String>? lecturerName;
   @HiveField(6)
   String? department;
   @HiveField(7)

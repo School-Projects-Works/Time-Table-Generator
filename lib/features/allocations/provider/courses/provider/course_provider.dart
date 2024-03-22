@@ -98,9 +98,7 @@ class CourseNotifier extends StateNotifier<TableModel<CourseModel>> {
               element.code!.toLowerCase().contains(query.toLowerCase()) ||
               element.level!.toLowerCase().contains(query.toLowerCase()) ||
               element.id!.toLowerCase().contains(query.toLowerCase()) ||
-              element.lecturerName!
-                  .toLowerCase()
-                  .contains(query.toLowerCase()) ||
+              element.lecturerName!.contains(query.toLowerCase()) ||
               element.title!.toLowerCase().contains(query.toLowerCase()) ||
               element.department!.toLowerCase().contains(query.toLowerCase()))
           .toList();

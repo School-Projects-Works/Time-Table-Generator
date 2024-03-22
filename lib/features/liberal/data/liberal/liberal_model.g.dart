@@ -23,9 +23,9 @@ class LiberalModelAdapter extends TypeAdapter<LiberalModel> {
       lecturerId: fields[3] as String?,
       lecturerName: fields[4] as String?,
       lecturerEmail: fields[5] as String?,
-      academicYear: fields[6] as String?,
-      studyMode: (fields[7] as List?)?.cast<String>(),
-      academicSemester: fields[8] as String?,
+      year: fields[6] as String?,
+      studyMode: fields[7] as String?,
+      semester: fields[8] as String?,
     );
   }
 
@@ -46,11 +46,11 @@ class LiberalModelAdapter extends TypeAdapter<LiberalModel> {
       ..writeByte(5)
       ..write(obj.lecturerEmail)
       ..writeByte(6)
-      ..write(obj.academicYear)
+      ..write(obj.year)
       ..writeByte(7)
       ..write(obj.studyMode)
       ..writeByte(8)
-      ..write(obj.academicSemester);
+      ..write(obj.semester);
   }
 
   @override

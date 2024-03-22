@@ -10,5 +10,6 @@ abstract class LiberalRepo{
   Future<(bool, String, LiberalModel?)> deleteLiberal(String id);
   Future<(bool, String)> deleteAllLiberals();
   Future<(bool, String, LiberalModel?)> updateLiberal(LiberalModel venue);
-  Future<List<LiberalModel>> getLiberals();
+  Future<List<LiberalModel>> getLiberals(
+      {required String year, required String sem});
 }

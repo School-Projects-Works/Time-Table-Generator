@@ -6,6 +6,7 @@ import 'package:aamusted_timetable_generator/features/configurations/view/compon
 import 'package:aamusted_timetable_generator/features/configurations/view/components/regular/regular_section.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../provider/config_provider.dart';
 
@@ -41,6 +42,14 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                     if (ref.watch(regularConfigProvider).periods.isNotEmpty ||
                         (ref.watch(eveningConfigProvider).periods.isNotEmpty))
                       FilledButton(
+                        style: FilledButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 15,
+                            ),
+                            backgroundColor: primaryColor),
                         onPressed: () {
                           CustomDialog.showInfo(
                               message:
@@ -69,15 +78,24 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                     const SizedBox(width: 10),
                     fluent.Button(
                         style: fluent.ButtonStyle(
+                          backgroundColor: fluent.ButtonState.all(
+                              Colors.red.withOpacity(.8)),
                           shape: fluent.ButtonState.all(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
                             ),
                           ),
                         ),
-                        child: Text(currentConfig.id != null
-                            ? 'Delete Configurations'
-                            : 'Clear Configurations'),
+                        child: fluent.Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 10),
+                          child: Text(
+                            currentConfig.id != null
+                                ? 'Delete Configurations'
+                                : 'Clear Configurations',
+                            style: getTextStyle(color: Colors.white),
+                          ),
+                        ),
                         onPressed: () {
                           if (currentConfig.id != null) {
                             CustomDialog.showInfo(

@@ -3,13 +3,15 @@ import 'package:aamusted_timetable_generator/features/allocations/provider/cours
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:go_router/go_router.dart';
 import '../../../../config/theme/theme.dart';
 import '../../../../core/widget/custom_dialog.dart';
 import '../../../../core/widget/custom_input.dart';
 import '../../../../core/widget/table/data/models/custom_table_columns_model.dart';
 import '../../../../core/widget/table/data/models/custom_table_rows_model.dart';
 import '../../../../core/widget/table/widgets/custom_table.dart';
+import '../../../venues/data/venue_model.dart';
+import '../components/special_venue_page.dart';
 
 class CoursesTabs extends ConsumerStatefulWidget {
   const CoursesTabs({super.key});
@@ -35,16 +37,18 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
               header: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                            'Please Note: all courses with special venues will be highlighted in red untill you add venued to them',
-                            style: getTextStyle(
-                                color: Colors.red,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500)),
-                      ],
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                              'Please Note: all courses with special venues will be highlighted in red untill you add venued to them',
+                              style: getTextStyle(
+                                  color: Colors.red,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500)),
+                        ],
+                      ),
                     ),
                     SizedBox(
                       width: 600,
@@ -85,6 +89,9 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                     color: courses.currentPageItems[i].specialVenue != null &&
                             courses
                                 .currentPageItems[i].specialVenue!.isNotEmpty &&
+                            courses.currentPageItems[i].specialVenue!
+                                    .toLowerCase() !=
+                                'no' &&
                             (courses.currentPageItems[i].venues == null ||
                                 courses.currentPageItems[i].venues!.isEmpty)
                         ? Colors.red
@@ -133,7 +140,7 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                   title: 'Lecturer',
                   width: 200,
                   cellBuilder: (item) => Text(
-                    item.lecturerName ?? '',
+                    item.lecturerName!.join(','),
                     style: tableTextStyle,
                   ),
                 ),
@@ -156,58 +163,75 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                 CustomTableColumn(
                   title: 'Special Venues',
                   width: 400,
-                  cellBuilder: (item) =>
-                      item.specialVenue != null && item.specialVenue!.isNotEmpty
-                          ? Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12, horizontal: 2),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(color: Colors.red, width: 1),
-                              ),
-                              child: fluent.Row(
-                                children: [
-                                  Expanded(
-                                    child: item.specialVenue != null &&
-                                            (item.venues != null &&
-                                                item.venues!.isNotEmpty)
-                                        ? Text(
-                                            item.venues != null
-                                                ? item.venues!.join(',')
-                                                : '',
-                                            style: tableTextStyle.copyWith(
-                                                color: Colors.green,
-                                                fontSize: 12),
-                                          )
-                                        : Text(
-                                            item.specialVenue!,
-                                            style: tableTextStyle,
-                                          ),
-                                  ),
-                                  //click to select icon
-                                  fluent.Container(
-                                      padding: const EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(2),
-                                        color: Colors.red,
-                                        //shadow
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(.5),
-                                            spreadRadius: 1,
-                                            blurRadius: 1,
-                                            offset: const Offset(0, 1),
-                                          ),
-                                        ],
+                  cellBuilder: (item) => item.specialVenue != null &&
+                          item.specialVenue!.isNotEmpty &&
+                          item.specialVenue!.toLowerCase() != 'no'
+                      ? Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 2),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                                color: item.venues != null
+                                    ? Colors.green
+                                    : Colors.red,
+                                width: 1),
+                          ),
+                          child: fluent.Row(
+                            children: [
+                              Expanded(
+                                child: item.specialVenue != null &&
+                                        (item.venues != null &&
+                                            item.venues!.isNotEmpty &&
+                                            item.specialVenue!.toLowerCase() !=
+                                                'no')
+                                    ? Text(
+                                        item.venues != null
+                                            ? item.venues!.join(',')
+                                            : '',
+                                        style: tableTextStyle.copyWith(
+                                            color: Colors.green, fontSize: 12),
+                                      )
+                                    : Text(
+                                        item.specialVenue!,
+                                        style: tableTextStyle,
                                       ),
-                                      child: const Icon(Icons.add))
-                                ],
                               ),
-                            )
-                          : Text(
-                              'Not Required',
-                              style: tableTextStyle,
-                            ),
+                              //click to select icon
+                              GestureDetector(
+                                onTap: () {
+                                  context.pushNamed('special_venue_page',
+                                      pathParameters: {'id': item.id!});
+                                },
+                                child: fluent.Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(2),
+                                      color: item.venues != null
+                                          ? Colors.green
+                                          : Colors.red,
+                                      //shadow
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(.5),
+                                          spreadRadius: 1,
+                                          blurRadius: 1,
+                                          offset: const Offset(0, 1),
+                                        ),
+                                      ],
+                                    ),
+                                    child: const Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                    )),
+                              )
+                            ],
+                          ),
+                        )
+                      : Text(
+                          'Not Required',
+                          style: tableTextStyle,
+                        ),
                 ),
                 // delete button
                 CustomTableColumn(
@@ -291,5 +315,12 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
         ],
       ),
     );
+  }
+
+  List<VenueModel> venues = [];
+  void addVenue(VenueModel venue) {
+    setState(() {
+      venues.add(venue);
+    });
   }
 }

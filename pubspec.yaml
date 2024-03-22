@@ -45,6 +45,7 @@ dependencies:
   data_table_2: ^2.5.8
   uuid: ^4.1.0
   collection: ^1.18.0
+  desktop_multi_window: ^0.2.0
 
  
 

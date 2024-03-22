@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-
 part 'liberal_model.g.dart';
 
 @HiveType(typeId: 5)
@@ -17,11 +16,11 @@ class LiberalModel {
   @HiveField(5)
   String? lecturerEmail;
   @HiveField(6)
-  String? academicYear;
+  String? year;
   @HiveField(7)
-  List<String>? studyMode;
+  String? studyMode;
   @HiveField(8)
-  String? academicSemester;
+  String? semester;
   LiberalModel({
     this.id,
     this.code,
@@ -29,9 +28,9 @@ class LiberalModel {
     this.lecturerId,
     this.lecturerName,
     this.lecturerEmail,
-    this.academicYear,
+    this.year,
     this.studyMode,
-    this.academicSemester,
+    this.semester,
   });
 
 }

@@ -28,7 +28,8 @@ class LecturerUseCase extends LectureRepo {
   }
 
   @override
-  Future<bool> deleteAllLectures(String year, String semester, String department) {
+  Future<bool> deleteAllLectures(
+      String year, String semester, String department) {
     // TODO: implement deleteAllLectures
     throw UnimplementedError();
   }
@@ -40,8 +41,7 @@ class LecturerUseCase extends LectureRepo {
   }
 
   @override
-  Future<List<LecturerModel>> getLectures(String year,
-      String semester) async {
+  Future<List<LecturerModel>> getLectures(String year, String semester) async {
     try {
       final Box<LecturerModel> lecturerBox =
           await Hive.openBox<LecturerModel>('lecturers');
@@ -50,10 +50,8 @@ class LecturerUseCase extends LectureRepo {
       }
       //get all lecturers where academic year and semester is the same
       var allLecturers = lecturerBox.values
-          .where((element) =>
-              element.year == year &&
-              
-              element.semester == semester)
+          .where(
+              (element) => element.year == year && element.semester == semester)
           .toList();
       return Future.value(allLecturers);
     } catch (e) {
@@ -61,7 +59,8 @@ class LecturerUseCase extends LectureRepo {
     }
   }
 
-  Future<bool> deleteAllLecturers(String year, String semester, String department) async {
+  Future<bool> deleteAllLecturers(
+      String year, String semester, String department) async {
     try {
       final Box<LecturerModel> lecturerBox =
           await Hive.openBox<LecturerModel>('lecturers');
@@ -73,8 +72,7 @@ class LecturerUseCase extends LectureRepo {
       if (department.toLowerCase() == 'All'.toLowerCase()) {
         var allClassesToDelete = lecturerBox.values
             .where((element) =>
-                element.year == year &&
-                element.semester == semester)
+                element.year == year && element.semester == semester)
             .toList();
         await lecturerBox
             .deleteAll(allClassesToDelete.map((e) => e.id).toList());
@@ -109,17 +107,18 @@ class LecturerUseCase extends LectureRepo {
       var allLecturers = lecturerBox.values.toList();
       //get all lecturers where academic year and semester is the same
       var allLecturersToCompare = allLecturers
-          .where((element) =>
-              element.year == year &&
-              element.semester == semester)
+          .where(
+              (element) => element.year == year && element.semester == semester)
           .toList();
       for (var element in list) {
         if (allLecturersToCompare.any((e) => e.id == element.id)) {
           var lecturer =
-              allLecturersToCompare.firstWhere((e) => e.id == element.id);
+              allLecturersToCompare.where((e) => e.id == element.id).firstOrNull;
+              if(lecturer == null) continue;
           lecturer.courses = [...lecturer.courses!, ...element.courses!];
           await lecturerBox.put(lecturer.id, lecturer);
-        }else{
+        } else {
+          element.classes = [];
           await lecturerBox.put(element.id, element);
         }
       }

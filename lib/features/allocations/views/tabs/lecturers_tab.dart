@@ -65,8 +65,8 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
               item: lecturers.currentPageItems[i],
               context: context,
               index: i,
-              isHovered:
-                  ref.watch(lecturertemHovered) == lecturers.currentPageItems[i],
+              isHovered: ref.watch(lecturertemHovered) ==
+                  lecturers.currentPageItems[i],
               selectRow: (value) {},
               isSelected: false,
               onHover: (value) {
@@ -116,7 +116,7 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
             title: 'Courses',
             width: 200,
             cellBuilder: (item) => Text(
-              item.courses!.join(','),
+              item.courses != null ? item.courses!.join(',') : '',
               style: tableTextStyle,
             ),
           ),
@@ -124,7 +124,7 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
             title: 'Classes',
             width: 200,
             cellBuilder: (item) => Text(
-              item.classes!.join(','),
+              item.classes != null ? item.classes!.join(',') : '',
               style: tableTextStyle,
             ),
           ),
@@ -201,7 +201,6 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
             ),
           ),
         ],
-       
       ),
     );
   }

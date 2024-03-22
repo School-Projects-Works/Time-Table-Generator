@@ -1,4 +1,3 @@
-
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,6 +16,7 @@ bool get isDesktop {
     TargetPlatform.macOS,
   ].contains(defaultTargetPlatform);
 }
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DatabaseUseCase().init();
@@ -38,7 +38,7 @@ void main() async {
         TitleBarStyle.hidden,
         windowButtonVisibility: false,
       );
-      await windowManager.setMinimumSize(const Size(1200, 600));
+      await windowManager.setMinimumSize(const Size(1200, 800));
       await windowManager.show();
       await windowManager.setPreventClose(true);
       await windowManager.setSkipTaskbar(false);
@@ -48,38 +48,31 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    
-        return FluentApp.router(
-          title: 'AAMUSTED TIMETABLE GENERATOR',
-          debugShowCheckedModeBanner: false,
-        
-          darkTheme: FluentThemeData(
-            brightness: Brightness.dark,
-           
-            visualDensity: VisualDensity.standard,
-            focusTheme: FocusThemeData(
-              glowFactor: is10footScreen(context) ? 2.0 : 0.0,
-            ),
-          ),
-          theme: FluentThemeData(
-           
-            visualDensity: VisualDensity.standard,
-            focusTheme: FocusThemeData(
-              glowFactor: is10footScreen(context) ? 2.0 : 0.0,
-            ),
-          ),
-           builder: FlutterSmartDialog.init(),
-          routeInformationParser: router.routeInformationParser,
-          routerDelegate: router.routerDelegate,
-          routeInformationProvider: router.routeInformationProvider,
-          
-        );
-    
+    return FluentApp.router(
+      title: 'AAMUSTED TIMETABLE GENERATOR',
+      debugShowCheckedModeBanner: false,
+      darkTheme: FluentThemeData(
+        brightness: Brightness.dark,
+        visualDensity: VisualDensity.standard,
+        focusTheme: FocusThemeData(
+          glowFactor: is10footScreen(context) ? 2.0 : 0.0,
+        ),
+      ),
+      theme: FluentThemeData(
+        visualDensity: VisualDensity.standard,
+        focusTheme: FocusThemeData(
+          glowFactor: is10footScreen(context) ? 2.0 : 0.0,
+        ),
+      ),
+      builder: FlutterSmartDialog.init(),
+      routeInformationParser: router.routeInformationParser,
+      routerDelegate: router.routerDelegate,
+      routeInformationProvider: router.routeInformationProvider,
+    );
   }
 }

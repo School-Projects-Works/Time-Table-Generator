@@ -104,7 +104,7 @@ class CustomDialog {
           height: 250,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-               color: Colors.white,
+              color: Colors.white,
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.5),
@@ -293,12 +293,29 @@ class CustomDialog {
   static Future<void> showCustom(
       {required Widget ui,
       SmartDialogController? controller,
-      double? width}) async {
+      double? width,
+      double? height}) async {
     SmartDialog.show(
+      alignment: Alignment.center,
+      animationType: SmartAnimationType.centerScale_otherSlide,
+      permanent: false,
+      useAnimation: true,
+      clickMaskDismiss: false,
       controller: controller,
       maskColor: Colors.transparent,
       builder: (_) {
-        return SizedBox(width: width ?? 900, child: ui);
+        return Card(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          elevation: 10,
+          child: SizedBox(
+            width: width ?? 900,
+            height: height,
+            child: ui,
+          ),
+        );
       },
     );
   }

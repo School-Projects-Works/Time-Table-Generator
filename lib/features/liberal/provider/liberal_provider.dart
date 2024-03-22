@@ -143,30 +143,34 @@ class LiberalNotifier extends StateNotifier<TableModel<LiberalModel>> {
 
 final liberalItemHovered = StateProvider<LiberalModel?>((ref) => null);
 
-
-final liberalDataImportProvider = StateNotifierProvider<LiberalDataImport, void>((ref) {
+final liberalDataImportProvider =
+    StateNotifierProvider<LiberalDataImport, void>((ref) {
   return LiberalDataImport();
 });
 
 class LiberalDataImport extends StateNotifier<void> {
   LiberalDataImport() : super(null);
 
-  void importData(WidgetRef ref)async {
-     CustomDialog.showLoading(message: 'Importing Liberal Courses....');
-     var academicYear = ref.watch(academicYearProvider);
+  void importData(WidgetRef ref) async {
+    CustomDialog.showLoading(message: 'Importing Liberal Courses....');
+    var academicYear = ref.watch(academicYearProvider);
     var academicSemester = ref.watch(semesterProvider);
     //open file picker
     String? pickedFilePath = await AppUtils.pickExcelFIle();
     if (pickedFilePath != null) {
-      var (success, message, liberal,lecturers) =
-          await LiberalUseCase().importLiberal(path: pickedFilePath, academicYear: academicYear, semester: academicSemester);
+      var (success, message, liberal, lecturers) = await LiberalUseCase()
+          .importLiberal(
+              path: pickedFilePath,
+              academicYear: academicYear,
+              semester: academicSemester);
       if (success) {
         //save to db
         var (success, message) = await LiberalUseCase().addLiberals(liberal!);
         if (success) {
           ref.read(liberalsDataProvider.notifier).addLiberal(liberal);
         }
-        var (newSuccess, newMessage) = await LecturerUseCase().appendLectuers(list: lecturers!, year: academicYear, semester: academicSemester);
+        var (newSuccess, newMessage) = await LecturerUseCase().appendLectuers(
+            list: lecturers!, year: academicYear, semester: academicSemester);
         if (newSuccess) {
           ref.read(lecturersDataProvider.notifier).addLecturers(lecturers);
         }
@@ -176,12 +180,14 @@ class LiberalDataImport extends StateNotifier<void> {
         CustomDialog.dismiss();
         CustomDialog.showError(message: message);
       }
+    } else {
+      CustomDialog.dismiss();
     }
   }
 
-  void downloadTemplate()async {
+  void downloadTemplate() async {
     CustomDialog.showLoading(message: 'Downloading template...');
-     var (success, message) = await LiberalUseCase().downloadTemplate();
+    var (success, message) = await LiberalUseCase().downloadTemplate();
     if (success) {
       CustomDialog.dismiss();
       //open file
