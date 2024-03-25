@@ -231,8 +231,8 @@ class TableGenProvider extends StateNotifier<void> {
         .where((element) =>
             element.requireSpecialVenue && element.venues.isNotEmpty)
         .toList();
-    var specialTables =
-        generateSpecialTables(lccpWithSpecialVenue, specialVTPS, config,tables);
+    var specialTables = generateSpecialTables(
+        lccpWithSpecialVenue, specialVTPS, config, tables);
     tables.addAll(specialTables);
     //mark all used venues as booked
     for (var table in specialTables) {
@@ -400,21 +400,37 @@ class TableGenProvider extends StateNotifier<void> {
     return tables;
   }
 
-  List<TablesModel> generateSpecialTables(List<LCCPModel> lccpWithSpecialVenue,
-      List<VTPModel> specialVTPS, ConfigModel config,List<TablesModel> generatedList) {
+  List<TablesModel> generateSpecialTables(
+      List<LCCPModel> lccpWithSpecialVenue,
+      List<VTPModel> specialVTPS,
+      ConfigModel config,
+      List<TablesModel> generatedList) {
     var data = StudyModeModel.fromMap(config.regular);
     List<TablesModel> tables = [];
-    var reg = lccpWithSpecialVenue. where((element) => element.studyMode.toLowerCase().replaceAll(' ', '') == 'regular'.toLowerCase()).toList();
-    var even = lccpWithSpecialVenue. where((element) => element.studyMode.toLowerCase().replaceAll(' ', '') == 'evening'.toLowerCase()).toList();
-    for(var regLCCP in reg){
-      
+    var reg = lccpWithSpecialVenue
+        .where((element) =>
+            element.studyMode.toLowerCase().replaceAll(' ', '') ==
+            'regular'.toLowerCase())
+        .toList();
+    var even = lccpWithSpecialVenue
+        .where((element) =>
+            element.studyMode.toLowerCase().replaceAll(' ', '') ==
+            'evening'.toLowerCase())
+        .toList();
+        int count = 0;
+    for (var regLCCP in reg) {
+      var isLibLevel = regLCCP.level == data.regLibLevel;
+      var freeVenue = isLibLevel
+          ? specialVTPS.where((element) => element.isBooked == false&& element.day!=data.regLibDay&& element.period!=data.regLibPeriod!['period']).toList()
+          : specialVTPS.where((element) => element.isBooked == false).toList();
+      print('$count : ${freeVenue.length}');
+      count++;
     }
-    
-    print('Total Special Tables: ${lccpWithSpecialVenue.length}');
-    print('Regular Special Tables: ${reg.length}');
-    print('Evening Special Tables: ${even.length}');
 
-    
+    // print('Total Special Tables: ${lccpWithSpecialVenue.length}');
+    // print('Regular Special Tables: ${reg.length}');
+    // print('Evening Special Tables: ${even.length}');
+
     return tables;
   }
 }
