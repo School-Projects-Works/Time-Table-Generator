@@ -114,7 +114,7 @@ class _CustomTableState<TResult extends Object>
                                 )
                               : Center(
                                   child: Text(
-                                    'No Data Found',
+                                    'No Data Found for the Selected Academic Year and Semester',
                                     style:
                                         Theme.of(context).textTheme.labelLarge,
                                   ),

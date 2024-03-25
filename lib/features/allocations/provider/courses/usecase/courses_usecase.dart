@@ -4,7 +4,7 @@ import '../repo/course_repo.dart';
 
 class CoursesUseCase extends CoursesRepo {
   @override
-  Future<bool> addCourses(List<CourseModel> courses) async{
+  Future<List<CourseModel>> addCourses(List<CourseModel> courses) async{
    try{
       //! saving courses=========================================
       final Box<CourseModel> courseBox =
@@ -22,49 +22,16 @@ class CoursesUseCase extends CoursesRepo {
           .toList();
       await courseBox.deleteAll(allCoursesToDelete.map((e) => e.id).toList());
       await courseBox.putAll({for (var e in courses) e.id: e});
-      return true;
+      var allCourses = courseBox.values
+          .where(
+              (element) => element.year == courses[0].year && element.semester == courses[0].semester)
+          .toList();
+      return allCourses;
    }catch(_){
-      return false;
+      return [];
    }
   }
 
-  @override
-  Future<bool> deleteAllCourses(String academicYear, String academicSemester, String department)async {
-       try {
-      final Box<CourseModel> courseBox =
-          await Hive.openBox<CourseModel>('courses');
-      //check if box is open
-      if (!courseBox.isOpen) {
-        await Hive.openBox('courses');
-      }
-      //get all classes where academic year and semester is the same
-      if (department.toLowerCase() == 'All'.toLowerCase()) {
-        var allClassesToDelete = courseBox.values
-            .where((element) =>
-                element.year == academicYear &&              
-                element.semester == academicSemester)
-            .toList();
-        await courseBox.deleteAll(allClassesToDelete.map((e) => e.id).toList());
-        return true;
-      }
-      var allCourseToDelete = courseBox.values
-          .where((element) =>
-              element.year == academicYear &&          
-              element.department == department &&
-              element.semester == academicSemester)
-          .toList();
-      await courseBox.deleteAll(allCourseToDelete.map((e) => e.id).toList());
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  @override
-  Future<bool> deleteCourse(String id) {
-    // TODO: implement deleteCourse
-    throw UnimplementedError();
-  }
 
   @override
   Future<List<CourseModel>> getCourses(String year, String semester)async {

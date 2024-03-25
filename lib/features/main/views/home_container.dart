@@ -1,12 +1,9 @@
-import 'dart:math';
-
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/main/views/components/window_buttons.dart';
 import 'package:aamusted_timetable_generator/generated/assets.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
-import '../../../config/routes/routes.dart';
 import '../../../core/data/constants/constant_data.dart';
 import '../provider/main_provider.dart';
 import 'components/side_bar.dart';
@@ -46,11 +43,11 @@ class _MyHomePageState extends ConsumerState<MainPage> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.shellContext != null) {
-      if (router.canPop() == false) {
-        setState(() {});
-      }
-    }
+    // if (widget.shellContext != null) {
+    //   if (router.canPop() == false) {
+    //     setState(() {});
+    //   }
+    // }
     var dataFuture = ref.watch(dbDataFutureProvider);
     return NavigationView(
         key: viewKey,

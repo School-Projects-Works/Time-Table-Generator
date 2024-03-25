@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/classes/class_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';
@@ -132,10 +131,10 @@ class AllocationUseCase extends AllocationRepo {
         if (lecturers.any((element) => element.id == lecturer.id)) {
           var existenLecturer =
               lecturers.firstWhere((element) => element.id == lecturer.id);
-          existenLecturer.classes!.addAll(lecturer.classes!
-              .where((element) => !existenLecturer.classes!.contains(element)));
-          existenLecturer.courses!.addAll(lecturer.courses!
-              .where((element) => !existenLecturer.courses!.contains(element)));
+          existenLecturer.classes.addAll(lecturer.classes
+              .where((element) => !existenLecturer.classes.contains(element)));
+          existenLecturer.courses.addAll(lecturer.courses
+              .where((element) => !existenLecturer.courses.contains(element)));
           lecturers.removeWhere((element) => element.id == lecturer.id);
           lecturers.add(existenLecturer);
         } else {
@@ -201,7 +200,7 @@ class AllocationUseCase extends AllocationRepo {
           var row = classesSheet.row(i);
           if (validateClassRow(row)) {
             classes.add(ClassModel(
-              id: '${row[1]!.value.toString()}$department'.hashCode.toString(),
+              id: '${row[1]!.value.toString()}$department'.toLowerCase().hashCode.toString(),
               level: row[0]!.value.toString(),
               name: row[1]!.value.toString(),
               size: row[2] != null && row[2]!.value != null
@@ -224,21 +223,70 @@ class AllocationUseCase extends AllocationRepo {
       for (int i = rowStart; i < allocationsSheet.maxRows; i++) {
         var row = allocationsSheet.row(i);
         if (validateRow(row)) {
-          //? Courses extraction.....................................................
-          var courseId = row[0]!.value.toString().toLowerCase();
-          var exist = courses.any((element) => element.id == courseId);
+          var courseId =
+              row[0]!.value.toString().toLowerCase().replaceAll(' ', '');
           var lecturerId =
               row[5]!.value.toString().trim().replaceAll(' ', '').toLowerCase();
           var lecturerName = row[6]!.value.toString();
+          //? Lecturers extraction.....................................................
+          LecturerModel lecturer = LecturerModel(
+            courses: [courseId],
+            classes: [],
+            id: lecturerId,
+            lecturerName: lecturerName,
+            department: department,
+            semester: semester,
+            year: year,
+            lecturerEmail: row[7] != null && row[7]!.value != null
+                ? row[7]!.value.toString()
+                : '',
+          );
+          var level = row[2]!.value.toString().trim().replaceAll(' ', '');
+          var lecturerClass = row[8] != null && row[8]!.value != null
+              ? row[8]!.value.toString()
+              : '';
+          if (lecturerClass.isNotEmpty) {
+            var lecturerClasses = lecturerClass.split(',');
+            for (var aClass in lecturerClasses) {
+              var theClass = classes
+                  .where((element) =>
+                      element.name!.trim().toLowerCase() ==
+                      aClass.trim().toLowerCase())
+                  .firstOrNull;
+              if (theClass != null) {
+                lecturer.classes.add(theClass.toMap());
+              }
+            }
+          } else {
+            // add all classes with same level to lecturer
+            lecturer.classes = classes
+                .where((element) =>
+                    element.level.trim().replaceAll(' ', '') == level)
+                .map((e) => e.toMap())
+                .toList();
+          }
+
+          if (!lecturers.any((element) => element.id == lecturerId)) {
+            lecturers.add(lecturer);
+          } else {
+            var existenLecturer =
+                lecturers.firstWhere((element) => element.id == lecturerId);
+            existenLecturer.classes.addAll(lecturer.classes.where(
+                (element) => !existenLecturer.classes.contains(element)));
+            existenLecturer.courses.addAll(lecturer.courses.where(
+                (element) => !existenLecturer.courses.contains(element)));
+            lecturers.removeWhere((element) => element.id == lecturerId);
+            lecturers.add(existenLecturer);
+          }
+          //? Courses extraction.....................................................
+          var exist = courses.any((element) => element.id == courseId);
           if (exist) {
             //append lecturer name and id to the course if not already added
-
             var course =
                 courses.firstWhere((element) => element.id == courseId);
-            if (!course.lecturerId!.contains(lecturerId)) {
-              course.lecturerId!.add(lecturerId);
-              course.lecturerName!.add(lecturerName);
-              // replace the course in the courses list
+            if (!course.lecturer
+                .any((element) => element['id'] == lecturerId)) {
+              course.lecturer.add(lecturer.toMap());
               courses.removeWhere((element) => element.id == courseId);
               courses.add(course);
             }
@@ -254,60 +302,13 @@ class AllocationUseCase extends AllocationRepo {
                 specialVenue: row[4] != null && row[4]!.value != null
                     ? row[4]!.value.toString()
                     : '',
-                lecturerId: [lecturerId],
-                lecturerName: [lecturerName],
+                lecturer: [lecturer.toMap()],
                 department: department,
                 studyMode: 'Regular',
                 semester: semester,
                 year: year));
           }
           //! End of courses extraction.....................................................
-          //? Lecturers extraction.....................................................
-          LecturerModel lecturer = LecturerModel()
-            ..classes = []
-            ..courses = [courseId]
-            ..id = lecturerId
-            ..lecturerName = lecturerName
-            ..department = department
-            ..semester = semester
-            ..year = year
-            ..lecturerEmail = row[7] != null && row[7]!.value != null
-                ? row[7]!.value.toString()
-                : '';
-          var level = row[2]!.value.toString().trim().replaceAll(' ', '');
-          var lecturerClass = row[8] != null && row[8]!.value != null
-              ? row[8]!.value.toString()
-              : '';
-          if (lecturerClass.isNotEmpty) {
-            var lecturerClasses = lecturerClass.split(',');
-            for (var aClass in lecturerClasses) {
-              if (classes.any((element) =>
-                  element.name!.trim().toLowerCase() ==
-                  aClass.trim().toLowerCase())) {
-                lecturer.classes!.add(aClass);
-              }
-            }
-          } else {
-            // add all classes with same level to lecturer
-            lecturer.classes = classes
-                .where((element) =>
-                    element.level!.trim().replaceAll(' ', '') == level)
-                .map((e) => e.name!)
-                .toList();
-          }
-
-          if (!lecturers.any((element) => element.id == lecturerId)) {
-            lecturers.add(lecturer);
-          } else {
-            var existenLecturer =
-                lecturers.firstWhere((element) => element.id == lecturerId);
-            existenLecturer.classes!.addAll(lecturer.classes!.where(
-                (element) => !existenLecturer.classes!.contains(element)));
-            existenLecturer.courses!.addAll(lecturer.courses!.where(
-                (element) => !existenLecturer.courses!.contains(element)));
-            lecturers.removeWhere((element) => element.id == lecturerId);
-            lecturers.add(existenLecturer);
-          }
         }
       }
       return (classes, courses, lecturers);
@@ -371,22 +372,69 @@ class AllocationUseCase extends AllocationRepo {
     for (int i = rowStart; i < allocationsSheet.maxRows; i++) {
       var row = allocationsSheet.row(i);
       if (validateRow(row)) {
-        //? Courses extraction.....................................................
         var courseId = 'E${row[0]!.value.toString().toLowerCase()}';
-        var exist = courses.any((element) => element.id == courseId);
-
         var lecturerId =
             row[5]!.value.toString().trim().replaceAll(' ', '').toLowerCase();
         var lecturerName = row[6]!.value.toString();
+        //? Lecturers extraction.....................................................
+        LecturerModel lecturer = LecturerModel(
+          courses: [courseId],
+          classes: [],
+          id: lecturerId,
+          lecturerName: lecturerName,
+          department: department,
+          semester: semester,
+          year: year,
+          lecturerEmail: row[7] != null && row[7]!.value != null
+              ? row[7]!.value.toString()
+              : '',
+        );
+
+        var level = row[2]!.value.toString().trim().replaceAll(' ', '');
+        var lecturerClass = row[8] != null && row[8]!.value != null
+            ? row[8]!.value.toString()
+            : '';
+        if (lecturerClass.isNotEmpty) {
+          var lecturerClasses = lecturerClass.split(',');
+          for (var aClass in lecturerClasses) {
+            var theClass = classes
+                .where((element) =>
+                    element.name!.trim().toLowerCase() ==
+                    aClass.trim().toLowerCase())
+                .firstOrNull;
+            if (theClass != null) {
+              lecturer.classes.add(theClass.toMap());
+            }
+          }
+        } else {
+          // add all classes with same level to lecturer
+          lecturer.classes = classes
+              .where((element) =>
+                  element.level.trim().replaceAll(' ', '') == level)
+              .map((e) => e.toMap())
+              .toList();
+        }
+
+        if (!lecturers.any((element) => element.id == lecturerId)) {
+          lecturers.add(lecturer);
+        } else {
+          var existenLecturer =
+              lecturers.firstWhere((element) => element.id == lecturerId);
+          existenLecturer.classes.addAll(lecturer.classes
+              .where((element) => !existenLecturer.classes.contains(element)));
+          existenLecturer.courses.addAll(lecturer.courses
+              .where((element) => !existenLecturer.courses.contains(element)));
+          lecturers.removeWhere((element) => element.id == lecturerId);
+          lecturers.add(existenLecturer);
+        }
+        //? Courses extraction.....................................................
+
+        var exist = courses.any((element) => element.id == courseId);
         if (exist) {
           //append lecturer name and id to the course if not already added
           var course = courses.firstWhere((element) => element.id == courseId);
-          if (!course.lecturerId!.contains(lecturerId)) {
-            course.lecturerId!.add(lecturerId);
-            course.lecturerName!.add(
-              lecturerName,
-            );
-            // replace the course in the courses list
+          if (!course.lecturer.any((element) => element['id'] == lecturerId)) {
+            course.lecturer.add(lecturer.toMap());
             courses.removeWhere((element) => element.id == courseId);
             courses.add(course);
           }
@@ -402,60 +450,13 @@ class AllocationUseCase extends AllocationRepo {
               specialVenue: row[4] != null && row[4]!.value != null
                   ? row[4]!.value.toString()
                   : '',
-              lecturerId: [lecturerId],
-              lecturerName: [lecturerName],
+              lecturer: [lecturer.toMap()],
               department: department,
               studyMode: 'Evening',
               semester: semester,
               year: year));
         }
         //! End of courses extraction.....................................................
-        //? Lecturers extraction.....................................................
-        LecturerModel lecturer = LecturerModel()
-          ..classes = []
-          ..courses = [courseId]
-          ..id = lecturerId
-          ..lecturerName = lecturerName
-          ..department = department
-          ..semester = semester
-          ..year = year
-          ..lecturerEmail = row[7] != null && row[7]!.value != null
-              ? row[7]!.value.toString()
-              : '';
-        var level = row[2]!.value.toString().trim().replaceAll(' ', '');
-        var lecturerClass = row[8] != null && row[8]!.value != null
-            ? row[8]!.value.toString()
-            : '';
-        if (lecturerClass.isNotEmpty) {
-          var lecturerClasses = lecturerClass.split(',');
-          for (var aClass in lecturerClasses) {
-            if (classes.any((element) =>
-                element.name!.trim().toLowerCase() ==
-                aClass.trim().toLowerCase())) {
-              lecturer.classes!.add(aClass);
-            }
-          }
-        } else {
-          // add all classes with same level to lecturer
-          lecturer.classes = classes
-              .where((element) =>
-                  element.level!.trim().replaceAll(' ', '') == level)
-              .map((e) => e.name!)
-              .toList();
-        }
-
-        if (!lecturers.any((element) => element.id == lecturerId)) {
-          lecturers.add(lecturer);
-        } else {
-          var existenLecturer =
-              lecturers.firstWhere((element) => element.id == lecturerId);
-          existenLecturer.classes!.addAll(lecturer.classes!
-              .where((element) => !existenLecturer.classes!.contains(element)));
-          existenLecturer.courses!.addAll(lecturer.courses!
-              .where((element) => !existenLecturer.courses!.contains(element)));
-          lecturers.removeWhere((element) => element.id == lecturerId);
-          lecturers.add(existenLecturer);
-        }
       }
     }
     return (classes, courses, lecturers);

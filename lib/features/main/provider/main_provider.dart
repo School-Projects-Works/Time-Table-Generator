@@ -64,7 +64,7 @@ class ClassesDataProvider extends StateNotifier<List<ClassModel>> {
   }
 
   void addClass(List<ClassModel> classModel) {
-    state = [...state, ...classModel];
+    state = [...classModel];
   }
 
   void deleteClass(String id) {
@@ -85,7 +85,7 @@ class CoursesDataProvider extends StateNotifier<List<CourseModel>> {
   }
 
   void addCourses(List<CourseModel> courses) {
-    state = [...state, ...courses];
+    state = [...courses];
   }
 
   void deleteCourse(String id) {
@@ -115,16 +115,15 @@ class LecturersDataProvider extends StateNotifier<List<LecturerModel>> {
   }
 
   void addLecturers(List<LecturerModel> lecturers) {
-    //add to state or replace if already exist
-    List<LecturerModel> newState = [];
-    for (var element in lecturers) {
-      state = state.map((e) {
-        if (e.id == element.id) {
-          return element;
-        }
-        return e;
-      }).toList();
-    }
+    // for (var element in lecturers) {
+    //   state = state.map((e) {
+    //     if (e.id == element.id) {
+    //       return element;
+    //     }
+    //     return e;
+    //   }).toList();
+    // }
+    state = [...lecturers];
   }
 
   void deleteLecturer(String id) {

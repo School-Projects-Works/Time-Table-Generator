@@ -1,31 +1,36 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
-import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../main/provider/main_provider.dart';
 import '../data/config/config_model.dart';
 import '../usecase/config_usecase.dart';
-import '../view/components/evening/provider/evening_config_provider.dart';
 import '../view/components/regular/provider/regular_config_provider.dart';
 
 final configFutureProvider = FutureProvider<ConfigModel>((ref) async {
   String academicYear = ref.watch(academicYearProvider);
   String academicSemester = ref.watch(semesterProvider);
+  var id = '$academicYear-$academicSemester'
+      .trim()
+      .replaceAll(' ', '')
+      .toLowerCase()
+      .replaceAll('/', '-');
   var configs = await ConfigUsecase().getConfigurations();
   var config = configs
-      .where((element) =>
+      .where((element) =>element.id == id&&
           element.year == academicYear && element.semester == academicSemester)
       .toList();
   if (config.isNotEmpty) {
     var currentConfig = config[0];
     var regularConfig = currentConfig.regular;
-    var eveningConfig = currentConfig.evening;
     ref.read(regularConfigProvider.notifier).mode(regularConfig);
-    ref.read(eveningConfigProvider.notifier).mode(eveningConfig);
     ref.read(configurationProvider.notifier).setConfig(currentConfig);
     return currentConfig;
   } else {
-    return ConfigModel(regular: {}, evening: {});
+    ref.read(regularConfigProvider.notifier).mode({});
+    ref
+        .read(configurationProvider.notifier)
+        .setConfig(ConfigModel(regular: {}));
+    return ConfigModel(regular: {});
   }
 });
 
@@ -35,16 +40,23 @@ final configurationProvider =
 });
 
 class ConfigurationNotifier extends StateNotifier<ConfigModel> {
-  ConfigurationNotifier() : super(ConfigModel(regular: {}, evening: {}));
+  ConfigurationNotifier() : super(ConfigModel(regular: {},));
 
   void saveConfiguration(BuildContext context, WidgetRef ref) async {
     try {
       CustomDialog.dismiss();
       CustomDialog.showLoading(message: 'Saving configuration..');
+      var year = ref.watch(academicYearProvider);
+      var semester = ref.watch(semesterProvider);
+      var id = '$year-$semester'
+          .trim()
+          .replaceAll(' ', '')
+          .toLowerCase()
+          .replaceAll('/', '-');
       state = state.copyWith(
-        id: () => AppUtils.getId(),
-        year: () => ref.watch(academicYearProvider),
-        semester: () => ref.watch(semesterProvider),
+        id: () => id,
+        year: () => year,
+        semester: () => semester,
       );
       var (success, _, message) =
           await ConfigUsecase().addConfigurations(state);
@@ -91,7 +103,6 @@ class ConfigurationNotifier extends StateNotifier<ConfigModel> {
   void clearConfig(BuildContext context) {
     state = ConfigModel(
       regular: {},
-      evening: {},
     );
   }
 
@@ -99,10 +110,12 @@ class ConfigurationNotifier extends StateNotifier<ConfigModel> {
     state = config;
   }
 
-  void studyMode(StudyModeModel regularConfig, StudyModeModel eveningConfig) {
+  void studyMode(StudyModeModel? regularConfig) {
+  
     state = state.copyWith(
-      regular: regularConfig.toMap(),
-      evening: eveningConfig.toMap(),
+      regular: regularConfig != null && regularConfig.days.isNotEmpty
+          ? regularConfig.toMap()
+          : {},
     );
   }
 }

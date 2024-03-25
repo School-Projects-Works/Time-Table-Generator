@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:aamusted_timetable_generator/features/allocations/data/classes/class_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -5,7 +7,7 @@ import '../repo/classes_repo.dart';
 
 class ClassesUsecase extends ClassesRepo {
   @override
-  Future<bool> addClasses(List<ClassModel> classes) async {
+  Future< List<ClassModel>> addClasses(List<ClassModel> classes) async {
     try {
       //! saving classes=========================================
       final Box<ClassModel> classBox =
@@ -23,9 +25,14 @@ class ClassesUsecase extends ClassesRepo {
           .toList();
       await classBox.deleteAll(allClassesToDelete.map((e) => e.id).toList());
       await classBox.putAll({for (var e in classes) e.id: e});
-      return true;
+      var allClasses = classBox.values
+          .where((element) =>
+              element.year == classes[0].year &&
+              element.semester == classes[0].semester)
+          .toList();
+      return  allClasses;
     } catch (_) {
-      return false;
+      return [];
     }
   }
 
@@ -43,15 +50,14 @@ class ClassesUsecase extends ClassesRepo {
       if (department.toLowerCase() == 'All'.toLowerCase()) {
         var allClassesToDelete = classBox.values
             .where((element) =>
-                element.year == year &&             
-                element.semester == semester)
+                element.year == year && element.semester == semester)
             .toList();
         await classBox.deleteAll(allClassesToDelete.map((e) => e.id).toList());
         return true;
       }
       var allClassesToDelete = classBox.values
           .where((element) =>
-              element.year == year &&           
+              element.year == year &&
               element.department == department &&
               element.semester == semester)
           .toList();
@@ -69,8 +75,7 @@ class ClassesUsecase extends ClassesRepo {
   }
 
   @override
-  Future<List<ClassModel>> getClasses(
-      String year, String semester) async {
+  Future<List<ClassModel>> getClasses(String year, String semester) async {
     try {
       final Box<ClassModel> classBox =
           await Hive.openBox<ClassModel>('classes');
@@ -80,9 +85,8 @@ class ClassesUsecase extends ClassesRepo {
       }
       //get all classes where academic year and semester is the same
       var allClasses = classBox.values
-          .where((element) =>
-              element.year == year &&             
-              element.semester == semester)
+          .where(
+              (element) => element.year == year && element.semester == semester)
           .toList();
       return allClasses;
     } catch (_) {

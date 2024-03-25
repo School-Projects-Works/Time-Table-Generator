@@ -27,7 +27,7 @@ class _RegularLiberalSectionState extends ConsumerState<RegularLiberalSection> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    'Regular Leberal Courses'.toUpperCase(),
+                    'Regular/Evening Leberal Courses'.toUpperCase(),
                     style: FluentTheme.of(context).typography.subtitle,
                   ),
                   Text(
@@ -78,9 +78,9 @@ class _RegularLiberalSectionState extends ConsumerState<RegularLiberalSection> {
                                 Expanded(
                                   child: ComboBox(
                                     elevation: 10,
-                                    value: configs.liberalLevel,
+                                    value: configs.regLibLevel,
                                     onChanged: (value) {
-                                      configsNotifier.setLiberalLevel(value);
+                                      configsNotifier.setRegLibLevel(value);
                                     },
                                     placeholder: const Text('Select Level'),
                                     items: levels
@@ -116,9 +116,9 @@ class _RegularLiberalSectionState extends ConsumerState<RegularLiberalSection> {
                                 Expanded(
                                   child: ComboBox(
                                     elevation: 10,
-                                    value: configs.liberalCourseDay,
+                                    value: configs.regLibDay,
                                     onChanged: (value) {
-                                      configsNotifier.setLiberalDay(value);
+                                      configsNotifier.setRegLibDay(value);
                                     },
                                     placeholder: const Text('Select Day'),
                                     items: configs.days
@@ -154,8 +154,8 @@ class _RegularLiberalSectionState extends ConsumerState<RegularLiberalSection> {
                                 Expanded(
                                   child: ComboBox(
                                     elevation: 10,
-                                    value: configs.liberalCoursePeriod != null
-                                        ? configs.liberalCoursePeriod!['period']
+                                    value: configs.regLibPeriod != null
+                                        ? configs.regLibPeriod!['period']
                                         : null,
                                     onChanged: (value) {
                                       configsNotifier
@@ -175,6 +175,83 @@ class _RegularLiberalSectionState extends ConsumerState<RegularLiberalSection> {
                               ],
                             ),
                           ),
+                          const SizedBox(height: 10),
+                          const Divider(
+                            style: DividerThemeData(
+                              thickness: 10,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                         ListTile(
+                            title: Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: Text(
+                                'Which Level of Evening Students will offer Liberal Courses?',
+                                style: FluentTheme.of(context)
+                                    .typography
+                                    .bodyStrong,
+                              ),
+                            ),
+                            subtitle: Row(
+                              children: [
+                                Expanded(
+                                  child: ComboBox(
+                                    elevation: 10,
+                                    value: configs.evenLibLevel,
+                                    onChanged: (value) {
+                                      configsNotifier.setEvenLibLevel(value);
+                                    },
+                                    placeholder: const Text('Select Level'),
+                                    items: levels
+                                        .map((e) => ComboBoxItem(
+                                              value: e,
+                                              child: Text(e),
+                                            ))
+                                        .toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          const Divider(
+                            style: DividerThemeData(
+                              thickness: 10,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          ListTile(
+                            title: Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: Text(
+                                'Which Day of the week will Evening Students have their Liberal Course?',
+                                style: FluentTheme.of(context)
+                                    .typography
+                                    .bodyStrong,
+                              ),
+                            ),
+                            subtitle: Row(
+                              children: [
+                                Expanded(
+                                  child: ComboBox(
+                                    elevation: 10,
+                                    value: configs.evenLibDay,
+                                    onChanged: (value) {
+                                      configsNotifier.setEvenLibDay(value);
+                                    },
+                                    placeholder: const Text('Select Day'),
+                                    items: configs.days
+                                        .map((e) => ComboBoxItem(
+                                              value: e,
+                                              child: Text(e),
+                                            ))
+                                        .toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          
                         ],
                       );
                     }

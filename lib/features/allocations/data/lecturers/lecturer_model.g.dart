@@ -18,13 +18,15 @@ class LecturerModelAdapter extends TypeAdapter<LecturerModel> {
     };
     return LecturerModel(
       id: fields[0] as String?,
-      courses: (fields[1] as List?)?.cast<String>(),
-      classes: (fields[2] as List?)?.cast<String>(),
+      courses: (fields[1] as List).cast<String>(),
+      classes: (fields[2] as List)
+          .map((dynamic e) => (e as Map).cast<String, dynamic>())
+          .toList(),
       lecturerName: fields[3] as String?,
       lecturerEmail: fields[4] as String?,
       department: fields[5] as String?,
-      year: fields[6] as String?,
-      semester: fields[7] as String?,
+      year: fields[6] as String,
+      semester: fields[7] as String,
     );
   }
 

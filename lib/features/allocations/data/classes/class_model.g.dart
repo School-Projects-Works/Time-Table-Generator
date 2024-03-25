@@ -18,15 +18,15 @@ class ClassModelAdapter extends TypeAdapter<ClassModel> {
     };
     return ClassModel(
       id: fields[0] as String?,
-      level: fields[1] as String?,
+      level: fields[1] as String,
       studyMode: fields[2] as String?,
       name: fields[3] as String?,
       size: fields[4] as String?,
       hasDisability: fields[5] as String?,
       department: fields[6] as String?,
       createdAt: fields[7] as String?,
-      year: fields[8] as String?,
-      semester: fields[9] as String?,
+      year: fields[8] as String,
+      semester: fields[9] as String,
     );
   }
 

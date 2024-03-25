@@ -14,38 +14,38 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.6
-  window_manager: ^0.3.6
+  window_manager: ^0.3.8
   flutter_acrylic: ^1.1.3
   system_theme: ^2.3.1
-  flutter_smart_dialog: ^4.9.4
-  font_awesome_flutter: ^10.5.0
-  provider: ^6.0.5
+  flutter_smart_dialog: ^4.9.6
+  font_awesome_flutter: ^10.7.0
+  provider: ^6.1.2
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   intl: ^0.18.1
   open_app_file: ^4.0.2
-  syncfusion_flutter_xlsio: ^23.2.7
-  http: ^1.1.0
-  url_launcher: ^6.1.14
+  syncfusion_flutter_xlsio: ^25.1.35
+  http: ^1.2.1
+  url_launcher: ^6.2.5
   string_similarity: ^2.0.0
-  syncfusion_flutter_pdf: ^23.1.38
-  fluent_ui: ^4.7.5
-  go_router: ^11.1.2
+  syncfusion_flutter_pdf: ^25.1.35
+  fluent_ui: ^4.8.6
+  go_router: ^13.2.1
   firedart:
     git:
       url: https://github.com/BST-Forked-Projects/firedart.git
-  pdf:
-  google_fonts: ^6.1.0
-  file_picker: ^5.5.0
-  riverpod: ^2.4.1
-  flutter_riverpod: ^2.4.1
-  fluttertoast: ^8.2.2
-  excel: ^2.1.0
-  path_provider: ^2.1.1
-  data_table_2: ^2.5.8
-  uuid: ^4.1.0
+  pdf: ^3.10.8
+  google_fonts: ^6.2.1
+  file_picker: ^8.0.0+1
+  riverpod: ^2.5.1
+  flutter_riverpod: ^2.5.1
+  fluttertoast: ^8.2.4
+  excel: ^4.0.3
+  path_provider: ^2.1.2
+  data_table_2: ^2.5.11
+  uuid: ^4.3.3
   collection: ^1.18.0
-  desktop_multi_window: ^0.2.0
+
 
  
 

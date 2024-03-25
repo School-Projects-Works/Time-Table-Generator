@@ -116,7 +116,7 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
             title: 'Courses',
             width: 200,
             cellBuilder: (item) => Text(
-              item.courses != null ? item.courses!.join(',') : '',
+              item.courses.join(','),
               style: tableTextStyle,
             ),
           ),
@@ -124,7 +124,7 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
             title: 'Classes',
             width: 200,
             cellBuilder: (item) => Text(
-              item.classes != null ? item.classes!.join(',') : '',
+              item.classes.map((e) => e['name']).join(','),
               style: tableTextStyle,
             ),
           ),

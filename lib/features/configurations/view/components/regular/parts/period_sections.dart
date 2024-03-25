@@ -26,7 +26,7 @@ class _RegularPeriodsSectionState extends ConsumerState<RegularPeriodsSection> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                'Regular Periods'.toUpperCase(),
+                'Periods Setup'.toUpperCase(),
                 style: FluentTheme.of(context).typography.subtitle,
               ),
               Text(

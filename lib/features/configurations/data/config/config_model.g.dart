@@ -21,14 +21,13 @@ class ConfigModelAdapter extends TypeAdapter<ConfigModel> {
       year: fields[1] as String?,
       semester: fields[2] as String?,
       regular: (fields[3] as Map).cast<String, dynamic>(),
-      evening: (fields[4] as Map).cast<String, dynamic>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, ConfigModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -36,9 +35,7 @@ class ConfigModelAdapter extends TypeAdapter<ConfigModel> {
       ..writeByte(2)
       ..write(obj.semester)
       ..writeByte(3)
-      ..write(obj.regular)
-      ..writeByte(4)
-      ..write(obj.evening);
+      ..write(obj.regular);
   }
 
   @override

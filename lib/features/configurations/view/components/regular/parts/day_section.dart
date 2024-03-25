@@ -22,7 +22,7 @@ class _RegularDaySectionState extends ConsumerState<RegularDaySection> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
-              'Regular Days'.toUpperCase(),
+              'Days Setup'.toUpperCase(),
               style: FluentTheme.of(context).typography.subtitle,
             ),
             Text(

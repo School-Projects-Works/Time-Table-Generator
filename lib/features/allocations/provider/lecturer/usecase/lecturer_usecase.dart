@@ -4,7 +4,7 @@ import '../repo/lecture_repo.dart';
 
 class LecturerUseCase extends LectureRepo {
   @override
-  Future<bool> addLectures(List<LecturerModel> lecturers) async {
+  Future<List<LecturerModel>> addLectures(List<LecturerModel> lecturers) async {
     try {
       final Box<LecturerModel> lecturerBox =
           await Hive.openBox<LecturerModel>('lecturers');
@@ -21,41 +21,33 @@ class LecturerUseCase extends LectureRepo {
       await lecturerBox
           .deleteAll(allLecturersToDelete.map((e) => e.id).toList());
       await lecturerBox.putAll({for (var e in lecturers) e.id: e});
-      return true;
+      var allLecturers = lecturerBox.values
+          .where(
+              (element) => element.year == lecturers[0].year && element.semester == lecturers[0].semester)
+          .toList();
+      return allLecturers;
     } catch (_) {
-      return Future.value(false);
+      return [];
     }
   }
 
-  @override
-  Future<bool> deleteAllLectures(
-      String year, String semester, String department) {
-    // TODO: implement deleteAllLectures
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<bool> deleteLecture(String id) {
-    // TODO: implement deleteLecture
-    throw UnimplementedError();
-  }
-
+ 
   @override
   Future<List<LecturerModel>> getLectures(String year, String semester) async {
     try {
       final Box<LecturerModel> lecturerBox =
           await Hive.openBox<LecturerModel>('lecturers');
       if (!lecturerBox.isOpen) {
-        Hive.openBox('lecturers');
+        await Hive.openBox('lecturers');
       }
       //get all lecturers where academic year and semester is the same
       var allLecturers = lecturerBox.values
           .where(
               (element) => element.year == year && element.semester == semester)
           .toList();
-      return Future.value(allLecturers);
+      return allLecturers;
     } catch (e) {
-      return Future.value([]);
+      return [];
     }
   }
 
@@ -115,7 +107,7 @@ class LecturerUseCase extends LectureRepo {
           var lecturer =
               allLecturersToCompare.where((e) => e.id == element.id).firstOrNull;
               if(lecturer == null) continue;
-          lecturer.courses = [...lecturer.courses!, ...element.courses!];
+          lecturer.courses = [...lecturer.courses!, ...element.courses];
           await lecturerBox.put(lecturer.id, lecturer);
         } else {
           element.classes = [];

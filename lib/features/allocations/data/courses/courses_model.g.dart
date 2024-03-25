@@ -21,22 +21,23 @@ class CourseModelAdapter extends TypeAdapter<CourseModel> {
       title: fields[1] as String?,
       creditHours: fields[2] as String?,
       specialVenue: fields[3] as String?,
-      lecturerId: (fields[4] as List?)?.cast<String>(),
-      lecturerName: (fields[5] as List?)?.cast<String>(),
-      department: fields[6] as String?,
-      id: fields[7] as String?,
-      year: fields[8] as String?,
-      venues: (fields[9] as List?)?.cast<String>(),
-      level: fields[10] as String?,
-      studyMode: fields[11] as String?,
-      semester: fields[12] as String?,
+      lecturer: (fields[4] as List)
+          .map((dynamic e) => (e as Map).cast<String, dynamic>())
+          .toList(),
+      department: fields[5] as String?,
+      id: fields[6] as String?,
+      year: fields[7] as String,
+      venues: (fields[8] as List?)?.cast<String>(),
+      level: fields[9] as String?,
+      studyMode: fields[10] as String,
+      semester: fields[11] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, CourseModel obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.code)
       ..writeByte(1)
@@ -46,22 +47,20 @@ class CourseModelAdapter extends TypeAdapter<CourseModel> {
       ..writeByte(3)
       ..write(obj.specialVenue)
       ..writeByte(4)
-      ..write(obj.lecturerId)
+      ..write(obj.lecturer)
       ..writeByte(5)
-      ..write(obj.lecturerName)
-      ..writeByte(6)
       ..write(obj.department)
-      ..writeByte(7)
+      ..writeByte(6)
       ..write(obj.id)
-      ..writeByte(8)
+      ..writeByte(7)
       ..write(obj.year)
-      ..writeByte(9)
+      ..writeByte(8)
       ..write(obj.venues)
-      ..writeByte(10)
+      ..writeByte(9)
       ..write(obj.level)
-      ..writeByte(11)
+      ..writeByte(10)
       ..write(obj.studyMode)
-      ..writeByte(12)
+      ..writeByte(11)
       ..write(obj.semester);
   }
 

@@ -37,22 +37,22 @@ class AllocationTemplateProvider extends StateNotifier<void> {
     if (pickedFilePath != null) {
       var (success, (courses, classes, lecturers), message) =
           await _allocationUsecase.importAllocation(
-              path: pickedFilePath,
-              year: ref.watch(academicYearProvider),
-              semester: ref.watch(semesterProvider),
-             );
+        path: pickedFilePath,
+        year: ref.watch(academicYearProvider),
+        semester: ref.watch(semesterProvider),
+      );
       if (success) {
-        var save = await ClassesUsecase().addClasses(classes);
-        if (save) {
-          ref.read(classesDataProvider.notifier).addClass(classes);
+        var classData = await ClassesUsecase().addClasses(classes);
+        if (classData.isNotEmpty) {
+          ref.read(classesDataProvider.notifier).addClass(classData);
         }
-        save = await CoursesUseCase().addCourses(courses);
-        if (save) {
-          ref.read(coursesDataProvider.notifier).addCourses(courses);
+        var courseData = await CoursesUseCase().addCourses(courses);
+        if (courseData.isNotEmpty) {
+          ref.read(coursesDataProvider.notifier).addCourses(courseData);
         }
-        save = await LecturerUseCase().addLectures(lecturers);
-        if (save) {
-          ref.read(lecturersDataProvider.notifier).addLecturers(lecturers);
+        var lectData = await LecturerUseCase().addLectures(lecturers);
+        if (lectData.isNotEmpty) {
+          ref.read(lecturersDataProvider.notifier).addLecturers(lectData);
         }
 
         CustomDialog.dismiss();
@@ -63,30 +63,31 @@ class AllocationTemplateProvider extends StateNotifier<void> {
         CustomDialog.showError(
             message: message ?? 'Failed to import allocations');
       }
-    }else{
+    } else {
       CustomDialog.dismiss();
     }
   }
 
   void clearAllAllocations(WidgetRef ref, String department) async {
-    CustomDialog.dismiss();
-    CustomDialog.showLoading(message: 'Clearing all allocations...');
-    var academicYear = ref.watch(academicYearProvider);
-    var academicSemester = ref.watch(semesterProvider);
-    var success = await ClassesUsecase().deleteAllClasses(
-        academicYear, academicSemester, department);
-    if (success) {
-      ref.read(classesDataProvider.notifier).setClasses([]);
-    }
-    success = await CoursesUseCase().deleteAllCourses(academicYear,academicSemester, department);
-    if (success) {
-      ref.read(coursesDataProvider.notifier).setCourses([]);
-    }
-    success = await LecturerUseCase().deleteAllLecturers(
-        academicYear, academicSemester, department);
-    if (success) {
-      ref.read(lecturersDataProvider.notifier).setLecturers([]);
-    }
+    //   CustomDialog.dismiss();
+    //   CustomDialog.showLoading(message: 'Clearing all allocations...');
+    //   var academicYear = ref.watch(academicYearProvider);
+    //   var academicSemester = ref.watch(semesterProvider);
+    //   var success = await ClassesUsecase().deleteAllClasses(
+    //       academicYear, academicSemester, department);
+    //   if (success) {
+    //     ref.read(classesDataProvider.notifier).setClasses([]);
+    //   }
+    //   success = await CoursesUseCase().deleteAllCourses(academicYear,academicSemester, department);
+    //   if (success) {
+    //     ref.read(coursesDataProvider.notifier).setCourses([]);
+    //   }
+    //   success = await LecturerUseCase().deleteAllLecturers(
+    //       academicYear, academicSemester, department);
+    //   if (success) {
+    //     ref.read(lecturersDataProvider.notifier).setLecturers([]);
+    //   }
 
+    // }
   }
 }

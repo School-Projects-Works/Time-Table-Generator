@@ -140,7 +140,7 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                   title: 'Lecturer',
                   width: 200,
                   cellBuilder: (item) => Text(
-                    item.lecturerName!.join(','),
+                    item.lecturer.map((e) => e['lecturerName']).join(','),
                     style: tableTextStyle,
                   ),
                 ),

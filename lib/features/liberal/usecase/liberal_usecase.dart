@@ -132,7 +132,7 @@ class LiberalUseCase extends LiberalRepo {
             .toList()
             .firstOrNull;
         if (existingLecturer != null) {
-          existingLecturer.courses!.addAll(lecturer.courses!);
+          existingLecturer.courses.addAll(lecturer.courses);
           //remove lecturer and add the updated one
           lecturers.removeWhere((element) => element.id == lecturer.id);
           lecturers.add(existingLecturer);
@@ -201,6 +201,7 @@ class LiberalUseCase extends LiberalRepo {
             lecturerEmail: lecturerEmail,
             year: academicYear,
             courses: [course],
+            classes: [],
             semester: semester));
       }
       return (regularCourses, regularLecturers);
@@ -251,6 +252,7 @@ class LiberalUseCase extends LiberalRepo {
             lecturerName: lecturerName,
             lecturerEmail: lecturerEmail,
             year: academicYear,
+            classes: [],
             courses: [course],
             semester: semester));
       }

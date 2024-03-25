@@ -25,7 +25,9 @@ class _SpecialVenueSelectState extends ConsumerState<SpecialVenueSelect> {
   List<VenueModel> selectedVenues = [];
   List<VenueModel> selectingVeneus = [];
   List<VenueModel> removingVenues = [];
-  CourseModel selectedCourse = CourseModel();
+  CourseModel selectedCourse = CourseModel(
+     lecturer: [], year: '', semester: '', studyMode: ''
+  );
   @override
   void initState() {
     //wait for widget to build
@@ -38,7 +40,12 @@ class _SpecialVenueSelectState extends ConsumerState<SpecialVenueSelect> {
         specialVenues = sv;
         selectedCourse = courses.firstWhere(
             (element) => element.id == widget.id,
-            orElse: () => CourseModel());
+            orElse: () => CourseModel(
+              lecturer: [],
+              year: '',
+              semester: '',
+              studyMode: ''
+            ));
         if (selectedCourse.id != null && selectedCourse.venues != null) {
           for (var venue in selectedCourse.venues!) {
             selectedVenues.add(
