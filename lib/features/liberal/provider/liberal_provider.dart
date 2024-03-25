@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:aamusted_timetable_generator/core/data/table_model.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
@@ -6,7 +5,6 @@ import 'package:aamusted_timetable_generator/features/liberal/data/liberal/liber
 import 'package:aamusted_timetable_generator/features/liberal/usecase/liberal_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_app_file/open_app_file.dart';
-
 import '../../../utils/app_utils.dart';
 import '../../allocations/provider/lecturer/usecase/lecturer_usecase.dart';
 import '../../main/provider/main_provider.dart';
@@ -169,7 +167,7 @@ class LiberalDataImport extends StateNotifier<void> {
         if (success) {
           ref.read(liberalsDataProvider.notifier).addLiberal(liberal);
         }
-        var (newSuccess, newMessage) = await LecturerUseCase().appendLectuers(
+        var (newSuccess, _) = await LecturerUseCase().appendLectuers(
             list: lecturers!, year: academicYear, semester: academicSemester);
         if (newSuccess) {
           ref.read(lecturersDataProvider.notifier).addLecturers(lecturers);

@@ -190,7 +190,7 @@ class AllocationUseCase extends AllocationRepo {
     var courseHeadingRow = allocationsSheet.row(courseInstructions.length + 2);
     if (AppUtils.validateExcel(classHeadingRow, classHeader) &&
         AppUtils.validateExcel(courseHeadingRow, courseAllocationHeader)) {
-      var departmentRow = classesSheet.row(classInstructions.length + 1)[1];
+      var departmentRow = classesSheet.row(classInstructions.length)[1];
       String department = departmentRow != null && departmentRow.value != null
           ? departmentRow.value.toString()
           : '';
@@ -200,7 +200,10 @@ class AllocationUseCase extends AllocationRepo {
           var row = classesSheet.row(i);
           if (validateClassRow(row)) {
             classes.add(ClassModel(
-              id: '${row[1]!.value.toString()}$department'.toLowerCase().hashCode.toString(),
+              id: '${row[1]!.value.toString()}$department'
+                  .toLowerCase()
+                  .hashCode
+                  .toString(),
               level: row[0]!.value.toString(),
               name: row[1]!.value.toString(),
               size: row[2] != null && row[2]!.value != null
@@ -217,101 +220,107 @@ class AllocationUseCase extends AllocationRepo {
             ));
           }
         }
-      }
 
-      rowStart = courseInstructions.length + 3;
-      for (int i = rowStart; i < allocationsSheet.maxRows; i++) {
-        var row = allocationsSheet.row(i);
-        if (validateRow(row)) {
-          var courseId =
-              row[0]!.value.toString().toLowerCase().replaceAll(' ', '');
-          var lecturerId =
-              row[5]!.value.toString().trim().replaceAll(' ', '').toLowerCase();
-          var lecturerName = row[6]!.value.toString();
-          //? Lecturers extraction.....................................................
-          LecturerModel lecturer = LecturerModel(
-            courses: [courseId],
-            classes: [],
-            id: lecturerId,
-            lecturerName: lecturerName,
-            department: department,
-            semester: semester,
-            year: year,
-            lecturerEmail: row[7] != null && row[7]!.value != null
-                ? row[7]!.value.toString()
-                : '',
-          );
-          var level = row[2]!.value.toString().trim().replaceAll(' ', '');
-          var lecturerClass = row[8] != null && row[8]!.value != null
-              ? row[8]!.value.toString()
-              : '';
-          if (lecturerClass.isNotEmpty) {
-            var lecturerClasses = lecturerClass.split(',');
-            for (var aClass in lecturerClasses) {
-              var theClass = classes
-                  .where((element) =>
-                      element.name!.trim().toLowerCase() ==
-                      aClass.trim().toLowerCase())
-                  .firstOrNull;
-              if (theClass != null) {
-                lecturer.classes.add(theClass.toMap());
+        rowStart = courseInstructions.length + 3;
+        for (int i = rowStart; i < allocationsSheet.maxRows; i++) {
+          var row = allocationsSheet.row(i);
+          if (validateRow(row)) {
+            var courseId =
+                row[0]!.value.toString().toLowerCase().replaceAll(' ', '');
+            var lecturerId = row[5]!
+                .value
+                .toString()
+                .trim()
+                .replaceAll(' ', '')
+                .toLowerCase();
+            var lecturerName = row[6]!.value.toString();
+            //? Lecturers extraction.....................................................
+            LecturerModel lecturer = LecturerModel(
+              courses: [courseId],
+              classes: [],
+              id: lecturerId,
+              lecturerName: lecturerName,
+              department: department,
+              semester: semester,
+              year: year,
+              lecturerEmail: row[7] != null && row[7]!.value != null
+                  ? row[7]!.value.toString()
+                  : '',
+            );
+            var level = row[2]!.value.toString().trim().replaceAll(' ', '');
+            var lecturerClass = row[8] != null && row[8]!.value != null
+                ? row[8]!.value.toString()
+                : '';
+            if (lecturerClass.isNotEmpty) {
+              var lecturerClasses = lecturerClass.split(',');
+              for (var aClass in lecturerClasses) {
+                var theClass = classes
+                    .where((element) =>
+                        element.name!.trim().toLowerCase() ==
+                        aClass.trim().toLowerCase())
+                    .firstOrNull;
+                if (theClass != null) {
+                  lecturer.classes.add(theClass.toMap());
+                }
               }
+            } else {
+              // add all classes with same level to lecturer
+              lecturer.classes = classes
+                  .where((element) =>
+                      element.level.trim().replaceAll(' ', '') == level)
+                  .map((e) => e.toMap())
+                  .toList();
             }
-          } else {
-            // add all classes with same level to lecturer
-            lecturer.classes = classes
-                .where((element) =>
-                    element.level.trim().replaceAll(' ', '') == level)
-                .map((e) => e.toMap())
-                .toList();
-          }
 
-          if (!lecturers.any((element) => element.id == lecturerId)) {
-            lecturers.add(lecturer);
-          } else {
-            var existenLecturer =
-                lecturers.firstWhere((element) => element.id == lecturerId);
-            existenLecturer.classes.addAll(lecturer.classes.where(
-                (element) => !existenLecturer.classes.contains(element)));
-            existenLecturer.courses.addAll(lecturer.courses.where(
-                (element) => !existenLecturer.courses.contains(element)));
-            lecturers.removeWhere((element) => element.id == lecturerId);
-            lecturers.add(existenLecturer);
-          }
-          //? Courses extraction.....................................................
-          var exist = courses.any((element) => element.id == courseId);
-          if (exist) {
-            //append lecturer name and id to the course if not already added
-            var course =
-                courses.firstWhere((element) => element.id == courseId);
-            if (!course.lecturer
-                .any((element) => element['id'] == lecturerId)) {
-              course.lecturer.add(lecturer.toMap());
-              courses.removeWhere((element) => element.id == courseId);
-              courses.add(course);
+            if (!lecturers.any((element) => element.id == lecturerId)) {
+              lecturers.add(lecturer);
+            } else {
+              var existenLecturer =
+                  lecturers.firstWhere((element) => element.id == lecturerId);
+              existenLecturer.classes.addAll(lecturer.classes.where(
+                  (element) => !existenLecturer.classes.contains(element)));
+              existenLecturer.courses.addAll(lecturer.courses.where(
+                  (element) => !existenLecturer.courses.contains(element)));
+              lecturers.removeWhere((element) => element.id == lecturerId);
+              lecturers.add(existenLecturer);
             }
-          } else {
-            courses.add(CourseModel(
-                id: courseId,
-                code: row[0]!.value.toString(),
-                title: row[1]!.value.toString(),
-                level: row[2]!.value.toString(),
-                creditHours: row[3] != null && row[3]!.value != null
-                    ? row[3]!.value.toString()
-                    : '3',
-                specialVenue: row[4] != null && row[4]!.value != null
-                    ? row[4]!.value.toString()
-                    : '',
-                lecturer: [lecturer.toMap()],
-                department: department,
-                studyMode: 'Regular',
-                semester: semester,
-                year: year));
+            //? Courses extraction.....................................................
+            var exist = courses.any((element) => element.id == courseId);
+            if (exist) {
+              //append lecturer name and id to the course if not already added
+              var course =
+                  courses.firstWhere((element) => element.id == courseId);
+              if (!course.lecturer
+                  .any((element) => element['id'] == lecturerId)) {
+                course.lecturer.add(lecturer.toMap());
+                courses.removeWhere((element) => element.id == courseId);
+                courses.add(course);
+              }
+            } else {
+              courses.add(CourseModel(
+                  id: courseId,
+                  code: row[0]!.value.toString(),
+                  title: row[1]!.value.toString(),
+                  level: row[2]!.value.toString(),
+                  creditHours: row[3] != null && row[3]!.value != null
+                      ? row[3]!.value.toString()
+                      : '3',
+                  specialVenue: row[4] != null && row[4]!.value != null
+                      ? row[4]!.value.toString()
+                      : '',
+                  lecturer: [lecturer.toMap()],
+                  department: department,
+                  studyMode: 'Regular',
+                  semester: semester,
+                  year: year));
+            }
+            //! End of courses extraction.....................................................
           }
-          //! End of courses extraction.....................................................
         }
+        return (classes, courses, lecturers);
+      }else{
+        return ([], [], []);
       }
-      return (classes, courses, lecturers);
     } else {
       return ([], [], []);
     }

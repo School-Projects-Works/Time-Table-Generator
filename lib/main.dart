@@ -19,7 +19,7 @@ bool get isDesktop {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  DatabaseUseCase().init();
+  await DatabaseUseCase().init();
   // if it's not on the web, windows or android, load the accent color
   if (!kIsWeb &&
       [

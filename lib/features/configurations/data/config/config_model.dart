@@ -4,7 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 part 'config_model.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 1)
 class ConfigModel {
   @HiveField(0)
   String? id;

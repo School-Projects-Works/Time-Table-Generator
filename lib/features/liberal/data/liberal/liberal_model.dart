@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 part 'liberal_model.g.dart';
 
-@HiveType(typeId: 5)
+@HiveType(typeId: 6)
 class LiberalModel {
   @HiveField(0)
   String? id;

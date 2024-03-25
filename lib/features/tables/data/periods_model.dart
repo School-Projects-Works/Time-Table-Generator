@@ -1,12 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
 
 class PeriodsModel {
   String period;
-  TimeOfDay startTime;
-  TimeOfDay endTime;
+  String startTime;
+  String endTime;
   PeriodsModel({
     required this.period,
     required this.startTime,
@@ -25,8 +24,8 @@ class PeriodsModel {
   factory PeriodsModel.fromMap(Map<String, dynamic> map) {
     return PeriodsModel(
       period: map['period'] ?? '',
-      startTime: stringToTimeOfDay(map['startTime']),
-      endTime: stringToTimeOfDay(map['endTime']),
+      startTime: map['startTime'],
+      endTime: map['endTime'],
     );
   }
 

@@ -3,6 +3,8 @@ import 'package:aamusted_timetable_generator/features/allocations/data/courses/c
 import 'package:aamusted_timetable_generator/features/allocations/provider/classes/usecase/classes_usecase.dart';
 import 'package:aamusted_timetable_generator/features/allocations/provider/lecturer/usecase/lecturer_usecase.dart';
 import 'package:aamusted_timetable_generator/features/liberal/usecase/liberal_usecase.dart';
+import 'package:aamusted_timetable_generator/features/tables/data/tables_model.dart';
+import 'package:aamusted_timetable_generator/features/tables/usecase/tables_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/data/constants/constant_data.dart';
 import '../../allocations/data/lecturers/lecturer_model.dart';
@@ -49,6 +51,10 @@ final dbDataFutureProvider = FutureProvider<void>((ref) async {
 //order venues by venue name
   venues.sort((a, b) => a.name!.compareTo(b.name!));
   ref.read(venuesDataProvider.notifier).setVenues(venues);
+
+  //?get tables from db
+  var tables = await TableGenUsecase().getTables(academicYear, academicSemester);
+  ref.read(tableDataProvider.notifier).setTables(tables);
 });
 
 final classesDataProvider =
@@ -176,6 +182,34 @@ class LiberalDataProvider extends StateNotifier<List<LiberalModel>> {
     state = state.map((e) {
       if (e.id == data.id) {
         return data;
+      }
+      return e;
+    }).toList();
+  }
+}
+
+
+final tableDataProvider = StateNotifierProvider<TableDataProvider,List<TablesModel>>((ref) => TableDataProvider());
+
+class TableDataProvider extends StateNotifier<List<TablesModel>> {
+  TableDataProvider() : super([]);
+
+  void setTables(List<TablesModel> tables) {
+    state = tables;
+  }
+
+  void addTable(List<TablesModel> tables) {
+    state = [...tables];
+  }
+
+  void deleteTable(String id) {
+    state = state.where((element) => element.id != id).toList();
+  }
+
+  void updateTable(TablesModel table) {
+    state = state.map((e) {
+      if (e.id == table.id) {
+        return table;
       }
       return e;
     }).toList();

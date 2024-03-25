@@ -3,7 +3,6 @@ import 'package:aamusted_timetable_generator/features/allocations/provider/cours
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../../../../config/theme/theme.dart';
 import '../../../../core/widget/custom_dialog.dart';
 import '../../../../core/widget/custom_input.dart';
@@ -200,8 +199,13 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                               //click to select icon
                               GestureDetector(
                                 onTap: () {
-                                  context.pushNamed('special_venue_page',
-                                      pathParameters: {'id': item.id!});
+                                  CustomDialog.showCustom(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .95,
+                                      width: MediaQuery.of(context).size.width *
+                                          .89,
+                                      ui: SpecialVenueSelect(item.id!));
                                 },
                                 child: fluent.Container(
                                     padding: const EdgeInsets.all(5),

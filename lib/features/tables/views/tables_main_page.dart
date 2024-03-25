@@ -1,5 +1,3 @@
-import 'package:aamusted_timetable_generator/features/configurations/provider/config_provider.dart';
-import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/views/complete_data.dart';
 import 'package:aamusted_timetable_generator/features/tables/views/ibcomplete_data.dart';
 import 'package:flutter/material.dart';
