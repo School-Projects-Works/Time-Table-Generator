@@ -27,7 +27,7 @@ class _RegularLiberalSectionState extends ConsumerState<RegularLiberalSection> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    'Regular/Evening Leberal Courses'.toUpperCase(),
+                    'Regular/Evening Liberal Courses'.toUpperCase(),
                     style: FluentTheme.of(context).typography.subtitle,
                   ),
                   Text(
@@ -182,7 +182,7 @@ class _RegularLiberalSectionState extends ConsumerState<RegularLiberalSection> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                         ListTile(
+                          ListTile(
                             title: Padding(
                               padding: const EdgeInsets.only(bottom: 10),
                               child: Text(
@@ -251,7 +251,6 @@ class _RegularLiberalSectionState extends ConsumerState<RegularLiberalSection> {
                               ],
                             ),
                           ),
-                          
                         ],
                       );
                     }

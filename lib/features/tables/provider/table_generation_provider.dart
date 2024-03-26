@@ -344,17 +344,7 @@ class TableGenProvider extends StateNotifier<void> {
         'Total unassigned LCCP = ${ref.watch(unassignedLCCPProvider).length}');
     print('Total unassigned LTP = ${ref.watch(unassignedLTPProvider).length}');
     //print all unassigned LCCP
-    for (var lccp in ref.watch(unassignedLCCPProvider)) {
-      print('==========================================');
-      print('Unassigned LCCP: ${lccp.toMap()}');
-      print('==========================================');
-    }
-    //print all unassigned LTP
-    for (var ltp in ref.watch(unassignedLTPProvider)) {
-      print('==========================================');
-      print('Unassigned LTP: ${ltp.toMap()}');
-      print('==========================================');
-    }
+    
     var savedTables =
         await TableGenUsecase().saveTables(ref.watch(generatingTableProvider));
     if (savedTables.isNotEmpty) {

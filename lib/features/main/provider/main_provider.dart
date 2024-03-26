@@ -55,6 +55,8 @@ final dbDataFutureProvider = FutureProvider<void>((ref) async {
   //?get tables from db
   var tables = await TableGenUsecase().getTables(academicYear, academicSemester);
   ref.read(tableDataProvider.notifier).setTables(tables);
+  //print table length
+  print('table length: ${tables.length}');
 });
 
 final classesDataProvider =

@@ -5,7 +5,6 @@ import 'package:aamusted_timetable_generator/features/main/provider/main_provide
 import 'package:aamusted_timetable_generator/features/tables/provider/table_gen_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/views/componenets/table_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:screenshot/screenshot.dart';
@@ -28,6 +27,8 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
   @override
   Widget build(BuildContext context) {
     var table = ref.watch(filteredTableProvider);
+    var size = MediaQuery.of(context).size;
+
     return Container(
       color: Colors.grey.withOpacity(.1),
       child: Padding(
@@ -40,7 +41,8 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
               children: [
                 Text('Generated Tables'.toUpperCase(),
                     style: getTextStyle(
-                        fontSize: 30, fontWeight: FontWeight.bold)),
+                        fontSize: size.width * .018,
+                         fontWeight: FontWeight.bold)),
                 Expanded(
                     child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -68,6 +70,9 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
                                 onChanged: (newValue) {
                                   ref.read(filterProvider.notifier).state =
                                       newValue!;
+                                      ref
+                                      .read(filteredTableProvider.notifier)
+                                      .filter('', ref);
                                 },
                                 items: <String>[
                                   'All',
@@ -91,7 +96,7 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
                           if (ref.watch(filterProvider) != null &&
                               ref.watch(filterProvider) != 'All')
                             SizedBox(
-                              width: 200,
+                              width: 300,
                               child: CustomTextFields(
                                 hintText: ref.watch(filterProvider) ==
                                         'Lecturer'
@@ -107,7 +112,11 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
                                                         'Day'
                                                     ? 'Enter Day'
                                                     : '',
-                                onChanged: (value) {},
+                                onChanged: (value) {
+                                  if(value.isNotEmpty){
+                                    ref.read(filteredTableProvider.notifier).filter(value,ref);
+                                  }
+                                },
                               ),
                             )
                         ],
