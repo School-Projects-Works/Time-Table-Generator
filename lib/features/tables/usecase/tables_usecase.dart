@@ -33,15 +33,17 @@ class TableGenUsecase extends TableGenRepo {
         await Hive.openBox('tables');
       }
       var toDelete = tableBox.values
-          .where(
-              (element) => element.year == tables.first.year && element.semester == tables.first.semester)
+          .where((element) =>
+              element.year == tables.first.year &&
+              element.semester == tables.first.semester)
           .toList();
       //delete all tables where year and semester is the same
       await tableBox.deleteAll(toDelete.map((e) => e.id).toList());
       await tableBox.putAll({for (var e in tables) e.id: e});
       tables = tableBox.values
-          .where(
-              (element) => element.year == tables.first.year && element.semester == tables.first.semester)
+          .where((element) =>
+              element.year == tables.first.year &&
+              element.semester == tables.first.semester)
           .toList();
       return tables;
     } catch (e) {
@@ -50,9 +52,35 @@ class TableGenUsecase extends TableGenRepo {
   }
 
   @override
-  Future<List<TablesModel>> swapTables(
-      {required TablesModel table1, required TablesModel table2}) {
-    // TODO: implement swapTables
-    throw UnimplementedError();
+  Future<(TablesModel?, TablesModel?, String)> swapTables(
+      {required TablesModel table1, required TablesModel table2}) async {
+    try {
+      final Box<TablesModel> tableBox =
+          await Hive.openBox<TablesModel>('tables');
+      //check if box is open
+      if (!tableBox.isOpen) {
+        await Hive.openBox('tables');
+      }
+      await tableBox.put(table1.id, table1);
+      await tableBox.put(table2.id, table2);
+      return (table1, table2, 'Tables swapped successfully');
+    } catch (e) {
+      return (null, null, 'Failed to swap tables');
+    }
   }
+
+ Future<(TablesModel?, String)>  updateItem(TablesModel newTable)async {
+    try {
+      final Box<TablesModel> tableBox =
+          await Hive.openBox<TablesModel>('tables');
+      //check if box is open
+      if (!tableBox.isOpen) {
+        await Hive.openBox('tables');
+      }
+      await tableBox.put(newTable.id, newTable);
+      return (newTable, 'Table updated successfully');
+    } catch (e) {
+      return (null, 'Failed to update table');
+    }
+ }
 }

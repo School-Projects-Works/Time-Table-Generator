@@ -63,6 +63,10 @@ class _DayItemState extends ConsumerState<DayItem> {
         (element) => element.day.toLowerCase() == widget.day.toLowerCase()).toList();
     //data.shuffle();
     var group = groupBy(data, (element) => element.venueName);
+    // order group by venue name (keys) and lock the order of the group
+    var keys = group.keys.toList();
+    keys.sort();
+    group = Map.fromEntries(keys.map((e) => MapEntry(e, group[e]!)));
     return FutureBuilder<List<PeriodsModel>>(
         future: workOnPeriod(),
         builder: (context, snapshot) {

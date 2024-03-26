@@ -206,10 +206,12 @@ class TableDataProvider extends StateNotifier<List<TablesModel>> {
     state = state.where((element) => element.id != id).toList();
   }
 
-  void updateTable(TablesModel table) {
+  void updateTable(List<TablesModel> tables) {
+    //replace the table with the same id
     state = state.map((e) {
-      if (e.id == table.id) {
-        return table;
+      var index = tables.indexWhere((element) => element.id == e.id);
+      if (index != -1) {
+        return tables[index];
       }
       return e;
     }).toList();

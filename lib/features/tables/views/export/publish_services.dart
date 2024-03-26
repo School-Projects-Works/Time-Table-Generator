@@ -54,6 +54,10 @@ class PublishData {
       var data = tables.where((element) => element.day == day).toList();
       // data.shuffle();
       var group = groupBy(data, (element) => element.venueName);
+      // order group by venue name (keys) and lock the order of the group
+      var keys = group.keys.toList();
+      keys.sort();
+      group = Map.fromEntries(keys.map((e) => MapEntry(e, group[e]!)));
 
       pdf.addPage(pw.MultiPage(
           pageFormat: PdfPageFormat.a3,
