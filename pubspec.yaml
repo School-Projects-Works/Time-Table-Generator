@@ -45,6 +45,7 @@ dependencies:
   data_table_2: ^2.5.11
   uuid: ^4.3.3
   collection: ^1.18.0
+  screenshot: ^2.3.0
 
 
  

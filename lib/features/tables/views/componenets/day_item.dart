@@ -55,12 +55,13 @@ class _DayItemState extends ConsumerState<DayItem> {
     super.initState();
     //workOnPeriod();
   }
+  final scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     var data = ref.watch(filteredTableProvider).where(
         (element) => element.day.toLowerCase() == widget.day.toLowerCase()).toList();
-    data.shuffle();
+    //data.shuffle();
     var group = groupBy(data, (element) => element.venueName);
     return FutureBuilder<List<PeriodsModel>>(
         future: workOnPeriod(),
@@ -70,241 +71,249 @@ class _DayItemState extends ConsumerState<DayItem> {
             padding: const EdgeInsets.all(10),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(widget.day,
-                          style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                              color: secondaryColor)),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Container(
-                              width: 260,
-                              height: 70,
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(color: Colors.black),
-                              ),
-                              child: CustomPaint(
-                                painter: DiagonalLinePainter(),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 25),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 25),
-                                        child: Text('Venue',
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 20,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 25),
-                                        child: Text('Period',
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 20,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )),
-                          Row(
-                            children: [
-                              if (firstPeriods.isNotEmpty)
-                                Row(
-                                  children: firstPeriods
-                                      .map((e) => Container(
-                                            width: 260,
-                                            height: 70,
-                                            padding: const EdgeInsets.all(5),
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              border: Border.all(
-                                                  color: Colors.black),
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Text(e.period,
-                                                    style: GoogleFonts.poppins(
-                                                        fontSize: 20,
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                                Text(
-                                                    '${e.startTime} - ${e.endTime}',
-                                                    style: GoogleFonts.poppins(
-                                                        fontSize: 15,
-                                                        color: Colors.black)),
-                                              ],
-                                            ),
-                                          ))
-                                      .toList(),
-                                ),
-                              if (breakPeriod != null)
-                                Container(
-                                  height: 70,
-                                  width: 90,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border(
-                                      top: BorderSide(color: Colors.black),
-                                    ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Text(breakPeriod!.startTime.toString(),
-                                          style: GoogleFonts.poppins(
-                                              fontSize: 15,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold)),
-                                      Text(breakPeriod!.endTime.toString(),
-                                          style: GoogleFonts.poppins(
-                                              fontSize: 15,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ),
-                              if (secondPeriods.isNotEmpty)
-                                Row(
-                                  children: secondPeriods
-                                      .map((e) => Container(
-                                            width: 260,
-                                            height: 70,
-                                            padding: const EdgeInsets.all(5),
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              border: Border.all(
-                                                  color: Colors.black),
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Text(e.period,
-                                                    style: GoogleFonts.poppins(
-                                                        fontSize: 20,
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                                Text(
-                                                    '${e.startTime} - ${e.endTime}',
-                                                    style: GoogleFonts.poppins(
-                                                        fontSize: 15,
-                                                        color: Colors.black)),
-                                              ],
-                                            ),
-                                          ))
-                                      .toList(),
-                                ),
-                            ],
-                          )
-                        ],
-                      ),
-                      if (data.isNotEmpty)
-                        Row(
+              controller: scrollController,
+              child: Scrollbar(
+                controller: scrollController,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Column(
-                              children: group.keys
-                                  .map(
-                                    (e) => SingleItem(
-                                      venue: e,
+                            Text(widget.day,
+                                style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25,
+                                    color: secondaryColor)),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Container(
+                                    width: 260,
+                                    height: 70,
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(color: Colors.black),
                                     ),
-                                  )
-                                  .toList(),
-                            ),
-                            if (firstPeriods.isNotEmpty)
-                              Column(
-                                children: group.keys
-                                    .map(
-                                      (venue) => Row(
-                                        children: firstPeriods.map((period) {
-                                          var table = data
-                                              .firstWhereOrNull((element) =>
-                                                  element.venueName == venue &&
-                                                  element.period ==
-                                                      period.period);
-                                          if (table != null) {
-                                            return SingleItem(
-                                              table: table,
-                                            );
-                                          } else {
-                                            return SingleItem();
-                                          }
-                                        }).toList(),
-                                      ),
-                                    )
-                                    .toList(),
-                              ),
-                            if (breakPeriod != null)
-                              SizedBox(
-                                width: 90,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 20),
-                                      child: RotatedBox(
-                                        quarterTurns: 3,
-                                        child: Text(
-                                          'BREAK',
-                                          style: GoogleFonts.poppins(
-                                              fontSize: 40,
-                                              color: Colors.black,
-                                              wordSpacing: 10,
-                                              letterSpacing: 30,
-                                              fontWeight: FontWeight.bold),
-                                          textAlign: TextAlign.center,
-                                          textDirection: TextDirection.ltr,
+                                    child: CustomPaint(
+                                      painter: DiagonalLinePainter(),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 25),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 25),
+                                              child: Text('Venue',
+                                                  style: GoogleFonts.poppins(
+                                                      fontSize: 20,
+                                                      color: Colors.black,
+                                                      fontWeight: FontWeight.bold)),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.only(bottom: 25),
+                                              child: Text('Period',
+                                                  style: GoogleFonts.poppins(
+                                                      fontSize: 20,
+                                                      color: Colors.black,
+                                                      fontWeight: FontWeight.bold)),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            if (secondPeriods.isNotEmpty)
-                              Column(
-                                children: group.keys
-                                    .map(
-                                      (venue) => Row(
-                                        children: secondPeriods.map((period) {
-                                          var table = data
-                                              .firstWhereOrNull((element) =>
-                                                  element.venueName == venue &&
-                                                  element.period ==
-                                                      period.period);
-                                          if (table != null) {
-                                            return SingleItem(
-                                              table: table,
-                                            );
-                                          } else {
-                                            return SingleItem();
-                                          }
-                                        }).toList(),
+                                    )),
+                                Row(
+                                  children: [
+                                    if (firstPeriods.isNotEmpty)
+                                      Row(
+                                        children: firstPeriods
+                                            .map((e) => Container(
+                                                  width: 260,
+                                                  height: 70,
+                                                  padding: const EdgeInsets.all(5),
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    border: Border.all(
+                                                        color: Colors.black),
+                                                  ),
+                                                  child: Column(
+                                                    children: [
+                                                      Text(e.period,
+                                                          style: GoogleFonts.poppins(
+                                                              fontSize: 20,
+                                                              color: Colors.black,
+                                                              fontWeight:
+                                                                  FontWeight.bold)),
+                                                      Text(
+                                                          '${e.startTime} - ${e.endTime}',
+                                                          style: GoogleFonts.poppins(
+                                                              fontSize: 15,
+                                                              color: Colors.black)),
+                                                    ],
+                                                  ),
+                                                ))
+                                            .toList(),
                                       ),
-                                    )
-                                    .toList(),
-                              ),
-                          ],
-                        )
-                    ]),
+                                    if (breakPeriod != null)
+                                      Container(
+                                        height: 70,
+                                        width: 90,
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          border: Border(
+                                            top: BorderSide(color: Colors.black),
+                                          ),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Text(breakPeriod!.startTime.toString(),
+                                                style: GoogleFonts.poppins(
+                                                    fontSize: 15,
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.bold)),
+                                            Text(breakPeriod!.endTime.toString(),
+                                                style: GoogleFonts.poppins(
+                                                    fontSize: 15,
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.bold)),
+                                          ],
+                                        ),
+                                      ),
+                                    if (secondPeriods.isNotEmpty)
+                                      Row(
+                                        children: secondPeriods
+                                            .map((e) => Container(
+                                                  width: 260,
+                                                  height: 70,
+                                                  padding: const EdgeInsets.all(5),
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    border: Border.all(
+                                                        color: Colors.black),
+                                                  ),
+                                                  child: Column(
+                                                    children: [
+                                                      Text(e.period,
+                                                          style: GoogleFonts.poppins(
+                                                              fontSize: 20,
+                                                              color: Colors.black,
+                                                              fontWeight:
+                                                                  FontWeight.bold)),
+                                                      Text(
+                                                          '${e.startTime} - ${e.endTime}',
+                                                          style: GoogleFonts.poppins(
+                                                              fontSize: 15,
+                                                              color: Colors.black)),
+                                                    ],
+                                                  ),
+                                                ))
+                                            .toList(),
+                                      ),
+                                  ],
+                                )
+                              ],
+                            ),
+                            if (data.isNotEmpty)
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    children: group.keys
+                                        .map(
+                                          (e) => SingleItem(
+                                            venue: e,
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                  if (firstPeriods.isNotEmpty)
+                                    Column(
+                                      children: group.keys
+                                          .map(
+                                            (venue) => Row(
+                                              children: firstPeriods.map((period) {
+                                                var table = data
+                                                    .firstWhereOrNull((element) =>
+                                                        element.venueName == venue &&
+                                                        element.period ==
+                                                            period.period);
+                                                if (table != null) {
+                                                  return SingleItem(
+                                                    table: table,
+                                                  );
+                                                } else {
+                                                  return SingleItem();
+                                                }
+                                              }).toList(),
+                                            ),
+                                          )
+                                          .toList(),
+                                    ),
+                                  if (breakPeriod != null)
+                                    SizedBox(
+                                      width: 90,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 20),
+                                            child: RotatedBox(
+                                              quarterTurns: 3,
+                                              child: Text(
+                                                'BREAK',
+                                                style: GoogleFonts.poppins(
+                                                    fontSize: 40,
+                                                    color: Colors.black,
+                                                    wordSpacing: 10,
+                                                    letterSpacing: 30,
+                                                    fontWeight: FontWeight.bold),
+                                                textAlign: TextAlign.center,
+                                                textDirection: TextDirection.ltr,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  if (secondPeriods.isNotEmpty)
+                                    Column(
+                                      children: group.keys
+                                          .map(
+                                            (venue) => Row(
+                                              children: secondPeriods.map((period) {
+                                                var table = data
+                                                    .firstWhereOrNull((element) =>
+                                                        element.venueName == venue &&
+                                                        element.period ==
+                                                            period.period);
+                                                if (table != null) {
+                                                  return SingleItem(
+                                                    table: table,
+                                                  );
+                                                } else {
+                                                  return SingleItem();
+                                                }
+                                              }).toList(),
+                                            ),
+                                          )
+                                          .toList(),
+                                    ),
+                                ],
+                              )
+                          ]),
+                    ),
+                  ],
+                ),
               ),
             ),
           );

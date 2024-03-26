@@ -54,7 +54,6 @@ class RegularConfig extends StateNotifier<StudyModeModel> {
     }
     if (state.periods.isEmpty) {
       state = state.copyWith(regLibPeriod: () => null);
-      
     }
   }
 

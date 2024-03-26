@@ -100,10 +100,10 @@ class LCCP extends StateNotifier<List<LCCPModel>> {
             classData: cc.classData,
             course: cc.classData,
             classId: cc.classId,
-            courseCode: cc.className,
+            courseCode: cc.courseCode,
             courseId: cc.courseId,
             className: cc.className,
-            courseName: cc.className,
+            courseName: cc.courseName,
             lecturer: lc.lecturer,
             lecturerId: lc.lecturerId,
             lecturerName: lc.lecturerName,
@@ -244,6 +244,26 @@ class TableGenProvider extends StateNotifier<void> {
         //add back to specialVTPS
         specialVTPS.removeWhere((element) => element.id == vtp.id);
         specialVTPS.add(vtp);
+      }
+    }
+    //generate remaining tables
+    var lccpWithNoSpecialVenue = lccps
+        .where(
+            (element) => !element.requireSpecialVenue || element.venues.isEmpty)
+        .toList();
+    var remainingTables = generateOtherTables(
+        lccpWithNoSpecialVenue, nonSpecialVTPS, config, tables);
+    tables.addAll(remainingTables);
+    //mark all used venues as booked
+    for (var table in remainingTables) {
+      var vtp = nonSpecialVTPS
+          .where((element) => element.id == table.venueId)
+          .firstOrNull;
+      if (vtp != null) {
+        vtp.isBooked = true;
+        //add back to nonSpecialVTPS
+        nonSpecialVTPS.removeWhere((element) => element.id == vtp.id);
+        nonSpecialVTPS.add(vtp);
       }
     }
     var savedTables = await TableGenUsecase().saveTables(tables);
@@ -417,20 +437,262 @@ class TableGenProvider extends StateNotifier<void> {
             element.studyMode.toLowerCase().replaceAll(' ', '') ==
             'evening'.toLowerCase())
         .toList();
-        int count = 0;
+    for (var evenLCCP in even) {
+      var periods = data.periods.map((e) => PeriodsModel.fromMap(e)).toList();
+      periods.sort((a, b) => compareTimeOfDay(
+          stringToTimeOfDay(a.startTime), stringToTimeOfDay(b.startTime)));
+      var evenPeriod = periods.last;
+      //get only evening vtps for evening students
+      var evenVTP = specialVTPS
+          .where((element) => element.period == evenPeriod.period)
+          .toList();
+      var vtp = pickVenue(evenLCCP, evenVTP, data, generatedList);
+      if (vtp == null) continue;
+      var id = '${evenLCCP.id}${vtp.id}'
+          .trim()
+          .replaceAll(' ', '')
+          .toLowerCase()
+          .hashCode
+          .toString();
+      TablesModel table = TablesModel(
+        id: id,
+        year: config.year,
+        day: vtp.day!,
+        period: vtp.period!,
+        studyMode: evenLCCP.studyMode,
+        periodMap: data.regLibPeriod,
+        courseCode: evenLCCP.courseCode,
+        courseId: evenLCCP.courseId,
+        lecturerName: evenLCCP.lecturerName,
+        lecturerEmail: '',
+        courseTitle: evenLCCP.courseName,
+        creditHours: '3',
+        specialVenues: [],
+        venueName: vtp.venueName!,
+        venueId: vtp.venueId!,
+        venueCapacity: vtp.venueCapacity!,
+        disabilityAccess: vtp.dissabledAccess,
+        isSpecial: vtp.isSpecialVenue,
+        classLevel: evenLCCP.level,
+        className: evenLCCP.className,
+        department: evenLCCP.department,
+        classSize: evenLCCP.classCapacity.toString(),
+        hasDisable: false,
+        semester: evenLCCP.semester,
+        classId: evenLCCP.classId,
+        lecturerId: evenLCCP.lecturerId,
+      );
+      tables.add(table);
+      //mark vtp as booked
+      vtp.isBooked = true;
+      specialVTPS.firstWhere((element) => element.id == vtp.id).isBooked = true;
+    }
     for (var regLCCP in reg) {
-      var isLibLevel = regLCCP.level == data.regLibLevel;
-      var freeVenue = isLibLevel
-          ? specialVTPS.where((element) => element.isBooked == false&& element.day!=data.regLibDay&& element.period!=data.regLibPeriod!['period']).toList()
-          : specialVTPS.where((element) => element.isBooked == false).toList();
-      print('$count : ${freeVenue.length}');
-      count++;
+      var vtp = pickVenue(regLCCP, specialVTPS, data, generatedList);
+      if (vtp == null) continue;
+      var id = '${regLCCP.id}${vtp.id}'
+          .trim()
+          .replaceAll(' ', '')
+          .toLowerCase()
+          .hashCode
+          .toString();
+      TablesModel table = TablesModel(
+        id: id,
+        year: config.year,
+        day: vtp.day!,
+        period: vtp.period!,
+        studyMode: regLCCP.studyMode,
+        periodMap: data.regLibPeriod,
+        courseCode: regLCCP.courseCode,
+        courseId: regLCCP.courseId,
+        lecturerName: regLCCP.lecturerName,
+        lecturerEmail: '',
+        courseTitle: regLCCP.courseName,
+        creditHours: '3',
+        specialVenues: [],
+        venueName: vtp.venueName!,
+        venueId: vtp.venueId!,
+        venueCapacity: vtp.venueCapacity!,
+        disabilityAccess: vtp.dissabledAccess,
+        isSpecial: vtp.isSpecialVenue,
+        classLevel: regLCCP.level,
+        className: regLCCP.className,
+        department: regLCCP.department,
+        classSize: regLCCP.classCapacity.toString(),
+        hasDisable: false,
+        semester: regLCCP.semester,
+        classId: regLCCP.classId,
+        lecturerId: regLCCP.lecturerId,
+      );
+      tables.add(table);
+      //mark vtp as booked
+      vtp.isBooked = true;
+      specialVTPS.firstWhere((element) => element.id == vtp.id).isBooked = true;
     }
 
-    // print('Total Special Tables: ${lccpWithSpecialVenue.length}');
-    // print('Regular Special Tables: ${reg.length}');
-    // print('Evening Special Tables: ${even.length}');
-
     return tables;
+  }
+
+  VTPModel? pickVenue(LCCPModel regLCCP, List<VTPModel> specialVTPS,
+      StudyModeModel data, List<TablesModel> generatedList) {
+    var isLibLevel = regLCCP.level == data.regLibLevel;
+    var freeVenue = isLibLevel
+        ? specialVTPS
+            .where((element) =>
+                element.isBooked == false &&
+                element.day != data.regLibDay &&
+                element.period != data.regLibPeriod!['period'])
+            .toList()
+        : specialVTPS.where((element) => element.isBooked == false).toList();
+
+    var lecturerExist = generatedList
+        .where((element) => element.lecturerId == regLCCP.lecturerId)
+        .toList();
+    var classExist = generatedList
+        .where((element) => element.classId == regLCCP.classId)
+        .toList();
+    //remove all venues where lecturer has already been assigned save day and period
+    freeVenue.removeWhere((element) => lecturerExist
+        .any((e) => e.day == element.day && e.period == element.period));
+    //remove all venues where class has already been assigned save day and period
+    freeVenue.removeWhere((element) => classExist
+        .any((e) => e.day == element.day && e.period == element.period));
+    //get venue which is disable accessible if class has disable students and capacity is greater than class size-25
+
+    var finalVenue = freeVenue
+        .where((element) => regLCCP.hasDisability
+            ? element.dissabledAccess == true
+            : true && element.venueCapacity! >= regLCCP.classCapacity - 25)
+        .toList()
+        .firstOrNull;
+    finalVenue ??= freeVenue
+        .where((element) =>
+            regLCCP.hasDisability ? element.dissabledAccess == true : true)
+        .toList()
+        .firstOrNull;
+    //if final venue is null, get any venue
+    finalVenue ??= freeVenue.firstOrNull;
+    return finalVenue;
+  }
+
+  List<TablesModel> generateOtherTables(
+      List<LCCPModel> lccpWithNoSpecialVenue,
+      List<VTPModel> nonSpecialVTPS,
+      ConfigModel config,
+      List<TablesModel> tables) {
+    List<TablesModel> generateTables = [];
+    //split lccpWithNoSpecialVenue into regular and evening
+    var reg = lccpWithNoSpecialVenue
+        .where((element) =>
+            element.studyMode.toLowerCase().replaceAll(' ', '') ==
+            'regular'.toLowerCase())
+        .toList();
+    var even = lccpWithNoSpecialVenue
+        .where((element) =>
+            element.studyMode.toLowerCase().replaceAll(' ', '') ==
+            'evening'.toLowerCase())
+        .toList();
+    var data = StudyModeModel.fromMap(config.regular);
+    for (var evenLCCP in even) {
+      var periods = data.periods.map((e) => PeriodsModel.fromMap(e)).toList();
+      periods.sort((a, b) => compareTimeOfDay(
+          stringToTimeOfDay(a.startTime), stringToTimeOfDay(b.startTime)));
+      var evenPeriod = periods.last;
+      //get only evening vtps for evening students
+      var evenVTP = nonSpecialVTPS
+          .where((element) =>
+              element.period == evenPeriod.period &&
+              (evenLCCP.level == data.evenLibLevel
+                  ? element.day != data.evenLibDay
+                  : true))
+          .toList();
+      var vtp = pickVenue(evenLCCP, evenVTP, data, tables);
+      if (vtp == null) continue;
+      var id = '${evenLCCP.id}${vtp.id}'
+          .trim()
+          .replaceAll(' ', '')
+          .toLowerCase()
+          .hashCode
+          .toString();
+      TablesModel table = TablesModel(
+        id: id,
+        year: config.year,
+        day: vtp.day!,
+        period: vtp.period!,
+        studyMode: evenLCCP.studyMode,
+        periodMap: data.regLibPeriod,
+        courseCode: evenLCCP.courseCode,
+        courseId: evenLCCP.courseId,
+        lecturerName: evenLCCP.lecturerName,
+        lecturerEmail: '',
+        courseTitle: evenLCCP.courseName,
+        creditHours: '3',
+        specialVenues: [],
+        venueName: vtp.venueName!,
+        venueId: vtp.venueId!,
+        venueCapacity: vtp.venueCapacity!,
+        disabilityAccess: vtp.dissabledAccess,
+        isSpecial: vtp.isSpecialVenue,
+        classLevel: evenLCCP.level,
+        className: evenLCCP.className,
+        department: evenLCCP.department,
+        classSize: evenLCCP.classCapacity.toString(),
+        hasDisable: false,
+        semester: evenLCCP.semester,
+        classId: evenLCCP.classId,
+        lecturerId: evenLCCP.lecturerId,
+      );
+      generateTables.add(table);
+      //mark vtp as booked
+      vtp.isBooked = true;
+      nonSpecialVTPS.firstWhere((element) => element.id == vtp.id).isBooked =
+          true;
+    }
+    for (var regLCCP in reg) {
+      var vtp = pickVenue(regLCCP, nonSpecialVTPS, data, tables);
+      if (vtp == null) continue;
+      var id = '${regLCCP.id}${vtp.id}'
+          .trim()
+          .replaceAll(' ', '')
+          .toLowerCase()
+          .hashCode
+          .toString();
+      TablesModel table = TablesModel(
+        id: id,
+        year: config.year,
+        day: vtp.day!,
+        period: vtp.period!,
+        studyMode: regLCCP.studyMode,
+        periodMap: data.regLibPeriod,
+        courseCode: regLCCP.courseCode,
+        courseId: regLCCP.courseId,
+        lecturerName: regLCCP.lecturerName,
+        lecturerEmail: '',
+        courseTitle: regLCCP.courseName,
+        creditHours: '3',
+        specialVenues: [],
+        venueName: vtp.venueName!,
+        venueId: vtp.venueId!,
+        venueCapacity: vtp.venueCapacity!,
+        disabilityAccess: vtp.dissabledAccess,
+        isSpecial: vtp.isSpecialVenue,
+        classLevel: regLCCP.level,
+        className: regLCCP.className,
+        department: regLCCP.department,
+        classSize: regLCCP.classCapacity.toString(),
+        hasDisable: false,
+        semester: regLCCP.semester,
+        classId: regLCCP.classId,
+        lecturerId: regLCCP.lecturerId,
+      );
+      generateTables.add(table);
+      //mark vtp as booked
+      vtp.isBooked = true;
+      nonSpecialVTPS.firstWhere((element) => element.id == vtp.id).isBooked =
+          true;
+      //tables.add(table);
+    }
+
+    return generateTables;
   }
 }

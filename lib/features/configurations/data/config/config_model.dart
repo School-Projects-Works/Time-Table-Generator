@@ -141,7 +141,7 @@ class StudyModeModel {
       periods: List<Map<String, dynamic>>.from(map['periods']?.map((x) => Map<String, dynamic>.from(x))),
       regLibDay: map['regLibDay'],
       evenLibDay: map['evenLibDay'],
-      regLibPeriod: Map<String, dynamic>.from(map['regLibPeriod']),
+      regLibPeriod:map['regLibPeriod']!=null? Map<String, dynamic>.from(map['regLibPeriod']):null,
       regLibLevel: map['regLibLevel'],
       evenLibLevel: map['evenLibLevel'],
       breakTime: List<Map<String, dynamic>>.from(map['breakTime']?.map((x) => Map<String, dynamic>.from(x))),

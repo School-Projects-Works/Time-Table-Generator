@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:system_theme/system_theme.dart';
@@ -56,6 +57,18 @@ class MyApp extends StatelessWidget {
     return FluentApp.router(
       title: 'AAMUSTED TIMETABLE GENERATOR',
       debugShowCheckedModeBanner: false,
+      scrollBehavior: const ScrollBehavior().copyWith(
+          scrollbars: true,
+          overscroll: true,
+          physics: const BouncingScrollPhysics(),
+          dragDevices: {
+            PointerDeviceKind.touch,
+            PointerDeviceKind.mouse,
+            PointerDeviceKind.trackpad,
+            PointerDeviceKind.stylus,
+            PointerDeviceKind.invertedStylus,
+            PointerDeviceKind.unknown,
+          }),
       darkTheme: FluentThemeData(
         brightness: Brightness.dark,
         visualDensity: VisualDensity.standard,
