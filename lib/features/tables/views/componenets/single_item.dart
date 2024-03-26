@@ -3,14 +3,12 @@ import 'package:aamusted_timetable_generator/core/widget/custom_button.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_input.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:aamusted_timetable_generator/features/tables/data/tables_model.dart';
-
 import '../../provider/table_manupulation.dart';
 
 // ignore: must_be_immutable

@@ -192,6 +192,52 @@ class LCCP extends StateNotifier<List<LCCPModel>> {
   }
 }
 
+final generatingTableProvider =
+    StateNotifierProvider<GeneratingTableProvider, List<TablesModel>>(
+        (ref) => GeneratingTableProvider());
+
+class GeneratingTableProvider extends StateNotifier<List<TablesModel>> {
+  GeneratingTableProvider() : super([]);
+
+  void setTable(List<TablesModel> tables) {
+    state = tables;
+  }
+
+  void addTable(List<TablesModel> tables) {
+    state = [...state, ...tables];
+  }
+}
+
+final unassignedLCCPProvider =
+    StateNotifierProvider<UnassignedLCCList, List<LCCPModel>>(
+        (ref) => UnassignedLCCList());
+
+class UnassignedLCCList extends StateNotifier<List<LCCPModel>> {
+  UnassignedLCCList() : super([]);
+  void addLCCP(LCCPModel lccp) {
+    state = [...state, lccp];
+  }
+
+  void removeLCCP(LCCPModel lccp) {
+    state = state.where((element) => element.id != lccp.id).toList();
+  }
+}
+
+final unassignedLTPProvider =
+    StateNotifierProvider<UnassignedLTPs, List<LTPModel>>(
+        (ref) => UnassignedLTPs());
+
+class UnassignedLTPs extends StateNotifier<List<LTPModel>> {
+  UnassignedLTPs() : super([]);
+  void addLTP(LTPModel ltp) {
+    state = [...state, ltp];
+  }
+
+  void removeLTP(LTPModel ltp) {
+    state = state.where((element) => element.id != ltp.id).toList();
+  }
+}
+
 final tableGenProvider =
     StateNotifierProvider<TableGenProvider, void>((ref) => TableGenProvider());
 
@@ -208,14 +254,15 @@ class TableGenProvider extends StateNotifier<void> {
         vtps.where((element) => !(element.isSpecialVenue ?? false)).toList();
     List<LCCPModel> lccps = ref.watch(lccProvider);
     List<LTPModel> ltps = ref.watch(ltpProvider);
+    print('Total LCCP: ${lccps.length}');
+    print('Total LTP: ${ltps.length}');
     var config = ref.watch(configurationProvider);
     var data = StudyModeModel.fromMap(config.regular);
-    List<TablesModel> tables = [];
+    var tables = ref.watch(generatingTableProvider);
     //generate lib tables
-    var libTables = generateLibTables(ltps, nonSpecialVTPS, config);
-    tables.addAll(libTables);
+    generateLibTables(ltps, nonSpecialVTPS, config, ref);
     //mark all used venues as booked
-    for (var table in libTables) {
+    for (var table in tables) {
       var vtp = nonSpecialVTPS
           .where((element) => element.id == table.venueId)
           .firstOrNull;
@@ -231,11 +278,9 @@ class TableGenProvider extends StateNotifier<void> {
         .where((element) =>
             element.requireSpecialVenue && element.venues.isNotEmpty)
         .toList();
-    var specialTables = generateSpecialTables(
-        lccpWithSpecialVenue, specialVTPS, config, tables);
-    tables.addAll(specialTables);
+    generateSpecialTables(lccpWithSpecialVenue, specialVTPS, config, ref);
     //mark all used venues as booked
-    for (var table in specialTables) {
+    for (var table in tables) {
       var vtp = specialVTPS
           .where((element) => element.id == table.venueId)
           .firstOrNull;
@@ -251,11 +296,9 @@ class TableGenProvider extends StateNotifier<void> {
         .where(
             (element) => !element.requireSpecialVenue || element.venues.isEmpty)
         .toList();
-    var remainingTables = generateOtherTables(
-        lccpWithNoSpecialVenue, nonSpecialVTPS, config, tables);
-    tables.addAll(remainingTables);
+    generateOtherTables(lccpWithNoSpecialVenue, nonSpecialVTPS, config, ref);
     //mark all used venues as booked
-    for (var table in remainingTables) {
+    for (var table in tables) {
       var vtp = nonSpecialVTPS
           .where((element) => element.id == table.venueId)
           .firstOrNull;
@@ -266,7 +309,54 @@ class TableGenProvider extends StateNotifier<void> {
         nonSpecialVTPS.add(vtp);
       }
     }
-    var savedTables = await TableGenUsecase().saveTables(tables);
+    //assign all unassigned LCCP and LTP
+    if (ref.watch(unassignedLCCPProvider).isNotEmpty) {
+      assignUnassignedLCCP(ref, nonSpecialVTPS, specialVTPS);
+      for (var table in tables) {
+        var vtp = nonSpecialVTPS
+            .where((element) => element.id == table.venueId)
+            .firstOrNull;
+        if (vtp != null) {
+          vtp.isBooked = true;
+          //add back to nonSpecialVTPS
+          nonSpecialVTPS.removeWhere((element) => element.id == vtp.id);
+          nonSpecialVTPS.add(vtp);
+        }
+      }
+    }
+    //assign all unassigned LTP
+    if (ref.watch(unassignedLTPProvider).isNotEmpty) {
+      assignUnassignedLTP(ref, nonSpecialVTPS, specialVTPS);
+      for (var table in tables) {
+        var vtp = nonSpecialVTPS
+            .where((element) => element.id == table.venueId)
+            .firstOrNull;
+        if (vtp != null) {
+          vtp.isBooked = true;
+          //add back to nonSpecialVTPS
+          nonSpecialVTPS.removeWhere((element) => element.id == vtp.id);
+          nonSpecialVTPS.add(vtp);
+        }
+      }
+    }
+    print('Total tables = ${ref.watch(generatingTableProvider).length}');
+    print(
+        'Total unassigned LCCP = ${ref.watch(unassignedLCCPProvider).length}');
+    print('Total unassigned LTP = ${ref.watch(unassignedLTPProvider).length}');
+    //print all unassigned LCCP
+    for (var lccp in ref.watch(unassignedLCCPProvider)) {
+      print('==========================================');
+      print('Unassigned LCCP: ${lccp.toMap()}');
+      print('==========================================');
+    }
+    //print all unassigned LTP
+    for (var ltp in ref.watch(unassignedLTPProvider)) {
+      print('==========================================');
+      print('Unassigned LTP: ${ltp.toMap()}');
+      print('==========================================');
+    }
+    var savedTables =
+        await TableGenUsecase().saveTables(ref.watch(generatingTableProvider));
     if (savedTables.isNotEmpty) {
       ref.read(tableDataProvider.notifier).addTable(savedTables);
       CustomDialog.dismiss();
@@ -277,8 +367,8 @@ class TableGenProvider extends StateNotifier<void> {
     }
   }
 
-  List<TablesModel> generateLibTables(
-      List<LTPModel> ltps, List<VTPModel> nonSpecialVTPS, ConfigModel config) {
+  List<TablesModel> generateLibTables(List<LTPModel> ltps,
+      List<VTPModel> nonSpecialVTPS, ConfigModel config, WidgetRef ref) {
     List<TablesModel> tables = [];
     var data = StudyModeModel.fromMap(config.regular);
     //! get all regular lib courses=====================================================
@@ -304,45 +394,14 @@ class TableGenProvider extends StateNotifier<void> {
           .where((element) => element.isBooked == false)
           .firstOrNull;
       if (vtp != null) {
-        var id = '${reglib.id}${vtp.id}'
-            .trim()
-            .replaceAll(' ', '')
-            .toLowerCase()
-            .hashCode
-            .toString();
-        TablesModel table = TablesModel(
-          id: id,
-          year: config.year,
-          day: vtp.day!,
-          period: vtp.period!,
-          studyMode: reglib.studyMode,
-          periodMap: data.regLibPeriod,
-          courseCode: reglib.courseCode,
-          courseId: reglib.courseId,
-          lecturerName: reglib.lecturerName,
-          lecturerEmail: '',
-          courseTitle: reglib.courseTitle,
-          creditHours: '3',
-          specialVenues: [],
-          venueName: vtp.venueName!,
-          venueId: vtp.venueId!,
-          venueCapacity: vtp.venueCapacity!,
-          disabilityAccess: vtp.dissabledAccess,
-          isSpecial: vtp.isSpecialVenue,
-          classLevel: reglib.level,
-          className: '',
-          department: '',
-          classSize: '',
-          hasDisable: false,
-          semester: reglib.semester,
-          classId: '',
-          lecturerId: reglib.lecturerId,
-        );
-        tables.add(table);
+        var table = buildLibTableItem(reglib, vtp, config, data);
+        ref.read(generatingTableProvider.notifier).addTable([table]);
         //mark vtp as booked
         vtp.isBooked = true;
         nonSpecialVTPS.firstWhere((element) => element.id == vtp.id).isBooked =
             true;
+      } else {
+        ref.read(unassignedLTPProvider.notifier).addLTP(reglib);
       }
     }
 //! end of regular lib courses=====================================================
@@ -376,55 +435,23 @@ class TableGenProvider extends StateNotifier<void> {
           .where((element) => element.isBooked == false)
           .firstOrNull;
       if (vtp != null) {
-        var id = '${evenlib.id}${vtp.id}'
-            .trim()
-            .replaceAll(' ', '')
-            .toLowerCase()
-            .hashCode
-            .toString();
-        TablesModel table = TablesModel(
-          id: id,
-          year: config.year,
-          day: vtp.day!,
-          period: vtp.period!,
-          studyMode: evenlib.studyMode,
-          periodMap: evenLibPeriod.toMap(),
-          courseCode: evenlib.courseCode,
-          courseId: evenlib.courseId,
-          lecturerName: evenlib.lecturerName,
-          lecturerEmail: '',
-          courseTitle: evenlib.courseTitle,
-          creditHours: '3',
-          specialVenues: [],
-          venueName: vtp.venueName!,
-          venueId: vtp.venueId!,
-          venueCapacity: vtp.venueCapacity!,
-          disabilityAccess: vtp.dissabledAccess,
-          isSpecial: vtp.isSpecialVenue,
-          classLevel: evenlib.level,
-          className: '',
-          department: '',
-          classSize: '',
-          hasDisable: false,
-          semester: evenlib.semester,
-          classId: '',
-          lecturerId: evenlib.lecturerId,
-        );
+        var table = buildLibTableItem(evenlib, vtp, config, data);
+        
         tables.add(table);
+        ref.read(generatingTableProvider.notifier).addTable([table]);
         //mark vtp as booked
         vtp.isBooked = true;
         nonSpecialVTPS.firstWhere((element) => element.id == vtp.id).isBooked =
             true;
+      } else {
+        ref.read(unassignedLTPProvider.notifier).addLTP(evenlib);
       }
     }
     return tables;
   }
 
-  List<TablesModel> generateSpecialTables(
-      List<LCCPModel> lccpWithSpecialVenue,
-      List<VTPModel> specialVTPS,
-      ConfigModel config,
-      List<TablesModel> generatedList) {
+  List<TablesModel> generateSpecialTables(List<LCCPModel> lccpWithSpecialVenue,
+      List<VTPModel> specialVTPS, ConfigModel config, WidgetRef ref) {
     var data = StudyModeModel.fromMap(config.regular);
     List<TablesModel> tables = [];
     var reg = lccpWithSpecialVenue
@@ -444,87 +471,28 @@ class TableGenProvider extends StateNotifier<void> {
       var evenPeriod = periods.last;
       //get only evening vtps for evening students
       var evenVTP = specialVTPS
-          .where((element) => element.period == evenPeriod.period)
+          .where((element) =>
+              element.period == evenPeriod.period && element.isBooked == false)
           .toList();
-      var vtp = pickVenue(evenLCCP, evenVTP, data, generatedList);
-      if (vtp == null) continue;
-      var id = '${evenLCCP.id}${vtp.id}'
-          .trim()
-          .replaceAll(' ', '')
-          .toLowerCase()
-          .hashCode
-          .toString();
-      TablesModel table = TablesModel(
-        id: id,
-        year: config.year,
-        day: vtp.day!,
-        period: vtp.period!,
-        studyMode: evenLCCP.studyMode,
-        periodMap: data.regLibPeriod,
-        courseCode: evenLCCP.courseCode,
-        courseId: evenLCCP.courseId,
-        lecturerName: evenLCCP.lecturerName,
-        lecturerEmail: '',
-        courseTitle: evenLCCP.courseName,
-        creditHours: '3',
-        specialVenues: [],
-        venueName: vtp.venueName!,
-        venueId: vtp.venueId!,
-        venueCapacity: vtp.venueCapacity!,
-        disabilityAccess: vtp.dissabledAccess,
-        isSpecial: vtp.isSpecialVenue,
-        classLevel: evenLCCP.level,
-        className: evenLCCP.className,
-        department: evenLCCP.department,
-        classSize: evenLCCP.classCapacity.toString(),
-        hasDisable: false,
-        semester: evenLCCP.semester,
-        classId: evenLCCP.classId,
-        lecturerId: evenLCCP.lecturerId,
-      );
-      tables.add(table);
+      var vtp = pickVenue(evenLCCP, evenVTP, data, ref);
+      if (vtp == null) {
+        ref.read(unassignedLCCPProvider.notifier).addLCCP(evenLCCP);
+        continue;
+      }
+      var table = buildTableItem(evenLCCP, vtp, config, data);
+      ref.read(generatingTableProvider.notifier).addTable([table]);
       //mark vtp as booked
       vtp.isBooked = true;
       specialVTPS.firstWhere((element) => element.id == vtp.id).isBooked = true;
     }
     for (var regLCCP in reg) {
-      var vtp = pickVenue(regLCCP, specialVTPS, data, generatedList);
-      if (vtp == null) continue;
-      var id = '${regLCCP.id}${vtp.id}'
-          .trim()
-          .replaceAll(' ', '')
-          .toLowerCase()
-          .hashCode
-          .toString();
-      TablesModel table = TablesModel(
-        id: id,
-        year: config.year,
-        day: vtp.day!,
-        period: vtp.period!,
-        studyMode: regLCCP.studyMode,
-        periodMap: data.regLibPeriod,
-        courseCode: regLCCP.courseCode,
-        courseId: regLCCP.courseId,
-        lecturerName: regLCCP.lecturerName,
-        lecturerEmail: '',
-        courseTitle: regLCCP.courseName,
-        creditHours: '3',
-        specialVenues: [],
-        venueName: vtp.venueName!,
-        venueId: vtp.venueId!,
-        venueCapacity: vtp.venueCapacity!,
-        disabilityAccess: vtp.dissabledAccess,
-        isSpecial: vtp.isSpecialVenue,
-        classLevel: regLCCP.level,
-        className: regLCCP.className,
-        department: regLCCP.department,
-        classSize: regLCCP.classCapacity.toString(),
-        hasDisable: false,
-        semester: regLCCP.semester,
-        classId: regLCCP.classId,
-        lecturerId: regLCCP.lecturerId,
-      );
-      tables.add(table);
+      var vtp = pickVenue(regLCCP, specialVTPS, data, ref);
+      if (vtp == null) {
+        ref.read(unassignedLCCPProvider.notifier).addLCCP(regLCCP);
+        continue;
+      }
+      var table = buildTableItem(regLCCP, vtp, config, data);
+      ref.read(generatingTableProvider.notifier).addTable([table]);
       //mark vtp as booked
       vtp.isBooked = true;
       specialVTPS.firstWhere((element) => element.id == vtp.id).isBooked = true;
@@ -534,7 +502,7 @@ class TableGenProvider extends StateNotifier<void> {
   }
 
   VTPModel? pickVenue(LCCPModel regLCCP, List<VTPModel> specialVTPS,
-      StudyModeModel data, List<TablesModel> generatedList) {
+      StudyModeModel data, WidgetRef ref) {
     var isLibLevel = regLCCP.level == data.regLibLevel;
     var freeVenue = isLibLevel
         ? specialVTPS
@@ -545,10 +513,12 @@ class TableGenProvider extends StateNotifier<void> {
             .toList()
         : specialVTPS.where((element) => element.isBooked == false).toList();
 
-    var lecturerExist = generatedList
+    var lecturerExist = ref
+        .watch(generatingTableProvider)
         .where((element) => element.lecturerId == regLCCP.lecturerId)
         .toList();
-    var classExist = generatedList
+    var classExist = ref
+        .watch(generatingTableProvider)
         .where((element) => element.classId == regLCCP.classId)
         .toList();
     //remove all venues where lecturer has already been assigned save day and period
@@ -575,11 +545,8 @@ class TableGenProvider extends StateNotifier<void> {
     return finalVenue;
   }
 
-  List<TablesModel> generateOtherTables(
-      List<LCCPModel> lccpWithNoSpecialVenue,
-      List<VTPModel> nonSpecialVTPS,
-      ConfigModel config,
-      List<TablesModel> tables) {
+  List<TablesModel> generateOtherTables(List<LCCPModel> lccpWithNoSpecialVenue,
+      List<VTPModel> nonSpecialVTPS, ConfigModel config, WidgetRef ref) {
     List<TablesModel> generateTables = [];
     //split lccpWithNoSpecialVenue into regular and evening
     var reg = lccpWithNoSpecialVenue
@@ -606,86 +573,26 @@ class TableGenProvider extends StateNotifier<void> {
                   ? element.day != data.evenLibDay
                   : true))
           .toList();
-      var vtp = pickVenue(evenLCCP, evenVTP, data, tables);
-      if (vtp == null) continue;
-      var id = '${evenLCCP.id}${vtp.id}'
-          .trim()
-          .replaceAll(' ', '')
-          .toLowerCase()
-          .hashCode
-          .toString();
-      TablesModel table = TablesModel(
-        id: id,
-        year: config.year,
-        day: vtp.day!,
-        period: vtp.period!,
-        studyMode: evenLCCP.studyMode,
-        periodMap: data.regLibPeriod,
-        courseCode: evenLCCP.courseCode,
-        courseId: evenLCCP.courseId,
-        lecturerName: evenLCCP.lecturerName,
-        lecturerEmail: '',
-        courseTitle: evenLCCP.courseName,
-        creditHours: '3',
-        specialVenues: [],
-        venueName: vtp.venueName!,
-        venueId: vtp.venueId!,
-        venueCapacity: vtp.venueCapacity!,
-        disabilityAccess: vtp.dissabledAccess,
-        isSpecial: vtp.isSpecialVenue,
-        classLevel: evenLCCP.level,
-        className: evenLCCP.className,
-        department: evenLCCP.department,
-        classSize: evenLCCP.classCapacity.toString(),
-        hasDisable: false,
-        semester: evenLCCP.semester,
-        classId: evenLCCP.classId,
-        lecturerId: evenLCCP.lecturerId,
-      );
-      generateTables.add(table);
+      var vtp = pickVenue(evenLCCP, evenVTP, data, ref);
+      if (vtp == null) {
+        ref.read(unassignedLCCPProvider.notifier).addLCCP(evenLCCP);
+        continue;
+      }
+      var table = buildTableItem(evenLCCP, vtp, config, data);
+      ref.read(generatingTableProvider.notifier).addTable([table]);
       //mark vtp as booked
       vtp.isBooked = true;
       nonSpecialVTPS.firstWhere((element) => element.id == vtp.id).isBooked =
           true;
     }
     for (var regLCCP in reg) {
-      var vtp = pickVenue(regLCCP, nonSpecialVTPS, data, tables);
-      if (vtp == null) continue;
-      var id = '${regLCCP.id}${vtp.id}'
-          .trim()
-          .replaceAll(' ', '')
-          .toLowerCase()
-          .hashCode
-          .toString();
-      TablesModel table = TablesModel(
-        id: id,
-        year: config.year,
-        day: vtp.day!,
-        period: vtp.period!,
-        studyMode: regLCCP.studyMode,
-        periodMap: data.regLibPeriod,
-        courseCode: regLCCP.courseCode,
-        courseId: regLCCP.courseId,
-        lecturerName: regLCCP.lecturerName,
-        lecturerEmail: '',
-        courseTitle: regLCCP.courseName,
-        creditHours: '3',
-        specialVenues: [],
-        venueName: vtp.venueName!,
-        venueId: vtp.venueId!,
-        venueCapacity: vtp.venueCapacity!,
-        disabilityAccess: vtp.dissabledAccess,
-        isSpecial: vtp.isSpecialVenue,
-        classLevel: regLCCP.level,
-        className: regLCCP.className,
-        department: regLCCP.department,
-        classSize: regLCCP.classCapacity.toString(),
-        hasDisable: false,
-        semester: regLCCP.semester,
-        classId: regLCCP.classId,
-        lecturerId: regLCCP.lecturerId,
-      );
-      generateTables.add(table);
+      var vtp = pickVenue(regLCCP, nonSpecialVTPS, data, ref);
+      if (vtp == null) {
+        ref.read(unassignedLCCPProvider.notifier).addLCCP(regLCCP);
+        continue;
+      }
+      var table = buildTableItem(regLCCP, vtp, config, data);
+      ref.read(generatingTableProvider.notifier).addTable([table]);
       //mark vtp as booked
       vtp.isBooked = true;
       nonSpecialVTPS.firstWhere((element) => element.id == vtp.id).isBooked =
@@ -695,4 +602,193 @@ class TableGenProvider extends StateNotifier<void> {
 
     return generateTables;
   }
+
+  void assignUnassignedLCCP(WidgetRef ref, List<VTPModel> nonSpecialVTPS,
+      List<VTPModel> specialVTPS) {
+    var config = ref.watch(configurationProvider);
+    var data = StudyModeModel.fromMap(config.regular);
+    //split unassigned LCCP into regular and evening
+    var unassignedLCCP = ref.watch(unassignedLCCPProvider);
+    var reg = unassignedLCCP
+        .where((element) =>
+            element.studyMode.toLowerCase().replaceAll(' ', '') ==
+            'regular'.toLowerCase())
+        .toList();
+    //split reg into special and non special venues
+    var specialReg = reg
+        .where((element) =>
+            element.requireSpecialVenue && element.venues.isNotEmpty)
+        .toList();
+    var nonSpecialReg = reg
+        .where(
+            (element) => !element.requireSpecialVenue || element.venues.isEmpty)
+        .toList();
+    //assign special reg
+    for (var regLCCP in specialReg) {
+      //get special venues in the regLCCP
+      var ccpVenues = regLCCP.venues;
+      var specialVenues =
+          specialVTPS.where((element) => element.isBooked == false).toList();
+      //pick venue where name is in ccpVenues
+      var vtpp = specialVenues
+          .where((element) => ccpVenues.contains(element.venueName))
+          .toList();
+          var vtp = pickVenue(regLCCP, vtpp, data, ref);
+      if (vtp != null) {
+        var table = buildTableItem(regLCCP, vtp, config, data);
+        ref.read(generatingTableProvider.notifier).addTable([table]);
+        //mark vtp as booked
+        vtp.isBooked = true;
+        specialVTPS.firstWhere((element) => element.id == vtp.id).isBooked =
+            true;
+        ref.read(unassignedLCCPProvider.notifier).removeLCCP(regLCCP);
+      }
+    }
+    //assign non special reg
+    for (var regLCCP in nonSpecialReg) {
+      var vtp = pickVenue(regLCCP, nonSpecialVTPS, data, ref);
+      if (vtp != null) {
+        var table = buildTableItem(regLCCP, vtp, config, data);
+        ref.read(generatingTableProvider.notifier).addTable([table]);
+        //mark vtp as booked
+        vtp.isBooked = true;
+        nonSpecialVTPS.firstWhere((element) => element.id == vtp.id).isBooked =
+            true;
+        ref.read(unassignedLCCPProvider.notifier).removeLCCP(regLCCP);
+      }
+    }
+
+    var even = unassignedLCCP
+        .where((element) =>
+            element.studyMode.toLowerCase().replaceAll(' ', '') ==
+            'evening'.toLowerCase())
+        .toList();
+    //split even into special and non special venues
+    var specialEven = even
+        .where((element) =>
+            element.requireSpecialVenue && element.venues.isNotEmpty)
+        .toList();
+    var nonSpecialEven = even
+        .where(
+            (element) => !element.requireSpecialVenue || element.venues.isEmpty)
+        .toList();
+    //assign special even
+    for (var evenLCCP in specialEven) {
+      //get special venues in the evenLCCP
+      var ccpVenues = evenLCCP.venues;
+      var specialVenues =
+          specialVTPS.where((element) => element.isBooked == false).toList();
+      //pick venue where name is in ccpVenues
+      var vtpp = specialVenues
+          .where((element) => ccpVenues.contains(element.venueName))
+          .toList();
+      var vtp = pickVenue(evenLCCP, vtpp, data, ref);
+      if (vtp != null) {
+        var table = buildTableItem(evenLCCP, vtp, config, data);
+        ref.read(generatingTableProvider.notifier).addTable([table]);
+        //mark vtp as booked
+        vtp.isBooked = true;
+        specialVTPS.firstWhere((element) => element.id == vtp.id).isBooked =
+            true;
+        ref.read(unassignedLCCPProvider.notifier).removeLCCP(evenLCCP);
+      }
+    }
+    //assign non special even
+    for (var evenLCCP in nonSpecialEven) {
+      var vtp = pickVenue(evenLCCP, nonSpecialVTPS, data, ref);
+      if (vtp != null) {
+        var table = buildTableItem(evenLCCP, vtp, config, data);
+        ref.read(generatingTableProvider.notifier).addTable([table]);
+        //mark vtp as booked
+        vtp.isBooked = true;
+        nonSpecialVTPS.firstWhere((element) => element.id == vtp.id).isBooked =
+            true;
+        ref.read(unassignedLCCPProvider.notifier).removeLCCP(evenLCCP);
+      }
+    }
+  }
+
+  
+  void assignUnassignedLTP(WidgetRef ref, List<VTPModel> nonSpecialVTPS,
+      List<VTPModel> specialVTPS) {}
+
+  TablesModel buildLibTableItem(
+      LTPModel ltp, VTPModel vtp, ConfigModel config, StudyModeModel data) {
+        var id = '${ltp.id}${vtp.id}'
+        .trim()
+        .replaceAll(' ', '')
+        .toLowerCase()
+        .hashCode
+        .toString();
+    TablesModel table = TablesModel(
+      id: id,
+      year: config.year,
+      day: vtp.day!,
+      period: vtp.period!,
+      studyMode: ltp.studyMode,
+      periodMap: ltp.toMap(),
+      courseCode: ltp.courseCode,
+      courseId: ltp.courseId,
+      lecturerName: ltp.lecturerName,
+      lecturerEmail: '',
+      courseTitle: ltp.courseTitle,
+      creditHours: '3',
+      specialVenues: [],
+      venueName: vtp.venueName!,
+      venueId: vtp.venueId!,
+      venueCapacity: vtp.venueCapacity!,
+      disabilityAccess: vtp.dissabledAccess,
+      isSpecial: vtp.isSpecialVenue,
+      classLevel: ltp.level,
+      className: '',
+      department: '',
+      classSize: '',
+      hasDisable: false,
+      semester: ltp.semester,
+      classId: '',
+      lecturerId: ltp.lecturerId,
+    );
+    return table;
+
+      }
+
+  TablesModel buildTableItem(
+      LCCPModel lccp, VTPModel vtp, ConfigModel config, StudyModeModel data) {
+    var id = '${lccp.id}${vtp.id}'
+        .trim()
+        .replaceAll(' ', '')
+        .toLowerCase()
+        .hashCode
+        .toString();
+    TablesModel table = TablesModel(
+      id: id,
+      year: config.year,
+      day: vtp.day!,
+      period: vtp.period!,
+      studyMode: lccp.studyMode,
+      periodMap: data.regLibPeriod,
+      courseCode: lccp.courseCode,
+      courseId: lccp.courseId,
+      lecturerName: lccp.lecturerName,
+      lecturerEmail: '',
+      courseTitle: lccp.courseName,
+      creditHours: '3',
+      specialVenues: [],
+      venueName: vtp.venueName!,
+      venueId: vtp.venueId!,
+      venueCapacity: vtp.venueCapacity!,
+      disabilityAccess: vtp.dissabledAccess,
+      isSpecial: vtp.isSpecialVenue,
+      classLevel: lccp.level,
+      className: lccp.className,
+      department: lccp.department,
+      classSize: lccp.classCapacity.toString(),
+      hasDisable: false,
+      semester: lccp.semester,
+      classId: lccp.classId,
+      lecturerId: lccp.lecturerId,
+    );
+    return table;
+  }
+  
 }

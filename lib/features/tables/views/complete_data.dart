@@ -1,9 +1,11 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_button.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
+import 'package:aamusted_timetable_generator/core/widget/custom_input.dart';
 import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/table_gen_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/views/componenets/table_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:screenshot/screenshot.dart';
@@ -39,7 +41,83 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
                 Text('Generated Tables'.toUpperCase(),
                     style: getTextStyle(
                         fontSize: 30, fontWeight: FontWeight.bold)),
-                const Spacer(),
+                Expanded(
+                    child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    //filter combo box
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Filter by: ',
+                              style: getTextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.bold)),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: SizedBox(
+                              width: 110,
+                              child: DropdownButton<String>(
+                                dropdownColor: Colors.white,
+                                value: ref.watch(filterProvider),
+                                onChanged: (newValue) {
+                                  ref.read(filterProvider.notifier).state =
+                                      newValue!;
+                                },
+                                items: <String>[
+                                  'All',
+                                  'Lecturer',
+                                  'Class',
+                                  'Course',
+                                  'Venue',
+                                  'Day'
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value,
+                                        style: getTextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.bold)),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                          if (ref.watch(filterProvider) != null &&
+                              ref.watch(filterProvider) != 'All')
+                            SizedBox(
+                              width: 200,
+                              child: CustomTextFields(
+                                hintText: ref.watch(filterProvider) ==
+                                        'Lecturer'
+                                    ? 'Enter Lecturer ID or Name'
+                                    : ref.watch(filterProvider) == 'Class'
+                                        ? 'Enter Class ID or Name'
+                                        : ref.watch(filterProvider) == 'Course'
+                                            ? 'Enter Course Code or Title'
+                                            : ref.watch(filterProvider) ==
+                                                    'Venue'
+                                                ? 'Enter Venue ID or Name'
+                                                : ref.watch(filterProvider) ==
+                                                        'Day'
+                                                    ? 'Enter Day'
+                                                    : '',
+                                onChanged: (value) {},
+                              ),
+                            )
+                        ],
+                      ),
+                    ),
+                  ],
+                )),
+                const SizedBox(
+                  width: 10,
+                ),
                 CustomButton(
                     text: 'Generate Table',
                     radius: 10,
@@ -60,9 +138,9 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
                       color: secondaryColor,
                       onPressed: () {
                         CustomDialog.showCustom(
-                          width: MediaQuery.of(context).size.width * .9,
-                          height: MediaQuery.of(context).size.height * .9,
-                          ui: const ExportPage());
+                            width: MediaQuery.of(context).size.width * .9,
+                            height: MediaQuery.of(context).size.height * .9,
+                            ui: const ExportPage());
                       }),
               ],
             ),
