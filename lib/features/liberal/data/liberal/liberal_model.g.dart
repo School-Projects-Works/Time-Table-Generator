@@ -8,7 +8,7 @@ part of 'liberal_model.dart';
 
 class LiberalModelAdapter extends TypeAdapter<LiberalModel> {
   @override
-  final int typeId = 5;
+  final int typeId = 6;
 
   @override
   LiberalModel read(BinaryReader reader) {

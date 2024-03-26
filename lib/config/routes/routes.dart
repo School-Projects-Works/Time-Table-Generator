@@ -1,4 +1,3 @@
-import 'package:aamusted_timetable_generator/features/allocations/views/components/special_venue_page.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import '../../features/allocations/views/allocations_page.dart';
@@ -41,8 +40,8 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
           path: '/special_venues/:id',
           name: 'special_venue_page',
           builder: (context, state) {
-            var id = state.pathParameters['id'];
-            return SpecialVenueSelect(id!);
+           // var id = state.pathParameters['id'];
+            return Container();
           }),
     ],
   ),

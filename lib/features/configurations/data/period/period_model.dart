@@ -1,72 +1,74 @@
-import 'dart:convert';
+// import 'dart:convert';
 
-class PeriodModel {
-  String? period;
-  String? startTime;
-  String? endTime;
-  PeriodModel({
-    this.period,
-    this.startTime,
-    this.endTime,
-  });
+// import 'package:flutter/material.dart';
 
-  PeriodModel copyWith({
-    String? period,
-    String? startTime,
-    String? endTime,
-  }) {
-    return PeriodModel(
-      period: period ?? this.period,
-      startTime: startTime ?? this.startTime,
-      endTime: endTime ?? this.endTime,
-    );
-  }
+// class PeriodModel {
+//   String? period;
+//   TimeOfDay? startTime;
+//   TimeOfDay? endTime;
+//   PeriodModel({
+//     this.period,
+//     this.startTime,
+//     this.endTime,
+//   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'period': period,
-      'startTime': startTime,
-      'endTime': endTime,
-    };
-  }
+//   PeriodModel copyWith({
+//     String? period,
+//     String? startTime,
+//     String? endTime,
+//   }) {
+//     return PeriodModel(
+//       period: period ?? this.period,
+//       startTime: startTime ?? this.startTime,
+//       endTime: endTime ?? this.endTime,
+//     );
+//   }
 
-  factory PeriodModel.fromMap(Map<String, dynamic>? map) {
-    if (map == null) {
-      return PeriodModel();
-    }
-    return PeriodModel(
-      period: map['period'] != null ? map['period'] as String : null,
-      startTime: map['startTime'] != null ? map['startTime'] as String : null,
-      endTime: map['endTime'] != null ? map['endTime'] as String : null,
-    );
-  }
+//   Map<String, dynamic> toMap() {
+//     return <String, dynamic>{
+//       'period': period,
+//       'startTime': startTime,
+//       'endTime': endTime,
+//     };
+//   }
 
-  String toJson() => json.encode(toMap());
+//   factory PeriodModel.fromMap(Map<String, dynamic>? map) {
+//     if (map == null) {
+//       return PeriodModel();
+//     }
+//     return PeriodModel(
+//       period: map['period'] != null ? map['period'] as String : null,
+//       startTime: map['startTime'] != null ? map['startTime'] as String : null,
+//       endTime: map['endTime'] != null ? map['endTime'] as String : null,
+//     );
+//   }
 
-  factory PeriodModel.fromJson(String source) =>
-      PeriodModel.fromMap(json.decode(source) as Map<String, dynamic>);
+//   String toJson() => json.encode(toMap());
 
-  @override
-  String toString() =>
-      'PeriodModel(period: $period, startTime: $startTime, endTime: $endTime)';
+//   factory PeriodModel.fromJson(String source) =>
+//       PeriodModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
-  @override
-  bool operator ==(covariant PeriodModel other) {
-    if (identical(this, other)) return true;
+//   @override
+//   String toString() =>
+//       'PeriodModel(period: $period, startTime: $startTime, endTime: $endTime)';
 
-    return other.period == period &&
-        other.startTime == startTime &&
-        other.endTime == endTime;
-  }
+//   @override
+//   bool operator ==(covariant PeriodModel other) {
+//     if (identical(this, other)) return true;
 
-  @override
-  int get hashCode => period.hashCode ^ startTime.hashCode ^ endTime.hashCode;
+//     return other.period == period &&
+//         other.startTime == startTime &&
+//         other.endTime == endTime;
+//   }
 
-  PeriodModel clear() {
-    return PeriodModel(
-      period: null,
-      startTime: null,
-      endTime: null,
-    );
-  }
-}
+//   @override
+//   int get hashCode => period.hashCode ^ startTime.hashCode ^ endTime.hashCode;
+
+//   PeriodModel clear() {
+//     return PeriodModel(
+//       period: null,
+//       startTime: null,
+//       endTime: null,
+//     );
+//   }
+// }

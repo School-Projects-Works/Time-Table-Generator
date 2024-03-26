@@ -107,7 +107,7 @@ class LecturerUseCase extends LectureRepo {
           var lecturer =
               allLecturersToCompare.where((e) => e.id == element.id).firstOrNull;
               if(lecturer == null) continue;
-          lecturer.courses = [...lecturer.courses!, ...element.courses];
+          lecturer.courses = [...lecturer.courses, ...element.courses];
           await lecturerBox.put(lecturer.id, lecturer);
         } else {
           element.classes = [];

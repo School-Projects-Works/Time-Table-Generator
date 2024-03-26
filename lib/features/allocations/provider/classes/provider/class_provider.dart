@@ -96,7 +96,7 @@ class ClassesNotifier extends StateNotifier<TableModel<ClassModel>> {
       var data = state.items
           .where((element) =>
               element.name!.toLowerCase().contains(query.toLowerCase()) ||
-              element.level!.toLowerCase().contains(query.toLowerCase()) ||
+              element.level.toLowerCase().contains(query.toLowerCase()) ||
               element.id!.toLowerCase().contains(query.toLowerCase()) ||
               element.department!.toLowerCase().contains(query.toLowerCase()))
           .toList();

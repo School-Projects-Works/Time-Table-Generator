@@ -45,6 +45,7 @@ dependencies:
   data_table_2: ^2.5.11
   uuid: ^4.3.3
   collection: ^1.18.0
+  screenshot: ^2.3.0
 
 
  
@@ -57,7 +58,7 @@ dev_dependencies:
 
   flutter_lints: ^2.0.3
   hive_generator: ^2.0.1
-  build_runner: ^2.4.6
+  build_runner: any
 
 flutter:
   uses-material-design: true

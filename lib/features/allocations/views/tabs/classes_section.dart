@@ -111,7 +111,7 @@ class _ClassesTabState extends ConsumerState<ClassesTab> {
                   title: 'Class Level',
                   width: 200,
                   cellBuilder: (item) => Text(
-                    item.level ?? '',
+                    item.level,
                     style: tableTextStyle,
                   ),
                 ),

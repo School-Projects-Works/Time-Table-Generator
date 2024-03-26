@@ -4,7 +4,6 @@ import 'package:aamusted_timetable_generator/features/allocations/provider/cours
 import 'package:aamusted_timetable_generator/features/venues/data/venue_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../main/provider/main_provider.dart';
 
@@ -29,8 +28,8 @@ class AvailableVenues extends StateNotifier<void> {
     if (success) {
       ref.read(coursesDataProvider.notifier).updateCourse(data!);
       CustomDialog.dismiss();
+      CustomDialog.dismiss();
       CustomDialog.showSuccess(message: message!);
-      context.pop();
     } else {
       CustomDialog.dismiss();
       CustomDialog.showError(message: message!);
