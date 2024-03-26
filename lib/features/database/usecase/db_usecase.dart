@@ -23,7 +23,7 @@ class DatabaseUseCase extends DatabaseRepository {
 
     Hive.registerAdapter(CourseModelAdapter());
     await Hive.openBox<CourseModel>('courses');
-    
+
     Hive.registerAdapter(LecturerModelAdapter());
     await Hive.openBox<LecturerModel>('lecturers');
 
