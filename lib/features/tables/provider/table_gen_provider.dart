@@ -45,8 +45,10 @@ class FilteredTableProvider extends StateNotifier<List<TablesModel>> {
       } else {
         state = tables;
       }
+      
     }
   }
 }
 
 final filterProvider = StateProvider<String?>((ref) => 'All');
+final isFiltered = StateProvider<bool>((ref) => false); 

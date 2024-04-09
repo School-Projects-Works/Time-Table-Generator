@@ -31,15 +31,29 @@ class VenueUseCase extends VenueRepo {
   }
 
   @override
-  Future<(bool, String)> deleteAllVenues() {
-    // TODO: implement deleteAllVenues
-    throw UnimplementedError();
+  Future<(bool, String)> deleteAllVenues()async {
+    try {
+      final Box<VenueModel> venueBox = await Hive.openBox<VenueModel>('venues');
+      //check if box is open
+      if (!venueBox.isOpen) {
+        await Hive.openBox('venues');
+      }
+      venueBox.clear();
+      return Future.value((true, 'Venues deleted successfully'));
+    } catch (e) {
+      return Future.value((false, e.toString()));
+    }
   }
 
   @override
-  Future<(bool, String, VenueModel?)> deleteVenue(String id) {
-    // TODO: implement deleteVenue
-    throw UnimplementedError();
+  Future<(bool, String)> deleteVenue(String id) {
+    try {
+      final Box<VenueModel> venueBox = Hive.box<VenueModel>('venues');
+      venueBox.delete(id);
+      return Future.value((true, 'Venue deleted successfully'));
+    } catch (e) {
+      return Future.value((false, e.toString()));
+    }
   }
 
   @override
@@ -115,9 +129,19 @@ class VenueUseCase extends VenueRepo {
   }
 
   @override
-  Future<(bool, String, VenueModel?)> updateVenue(VenueModel venue) {
-    // TODO: implement updateVenue
-    throw UnimplementedError();
+  Future<(bool, String, VenueModel?)> updateVenue(VenueModel venue)async {
+     try {
+      final Box<VenueModel> venueBox =await Hive.openBox<VenueModel>('venues');
+      //check if box is open
+      if (!venueBox.isOpen) {
+        await Hive.openBox('venues');
+      }
+
+      await venueBox.put(venue.id, venue);
+      return Future.value((true, 'Venue updated successfully', venue));
+    } catch (e) {
+      return Future.value((false, e.toString(), null));
+    }
   }
 
   @override

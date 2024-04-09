@@ -55,8 +55,6 @@ final dbDataFutureProvider = FutureProvider<void>((ref) async {
   //?get tables from db
   var tables = await TableGenUsecase().getTables(academicYear, academicSemester);
   ref.read(tableDataProvider.notifier).setTables(tables);
-  //print table length
-  print('table length: ${tables.length}');
 });
 
 final classesDataProvider =
@@ -137,6 +135,16 @@ class LecturersDataProvider extends StateNotifier<List<LecturerModel>> {
   void deleteLecturer(String id) {
     state = state.where((element) => element.id != id).toList();
   }
+
+  void updateLecturers(List<LecturerModel> libLecturers) {
+    state = state.map((e) {
+      var index = libLecturers.indexWhere((element) => element.id == e.id);
+      if (index != -1) {
+        return libLecturers[index];
+      }
+      return e;
+    }).toList();
+  }
 }
 
 final venuesDataProvider =
@@ -157,6 +165,15 @@ class VenuesDataProvider extends StateNotifier<List<VenueModel>> {
 
   void deleteVenue(String id) {
     state = state.where((element) => element.id != id).toList();
+  }
+
+  void updateVenue(VenueModel venueModel) {
+    state = state.map((e) {
+      if (e.id == venueModel.id) {
+        return venueModel;
+      }
+      return e;
+    }).toList();
   }
 }
 

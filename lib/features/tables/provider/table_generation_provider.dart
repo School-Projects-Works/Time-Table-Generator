@@ -22,50 +22,7 @@ final vtpProvider = StateNotifierProvider<VTP, List<VTPModel>>((ref) => VTP());
 class VTP extends StateNotifier<List<VTPModel>> {
   VTP() : super([]);
 
-  void generateVTP(WidgetRef ref) {
-    var venues = ref.watch(venuesDataProvider);
-    List<String> days = [];
-    List<PeriodsModel> periods = [];
-    var config = ref.watch(configurationProvider);
-    var data =
-        config.regular['days'] != null && config.regular['days'].isNotEmpty
-            ? StudyModeModel.fromMap(config.regular)
-            : null;
-    if (data != null) {
-      days = data.days;
-      for (var element in data.periods) {
-        periods.add(PeriodsModel.fromMap(element));
-      }
-    }
-    List<VTPModel> vtp = [];
-    for (var venue in venues) {
-      for (var day in days) {
-        for (var period in periods) {
-          var id = '${venue.id}$day${period.period}'
-              .trim()
-              .replaceAll(' ', '')
-              .toLowerCase();
-          vtp.add(VTPModel(
-            isBooked: false,
-            id: id,
-            venueName: venue.name,
-            dissabledAccess: venue.disabilityAccess,
-            day: day,
-            period: period.period,
-            venueCapacity: venue.capacity,
-            venueId: venue.id,
-            periodMap: period.toMap(),
-            studyMode: '',
-            year: config.year,
-            semester: config.semester,
-            isSpecialVenue: venue.isSpecialVenue,
-          ));
-        }
-      }
-    }
-    state = vtp;
-    // print('Total VTP: ${state.length}');
-  }
+
 }
 
 final lccProvider =
@@ -254,8 +211,7 @@ class TableGenProvider extends StateNotifier<void> {
         vtps.where((element) => !(element.isSpecialVenue ?? false)).toList();
     List<LCCPModel> lccps = ref.watch(lccProvider);
     List<LTPModel> ltps = ref.watch(ltpProvider);
-    print('Total LCCP: ${lccps.length}');
-    print('Total LTP: ${ltps.length}');
+
     var config = ref.watch(configurationProvider);
     var data = StudyModeModel.fromMap(config.regular);
     var tables = ref.watch(generatingTableProvider);
@@ -339,10 +295,6 @@ class TableGenProvider extends StateNotifier<void> {
         }
       }
     }
-    print('Total tables = ${ref.watch(generatingTableProvider).length}');
-    print(
-        'Total unassigned LCCP = ${ref.watch(unassignedLCCPProvider).length}');
-    print('Total unassigned LTP = ${ref.watch(unassignedLTPProvider).length}');
     //print all unassigned LCCP
     
     var savedTables =

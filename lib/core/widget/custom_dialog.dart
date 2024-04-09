@@ -304,17 +304,10 @@ class CustomDialog {
       controller: controller,
       maskColor: Colors.transparent,
       builder: (_) {
-        return Card(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          elevation: 10,
-          child: SizedBox(
-            width: width ?? 900,
-            height: height,
-            child: ui,
-          ),
+        return SizedBox(
+          width: width ?? 900,
+          height: height,
+          child: ui,
         );
       },
     );

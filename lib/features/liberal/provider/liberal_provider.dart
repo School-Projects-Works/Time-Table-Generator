@@ -1,4 +1,3 @@
-
 import 'package:aamusted_timetable_generator/core/data/table_model.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/liberal/data/liberal/liberal_model.dart';
@@ -6,6 +5,7 @@ import 'package:aamusted_timetable_generator/features/liberal/usecase/liberal_us
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_app_file/open_app_file.dart';
 import '../../../utils/app_utils.dart';
+import '../../allocations/data/lecturers/lecturer_model.dart';
 import '../../allocations/provider/lecturer/usecase/lecturer_usecase.dart';
 import '../../main/provider/main_provider.dart';
 
@@ -156,7 +156,7 @@ class LiberalDataImport extends StateNotifier<void> {
     //open file picker
     String? pickedFilePath = await AppUtils.pickExcelFIle();
     if (pickedFilePath != null) {
-      var (success, message, liberal, lecturers) = await LiberalUseCase()
+      var (success, message, liberal) = await LiberalUseCase()
           .importLiberal(
               path: pickedFilePath,
               academicYear: academicYear,
@@ -166,11 +166,6 @@ class LiberalDataImport extends StateNotifier<void> {
         var (success, message) = await LiberalUseCase().addLiberals(liberal!);
         if (success) {
           ref.read(liberalsDataProvider.notifier).addLiberal(liberal);
-        }
-        var (newSuccess, _) = await LecturerUseCase().appendLectuers(
-            list: lecturers!, year: academicYear, semester: academicSemester);
-        if (newSuccess) {
-          ref.read(lecturersDataProvider.notifier).addLecturers(lecturers);
         }
         CustomDialog.dismiss();
         CustomDialog.showSuccess(message: message);
@@ -196,5 +191,23 @@ class LiberalDataImport extends StateNotifier<void> {
       CustomDialog.dismiss();
       CustomDialog.showError(message: message!);
     }
+  }
+
+  void clearLiberals(WidgetRef ref) async {
+    CustomDialog.dismiss();
+    CustomDialog.showLoading(message: 'Deleting all liberal courses...');
+    var academicYear = ref.watch(academicYearProvider);
+    var academicSemester = ref.watch(semesterProvider);
+       var (success, message) = await LiberalUseCase().deleteLiberals(
+          academicYear: academicYear, semester: academicSemester);
+      if (success) {
+        ref.read(liberalsDataProvider.notifier).setLiberals([]);
+        CustomDialog.dismiss();
+        CustomDialog.showSuccess(message: message);
+      } else {
+        CustomDialog.dismiss();
+        CustomDialog.showError(message: message!);
+      }
+   
   }
 }

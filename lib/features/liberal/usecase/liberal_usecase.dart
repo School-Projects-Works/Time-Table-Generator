@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:aamusted_timetable_generator/core/data/constants/instructions.dart';
 import 'package:aamusted_timetable_generator/features/liberal/data/liberal/liberal_model.dart';
 import 'package:aamusted_timetable_generator/features/liberal/repo/liberal_repo.dart';
@@ -10,7 +9,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import '../../../core/data/constants/excel_headings.dart';
 import '../../../core/functions/excel_settings.dart';
-import '../../allocations/data/lecturers/lecturer_model.dart';
 
 class LiberalUseCase extends LiberalRepo {
   @override
@@ -105,7 +103,7 @@ class LiberalUseCase extends LiberalRepo {
   }
 
   @override
-  Future<(bool, String, List<LiberalModel>?, List<LecturerModel>?)>
+  Future<(bool, String, List<LiberalModel>?)>
       importLiberal(
           {required String path,
           required String academicYear,
@@ -114,36 +112,19 @@ class LiberalUseCase extends LiberalRepo {
       var bytes = File(path).readAsBytesSync();
       Excel excel = Excel.decodeBytes(List<int>.from(bytes));
       List<LiberalModel> liberals = [];
-      List<LecturerModel> lecturers = [];
-      var (regCourses, regLecturers) =
+      var (regCourses) =
           getRegularLib(excel, academicYear, semester);
-      if (regCourses.isEmpty && regLecturers.isEmpty) {
-        return Future.value((false, 'Invalid Excel file', null, null));
+      if (regCourses.isEmpty) {
+        return Future.value((false, 'Invalid Excel file', null));
       }
-      var (evCourses, evLecturers) =
+      var evCourses=
           getEveningLib(excel, academicYear, semester);
       liberals.addAll(regCourses);
       liberals.addAll(evCourses);
-      lecturers.addAll(regLecturers);
-      //check if lecturers do not exist in the list else add course to lecturer
-      for (var lecturer in evLecturers) {
-        var existingLecturer = lecturers
-            .where((element) => element.id == lecturer.id)
-            .toList()
-            .firstOrNull;
-        if (existingLecturer != null) {
-          existingLecturer.courses.addAll(lecturer.courses);
-          //remove lecturer and add the updated one
-          lecturers.removeWhere((element) => element.id == lecturer.id);
-          lecturers.add(existingLecturer);
-        } else {
-          lecturers.add(lecturer);
-        }
-      }
       return Future.value(
-          (true, 'Liberal Imported successfully', liberals, lecturers));
+          (true, 'Liberal Imported successfully', liberals));
     } catch (e) {
-      return Future.value((false, e.toString(), null, null));
+      return Future.value((false, e.toString(), null));
     }
   }
 
@@ -153,14 +134,13 @@ class LiberalUseCase extends LiberalRepo {
     throw UnimplementedError();
   }
 
-  (List<LiberalModel>, List<LecturerModel>) getRegularLib(
+  List<LiberalModel>getRegularLib(
       Excel excel, String academicYear, String semester) {
     var regularSheet = excel.tables['Regular-Liberal'];
     if (regularSheet == null) {
-      return ([], []);
+      return [];
     }
     List<LiberalModel> regularCourses = [];
-    List<LecturerModel> regularLecturers = [];
     var headingRow = regularSheet.row(liberalInstructions.length + 2);
 
     if (AppUtils.validateExcel(headingRow, liberalHeader)) {
@@ -168,10 +148,10 @@ class LiberalUseCase extends LiberalRepo {
       for (int i = rowStart; i < regularSheet.maxRows; i++) {
         var row = regularSheet.row(i);
         if (validateLiberalRow(row)) {
-          var id = row[0]!.value.toString();
+          var id = row[0]!.value.toString().replaceAll(' ', '');
           var code = row[0]!.value.toString();
           var title = row[1]!.value.toString();
-          var lecturerId = row[2]!.value.toString();
+          var lecturerId = row[2]!.value.toString().replaceAll(' ', '');
           var lecturerName = row[3]!.value.toString();
           var lecturerEmail =
               row[4]!.value != null ? row[4]!.value.toString().trim() : '';
@@ -188,33 +168,18 @@ class LiberalUseCase extends LiberalRepo {
           //   print(lb);
           regularCourses.add(lb);
         }
-        //? extract lecturers
-        var lecturerId =
-            row[2]!.value.toString().trim().replaceAll(' ', '').toLowerCase();
-        var lecturerName = row[3]!.value.toString();
-        var course = row[0]!.value.toString().toLowerCase();
-        var lecturerEmail =
-            row[4]!.value != null ? row[4]!.value.toString().trim() : '';
-        regularLecturers.add(LecturerModel(
-            id: lecturerId,
-            lecturerName: lecturerName,
-            lecturerEmail: lecturerEmail,
-            year: academicYear,
-            courses: [course],
-            classes: [],
-            semester: semester));
+        
       }
-      return (regularCourses, regularLecturers);
+      return regularCourses;
     } else {
-      return ([], []);
+      return [];
     }
   }
 
-  (List<LiberalModel>, List<LecturerModel>) getEveningLib(
+  List<LiberalModel>  getEveningLib(
       Excel excel, String academicYear, String semester) {
     var eveningSheet = excel.tables['Evening-Liberal']!;
     List<LiberalModel> regularCourses = [];
-    List<LecturerModel> regularLecturers = [];
     var headingRow = eveningSheet.row(liberalInstructions.length + 2);
 
     if (AppUtils.validateExcel(headingRow, liberalHeader)) {
@@ -222,10 +187,10 @@ class LiberalUseCase extends LiberalRepo {
       for (int i = rowStart; i < eveningSheet.maxRows; i++) {
         var row = eveningSheet.row(i);
         if (validateLiberalRow(row)) {
-          var id = 'E${row[0]!.value.toString().toLowerCase()}';
+          var id = 'E${row[0]!.value.toString()}'.replaceAll(' ', '');
           var code = row[0]!.value.toString();
           var title = row[1]!.value.toString();
-          var lecturerId = row[2]!.value.toString();
+          var lecturerId = row[2]!.value.toString().replaceAll(' ', '');
           var lecturerName = row[3]!.value.toString();
           var lecturerEmail =
               row[4]!.value != null ? row[4]!.value.toString().trim() : '';
@@ -240,25 +205,11 @@ class LiberalUseCase extends LiberalRepo {
               year: academicYear,
               semester: semester));
         }
-        //? extract lecturers
-        var lecturerId =
-            row[2]!.value.toString().trim().replaceAll(' ', '').toLowerCase();
-        var lecturerName = row[3]!.value.toString();
-        var course = row[0]!.value.toString().toLowerCase();
-        var lecturerEmail =
-            row[4]!.value != null ? row[4]!.value.toString().trim() : '';
-        regularLecturers.add(LecturerModel(
-            id: lecturerId,
-            lecturerName: lecturerName,
-            lecturerEmail: lecturerEmail,
-            year: academicYear,
-            classes: [],
-            courses: [course],
-            semester: semester));
+        
       }
-      return (regularCourses, regularLecturers);
+      return regularCourses;
     } else {
-      return ([], []);
+      return [];
     }
   }
 
@@ -271,5 +222,25 @@ class LiberalUseCase extends LiberalRepo {
         title != null &&
         lecturerId != null &&
         lecturerName != null;
+  }
+
+  Future<(bool, String)> deleteLiberals(
+      {required String academicYear, required String semester}) async {
+    try {
+      final Box<LiberalModel> liberalBox =
+          await Hive.openBox<LiberalModel>('liberal');
+      //check if box is open
+      if (!liberalBox.isOpen) {
+        await Hive.openBox('liberal');
+      }
+      var allLibs = liberalBox.values
+          .where((element) =>
+              element.year == academicYear && element.semester == semester)
+          .toList();
+      await liberalBox.deleteAll(allLibs.map((e) => e.id).toList());
+      return Future.value((true, 'Liberal Courses deleted successfully'));
+    } catch (e) {
+      return Future.value((false, e.toString()));
+    }
   }
 }

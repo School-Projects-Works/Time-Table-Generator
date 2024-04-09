@@ -1,6 +1,6 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_button.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
-import 'package:aamusted_timetable_generator/core/widget/custom_input.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/table_gen_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/views/componenets/table_widget.dart';
@@ -12,6 +12,7 @@ import '../../../config/theme/theme.dart';
 import '../provider/lib_gen_provider.dart';
 import '../provider/table_generation_provider.dart';
 import 'export/export_page.dart';
+import 'filter_box.dart';
 
 class CompleteDataPage extends ConsumerStatefulWidget {
   const CompleteDataPage({super.key});
@@ -42,7 +43,7 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
                 Text('Generated Tables'.toUpperCase(),
                     style: getTextStyle(
                         fontSize: size.width * .018,
-                         fontWeight: FontWeight.bold)),
+                        fontWeight: FontWeight.bold)),
                 Expanded(
                     child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -62,68 +63,96 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
                                   fontSize: 15, fontWeight: FontWeight.bold)),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: SizedBox(
-                              width: 110,
-                              child: DropdownButton<String>(
-                                dropdownColor: Colors.white,
-                                value: ref.watch(filterProvider),
-                                onChanged: (newValue) {
-                                  ref.read(filterProvider.notifier).state =
-                                      newValue!;
-                                      ref
+                            child: DropdownButton<String>(
+                              dropdownColor: Colors.white,
+                              value: ref.watch(filterProvider),
+                              onChanged: (newValue) {
+                                ref.read(filterProvider.notifier).state =
+                                    newValue!;
+                                if (newValue == 'All') {
+                                  ref
                                       .read(filteredTableProvider.notifier)
                                       .filter('', ref);
-                                },
-                                items: <String>[
-                                  'All',
-                                  'Lecturer',
-                                  'Class',
-                                  'Course',
-                                  'Venue',
-                                  'Day'
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value,
-                                        style: getTextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold)),
-                                  );
-                                }).toList(),
-                              ),
+                                } else {
+                                  CustomDialog.showCustom(
+                                      width: 400,
+                                      height: 250,
+                                      ui: TableFilterBox(newValue.toString()));
+                                }
+                              },
+                              items: <String>[
+                                'All',
+                                'Lecturer',
+                                'Class',
+                                'Course',
+                                'Venue',
+                                'Day'
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value,
+                                      style: getTextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold)),
+                                );
+                              }).toList(),
                             ),
                           ),
-                          if (ref.watch(filterProvider) != null &&
-                              ref.watch(filterProvider) != 'All')
-                            SizedBox(
-                              width: 300,
-                              child: CustomTextFields(
-                                hintText: ref.watch(filterProvider) ==
-                                        'Lecturer'
-                                    ? 'Enter Lecturer ID or Name'
-                                    : ref.watch(filterProvider) == 'Class'
-                                        ? 'Enter Class ID or Name'
-                                        : ref.watch(filterProvider) == 'Course'
-                                            ? 'Enter Course Code or Title'
-                                            : ref.watch(filterProvider) ==
-                                                    'Venue'
-                                                ? 'Enter Venue ID or Name'
-                                                : ref.watch(filterProvider) ==
-                                                        'Day'
-                                                    ? 'Enter Day'
-                                                    : '',
-                                onChanged: (value) {
-                                  if(value.isNotEmpty){
-                                    ref.read(filteredTableProvider.notifier).filter(value,ref);
-                                  }
-                                },
-                              ),
-                            )
                         ],
                       ),
                     ),
                   ],
                 )),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: InkWell(
+                    onTap: () {},
+                    child: Card(
+                      elevation: 6,
+                      color: Colors.white,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 10),
+                          child: badges.Badge(
+                            position:
+                                badges.BadgePosition.topEnd(top: -10, end: -12),
+                            showBadge: true,
+                            ignorePointer: false,
+                            onTap: () {},
+                            badgeContent: Text('40',
+                                style: getTextStyle(
+                                    color: Colors.white,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.normal)),
+                            badgeAnimation:
+                                const badges.BadgeAnimation.rotation(
+                              animationDuration: Duration(seconds: 1),
+                              colorChangeAnimationDuration:
+                                  Duration(seconds: 1),
+                              loopAnimation: false,
+                              curve: Curves.fastOutSlowIn,
+                              colorChangeAnimationCurve: Curves.easeInCubic,
+                            ),
+                            badgeStyle: badges.BadgeStyle(
+                              shape: badges.BadgeShape.square,
+                              badgeColor: Colors.red,
+                              padding: const EdgeInsets.all(2),
+                              borderRadius: BorderRadius.circular(4),
+                              elevation: 0,
+                            ),
+                            child: Text('Unasigned',
+                                style: getTextStyle(
+                                    fontSize: 15, fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(
                   width: 10,
                 ),
@@ -132,10 +161,40 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
                     radius: 10,
                     color: primaryColor,
                     onPressed: () {
-                      ref.read(vtpProvider.notifier).generateVTP(ref);
-                      ref.read(lccProvider.notifier).generateLCC(ref);
-                      ref.read(ltpProvider.notifier).generateLTP(ref);
-                      ref.read(tableGenProvider.notifier).generateTables(ref);
+                      // check if venue, class, course, lecturer, and day is not empty
+                      if (ref.watch(venuesDataProvider).isEmpty) {
+                        CustomDialog.showError(
+                          message: 'There is no venues in the system',
+                        );
+                        return;
+                      } else if (ref.watch(liberalsDataProvider).isEmpty &&
+                          (ref.watch(coursesDataProvider).isEmpty ||
+                              ref.watch(lecturersDataProvider).isEmpty)) {
+                        CustomDialog.showError(
+                          message:
+                              'There is no courses or lecturers in the system',
+                        );
+                        return;
+                      } else if (ref.watch(classesDataProvider).isEmpty) {
+                        CustomDialog.showError(
+                          message: 'There is no classes in the system',
+                        );
+                        return;
+                      } else {
+                        //show warning message to generate table
+                        CustomDialog.showInfo(
+                            message:
+                                'This will generate a new table and overwrite any existing one. Do you want to proceed?',
+                            buttonText: 'Generate',
+                            onPressed: () {
+                              ref.read(vtpProvider.notifier).generateVTP(ref);
+                              ref.read(lccProvider.notifier).generateLCC(ref);
+                              ref.read(ltpProvider.notifier).generateLTP(ref);
+                              ref
+                                  .read(tableGenProvider.notifier)
+                                  .generateTables(ref);
+                            });
+                      }
                     }),
                 const SizedBox(
                   width: 10,

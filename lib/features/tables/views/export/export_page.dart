@@ -973,40 +973,6 @@ class _ExportPageState extends ConsumerState<ExportPage> {
 
   void exportTables() async {
     CustomDialog.showLoading(message: 'Exporting Table to the Web....');
-    // Tables? table = hive.getTable;
-    // table!.tableFooter = footerController.text;
-    // table.tableSchoolName = schoolNameController.text;
-    // table.tableDescription = descriptionController.text;
-
-    // if (signature != null) {
-    //   Uint8List? newFile;
-    //   if (isByteArrayTooLarge(signature!)) {
-    //     newFile = await storeResizedImageInFirestore(signature!);
-    //   } else {
-    //     newFile = signature;
-    //   }
-    //   table.signature = uint8ListToBase64(newFile!);
-    // }
-
-    // //print('Table Model===${table.toMap()}');
-    // var client = http.Client();
-    // try {
-    //   var response = await client.post(
-    //     Uri.parse(
-    //         'http://127.0.0.1:5001/aamusted-timetable/us-central1/app/api/create'),
-    //     body: table.toJson(),
-    //   );
-    //   CustomDialog.dismiss();
-    //   if (response.statusCode == 200) {
-    //     CustomDialog.showSuccess(message: 'Table exported successfully');
-    //   } else {
-    //     CustomDialog.showError(
-    //         message: 'Table could not be exported\n ${response.body}');
-    //   }
-    // } finally {
-    //   client.close();
-    //   CustomDialog.dismiss();
-    // }
   }
 
   bool isByteArrayTooLarge(Uint8List bytes) {

@@ -130,7 +130,19 @@ class VenueNotifier extends StateNotifier<TableModel<VenueModel>> {
     }
   }
 
-  void deleteVenue(VenueModel item) {}
+  void deleteVenue(VenueModel item,WidgetRef ref) async{
+    CustomDialog.dismiss();
+    CustomDialog.showLoading(message: 'Deleting venue....');
+   var (success, message) =await VenueUseCase().deleteVenue(item.id!);
+    if (success) {
+     ref.read(venuesDataProvider.notifier).deleteVenue(item.id!);
+      CustomDialog.dismiss();
+      CustomDialog.showSuccess(message: message);
+    } else {
+      CustomDialog.dismiss();
+      CustomDialog.showError(message: message);
+    }
+  }
 
   void editVenue(VenueModel item) {}
 }
@@ -179,5 +191,32 @@ class VenueDataImport extends StateNotifier<void> {
       CustomDialog.showError(message: message!);
     }
     //
+  }
+
+  void deleteAllVenues(WidgetRef ref) async {
+    CustomDialog.dismiss();
+    CustomDialog.showLoading(message: 'Deleting all venues....');
+    var (success, message) = await VenueUseCase().deleteAllVenues();
+    if (success) {
+      ref.read(venuesDataProvider.notifier).setVenues([]);
+      CustomDialog.dismiss();
+      CustomDialog.showSuccess(message: message);
+    } else {
+      CustomDialog.dismiss();
+      CustomDialog.showError(message: message);
+    }
+  }
+
+  void updateVenue(VenueModel venue, WidgetRef ref) async {
+    CustomDialog.showLoading(message: 'Updating venue....');
+    var (success, message, data) = await VenueUseCase().updateVenue(venue);
+    if (success) {
+      ref.read(venuesDataProvider.notifier).updateVenue(data!);
+      CustomDialog.dismiss();
+      CustomDialog.showSuccess(message: message);
+    } else {
+      CustomDialog.dismiss();
+      CustomDialog.showError(message: message);
+    }
   }
 }

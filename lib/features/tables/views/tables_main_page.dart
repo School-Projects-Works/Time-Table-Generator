@@ -1,3 +1,4 @@
+import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/views/complete_data.dart';
 import 'package:aamusted_timetable_generator/features/tables/views/ibcomplete_data.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,8 @@ class _TablesMainPageState extends ConsumerState<TablesMainPage> {
   @override
   Widget build(BuildContext context) {
     var conditions = IncompleteConditions(ref: ref);
-    if (!conditions.allocationExists() ||
+    if ((ref.watch(tableDataProvider).isEmpty)&&
+      !conditions.allocationExists() ||
         !conditions.venueExists() ||
         !conditions.configExists() ||
         !conditions.oneStudyModeExists() ||

@@ -62,13 +62,14 @@ class IncompleteConditions {
     var courses = ref.watch(coursesDataProvider);
     var spcialVenueCourses = courses
         .where((element) =>
-            element.specialVenue != null && element.specialVenue!.isNotEmpty)
+            element.specialVenue != null &&
+            element.specialVenue!.isNotEmpty &&
+            element.specialVenue!.toLowerCase() != 'no')
         .toList();
     if (spcialVenueCourses.isEmpty) return true;
-    var withVenues = spcialVenueCourses
-        .where(
-            (element) => element.venues != null && element.venues!.isNotEmpty)
+    var withoutVenues = spcialVenueCourses
+        .where((element) => element.venues == null || element.venues!.isEmpty)
         .toList();
-    return withVenues.isNotEmpty;
+    return withoutVenues.isEmpty;
   }
 }

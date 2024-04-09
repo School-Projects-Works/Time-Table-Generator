@@ -4,13 +4,17 @@ import 'package:aamusted_timetable_generator/features/allocations/data/lecturers
 
 abstract class AllocationRepo {
   Future<
-      (bool,(List<CourseModel>, List<ClassModel>, List<LecturerModel>),String?)> importAllocation({
+      (
+        bool,
+        (List<CourseModel>, List<ClassModel>, List<LecturerModel>),
+        String?
+      )> importAllocation({
     required String path,
     required String year,
     required String semester,
   });
   Future<(bool, String?)> downloadTemplate();
-  Future<(bool, CourseModel?, String?)> detleteCourse();
-  Future<(bool, ClassModel?, String?)> detleteClass();
-  Future<(bool, LecturerModel?, String?)> detleteLecturer();
+  Future<(bool, List<ClassModel>, List<CourseModel>, List<LecturerModel>)>
+      deletateAllocation(
+          String academicYear, String academicSemester, String department);
 }

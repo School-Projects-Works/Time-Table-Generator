@@ -91,52 +91,39 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                           child: Text('Save Configuration'),
                         ),
                       ),
-                    // const SizedBox(width: 10),
-                    // fluent.Button(
-                    //     style: fluent.ButtonStyle(
-                    //       backgroundColor: fluent.ButtonState.all(
-                    //           Colors.red.withOpacity(.8)),
-                    //       shape: fluent.ButtonState.all(
-                    //         RoundedRectangleBorder(
-                    //           borderRadius: BorderRadius.circular(5),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     child: fluent.Padding(
-                    //       padding: const EdgeInsets.symmetric(
-                    //           vertical: 8, horizontal: 10),
-                    //       child: Text(
-                    //         currentConfig.id != null
-                    //             ? 'Delete Configurations'
-                    //             : 'Clear Configurations',
-                    //         style: getTextStyle(color: Colors.white),
-                    //       ),
-                    //     ),
-                    //     onPressed: () {
-                    //       if (currentConfig.id != null) {
-                    //         CustomDialog.showInfo(
-                    //             message:
-                    //                 'Are you sure you want to delete this configuration?',
-                    //             buttonText: 'Yes',
-                    //             onPressed: () {
-                    //               ref
-                    //                   .read(configurationProvider.notifier)
-                    //                   .deleteConfiguration(context, ref);
-                    //               CustomDialog.dismiss();
-                    //             });
-                    //       } else {
-                    //         CustomDialog.showInfo(
-                    //             message:
-                    //                 'Are you sure you want to clear this configuration?',
-                    //             buttonText: 'Yes',
-                    //             onPressed: () {
-                    //               ref
-                    //                   .read(configurationProvider.notifier)
-                    //                   .clearConfig(context);
-                    //               CustomDialog.dismiss();
-                    //             });
-                    //       }
-                    //     })
+                    const SizedBox(width: 10),
+                    if (ref.watch(configurationProvider).id != null &&
+                        ref.watch(configurationProvider).regular.isNotEmpty)
+                      fluent.Button(
+                          style: fluent.ButtonStyle(
+                            backgroundColor: fluent.ButtonState.all(
+                                Colors.red.withOpacity(.8)),
+                            shape: fluent.ButtonState.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                          ),
+                          child: fluent.Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 10),
+                            child: Text(
+                              'Delete Configurations',
+                              style: getTextStyle(color: Colors.white),
+                            ),
+                          ),
+                          onPressed: () {
+                            CustomDialog.showInfo(
+                                message:
+                                    'Are you sure you want to delete this configuration? This action cannot be undone',
+                                buttonText: 'Yes',
+                                onPressed: () {
+                                  ref
+                                      .read(configurationProvider.notifier)
+                                      .deleteConfiguration(context, ref);
+                                 
+                                });
+                          })
                   ],
                 ),
               ),
@@ -168,6 +155,3 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
     });
   }
 }
-
-
-

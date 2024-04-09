@@ -79,9 +79,9 @@ class ConfigurationNotifier extends StateNotifier<ConfigModel> {
     try {
       CustomDialog.dismiss();
       CustomDialog.showLoading(message: 'Deleting configuration..');
-
+      var existingConfig = ref.watch(configurationProvider);
       var (success, _, message) =
-          await ConfigUsecase().deleteConfigurations(state.id!);
+          await ConfigUsecase().deleteConfigurations(existingConfig.id!);
       if (!success) {
         CustomDialog.dismiss();
         CustomDialog.showError(
@@ -89,6 +89,7 @@ class ConfigurationNotifier extends StateNotifier<ConfigModel> {
                 message ?? 'An error occurred while deleting configuration');
       } else {
         ref.invalidate(configFutureProvider);
+        state = ConfigModel(regular: {});
         CustomDialog.dismiss();
         CustomDialog.showSuccess(
             message: message ?? 'Configuration deleted successfully');

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/classes/class_model.dart';
@@ -6,6 +7,7 @@ import 'package:aamusted_timetable_generator/features/allocations/data/lecturers
 import 'package:aamusted_timetable_generator/features/allocations/repo/allocation_repo.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:excel/excel.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import '../../../core/data/constants/excel_headings.dart';
@@ -13,24 +15,6 @@ import '../../../core/data/constants/instructions.dart';
 import '../../../core/functions/excel_settings.dart';
 
 class AllocationUseCase extends AllocationRepo {
-  @override
-  Future<(bool, ClassModel?, String?)> detleteClass() {
-    // TODO: implement detleteClass
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<(bool, CourseModel?, String?)> detleteCourse() {
-    // TODO: implement detleteCourse
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<(bool, LecturerModel?, String?)> detleteLecturer() {
-    // TODO: implement detleteLecturer
-    throw UnimplementedError();
-  }
-
   @override
   Future<(bool, String?)> downloadTemplate() async {
     try {
@@ -112,14 +96,12 @@ class AllocationUseCase extends AllocationRepo {
       var (regClass, regCourses, regLecturers, regMessage) =
           getRegularData(excel, semester, year);
       if (regClass.isEmpty && regCourses.isEmpty && regLecturers.isEmpty) {
-        return Future.value(
-            (false, (courses, classes, lecturers), regMessage));
+        return Future.value((false, (courses, classes, lecturers), regMessage));
       }
       var (eveClass, eveCourses, eveLecturers, eveMessage) =
           getEveningData(excel, semester, year);
       if (eveClass.isEmpty && eveCourses.isEmpty && eveLecturers.isEmpty) {
-        return Future.value(
-            (false, (courses, classes, lecturers), eveMessage));
+        return Future.value((false, (courses, classes, lecturers), eveMessage));
       }
       classes.addAll(regClass);
       classes.addAll(eveClass);
@@ -142,7 +124,8 @@ class AllocationUseCase extends AllocationRepo {
         }
       }
 
-      return Future.value((true, (courses, classes, lecturers), eveMessage??regMessage));
+      return Future.value(
+          (true, (courses, classes, lecturers), eveMessage ?? regMessage));
     } catch (e) {
       List<CourseModel> courses = [];
       List<ClassModel> classes = [];
@@ -173,8 +156,8 @@ class AllocationUseCase extends AllocationRepo {
     return lev != null && classcode != null;
   }
 
-  (List<ClassModel>, List<CourseModel>, List<LecturerModel>,String? message) getRegularData(
-      Excel excel, String semester, String year) {
+  (List<ClassModel>, List<CourseModel>, List<LecturerModel>, String? message)
+      getRegularData(Excel excel, String semester, String year) {
     List<CourseModel> courses = [];
     List<ClassModel> classes = [];
     List<LecturerModel> lecturers = [];
@@ -317,12 +300,12 @@ class AllocationUseCase extends AllocationRepo {
             //! End of courses extraction.....................................................
           }
         }
-        return (classes, courses, lecturers,null);
+        return (classes, courses, lecturers, null);
       } else {
         return ([], [], [], 'No department found for Regular Students');
       }
     } else {
-      return ([], [], [],'');
+      return ([], [], [], '');
     }
   }
 
@@ -471,9 +454,117 @@ class AllocationUseCase extends AllocationRepo {
           //! End of courses extraction.....................................................
         }
       }
-      return (classes, courses, lecturers,null);
-    }else{
+      return (classes, courses, lecturers, null);
+    } else {
       return ([], [], [], 'No department found for Evening Students');
+    }
+  }
+
+  @override
+  Future<(bool, List<ClassModel>, List<CourseModel>, List<LecturerModel>)>
+      deletateAllocation(String academicYear, String academicSemester,
+          String department) async {
+    try {
+      final Box<CourseModel> courseBox =
+          await Hive.openBox<CourseModel>('courses');
+      //check if box is open
+      if (!courseBox.isOpen) {
+        await Hive.openBox('courses');
+      }
+      final Box<ClassModel> classBox =
+          await Hive.openBox<ClassModel>('classes');
+      //check if box is open
+      if (!classBox.isOpen) {
+        await Hive.openBox('classes');
+      }
+      final Box<LecturerModel> lecturerBox =
+          await Hive.openBox<LecturerModel>('lecturers');
+      //check if box is open
+      if (!lecturerBox.isOpen) {
+        await Hive.openBox('lecturers');
+      }
+      if (department == 'All') {
+        //delete all classes, courses and lecturers
+        var courses = courseBox.values
+            .where((element) =>
+                element.semester == academicSemester &&
+                element.year == academicYear)
+            .toList();
+        var classes = classBox.values
+            .where((element) =>
+                element.semester == academicSemester &&
+                element.year == academicYear)
+            .toList();
+        var lecturers = lecturerBox.values
+            .where((element) =>
+                element.semester == academicSemester &&
+                element.year == academicYear)
+            .toList();
+        for (var course in courses) {
+          await courseBox.delete(course.id);
+        }
+        for (var aClass in classes) {
+          await classBox.delete(aClass.id);
+        }
+        for (var lecturer in lecturers) {
+          await lecturerBox.delete(lecturer.id);
+        }
+
+        return Future.value((true, [], [], []) as FutureOr<
+            (bool, List<ClassModel>, List<CourseModel>, List<LecturerModel>)>?);
+      } else {
+        //delete all classes, courses and lecturers for the department
+        var courses = courseBox.values
+            .where((element) =>
+                element.department == department &&
+                element.semester == academicSemester &&
+                element.year == academicYear)
+            .toList();
+        var classes = classBox.values
+            .where((element) =>
+                element.department == department &&
+                element.semester == academicSemester &&
+                element.year == academicYear)
+            .toList();
+        var lecturers = lecturerBox.values
+            .where((element) =>
+                element.department == department &&
+                element.semester == academicSemester &&
+                element.year == academicYear)
+            .toList();
+        for (var course in courses) {
+          await courseBox.delete(course.id);
+        }
+        for (var aClass in classes) {
+          await classBox.delete(aClass.id);
+        }
+        for (var lecturer in lecturers) {
+          await lecturerBox.delete(lecturer.id);
+        }
+        //get remaing classes, courses and lecturers with academic year and semester
+        var remainingCourses = courseBox.values
+            .where((element) =>
+                element.semester == academicSemester &&
+                element.year == academicYear)
+            .toList();
+        var remainingClasses = classBox.values
+            .where((element) =>
+                element.semester == academicSemester &&
+                element.year == academicYear)
+            .toList();
+        var remainingLecturers = lecturerBox.values
+            .where((element) =>
+                element.semester == academicSemester &&
+                element.year == academicYear)
+            .toList();
+        return Future.value((true, remainingClasses, remainingCourses, remainingLecturers));
+      }
+    } catch (e) {
+      List<ClassModel> remainingClasses = [];
+      List<CourseModel> remainingCourses = [];
+      List<LecturerModel> remainingLecturers = [];
+      return Future.value(
+          (false, remainingClasses, remainingCourses, remainingLecturers) );
     }
   }
 }

@@ -1,9 +1,13 @@
 import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/provider/courses/provider/course_provider.dart';
+import 'package:aamusted_timetable_generator/features/tables/usecase/condition.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../config/theme/theme.dart';
+import '../../../../core/widget/custom_button.dart';
 import '../../../../core/widget/custom_dialog.dart';
 import '../../../../core/widget/custom_input.dart';
 import '../../../../core/widget/table/data/models/custom_table_columns_model.dart';
@@ -49,8 +53,44 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                         ],
                       ),
                     ),
+                    if (!IncompleteConditions(ref: ref).specialVenuesFixed())
+                      if (!ref.watch(isFilteredProvider))
+                        fluent.Padding(
+                          padding: const EdgeInsets.only(right: 20),
+                          child: IconButton(
+                            style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5))),
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.red)),
+                            icon: const Icon(Icons.sort, color: Colors.white),
+                            onPressed: () {
+                              coursesNotifier
+                                  .filterCoursesWithSpecialVenues(ref);
+                            },
+                          ),
+                        )
+                      else
+                        fluent.Padding(
+                          padding: const EdgeInsets.only(right: 20),
+                          child: IconButton(
+                            style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5))),
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.green)),
+                            icon: const Icon(Icons.cancel, color: Colors.white),
+                            onPressed: () {
+                              coursesNotifier.removeFilter(ref);
+                            },
+                          ),
+                        ),
                     SizedBox(
-                      width: 600,
+                      width: 550,
                       child: CustomTextFields(
                         hintText: 'Search for a course',
                         suffixIcon: const Icon(fluent.FluentIcons.search),
@@ -161,7 +201,7 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                 ),
                 CustomTableColumn(
                   title: 'Special Venues',
-                  width: 400,
+                  width: 200,
                   cellBuilder: (item) => item.specialVenue != null &&
                           item.specialVenue!.isNotEmpty &&
                           item.specialVenue!.toLowerCase() != 'no'
@@ -238,81 +278,81 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                         ),
                 ),
                 // delete button
-                CustomTableColumn(
-                  title: 'Action',
-                  //width: 100,
-                  cellBuilder: (item) => Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          CustomDialog.showInfo(
-                              message:
-                                  'Are you sure you want to delete this course?',
-                              buttonText: 'Yes| Delete',
-                              onPressed: () {
-                                coursesNotifier.deleteCourse(item);
-                              });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(2),
-                            color: Colors.red,
-                            //shadow
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(.5),
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0, 1),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                      //edit button
-                      const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: () {
-                          CustomDialog.showInfo(
-                              message:
-                                  'Are you sure you want to edit this Course?',
-                              buttonText: 'Yes| Edit',
-                              onPressed: () {
-                                coursesNotifier.editCourse(item);
-                              });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(2),
-                            color: Colors.blue,
-                            //shadow
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(.5),
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0, 1),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // CustomTableColumn(
+                //   title: 'Action',
+                //   //width: 100,
+                //   cellBuilder: (item) => Row(
+                //     mainAxisSize: MainAxisSize.min,
+                //     children: [
+                //       GestureDetector(
+                //         onTap: () {
+                //           CustomDialog.showInfo(
+                //               message:
+                //                   'Are you sure you want to delete this course?',
+                //               buttonText: 'Yes| Delete',
+                //               onPressed: () {
+                //                 coursesNotifier.deleteCourse(item);
+                //               });
+                //         },
+                //         child: Container(
+                //           padding: const EdgeInsets.all(10),
+                //           decoration: BoxDecoration(
+                //             borderRadius: BorderRadius.circular(2),
+                //             color: Colors.red,
+                //             //shadow
+                //             boxShadow: [
+                //               BoxShadow(
+                //                 color: Colors.grey.withOpacity(.5),
+                //                 spreadRadius: 1,
+                //                 blurRadius: 1,
+                //                 offset: const Offset(0, 1),
+                //               ),
+                //             ],
+                //           ),
+                //           child: const Icon(
+                //             Icons.delete,
+                //             color: Colors.white,
+                //             size: 20,
+                //           ),
+                //         ),
+                //       ),
+                //       //edit button
+                //       const SizedBox(width: 10),
+                //       GestureDetector(
+                //         onTap: () {
+                //           CustomDialog.showInfo(
+                //               message:
+                //                   'Are you sure you want to edit this Course?',
+                //               buttonText: 'Yes| Edit',
+                //               onPressed: () {
+                //                 coursesNotifier.editCourse(item);
+                //               });
+                //         },
+                //         child: Container(
+                //           padding: const EdgeInsets.all(10),
+                //           decoration: BoxDecoration(
+                //             borderRadius: BorderRadius.circular(2),
+                //             color: Colors.blue,
+                //             //shadow
+                //             boxShadow: [
+                //               BoxShadow(
+                //                 color: Colors.grey.withOpacity(.5),
+                //                 spreadRadius: 1,
+                //                 blurRadius: 1,
+                //                 offset: const Offset(0, 1),
+                //               ),
+                //             ],
+                //           ),
+                //           child: const Icon(
+                //             Icons.edit,
+                //             color: Colors.white,
+                //             size: 20,
+                //           ),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),

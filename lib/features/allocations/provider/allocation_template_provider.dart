@@ -69,25 +69,22 @@ class AllocationTemplateProvider extends StateNotifier<void> {
   }
 
   void clearAllAllocations(WidgetRef ref, String department) async {
-    //   CustomDialog.dismiss();
-    //   CustomDialog.showLoading(message: 'Clearing all allocations...');
-    //   var academicYear = ref.watch(academicYearProvider);
-    //   var academicSemester = ref.watch(semesterProvider);
-    //   var success = await ClassesUsecase().deleteAllClasses(
-    //       academicYear, academicSemester, department);
-    //   if (success) {
-    //     ref.read(classesDataProvider.notifier).setClasses([]);
-    //   }
-    //   success = await CoursesUseCase().deleteAllCourses(academicYear,academicSemester, department);
-    //   if (success) {
-    //     ref.read(coursesDataProvider.notifier).setCourses([]);
-    //   }
-    //   success = await LecturerUseCase().deleteAllLecturers(
-    //       academicYear, academicSemester, department);
-    //   if (success) {
-    //     ref.read(lecturersDataProvider.notifier).setLecturers([]);
-    //   }
-
-    // }
+    CustomDialog.dismiss();
+    CustomDialog.showLoading(message: 'Clearing allocations...');
+    var academicYear = ref.watch(academicYearProvider);
+    var academicSemester = ref.watch(semesterProvider);
+    var (success, classes,courses,lecturers) = await AllocationUseCase()
+        .deletateAllocation(academicYear, academicSemester, department);
+    if (success) {
+      ref.read(classesDataProvider.notifier).setClasses(classes);
+      ref.read(coursesDataProvider.notifier).setCourses(courses);
+      ref.read(lecturersDataProvider.notifier).setLecturers(lecturers);
+       CustomDialog.dismiss();
+      CustomDialog.showSuccess(message: 'Allocations delected successfully');
+    }else{
+      CustomDialog.dismiss();
+      CustomDialog.showError(message: 'Failed to clear allocations');
+    }
+    
   }
 }

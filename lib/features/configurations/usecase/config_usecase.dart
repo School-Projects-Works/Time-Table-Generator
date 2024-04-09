@@ -5,12 +5,13 @@ import 'package:hive_flutter/hive_flutter.dart';
 class ConfigUsecase extends ConfigRepo {
   @override
   Future<(bool, ConfigModel?, String?)> addConfigurations(
-      ConfigModel configurations)async {
+      ConfigModel configurations) async {
     try {
       await Hive.openBox<ConfigModel>('config');
       final box = Hive.box<ConfigModel>('config');
       box.put(configurations.id, configurations);
-      return Future.value((true, configurations, 'Configurations added successfully'));
+      return Future.value(
+          (true, configurations, 'Configurations added successfully'));
     } catch (e) {
       //print(e);
       return Future.value((false, null, e.toString()));
@@ -18,19 +19,25 @@ class ConfigUsecase extends ConfigRepo {
   }
 
   @override
-  Future<(bool, ConfigModel?, String?)> deleteConfigurations(
-     String id) {
-    // TODO: implement deleteConfigurations
-    throw UnimplementedError();
+  Future<(bool, ConfigModel?, String?)> deleteConfigurations(String id) async {
+    try {
+      await Hive.openBox<ConfigModel>('config');
+      final box = Hive.box<ConfigModel>('config');
+      await box.delete(id);
+      return Future.value((true, null, 'Configurations deleted successfully'));
+    } catch (e) {
+      //print(e);
+      return Future.value((false, null, e.toString()));
+    }
   }
 
   @override
-  Future<List<ConfigModel>> getConfigurations()async {
+  Future<List<ConfigModel>> getConfigurations() async {
     try {
-      await  Hive.openBox<ConfigModel>('config');
+      await Hive.openBox<ConfigModel>('config');
       final box = Hive.box<ConfigModel>('config');
       //open box
-    //  box.open();
+      //  box.open();
       List<ConfigModel> config = box.values.toList();
       return Future.value(config);
     } catch (e) {
@@ -46,7 +53,8 @@ class ConfigUsecase extends ConfigRepo {
       Hive.openBox<ConfigModel>('config');
       final box = Hive.box<ConfigModel>('config');
       box.put(configurations.id, configurations);
-      return Future.value((true, configurations, 'Configurations updated successfully'));
+      return Future.value(
+          (true, configurations, 'Configurations updated successfully'));
     } catch (e) {
       //print(e);
       return Future.value((false, null, e.toString()));

@@ -262,7 +262,7 @@ class _SpecialVenueSelectState extends ConsumerState<SpecialVenueSelect> {
                                   //add selecting venues to selected venues
                                   selectedVenues.addAll(selectingVeneus);
                                   //add removing venues to special venues
-                                  specialVenues.addAll(removingVenues);
+                                 // specialVenues.addAll(removingVenues);
                                   //clear selecting venues
                                   selectingVeneus.clear();
                                   //clear removing venues

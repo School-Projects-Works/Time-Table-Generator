@@ -119,4 +119,20 @@ class LecturerUseCase extends LectureRepo {
       return Future.value((false, e.toString()));
     }
   }
+
+  Future<(bool, String)>updateLecturers(List<LecturerModel> libLecturers)async {
+    try {
+      final Box<LecturerModel> lecturerBox =
+          await Hive.openBox<LecturerModel>('lecturers');
+      if (!lecturerBox.isOpen) {
+        await Hive.openBox('lecturers');
+      }
+      for (var element in libLecturers) {
+        await lecturerBox.put(element.id, element);
+      }
+      return Future.value((true, 'Lecturers updated successfully'));
+    } catch (e) {
+      return Future.value((false, e.toString()));
+    }
+  }
 }
