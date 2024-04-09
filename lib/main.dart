@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
             PointerDeviceKind.unknown,
           }),
       darkTheme: FluentThemeData(
-        brightness: Brightness.dark,
+        brightness: Brightness.light,
         visualDensity: VisualDensity.standard,
         focusTheme: FocusThemeData(
           glowFactor: is10footScreen(context) ? 2.0 : 0.0,
