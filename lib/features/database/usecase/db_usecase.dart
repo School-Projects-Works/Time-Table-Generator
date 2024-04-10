@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'package:aamusted_timetable_generator/features/tables/data/lcc_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import '../../allocations/data/classes/class_model.dart';
 import '../../allocations/data/courses/courses_model.dart';
 import '../../allocations/data/lecturers/lecturer_model.dart';
 import '../../configurations/data/config/config_model.dart';
 import '../../liberal/data/liberal/liberal_model.dart';
+import '../../tables/data/ltp_model.dart';
 import '../../tables/data/tables_model.dart';
 import '../../venues/data/venue_model.dart';
 import '../repo/db_repo.dart';
@@ -34,6 +36,15 @@ class DatabaseUseCase extends DatabaseRepository {
     //register Liberal Studies adapter
     Hive.registerAdapter(LiberalModelAdapter());
     await Hive.openBox<LiberalModel>('liberal');
+
+
+    //register LTP adapter(Liberal time pair)
+    Hive.registerAdapter(LTPModelAdapter());
+    await Hive.openBox<LTPModel>('ltp');
+
+    //register LCCP adapter(Lecture course class pair)
+    Hive.registerAdapter(LCCPModelAdapter());
+    await Hive.openBox<LCCPModel>('lccp');
 
     //register tables adapter
     Hive.registerAdapter(TablesModelAdapter());

@@ -1,5 +1,7 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_button.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
+import 'package:aamusted_timetable_generator/features/tables/provider/tables/table_generation_provider.dart';
+import 'package:aamusted_timetable_generator/features/tables/views/export/unasigned_list.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/table_gen_provider.dart';
@@ -9,8 +11,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:screenshot/screenshot.dart';
 import '../../../config/theme/theme.dart';
-import '../provider/lib_gen_provider.dart';
-import '../provider/table_generation_provider.dart';
+import '../provider/class_course/lecturer_course_class_pair.dart';
+import '../provider/liberay/liberal_time_pair.dart';
 import 'export/export_page.dart';
 import 'filter_box.dart';
 
@@ -29,7 +31,14 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
   Widget build(BuildContext context) {
     var table = ref.watch(filteredTableProvider);
     var size = MediaQuery.of(context).size;
-
+    var unAsignedLTP = ref
+        .watch(liberalTimePairProvider)
+        .where((element) => element.isAsigned == false)
+        .toList();
+    var unAssignedLCCP = ref
+        .watch(lecturerCourseClassPairProvider)
+        .where((element) => element.isAsigned == false)
+        .toList();
     return Container(
       color: Colors.grey.withOpacity(.1),
       child: Padding(
@@ -106,7 +115,17 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      if (unAssignedLCCP.isEmpty && unAsignedLTP.isEmpty) {
+                        CustomDialog.showError(
+                            message: 'No unassigned courses or classes');
+                        return;
+                      }
+                      CustomDialog.showCustom(
+                          width: MediaQuery.of(context).size.width * .9,
+                          height: 650,
+                          ui: const UnassignedList());
+                    },
                     child: Card(
                       elevation: 6,
                       color: Colors.white,
@@ -123,7 +142,8 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
                             showBadge: true,
                             ignorePointer: false,
                             onTap: () {},
-                            badgeContent: Text('40',
+                            badgeContent: Text(
+                                '${unAsignedLTP.length + unAssignedLCCP.length}',
                                 style: getTextStyle(
                                     color: Colors.white,
                                     fontSize: 13,
@@ -138,9 +158,9 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
                               colorChangeAnimationCurve: Curves.easeInCubic,
                             ),
                             badgeStyle: badges.BadgeStyle(
-                              shape: badges.BadgeShape.square,
+                              shape: badges.BadgeShape.circle,
                               badgeColor: Colors.red,
-                              padding: const EdgeInsets.all(2),
+                              padding: const EdgeInsets.all(5),
                               borderRadius: BorderRadius.circular(4),
                               elevation: 0,
                             ),
@@ -187,12 +207,9 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
                                 'This will generate a new table and overwrite any existing one. Do you want to proceed?',
                             buttonText: 'Generate',
                             onPressed: () {
-                              ref.read(vtpProvider.notifier).generateVTP(ref);
-                              ref.read(lccProvider.notifier).generateLCC(ref);
-                              ref.read(ltpProvider.notifier).generateLTP(ref);
                               ref
-                                  .read(tableGenProvider.notifier)
-                                  .generateTables(ref);
+                                  .read(tableGenerationProvider.notifier)
+                                  .generateTable(ref);
                             });
                       }
                     }),

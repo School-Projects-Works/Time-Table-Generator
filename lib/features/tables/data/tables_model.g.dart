@@ -31,7 +31,7 @@ class TablesModelAdapter extends TypeAdapter<TablesModel> {
       creditHours: fields[11] as String?,
       specialVenues: (fields[12] as List?)
           ?.map((dynamic e) => (e as Map).cast<String, dynamic>())
-          .toList(),
+          ?.toList(),
       venueName: fields[13] as String,
       venueId: fields[14] as String,
       venueCapacity: fields[15] as int,

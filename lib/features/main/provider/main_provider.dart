@@ -10,6 +10,8 @@ import '../../../core/data/constants/constant_data.dart';
 import '../../allocations/data/lecturers/lecturer_model.dart';
 import '../../allocations/provider/courses/usecase/courses_usecase.dart';
 import '../../liberal/data/liberal/liberal_model.dart';
+import '../../tables/provider/class_course/lecturer_course_class_pair.dart';
+import '../../tables/provider/liberay/liberal_time_pair.dart';
 import '../../venues/data/venue_model.dart';
 import '../../venues/usecase/venue_usecase.dart';
 
@@ -53,8 +55,19 @@ final dbDataFutureProvider = FutureProvider<void>((ref) async {
   ref.read(venuesDataProvider.notifier).setVenues(venues);
 
   //?get tables from db
-  var tables = await TableGenUsecase().getTables(academicYear, academicSemester);
+  var tables =
+      await TableGenUsecase().getTables(academicYear, academicSemester);
   ref.read(tableDataProvider.notifier).setTables(tables);
+
+  // get liberal course time pair ltp
+  var libLtp = await LiberalTimePairService()
+      .getLTP(year: academicYear, semester: academicSemester);
+  ref.read(liberalTimePairProvider.notifier).setLTP(libLtp);
+
+  //? get all lccp
+  var lccp = await LCCPServices()
+      .getData(year: academicYear, semester: academicSemester);
+  ref.read(lecturerCourseClassPairProvider.notifier).setLCCP(lccp);
 });
 
 final classesDataProvider =
@@ -207,14 +220,16 @@ class LiberalDataProvider extends StateNotifier<List<LiberalModel>> {
   }
 }
 
-
-final tableDataProvider = StateNotifierProvider<TableDataProvider,List<TablesModel>>((ref) => TableDataProvider());
+final tableDataProvider =
+    StateNotifierProvider<TableDataProvider, List<TablesModel>>(
+        (ref) => TableDataProvider());
 
 class TableDataProvider extends StateNotifier<List<TablesModel>> {
   TableDataProvider() : super([]);
 
   void setTables(List<TablesModel> tables) {
     state = tables;
+    print('tables: ${state.length}');
   }
 
   void addTable(List<TablesModel> tables) {

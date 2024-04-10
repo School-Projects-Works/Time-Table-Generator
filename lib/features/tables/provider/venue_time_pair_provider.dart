@@ -7,7 +7,9 @@ import '../../configurations/data/config/config_model.dart';
 import '../../configurations/provider/config_provider.dart';
 import '../../main/provider/main_provider.dart';
 
-final venueTimePairProvider = StateNotifierProvider<VenueTimePairProvider,List<VTPModel>>((ref) => VenueTimePairProvider());
+final venueTimePairProvider =
+    StateNotifierProvider<VenueTimePairProvider, List<VTPModel>>(
+        (ref) => VenueTimePairProvider());
 
 class VenueTimePairProvider extends StateNotifier<List<VTPModel>> {
   VenueTimePairProvider() : super([]);
@@ -28,9 +30,13 @@ class VenueTimePairProvider extends StateNotifier<List<VTPModel>> {
     if (data != null) {
       days = data.days;
       for (var element in data.periods) {
-        periods.add(PeriodsModel.fromMap(element));
+        if (element['period'].toString().replaceAll(' ', '').toLowerCase() !=
+            'break') {
+          periods.add(PeriodsModel.fromMap(element));
+        }
       }
     }
+    print('Period ====== ${periods.length}');
     List<VTPModel> vtp = [];
     // combine the venues with the days and periods
     //loop through the venues and for each venue loop through the days and periods
@@ -60,8 +66,11 @@ class VenueTimePairProvider extends StateNotifier<List<VTPModel>> {
       }
     }
     state = vtp;
-   
   }
 
-
+  void bookVTP(VTPModel noneSpecialVTPsList) {
+    var index =
+        state.indexWhere((element) => element.id == noneSpecialVTPsList.id);
+    state[index] = noneSpecialVTPsList.copyWith(isBooked: true);
+  }
 }

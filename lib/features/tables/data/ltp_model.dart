@@ -1,24 +1,42 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
 
+part 'ltp_model.g.dart';
+@HiveType(typeId: 10)
 class LTPModel {
+  @HiveField(0)
   String id;
+  @HiveField(1)
   String day;
+  @HiveField(2)
+  bool isAsigned;
+  @HiveField(3)
   String period;
+  @HiveField(4)
   Map<String, dynamic> periodMap;
+  @HiveField(5)
   String courseCode;
+  @HiveField(6)
   String lecturerName;
+  @HiveField(7)
   String lecturerId;
+  @HiveField(8)
   String courseTitle;
+  @HiveField(9)
   String courseId;
+  @HiveField(10)
   String year;
+  @HiveField(11)
   String level;
+  @HiveField(12)
   String studyMode;
+  @HiveField(13)
   String semester;
   LTPModel({
     required this.id,
     required this.day,
+    required this.isAsigned,
     required this.period,
     required this.periodMap,
     required this.courseCode,
@@ -31,10 +49,11 @@ class LTPModel {
     required this.studyMode,
     required this.semester,
   });
-  
+
   LTPModel copyWith({
     String? id,
     String? day,
+    bool? isAsigned,
     String? period,
     Map<String, dynamic>? periodMap,
     String? courseCode,
@@ -50,6 +69,7 @@ class LTPModel {
     return LTPModel(
       id: id ?? this.id,
       day: day ?? this.day,
+      isAsigned: isAsigned ?? this.isAsigned,
       period: period ?? this.period,
       periodMap: periodMap ?? this.periodMap,
       courseCode: courseCode ?? this.courseCode,
@@ -68,6 +88,7 @@ class LTPModel {
     return {
       'id': id,
       'day': day,
+      'isAsigned': isAsigned,
       'period': period,
       'periodMap': periodMap,
       'courseCode': courseCode,
@@ -86,6 +107,7 @@ class LTPModel {
     return LTPModel(
       id: map['id'] ?? '',
       day: map['day'] ?? '',
+      isAsigned: map['isAsigned'] ?? false,
       period: map['period'] ?? '',
       periodMap: Map<String, dynamic>.from(map['periodMap']),
       courseCode: map['courseCode'] ?? '',
@@ -107,7 +129,7 @@ class LTPModel {
 
   @override
   String toString() {
-    return 'LTPModel(id: $id, day: $day, period: $period, periodMap: $periodMap, courseCode: $courseCode, lecturerName: $lecturerName, lecturerId: $lecturerId, courseTitle: $courseTitle, courseId: $courseId, year: $year, level: $level, studyMode: $studyMode, semester: $semester)';
+    return 'LTPModel(id: $id, day: $day, isAsigned: $isAsigned, period: $period, periodMap: $periodMap, courseCode: $courseCode, lecturerName: $lecturerName, lecturerId: $lecturerId, courseTitle: $courseTitle, courseId: $courseId, year: $year, level: $level, studyMode: $studyMode, semester: $semester)';
   }
 
   @override
@@ -117,6 +139,7 @@ class LTPModel {
     return other is LTPModel &&
       other.id == id &&
       other.day == day &&
+      other.isAsigned == isAsigned &&
       other.period == period &&
       mapEquals(other.periodMap, periodMap) &&
       other.courseCode == courseCode &&
@@ -134,6 +157,7 @@ class LTPModel {
   int get hashCode {
     return id.hashCode ^
       day.hashCode ^
+      isAsigned.hashCode ^
       period.hashCode ^
       periodMap.hashCode ^
       courseCode.hashCode ^

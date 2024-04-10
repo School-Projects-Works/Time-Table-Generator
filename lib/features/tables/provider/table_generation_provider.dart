@@ -1,19 +1,13 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
-import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';
-import 'package:aamusted_timetable_generator/features/allocations/data/lecturers/lecturer_model.dart';
 import 'package:aamusted_timetable_generator/features/configurations/data/config/config_model.dart';
-import 'package:aamusted_timetable_generator/features/tables/data/lc_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/lcc_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/ltp_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/tables_model.dart';
-import 'package:aamusted_timetable_generator/features/tables/provider/lib_gen_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/usecase/tables_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/functions/time_sorting.dart';
-import '../../allocations/data/classes/class_model.dart';
 import '../../configurations/provider/config_provider.dart';
 import '../../main/provider/main_provider.dart';
-import '../data/ccp_model.dart';
 import '../data/periods_model.dart';
 import '../data/vtp_model.dart';
 
@@ -23,130 +17,6 @@ class VTP extends StateNotifier<List<VTPModel>> {
   VTP() : super([]);
 
 
-}
-
-final lccProvider =
-    StateNotifierProvider<LCCP, List<LCCPModel>>((ref) => LCCP());
-
-class LCCP extends StateNotifier<List<LCCPModel>> {
-  LCCP() : super([]);
-
-  void generateLCC(WidgetRef ref) {
-    var config = ref.watch(configurationProvider);
-    var classes = ref.watch(classesDataProvider);
-    var lecturers = ref.watch(lecturersDataProvider);
-    var courses = ref.watch(coursesDataProvider);
-
-    List<LCModel> lcs = generateLC(config, lecturers, courses);
-    List<CCPModel> ccp = generateCCP(config, classes, courses);
-    List<LCCPModel> lccpData = [];
-    for (var cc in ccp) {
-      var lc = lcs
-          .where((element) =>
-              element.courseId == cc.courseId &&
-              cc.studyMode == element.studyMode &&
-              element.level == cc.level &&
-              element.classes.contains(cc.classId))
-          .toList()
-          .firstOrNull;
-      if (lc != null) {
-        var id = '${lc.id}${cc.id}'.toLowerCase().hashCode.toString();
-        LCCPModel lccp = LCCPModel(
-            id: id,
-            classCapacity: cc.classCapacity,
-            classData: cc.classData,
-            course: cc.classData,
-            classId: cc.classId,
-            courseCode: cc.courseCode,
-            courseId: cc.courseId,
-            className: cc.className,
-            courseName: cc.courseName,
-            lecturer: lc.lecturer,
-            lecturerId: lc.lecturerId,
-            lecturerName: lc.lecturerName,
-            level: cc.level,
-            requireSpecialVenue: lc.requireSpecialVenue,
-            venues: lc.venues,
-            studyMode: cc.studyMode,
-            department: cc.department,
-            hasDisability: cc.hasDisability,
-            year: config.year!,
-            semester: config.semester!);
-        lccpData.add(lccp);
-      }
-    }
-    // print('Total LCCP : ${lccpData.length}');
-    state = lccpData;
-  }
-
-  List<LCModel> generateLC(ConfigModel config, List<LecturerModel> lecturers,
-      List<CourseModel> courses) {
-    List<LCModel> lcs = [];
-    for (var lecturer in lecturers) {
-      for (var course in lecturer.courses) {
-        if (courses.any((element) =>
-            element.id == course &&
-            element.lecturer.any((le) => le['id'] == lecturer.id))) {
-          var courseObject =
-              courses.firstWhere((element) => element.id == course);
-          var id =
-              '${lecturer.id}$course'.trim().replaceAll(' ', '').toLowerCase();
-          lcs.add(LCModel(
-              id: id,
-              lecturerId: lecturer.id!,
-              lecturerName: lecturer.lecturerName!,
-              lecturer: lecturer.toMap(),
-              courseId: course,
-              classes: lecturer.classes.map((e) => e['id'].toString()).toList(),
-              courseCode: courseObject.code!,
-              requireSpecialVenue: courseObject.specialVenue != null &&
-                  courseObject.specialVenue!.isNotEmpty &&
-                  courseObject.venues != null &&
-                  courseObject.venues!.isNotEmpty,
-              venues: courseObject.venues != null ? courseObject.venues! : [],
-              courseName: courseObject.title!,
-              course: courseObject.toMap(),
-              level: courseObject.level!,
-              studyMode: courseObject.studyMode));
-        }
-      }
-    }
-    return lcs;
-  }
-
-  List<CCPModel> generateCCP(
-      ConfigModel config, List<ClassModel> classes, List<CourseModel> courses) {
-    List<CCPModel> ccp = [];
-    for (var classData in classes) {
-      for (var course in courses) {
-        if (course.studyMode == classData.studyMode &&
-            course.level == classData.level) {
-          var id = '${classData.id}${course.id}'
-              .trim()
-              .replaceAll(' ', '')
-              .toLowerCase();
-          ccp.add(CCPModel(
-            id: id,
-            courseId: course.id!,
-            courseCode: course.code!,
-            courseName: course.title!,
-            course: course.toMap(),
-            classId: classData.id!,
-            className: classData.name!,
-            classData: classData.toMap(),
-            classCapacity: int.parse(classData.size!),
-            studyMode: classData.studyMode!,
-            level: classData.level,
-            year: config.year!,
-            semester: config.semester!,
-            department: classData.department!,
-            hasDisability: classData.hasDisability!.toLowerCase() == 'yes',
-          ));
-        }
-      }
-    }
-    return ccp;
-  }
 }
 
 final generatingTableProvider =
@@ -209,14 +79,12 @@ class TableGenProvider extends StateNotifier<void> {
         vtps.where((element) => (element.isSpecialVenue ?? false)).toList();
     var nonSpecialVTPS =
         vtps.where((element) => !(element.isSpecialVenue ?? false)).toList();
-    List<LCCPModel> lccps = ref.watch(lccProvider);
-    List<LTPModel> ltps = ref.watch(ltpProvider);
+    List<LCCPModel> lccps = [];
 
     var config = ref.watch(configurationProvider);
     var data = StudyModeModel.fromMap(config.regular);
     var tables = ref.watch(generatingTableProvider);
     //generate lib tables
-    generateLibTables(ltps, nonSpecialVTPS, config, ref);
     //mark all used venues as booked
     for (var table in tables) {
       var vtp = nonSpecialVTPS

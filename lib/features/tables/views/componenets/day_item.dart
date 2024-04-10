@@ -30,16 +30,20 @@ class _DayItemState extends ConsumerState<DayItem> {
     if (periods.isNotEmpty) {
       firstPeriods = [];
       secondPeriods = [];
-      periods.sort((a, b) => compareTimeOfDay(stringToTimeOfDay(a.startTime), stringToTimeOfDay(b.startTime)));
+      periods.sort((a, b) => compareTimeOfDay(
+          stringToTimeOfDay(a.startTime), stringToTimeOfDay(b.startTime)));
       //split periods at where breakTime is
+
       breakPeriod = periods.firstWhereOrNull((element) =>
           element.period.toLowerCase().replaceAll(' ', '') == 'break'.trim());
       if (breakPeriod != null) {
         for (PeriodsModel period in periods) {
           //we check if period start time is less than break time
-          if (stringToTimeOfDay(period.startTime).hour < stringToTimeOfDay(breakPeriod!.startTime).hour) {
+          if (stringToTimeOfDay(period.startTime).hour <
+              stringToTimeOfDay(breakPeriod!.startTime).hour) {
             firstPeriods.add(period);
-          } else if (stringToTimeOfDay(period.startTime).hour > stringToTimeOfDay(breakPeriod!.startTime).hour) {
+          } else if (stringToTimeOfDay(period.startTime).hour >
+              stringToTimeOfDay(breakPeriod!.startTime).hour) {
             secondPeriods.add(period);
           }
         }
@@ -55,24 +59,31 @@ class _DayItemState extends ConsumerState<DayItem> {
     super.initState();
     //workOnPeriod();
   }
+
   final scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-    var data = ref.watch(filteredTableProvider).where(
-        (element) => element.day.toLowerCase() == widget.day.toLowerCase()).toList();
+    var data = ref
+        .watch(filteredTableProvider)
+        .where(
+            (element) => element.day.toLowerCase() == widget.day.toLowerCase())
+        .toList();
     //data.shuffle();
     var group = groupBy(data, (element) => element.venueName);
     // order group by venue name (keys) and lock the order of the group
     var keys = group.keys.toList();
     keys.sort();
     group = Map.fromEntries(keys.map((e) => MapEntry(e, group[e]!)));
+    //remove from group where value is empty
+
+    group.removeWhere((key, value) => value.isEmpty);
     return FutureBuilder<List<PeriodsModel>>(
         future: workOnPeriod(),
         builder: (context, snapshot) {
-          return Container(
+          return SizedBox(
             width: double.infinity,
-            padding: const EdgeInsets.all(10),
+            // padding: const EdgeInsets.all(10),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               controller: scrollController,
@@ -113,21 +124,24 @@ class _DayItemState extends ConsumerState<DayItem> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.only(top: 25),
+                                              padding: const EdgeInsets.only(
+                                                  top: 25),
                                               child: Text('Venue',
                                                   style: GoogleFonts.poppins(
                                                       fontSize: 20,
                                                       color: Colors.black,
-                                                      fontWeight: FontWeight.bold)),
+                                                      fontWeight:
+                                                          FontWeight.bold)),
                                             ),
                                             Padding(
-                                              padding:
-                                                  const EdgeInsets.only(bottom: 25),
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 25),
                                               child: Text('Period',
                                                   style: GoogleFonts.poppins(
                                                       fontSize: 20,
                                                       color: Colors.black,
-                                                      fontWeight: FontWeight.bold)),
+                                                      fontWeight:
+                                                          FontWeight.bold)),
                                             ),
                                           ],
                                         ),
@@ -141,7 +155,8 @@ class _DayItemState extends ConsumerState<DayItem> {
                                             .map((e) => Container(
                                                   width: 260,
                                                   height: 70,
-                                                  padding: const EdgeInsets.all(5),
+                                                  padding:
+                                                      const EdgeInsets.all(5),
                                                   alignment: Alignment.center,
                                                   decoration: BoxDecoration(
                                                     color: Colors.white,
@@ -151,16 +166,21 @@ class _DayItemState extends ConsumerState<DayItem> {
                                                   child: Column(
                                                     children: [
                                                       Text(e.period,
-                                                          style: GoogleFonts.poppins(
-                                                              fontSize: 20,
-                                                              color: Colors.black,
-                                                              fontWeight:
-                                                                  FontWeight.bold)),
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                                  fontSize: 20,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
                                                       Text(
                                                           '${e.startTime} - ${e.endTime}',
-                                                          style: GoogleFonts.poppins(
-                                                              fontSize: 15,
-                                                              color: Colors.black)),
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                                  fontSize: 15,
+                                                                  color: Colors
+                                                                      .black)),
                                                     ],
                                                   ),
                                                 ))
@@ -173,21 +193,27 @@ class _DayItemState extends ConsumerState<DayItem> {
                                         decoration: const BoxDecoration(
                                           color: Colors.white,
                                           border: Border(
-                                            top: BorderSide(color: Colors.black),
+                                            top:
+                                                BorderSide(color: Colors.black),
                                           ),
                                         ),
                                         child: Column(
                                           children: [
-                                            Text(breakPeriod!.startTime.toString(),
+                                            Text(
+                                                breakPeriod!.startTime
+                                                    .toString(),
                                                 style: GoogleFonts.poppins(
                                                     fontSize: 15,
                                                     color: Colors.black,
-                                                    fontWeight: FontWeight.bold)),
-                                            Text(breakPeriod!.endTime.toString(),
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            Text(
+                                                breakPeriod!.endTime.toString(),
                                                 style: GoogleFonts.poppins(
                                                     fontSize: 15,
                                                     color: Colors.black,
-                                                    fontWeight: FontWeight.bold)),
+                                                    fontWeight:
+                                                        FontWeight.bold)),
                                           ],
                                         ),
                                       ),
@@ -197,7 +223,8 @@ class _DayItemState extends ConsumerState<DayItem> {
                                             .map((e) => Container(
                                                   width: 260,
                                                   height: 70,
-                                                  padding: const EdgeInsets.all(5),
+                                                  padding:
+                                                      const EdgeInsets.all(5),
                                                   alignment: Alignment.center,
                                                   decoration: BoxDecoration(
                                                     color: Colors.white,
@@ -207,16 +234,21 @@ class _DayItemState extends ConsumerState<DayItem> {
                                                   child: Column(
                                                     children: [
                                                       Text(e.period,
-                                                          style: GoogleFonts.poppins(
-                                                              fontSize: 20,
-                                                              color: Colors.black,
-                                                              fontWeight:
-                                                                  FontWeight.bold)),
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                                  fontSize: 20,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
                                                       Text(
                                                           '${e.startTime} - ${e.endTime}',
-                                                          style: GoogleFonts.poppins(
-                                                              fontSize: 15,
-                                                              color: Colors.black)),
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                                  fontSize: 15,
+                                                                  color: Colors
+                                                                      .black)),
                                                     ],
                                                   ),
                                                 ))
@@ -244,12 +276,15 @@ class _DayItemState extends ConsumerState<DayItem> {
                                       children: group.keys
                                           .map(
                                             (venue) => Row(
-                                              children: firstPeriods.map((period) {
-                                                var table = data
-                                                    .firstWhereOrNull((element) =>
-                                                        element.venueName == venue &&
-                                                        element.period ==
-                                                            period.period);
+                                              children:
+                                                  firstPeriods.map((period) {
+                                                var table =
+                                                    data.firstWhereOrNull(
+                                                        (element) =>
+                                                            element.venueName ==
+                                                                venue &&
+                                                            element.period ==
+                                                                period.period);
                                                 if (table != null) {
                                                   return SingleItem(
                                                     table: table,
@@ -276,13 +311,15 @@ class _DayItemState extends ConsumerState<DayItem> {
                                               child: Text(
                                                 'BREAK',
                                                 style: GoogleFonts.poppins(
-                                                    fontSize: 40,
+                                                    fontSize: 25,
                                                     color: Colors.black,
-                                                    wordSpacing: 10,
-                                                    letterSpacing: 30,
-                                                    fontWeight: FontWeight.bold),
+                                                    // wordSpacing: 10,
+                                                    //letterSpacing: 30,
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                                 textAlign: TextAlign.center,
-                                                textDirection: TextDirection.ltr,
+                                                textDirection:
+                                                    TextDirection.ltr,
                                               ),
                                             ),
                                           ),
@@ -294,12 +331,15 @@ class _DayItemState extends ConsumerState<DayItem> {
                                       children: group.keys
                                           .map(
                                             (venue) => Row(
-                                              children: secondPeriods.map((period) {
-                                                var table = data
-                                                    .firstWhereOrNull((element) =>
-                                                        element.venueName == venue &&
-                                                        element.period ==
-                                                            period.period);
+                                              children:
+                                                  secondPeriods.map((period) {
+                                                var table =
+                                                    data.firstWhereOrNull(
+                                                        (element) =>
+                                                            element.venueName ==
+                                                                venue &&
+                                                            element.period ==
+                                                                period.period);
                                                 if (table != null) {
                                                   return SingleItem(
                                                     table: table,

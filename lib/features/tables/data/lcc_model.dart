@@ -1,33 +1,59 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
 
+part 'lcc_model.g.dart';
+@HiveType(typeId: 11)
 class LCCPModel {
   //! lecturer, course, class pair model
+  @HiveField(0)
   String id;
+  @HiveField(1)
   String lecturerId;
+  @HiveField(2)
   String lecturerName;
+  @HiveField(3)
+  bool isAsigned;
+  @HiveField(4)
   Map<String, dynamic> lecturer;
+  @HiveField(5)
   String courseId;
+  @HiveField(6)
   String courseCode;
+  @HiveField(7)
   bool requireSpecialVenue;
+  @HiveField(8)
   List<String> venues;
+  @HiveField(9)
   String courseName;
+  @HiveField(10)
   Map<String, dynamic> course;
+  @HiveField(11)
   String classId;
+  @HiveField(12)
   String className;
+  @HiveField(13)
   Map<String, dynamic> classData;
+  @HiveField(14)
   int classCapacity;
+  @HiveField(15)
   String studyMode;
+  @HiveField(16)
   String level;
+  @HiveField(17)
   String year;
+  @HiveField(18)
   String semester;
+  @HiveField(19)
   String department;
+  @HiveField(20)
   bool hasDisability;
   LCCPModel({
     required this.id,
     required this.lecturerId,
     required this.lecturerName,
+    required this.isAsigned,
     required this.lecturer,
     required this.courseId,
     required this.courseCode,
@@ -51,6 +77,7 @@ class LCCPModel {
     String? id,
     String? lecturerId,
     String? lecturerName,
+    bool? isAsigned,
     Map<String, dynamic>? lecturer,
     String? courseId,
     String? courseCode,
@@ -73,6 +100,7 @@ class LCCPModel {
       id: id ?? this.id,
       lecturerId: lecturerId ?? this.lecturerId,
       lecturerName: lecturerName ?? this.lecturerName,
+      isAsigned: isAsigned ?? this.isAsigned,
       lecturer: lecturer ?? this.lecturer,
       courseId: courseId ?? this.courseId,
       courseCode: courseCode ?? this.courseCode,
@@ -98,6 +126,7 @@ class LCCPModel {
       'id': id,
       'lecturerId': lecturerId,
       'lecturerName': lecturerName,
+      'isAsigned': isAsigned,
       'lecturer': lecturer,
       'courseId': courseId,
       'courseCode': courseCode,
@@ -123,6 +152,7 @@ class LCCPModel {
       id: map['id'] ?? '',
       lecturerId: map['lecturerId'] ?? '',
       lecturerName: map['lecturerName'] ?? '',
+      isAsigned: map['isAsigned'] ?? false,
       lecturer: Map<String, dynamic>.from(map['lecturer']),
       courseId: map['courseId'] ?? '',
       courseCode: map['courseCode'] ?? '',
@@ -149,7 +179,7 @@ class LCCPModel {
 
   @override
   String toString() {
-    return 'LCCPModel(id: $id, lecturerId: $lecturerId, lecturerName: $lecturerName, lecturer: $lecturer, courseId: $courseId, courseCode: $courseCode, requireSpecialVenue: $requireSpecialVenue, venues: $venues, courseName: $courseName, course: $course, classId: $classId, className: $className, classData: $classData, classCapacity: $classCapacity, studyMode: $studyMode, level: $level, year: $year, semester: $semester, department: $department, hasDisability: $hasDisability)';
+    return 'LCCPModel(id: $id, lecturerId: $lecturerId, lecturerName: $lecturerName, isAsigned: $isAsigned, lecturer: $lecturer, courseId: $courseId, courseCode: $courseCode, requireSpecialVenue: $requireSpecialVenue, venues: $venues, courseName: $courseName, course: $course, classId: $classId, className: $className, classData: $classData, classCapacity: $classCapacity, studyMode: $studyMode, level: $level, year: $year, semester: $semester, department: $department, hasDisability: $hasDisability)';
   }
 
   @override
@@ -160,6 +190,7 @@ class LCCPModel {
       other.id == id &&
       other.lecturerId == lecturerId &&
       other.lecturerName == lecturerName &&
+      other.isAsigned == isAsigned &&
       mapEquals(other.lecturer, lecturer) &&
       other.courseId == courseId &&
       other.courseCode == courseCode &&
@@ -184,6 +215,7 @@ class LCCPModel {
     return id.hashCode ^
       lecturerId.hashCode ^
       lecturerName.hashCode ^
+      isAsigned.hashCode ^
       lecturer.hashCode ^
       courseId.hashCode ^
       courseCode.hashCode ^
