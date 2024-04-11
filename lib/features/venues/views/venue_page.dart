@@ -4,7 +4,6 @@ import 'package:aamusted_timetable_generator/features/main/provider/main_provide
 import 'package:aamusted_timetable_generator/features/venues/data/venue_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
 import '../../../config/theme/theme.dart';
 import '../../../core/widget/custom_dialog.dart';
 import '../../../core/widget/custom_input.dart';
@@ -61,7 +60,7 @@ class _VenuePageState extends ConsumerState<VenuePage> {
                             onPressed: () {
                               ref
                                   .read(venueDataImportProvider.notifier)
-                                  .downloadTemplate();
+                                  .downloadTemplate(ref);
                             }),
                         const SizedBox(width: 10),
                         if (ref.watch(venuesDataProvider).isNotEmpty)

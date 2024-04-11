@@ -50,7 +50,7 @@ final dbDataFutureProvider = FutureProvider<void>((ref) async {
   lib.sort((a, b) => a.title!.compareTo(b.title!));
   ref.read(liberalsDataProvider.notifier).setLiberals(lib);
   //? get venue from db
-  var venues = await VenueUseCase().getVenues();
+  var venues = await VenueUseCase(db: ref.watch(dbProvider)).getVenues();
 //order venues by venue name
   venues.sort((a, b) => a.name!.compareTo(b.name!));
   ref.read(venuesDataProvider.notifier).setVenues(venues);

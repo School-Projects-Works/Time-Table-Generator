@@ -97,41 +97,7 @@ class LecturerUseCase extends LectureRepo {
     }
   }
 
-  // Future<(bool, String)> appendLectuers(
-  //     {required List<LecturerModel> list,
-  //     required String year,
-  //     required String semester}) async {
-  //   try {
-  //     final Box<LecturerModel> lecturerBox =
-  //         await Hive.openBox<LecturerModel>('lecturers');
-  //     if (!lecturerBox.isOpen) {
-  //       await Hive.openBox('lecturers');
-  //     }
-  //     //save new lectuere or update lecturer courses
-  //     //get all existing lecturers lecturers
-  //     var allLecturers = lecturerBox.values.toList();
-  //     //get all lecturers where academic year and semester is the same
-  //     var allLecturersToCompare = allLecturers
-  //         .where(
-  //             (element) => element.year == year && element.semester == semester)
-  //         .toList();
-  //     for (var element in list) {
-  //       if (allLecturersToCompare.any((e) => e.id == element.id)) {
-  //         var lecturer =
-  //             allLecturersToCompare.where((e) => e.id == element.id).firstOrNull;
-  //             if(lecturer == null) continue;
-  //         lecturer.courses = [...lecturer.courses, ...element.courses];
-  //         await lecturerBox.put(lecturer.id, lecturer);
-  //       } else {
-  //         element.classes = [];
-  //         await lecturerBox.put(element.id, element);
-  //       }
-  //     }
-  //     return Future.value((true, 'Lecturers added successfully'));
-  //   } catch (e) {
-  //     return Future.value((false, e.toString()));
-  //   }
-  // }
+
 
   Future<(bool, String)>updateLecturers(LecturerModel libLecturers)async {
     try {
