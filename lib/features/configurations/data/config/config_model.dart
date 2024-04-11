@@ -1,18 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
-part 'config_model.g.dart';
 
-@HiveType(typeId: 1)
+
 class ConfigModel {
-  @HiveField(0)
   String? id;
-  @HiveField(1)
   String? year;
-  @HiveField(2)
   String? semester;
-  @HiveField(3)
   Map<String, dynamic> regular;
   ConfigModel({
     this.id,

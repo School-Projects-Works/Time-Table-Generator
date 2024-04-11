@@ -19,9 +19,6 @@ dependencies:
   system_theme: ^2.3.1
   flutter_smart_dialog: ^4.9.6
   font_awesome_flutter: ^10.7.0
-  provider: ^6.1.2
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
   intl: ^0.18.1
   open_app_file: ^4.0.2
   syncfusion_flutter_xlsio: ^25.1.35
@@ -31,9 +28,9 @@ dependencies:
   syncfusion_flutter_pdf: ^25.1.35
   fluent_ui: ^4.8.6
   go_router: ^13.2.1
-  firedart:
-    git:
-      url: https://github.com/BST-Forked-Projects/firedart.git
+  # firedart:
+  #   git:
+  #     url: https://github.com/BST-Forked-Projects/firedart.git
   pdf: ^3.10.8
   google_fonts: ^6.2.1
   file_picker: ^8.0.0+1
@@ -43,10 +40,10 @@ dependencies:
   excel: ^4.0.3
   path_provider: ^2.1.2
   data_table_2: ^2.5.11
-  uuid: ^4.3.3
   collection: ^1.18.0
-  screenshot: ^2.3.0
+  # screenshot: ^2.3.0
   badges: ^3.1.2
+  mongo_dart: ^0.10.1
 
 
  

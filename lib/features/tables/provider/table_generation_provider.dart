@@ -1,5 +1,6 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/configurations/data/config/config_model.dart';
+import 'package:aamusted_timetable_generator/features/database/provider/database_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/lcc_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/ltp_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/tables_model.dart';
@@ -166,7 +167,7 @@ class TableGenProvider extends StateNotifier<void> {
     //print all unassigned LCCP
     
     var savedTables =
-        await TableGenUsecase().saveTables(ref.watch(generatingTableProvider));
+        await TableGenUsecase(db: ref.watch(dbProvider)).saveTables(ref.watch(generatingTableProvider));
     if (savedTables.isNotEmpty) {
       ref.read(tableDataProvider.notifier).addTable(savedTables);
       CustomDialog.dismiss();
@@ -533,10 +534,12 @@ class TableGenProvider extends StateNotifier<void> {
     TablesModel table = TablesModel(
       id: id,
       year: config.year,
-      day: vtp.day!,
-      period: vtp.period!,
+      day: vtp.day,
+      period: vtp.period,
+      position: vtp.position,
       studyMode: ltp.studyMode,
-      periodMap: ltp.toMap(),
+     startTime: vtp.startTime,
+      endTime: vtp.endTime,
       courseCode: ltp.courseCode,
       courseId: ltp.courseId,
       lecturerName: ltp.lecturerName,
@@ -573,10 +576,12 @@ class TableGenProvider extends StateNotifier<void> {
     TablesModel table = TablesModel(
       id: id,
       year: config.year,
-      day: vtp.day!,
-      period: vtp.period!,
+      day: vtp.day,
+      period: vtp.period,
+      position: vtp.position,
       studyMode: lccp.studyMode,
-      periodMap: data.regLibPeriod,
+      startTime: vtp.startTime,
+      endTime: vtp.endTime,
       courseCode: lccp.courseCode,
       courseId: lccp.courseId,
       lecturerName: lccp.lecturerName,

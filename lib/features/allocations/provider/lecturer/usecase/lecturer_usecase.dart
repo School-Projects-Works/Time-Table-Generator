@@ -1,31 +1,52 @@
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mongo_dart/mongo_dart.dart';
+
 import '../../../data/lecturers/lecturer_model.dart';
 import '../repo/lecture_repo.dart';
 
 class LecturerUseCase extends LectureRepo {
+  final Db db;
+
+  LecturerUseCase({required this.db});
   @override
   Future<List<LecturerModel>> addLectures(List<LecturerModel> lecturers) async {
     try {
-      final Box<LecturerModel> lecturerBox =
-          await Hive.openBox<LecturerModel>('lecturers');
-      if (!lecturerBox.isOpen) {
-        await Hive.openBox('lecturers');
+      if(db.state != State.open){
+        await db.open();
       }
-      //re,ove all lecturers where academic year and semester is the same
-      var allLecturersToDelete = lecturerBox.values
-          .where((element) =>
-              element.year == lecturers[0].year &&
-              element.department == lecturers[0].department &&
-              element.semester == lecturers[0].semester)
-          .toList();
-      await lecturerBox
-          .deleteAll(allLecturersToDelete.map((e) => e.id).toList());
-      await lecturerBox.putAll({for (var e in lecturers) e.id: e});
-      var allLecturers = lecturerBox.values
-          .where(
-              (element) => element.year == lecturers[0].year && element.semester == lecturers[0].semester)
-          .toList();
-      return allLecturers;
+      //remove all lecturers where academic year, semester and department is the same
+       await db.collection('lecturers').remove({
+        'year': lecturers[0].year,
+        'semester': lecturers[0].semester,
+        'department': lecturers[0].department,
+      });
+     
+      // check if lecturer already exist then append courses and classes
+      for (var lecturer in lecturers) {
+        var existingLecturer = await db.collection('lecturers').findOne({
+          'id': lecturer.id,
+          'year': lecturer.year,
+          'semester': lecturer.semester,
+        });
+        if (existingLecturer != null) {
+          var courses = existingLecturer['courses'];
+          var classes = existingLecturer['classes'];
+          courses.addAll(lecturer.courses);
+          classes.addAll(lecturer.classes);
+          await db.collection('lecturers').update({
+            "id": lecturer.id,
+            'year': lecturer.year,
+            'semester': lecturer.semester,
+          }, {
+            r'$set': {
+              'courses': courses,
+              'classes': classes,
+            }
+          });
+        } else {
+          await db.collection('lecturers').insert(lecturer.toMap());
+        }
+      }
+      return Future.value(lecturers);
     } catch (_) {
       return [];
     }
@@ -35,17 +56,15 @@ class LecturerUseCase extends LectureRepo {
   @override
   Future<List<LecturerModel>> getLectures(String year, String semester) async {
     try {
-      final Box<LecturerModel> lecturerBox =
-          await Hive.openBox<LecturerModel>('lecturers');
-      if (!lecturerBox.isOpen) {
-        await Hive.openBox('lecturers');
+      if(db.state != State.open){
+        await db.open();
       }
       //get all lecturers where academic year and semester is the same
-      var allLecturers = lecturerBox.values
-          .where(
-              (element) => element.year == year && element.semester == semester)
-          .toList();
-      return allLecturers;
+      var allLecturers = await db.collection('lecturers').find({
+        'year': year,
+        'semester': semester,
+      }).toList();
+      return allLecturers.map((e) => LecturerModel.fromMap(e)).toList();
     } catch (e) {
       return [];
     }
@@ -54,82 +73,77 @@ class LecturerUseCase extends LectureRepo {
   Future<bool> deleteAllLecturers(
       String year, String semester, String department) async {
     try {
-      final Box<LecturerModel> lecturerBox =
-          await Hive.openBox<LecturerModel>('lecturers');
-      //check if box is open
-      if (!lecturerBox.isOpen) {
-        await Hive.openBox('lecturers');
+      if (db.state != State.open) {
+        await db.open();
       }
-      //get all classes where academic year and semester is the same
+     
       if (department.toLowerCase() == 'All'.toLowerCase()) {
-        var allClassesToDelete = lecturerBox.values
-            .where((element) =>
-                element.year == year && element.semester == semester)
-            .toList();
-        await lecturerBox
-            .deleteAll(allClassesToDelete.map((e) => e.id).toList());
+        //delete all classes where academic year and semester is the same
+        await db.collection('lecturers').remove({
+          'year': year,
+          'semester': semester,
+        });
         return true;
       }
-      var allLecturersToDelete = lecturerBox.values
-          .where((element) =>
-              element.year == year &&
-              element.department == department &&
-              element.semester == semester)
-          .toList();
-      await lecturerBox
-          .deleteAll(allLecturersToDelete.map((e) => e.id).toList());
+      //delete all classes where academic year, semester and department is the same
+      await db.collection('lecturers').remove({
+        'year': year,
+        'semester': semester,
+        'department': department
+      });
       return true;
     } catch (_) {
       return false;
     }
   }
 
-  Future<(bool, String)> appendLectuers(
-      {required List<LecturerModel> list,
-      required String year,
-      required String semester}) async {
-    try {
-      final Box<LecturerModel> lecturerBox =
-          await Hive.openBox<LecturerModel>('lecturers');
-      if (!lecturerBox.isOpen) {
-        await Hive.openBox('lecturers');
-      }
-      //save new lectuere or update lecturer courses
-      //get all existing lecturers lecturers
-      var allLecturers = lecturerBox.values.toList();
-      //get all lecturers where academic year and semester is the same
-      var allLecturersToCompare = allLecturers
-          .where(
-              (element) => element.year == year && element.semester == semester)
-          .toList();
-      for (var element in list) {
-        if (allLecturersToCompare.any((e) => e.id == element.id)) {
-          var lecturer =
-              allLecturersToCompare.where((e) => e.id == element.id).firstOrNull;
-              if(lecturer == null) continue;
-          lecturer.courses = [...lecturer.courses, ...element.courses];
-          await lecturerBox.put(lecturer.id, lecturer);
-        } else {
-          element.classes = [];
-          await lecturerBox.put(element.id, element);
-        }
-      }
-      return Future.value((true, 'Lecturers added successfully'));
-    } catch (e) {
-      return Future.value((false, e.toString()));
-    }
-  }
+  // Future<(bool, String)> appendLectuers(
+  //     {required List<LecturerModel> list,
+  //     required String year,
+  //     required String semester}) async {
+  //   try {
+  //     final Box<LecturerModel> lecturerBox =
+  //         await Hive.openBox<LecturerModel>('lecturers');
+  //     if (!lecturerBox.isOpen) {
+  //       await Hive.openBox('lecturers');
+  //     }
+  //     //save new lectuere or update lecturer courses
+  //     //get all existing lecturers lecturers
+  //     var allLecturers = lecturerBox.values.toList();
+  //     //get all lecturers where academic year and semester is the same
+  //     var allLecturersToCompare = allLecturers
+  //         .where(
+  //             (element) => element.year == year && element.semester == semester)
+  //         .toList();
+  //     for (var element in list) {
+  //       if (allLecturersToCompare.any((e) => e.id == element.id)) {
+  //         var lecturer =
+  //             allLecturersToCompare.where((e) => e.id == element.id).firstOrNull;
+  //             if(lecturer == null) continue;
+  //         lecturer.courses = [...lecturer.courses, ...element.courses];
+  //         await lecturerBox.put(lecturer.id, lecturer);
+  //       } else {
+  //         element.classes = [];
+  //         await lecturerBox.put(element.id, element);
+  //       }
+  //     }
+  //     return Future.value((true, 'Lecturers added successfully'));
+  //   } catch (e) {
+  //     return Future.value((false, e.toString()));
+  //   }
+  // }
 
-  Future<(bool, String)>updateLecturers(List<LecturerModel> libLecturers)async {
+  Future<(bool, String)>updateLecturers(LecturerModel libLecturers)async {
     try {
-      final Box<LecturerModel> lecturerBox =
-          await Hive.openBox<LecturerModel>('lecturers');
-      if (!lecturerBox.isOpen) {
-        await Hive.openBox('lecturers');
+      if (db.state != State.open) {
+        await db.open();
       }
-      for (var element in libLecturers) {
-        await lecturerBox.put(element.id, element);
-      }
+      //replace lecturer data with new lecturer
+      await db.collection('lecturers').update({
+        'id': libLecturers.id,
+        'year': libLecturers.year,
+        'semester': libLecturers.semester,
+      }, libLecturers.toMap());
       return Future.value((true, 'Lecturers updated successfully'));
     } catch (e) {
       return Future.value((false, e.toString()));

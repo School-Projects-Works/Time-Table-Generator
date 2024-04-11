@@ -1,53 +1,28 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
-import 'package:hive/hive.dart';
 
-part 'lcc_model.g.dart';
-@HiveType(typeId: 11)
+
 class LCCPModel {
-  //! lecturer, course, class pair model
-  @HiveField(0)
   String id;
-  @HiveField(1)
   String lecturerId;
-  @HiveField(2)
   String lecturerName;
-  @HiveField(3)
   bool isAsigned;
-  @HiveField(4)
   Map<String, dynamic> lecturer;
-  @HiveField(5)
   String courseId;
-  @HiveField(6)
   String courseCode;
-  @HiveField(7)
   bool requireSpecialVenue;
-  @HiveField(8)
   List<String> venues;
-  @HiveField(9)
   String courseName;
-  @HiveField(10)
   Map<String, dynamic> course;
-  @HiveField(11)
   String classId;
-  @HiveField(12)
   String className;
-  @HiveField(13)
   Map<String, dynamic> classData;
-  @HiveField(14)
   int classCapacity;
-  @HiveField(15)
   String studyMode;
-  @HiveField(16)
   String level;
-  @HiveField(17)
   String year;
-  @HiveField(18)
   String semester;
-  @HiveField(19)
   String department;
-  @HiveField(20)
   bool hasDisability;
   LCCPModel({
     required this.id,

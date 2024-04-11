@@ -1,11 +1,11 @@
 //! generate a liberal course time pair
 //? for each liberal course i add a time pair(Day and period)
 
+import 'package:aamusted_timetable_generator/features/database/provider/database_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/ltp_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-
+import 'package:mongo_dart/mongo_dart.dart';
 import '../../../configurations/data/config/config_model.dart';
 import '../../../configurations/provider/config_provider.dart';
 import '../../../main/provider/main_provider.dart';
@@ -38,8 +38,7 @@ class LiberalTimePairProvider extends StateNotifier<List<LTPModel>> {
 //? i create a list of LTPModel for regular
     List<LTPModel> ltp = [];
     for (var regLib in regLibs) {
-     var id =
-          '${regLib.id}${regLib.studyMode}${config.year}${config.semester}'
+      var id = '${regLib.id}${regLib.studyMode}${config.year}${config.semester}'
           .trim()
           .replaceAll(' ', '')
           .toLowerCase()
@@ -65,12 +64,13 @@ class LiberalTimePairProvider extends StateNotifier<List<LTPModel>> {
     }
     //? i create a list of LTPModel for evening
     for (var evenLib in evenLibs) {
-      var id = '${evenLib.id}${evenLib.studyMode}${config.year}${config.semester}'
-          .trim()
-          .replaceAll(' ', '')
-          .toLowerCase()
-          .hashCode
-          .toString();
+      var id =
+          '${evenLib.id}${evenLib.studyMode}${config.year}${config.semester}'
+              .trim()
+              .replaceAll(' ', '')
+              .toLowerCase()
+              .hashCode
+              .toString();
       LTPModel ltpm = LTPModel(
         id: id,
         lecturerId: evenLib.lecturerId!,
@@ -98,8 +98,8 @@ class LiberalTimePairProvider extends StateNotifier<List<LTPModel>> {
     state[index] = regLib;
   }
 
-  void saveData() async {
-    await LiberalTimePairService().saveData(state);
+  void saveData(WidgetRef ref) async {
+    await LiberalTimePairService(db:ref.watch(dbProvider)).saveData(state);
   }
 
   void setLTP(List<LTPModel> list) {
@@ -108,16 +108,23 @@ class LiberalTimePairProvider extends StateNotifier<List<LTPModel>> {
 }
 
 class LiberalTimePairService {
+  final Db db;
+
+  LiberalTimePairService({required this.db});
   Future<void> saveData(List<LTPModel> state) async {
     //? save the data to the database
     try {
-      final Box<LTPModel> liberalBox = await Hive.openBox<LTPModel>('ltp');
-      //check if box is open
-      if (!liberalBox.isOpen) {
-        await Hive.openBox('ltp');
+      if(db.state != State.open){
+        await db.open();
       }
-      for (var ltp in state) {
-        liberalBox.put(ltp.id, ltp);
+      //remove all ltp where year and semester is the same
+      await db.collection('ltp').remove({
+        'year': state[0].year,
+        'semester': state[0].semester,
+      });
+      //now add the new ltp
+      for (var e in state) {
+        await db.collection('ltp').insert(e.toMap());
       }
     } catch (e) {
       if (kDebugMode) {
@@ -127,19 +134,17 @@ class LiberalTimePairService {
   }
 
   Future<List<LTPModel>> getLTP(
-    {required String year, required String semester}
-  ) async {
+      {required String year, required String semester}) async {
     try {
-      final Box<LTPModel> liberalBox = await Hive.openBox<LTPModel>('ltp');
-      //check if box is open
-      if (!liberalBox.isOpen) {
-        await Hive.openBox('ltp');
+      if (db.state != State.open) {
+        await db.open();
       }
       // get all ltp where year and semester is equal to the provided year and semester
-      var ltps = liberalBox.values
-          .where((element) =>
-              element.year == year && element.semester == semester)
-          .toList();
+      var ltp = await db.collection('ltp').find({
+        'year': year,
+        'semester': semester,
+      }).toList();
+      var ltps = ltp.map((e) => LTPModel.fromMap(e)).toList();
       return ltps;
     } catch (e) {
       if (kDebugMode) {

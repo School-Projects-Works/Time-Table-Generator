@@ -94,7 +94,7 @@ class LiberalTableProvider extends StateNotifier<List<TablesModel>> {
       ref.read(venueTimePairProvider.notifier).bookVTP(evenSpecialVTPsList[i]);
     }
 
-    ref.read(liberalTimePairProvider.notifier).saveData();
+    ref.read(liberalTimePairProvider.notifier).saveData(ref);
   }
 
   TablesModel tableItem(LTPModel ltp, VTPModel vtp, ConfigModel config) {
@@ -107,10 +107,12 @@ class LiberalTableProvider extends StateNotifier<List<TablesModel>> {
     TablesModel table = TablesModel(
       id: id,
       year: config.year,
-      day: vtp.day!,
-      period: vtp.period!,
+      day: vtp.day,
+      position: vtp.position,
+      period: vtp.period,    
       studyMode: ltp.studyMode,
-      periodMap: ltp.toMap(),
+      startTime: vtp.startTime,
+      endTime: vtp.endTime,
       courseCode: ltp.courseCode,
       courseId: ltp.courseId,
       lecturerName: ltp.lecturerName,

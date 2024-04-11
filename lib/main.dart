@@ -7,7 +7,6 @@ import 'package:system_theme/system_theme.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:window_manager/window_manager.dart';
 import 'config/routes/routes.dart';
-import 'features/database/usecase/db_usecase.dart';
 
 bool get isDesktop {
   if (kIsWeb) return false;
@@ -20,7 +19,6 @@ bool get isDesktop {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DatabaseUseCase().init();
   // if it's not on the web, windows or android, load the accent color
   if (!kIsWeb &&
       [

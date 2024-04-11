@@ -4,41 +4,34 @@ import 'package:aamusted_timetable_generator/features/liberal/data/liberal/liber
 import 'package:aamusted_timetable_generator/features/liberal/repo/liberal_repo.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:excel/excel.dart';
-import 'package:hive/hive.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import '../../../core/data/constants/excel_headings.dart';
 import '../../../core/functions/excel_settings.dart';
 
 class LiberalUseCase extends LiberalRepo {
+  final Db db;
+
+  LiberalUseCase({required this.db});
   @override
   Future<(bool, String)> addLiberals(List<LiberalModel> liberals) async {
     try {
-      final Box<LiberalModel> liberalBox =
-          await Hive.openBox<LiberalModel>('liberal');
-      //check if box is open
-      if (!liberalBox.isOpen) {
-        await Hive.openBox('liberal');
+      if (db.state != State.open) {
+        await db.open();
       }
+      //delete all liberals where year and semester is the same
+      await db
+          .collection('liberals')
+          .remove({'year': liberals[0].year, 'semester': liberals[0].semester});
+      // add liberals to d
       for (var liberal in liberals) {
-        liberalBox.put(liberal.id, liberal);
+        await db.collection('liberals').insert(liberal.toMap());
       }
       return Future.value((true, 'Liberal Courses added successfully'));
     } catch (e) {
       return Future.value((false, e.toString()));
     }
-  }
-
-  @override
-  Future<(bool, String)> deleteAllLiberals() {
-    // TODO: implement deleteAllLiberals
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<(bool, String, LiberalModel?)> deleteLiberal(String id) {
-    // TODO: implement deleteLiberal
-    throw UnimplementedError();
   }
 
   @override
@@ -86,43 +79,36 @@ class LiberalUseCase extends LiberalRepo {
   Future<List<LiberalModel>> getLiberals(
       {required String year, required String sem}) async {
     try {
-      final Box<LiberalModel> liberalBox =
-          await Hive.openBox<LiberalModel>('liberal');
-      //check if box is open
-      if (!liberalBox.isOpen) {
-        await Hive.openBox('liberal');
+      if (db.state != State.open) {
+        await db.open();
       }
-
-      var allLiberals = liberalBox.values.toList();
-      return allLiberals
-          .where((element) => element.year == year && element.semester == sem)
-          .toList();
+      //get all liberals where year and semester is the same
+      var allLiberals = await db
+          .collection('liberals')
+          .find({'year': year, 'semester': sem}).toList();
+      return allLiberals.map((e) => LiberalModel.fromMap(e)).toList();
     } catch (e) {
       return Future.value([]);
     }
   }
 
   @override
-  Future<(bool, String, List<LiberalModel>?)>
-      importLiberal(
-          {required String path,
-          required String academicYear,
-          required String semester}) {
+  Future<(bool, String, List<LiberalModel>?)> importLiberal(
+      {required String path,
+      required String academicYear,
+      required String semester}) {
     try {
       var bytes = File(path).readAsBytesSync();
       Excel excel = Excel.decodeBytes(List<int>.from(bytes));
       List<LiberalModel> liberals = [];
-      var (regCourses) =
-          getRegularLib(excel, academicYear, semester);
+      var (regCourses) = getRegularLib(excel, academicYear, semester);
       if (regCourses.isEmpty) {
         return Future.value((false, 'Invalid Excel file', null));
       }
-      var evCourses=
-          getEveningLib(excel, academicYear, semester);
+      var evCourses = getEveningLib(excel, academicYear, semester);
       liberals.addAll(regCourses);
       liberals.addAll(evCourses);
-      return Future.value(
-          (true, 'Liberal Imported successfully', liberals));
+      return Future.value((true, 'Liberal Imported successfully', liberals));
     } catch (e) {
       return Future.value((false, e.toString(), null));
     }
@@ -134,7 +120,7 @@ class LiberalUseCase extends LiberalRepo {
     throw UnimplementedError();
   }
 
-  List<LiberalModel>getRegularLib(
+  List<LiberalModel> getRegularLib(
       Excel excel, String academicYear, String semester) {
     var regularSheet = excel.tables['Regular-Liberal'];
     if (regularSheet == null) {
@@ -168,7 +154,6 @@ class LiberalUseCase extends LiberalRepo {
           //   print(lb);
           regularCourses.add(lb);
         }
-        
       }
       return regularCourses;
     } else {
@@ -176,7 +161,7 @@ class LiberalUseCase extends LiberalRepo {
     }
   }
 
-  List<LiberalModel>  getEveningLib(
+  List<LiberalModel> getEveningLib(
       Excel excel, String academicYear, String semester) {
     var eveningSheet = excel.tables['Evening-Liberal']!;
     List<LiberalModel> regularCourses = [];
@@ -205,7 +190,6 @@ class LiberalUseCase extends LiberalRepo {
               year: academicYear,
               semester: semester));
         }
-        
       }
       return regularCourses;
     } else {
@@ -224,23 +208,37 @@ class LiberalUseCase extends LiberalRepo {
         lecturerName != null;
   }
 
+  @override
   Future<(bool, String)> deleteLiberals(
       {required String academicYear, required String semester}) async {
     try {
-      final Box<LiberalModel> liberalBox =
-          await Hive.openBox<LiberalModel>('liberal');
-      //check if box is open
-      if (!liberalBox.isOpen) {
-        await Hive.openBox('liberal');
+      if (db.state != State.open) {
+        await db.open();
       }
-      var allLibs = liberalBox.values
-          .where((element) =>
-              element.year == academicYear && element.semester == semester)
-          .toList();
-      await liberalBox.deleteAll(allLibs.map((e) => e.id).toList());
+      await db
+          .collection('liberals')
+          .remove({'year': academicYear, 'semester': semester});
       return Future.value((true, 'Liberal Courses deleted successfully'));
     } catch (e) {
       return Future.value((false, e.toString()));
+    }
+  }
+
+  @override
+  Future<(bool, String, LiberalModel?)> deleteLiberal(String id) async {
+    try {
+      if (db.state != State.open) {
+        await db.open();
+      }
+      var data = await db.collection('liberals').findOne({'id': id});
+      await db.collection('liberals').remove({'id': id});
+      return Future.value((
+        true,
+        'Liberal Course Deleted Successfully',
+        LiberalModel.fromMap(data!),
+      ));
+    } catch (e) {
+      return Future.value((false, e.toString(), null));
     }
   }
 }

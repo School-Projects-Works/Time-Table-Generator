@@ -59,7 +59,7 @@ class _LiberalPageState extends ConsumerState<LiberalPage> {
                             onPressed: () {
                               ref
                                   .read(liberalDataImportProvider.notifier)
-                                  .downloadTemplate();
+                                  .downloadTemplate(ref);
                             }),
                         const SizedBox(width: 10),
                         if (ref.watch(liberalsDataProvider).isNotEmpty)

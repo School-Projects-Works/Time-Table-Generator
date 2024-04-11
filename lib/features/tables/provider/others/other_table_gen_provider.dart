@@ -4,7 +4,6 @@ import 'package:aamusted_timetable_generator/features/tables/data/periods_model.
 import 'package:aamusted_timetable_generator/features/tables/data/vtp_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/class_course/lecturer_course_class_pair.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../configurations/data/config/config_model.dart';
 import '../../../configurations/provider/config_provider.dart';
 import '../../data/tables_model.dart';
@@ -166,10 +165,12 @@ class OtherTableGenProvider extends StateNotifier<void> {
     TablesModel table = TablesModel(
       id: id,
       year: config.year,
-      day: vtp.day!,
-      period: vtp.period!,
+      day: vtp.day,
+      period: vtp.period,
+      position: vtp.position,
+      startTime: vtp.startTime,
+      endTime: vtp.endTime,
       studyMode: lccp.studyMode,
-      periodMap: vtp.periodMap,
       courseCode: lccp.courseCode,
       courseId: lccp.courseId,
       lecturerName: lccp.lecturerName,

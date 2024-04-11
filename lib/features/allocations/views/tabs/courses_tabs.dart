@@ -195,7 +195,7 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                   title: 'Department',
                   //width: 200,
                   cellBuilder: (item) => Text(
-                    item.department ?? '',
+                    item.department,
                     style: tableTextStyle,
                   ),
                 ),
