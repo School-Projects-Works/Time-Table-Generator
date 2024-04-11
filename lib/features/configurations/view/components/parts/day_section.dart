@@ -1,20 +1,21 @@
+import 'package:aamusted_timetable_generator/features/configurations/provider/config_provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../../../core/data/constants/constant_data.dart';
-import '../provider/regular_config_provider.dart';
+import '../../../../../core/data/constants/constant_data.dart';
 
-class RegularDaySection extends ConsumerStatefulWidget {
-  const RegularDaySection({super.key});
+class DaySection extends ConsumerStatefulWidget {
+  const DaySection({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
       _RegularDaySectionState();
 }
 
-class _RegularDaySectionState extends ConsumerState<RegularDaySection> {
+class _RegularDaySectionState extends ConsumerState<DaySection> {
   @override
   Widget build(BuildContext context) {
-    var currentRegularConfig = ref.watch(regularConfigProvider);
+    var currentConfig = ref.watch(configProvider);
+    var currentConfigNotifier = ref.read(configProvider.notifier);
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: Column(
@@ -44,17 +45,13 @@ class _RegularDaySectionState extends ConsumerState<RegularDaySection> {
                   .map((e) => Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: Checkbox(
-                            checked: currentRegularConfig.days.contains(e),
+                            checked: currentConfig.days.contains(e),
                             content: Text(e),
                             onChanged: (value) {
                               if (value!) {
-                                ref
-                                    .read(regularConfigProvider.notifier)
-                                    .addDay(e);
+                                currentConfigNotifier.addDay(e);
                               } else {
-                                ref
-                                    .read(regularConfigProvider.notifier)
-                                    .removeDay(e);
+                                currentConfigNotifier.removeDay(e);
                               }
                             }),
                       ))

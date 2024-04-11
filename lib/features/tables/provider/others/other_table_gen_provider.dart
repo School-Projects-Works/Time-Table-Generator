@@ -1,11 +1,12 @@
 import 'package:aamusted_timetable_generator/core/functions/time_sorting.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/lcc_model.dart';
-import 'package:aamusted_timetable_generator/features/tables/data/periods_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/vtp_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/class_course/lecturer_course_class_pair.dart';
+import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../configurations/data/config/config_model.dart';
 import '../../../configurations/provider/config_provider.dart';
+import '../../data/periods_model.dart';
 import '../../data/tables_model.dart';
 import '../unsaved_tables_provider.dart';
 import '../venue_time_pair_provider.dart';
@@ -25,8 +26,8 @@ class OtherTableGenProvider extends StateNotifier<void> {
         .where(
             (element) => !element.requireSpecialVenue && element.venues.isEmpty)
         .toList();
-    var config = ref.watch(configurationProvider);
-    var data = StudyModeModel.fromMap(config.regular);
+    var config = ref.watch(configProvider);
+    
     //get all vtps which are special venues
     //! here i work on regualr courses only=================================================================
 
@@ -43,9 +44,11 @@ class OtherTableGenProvider extends StateNotifier<void> {
           .where((element) =>
               element.isSpecialVenue != true && element.isBooked == false)
           .toList();
-      var noneSpecialVTP = pickSpecialVenue(lccp, noneSpecialVtps, data, ref);
+      var noneSpecialVTP = pickSpecialVenue(
+          lccp: lccp, noneSpecialVTPS: noneSpecialVtps, ref: ref, data: config
+      );
       if (noneSpecialVTP != null) {
-        var table = buildTableItem(lccp, noneSpecialVTP, config, data);
+        var table = buildTableItem(lccp, noneSpecialVTP, config);
 
         ref.read(unsavedTableProvider.notifier).addTable([table]);
         ref.read(lecturerCourseClassPairProvider.notifier).markedAsigned(lccp);
@@ -67,9 +70,11 @@ class OtherTableGenProvider extends StateNotifier<void> {
           .where((element) =>
               element.isSpecialVenue != true && element.isBooked == false)
           .toList();
-      var noneSpecialVTP = pickSpecialVenue(lccp, noneSpecialVtps, data, ref);
+      var noneSpecialVTP = pickSpecialVenue(
+          lccp: lccp, noneSpecialVTPS: noneSpecialVtps, ref: ref, data: config
+      );
       if (noneSpecialVTP != null) {
-        var table = buildTableItem(lccp, noneSpecialVTP, config, data);
+        var table = buildTableItem(lccp, noneSpecialVTP, config);
         ref.read(unsavedTableProvider.notifier).addTable([table]);
 
         ref.read(lecturerCourseClassPairProvider.notifier).markedAsigned(lccp);
@@ -78,36 +83,35 @@ class OtherTableGenProvider extends StateNotifier<void> {
     }
   }
 
-  VTPModel? pickSpecialVenue(LCCPModel regLCCP, List<VTPModel> noneSpecialVTPS,
-      StudyModeModel data, WidgetRef ref) {
+  VTPModel? pickSpecialVenue({required LCCPModel lccp, required List<VTPModel> noneSpecialVTPS, required WidgetRef ref,required ConfigModel data}) {
     // print(
     //     '${regLCCP.courseCode}_${regLCCP.className}_${regLCCP.venues.length}==================');
     var unsavedTables = ref.watch(unsavedTableProvider);
     //First get all venues that are contain in the lccp venue field
-    var isRegular = regLCCP.studyMode.toLowerCase().replaceAll(' ', '') ==
+    var isRegular = lccp.studyMode.toLowerCase().replaceAll(' ', '') ==
         'regular'.toLowerCase();
     //get last period
-    var periods = data.periods.map((e) => PeriodsModel.fromMap(e)).toList();
+    var periods = data.periods.map((e) => PeriodModel.fromMap(e)).toList();
     periods.sort((a, b) => compareTimeOfDay(
-        stringToTimeOfDay(a.startTime), stringToTimeOfDay(b.startTime)));
+        AppUtils.stringToTimeOfDay(a.startTime), AppUtils.stringToTimeOfDay(b.startTime)));
     var evenPeriod = periods.last;
     List<VTPModel> venues = [];
     for (var venue in noneSpecialVTPS) {
       if (isRegular) {
-        var isLibLevel = regLCCP.level == data.regLibLevel;
+        var isLibLevel = lccp.level == data.regLibLevel;
         if (!isLibLevel ||
             (isLibLevel &&
                     venue.day != data.regLibDay &&
                     venue.period != data.regLibPeriod!['period']) &&
-                venue.venueCapacity! >= regLCCP.classCapacity - 20) {
+                venue.venueCapacity! >= lccp.classCapacity - 20) {
           venues.add(venue);
         }
       } else {
-        var isLibLevel = regLCCP.level == data.evenLibLevel;
+        var isLibLevel = lccp.level == data.evenLibLevel;
         if (!isLibLevel ||
             (isLibLevel && venue.day != data.evenLibDay) &&
                 venue.period == evenPeriod.period &&
-                venue.venueCapacity! >= regLCCP.classCapacity - 20) {
+                venue.venueCapacity! >= lccp.classCapacity - 20) {
           venues.add(venue);
         }
       }
@@ -115,7 +119,7 @@ class OtherTableGenProvider extends StateNotifier<void> {
     //if no venue is found pick a random venue which is not booked
     //randomly pick a venue pick a venue that is not booked which is last period for evening and not lib for regular
     if (isRegular) {
-      var isLibLevel = regLCCP.level == data.regLibLevel;
+      var isLibLevel = lccp.level == data.regLibLevel;
       var randomVenues = noneSpecialVTPS.where((venue) {
         return !isLibLevel ||
             (isLibLevel &&
@@ -126,7 +130,7 @@ class OtherTableGenProvider extends StateNotifier<void> {
 
       venues.addAll(randomVenues);
     } else {
-      var isLibLevel = regLCCP.level == data.evenLibLevel;
+      var isLibLevel = lccp.level == data.evenLibLevel;
       var randomVenues = noneSpecialVTPS.where((venue) {
         return !isLibLevel ||
             (isLibLevel && venue.day != data.evenLibDay) &&
@@ -144,8 +148,8 @@ class OtherTableGenProvider extends StateNotifier<void> {
           .where((element) =>
               element.day == venue.day &&
               element.period == venue.period &&
-              (element.classId == regLCCP.classId ||
-                  element.lecturerId == regLCCP.lecturerId))
+              (element.classId == lccp.classId ||
+                  element.lecturerId == lccp.lecturerId))
           .isEmpty;
       if (isAvailable) {
         return venue;
@@ -155,7 +159,7 @@ class OtherTableGenProvider extends StateNotifier<void> {
   }
 
   TablesModel buildTableItem(
-      LCCPModel lccp, VTPModel vtp, ConfigModel config, StudyModeModel data) {
+      LCCPModel lccp, VTPModel vtp, ConfigModel config) {
     var id = '${lccp.id}${vtp.id}'
         .trim()
         .replaceAll(' ', '')

@@ -12,6 +12,8 @@ class ConfigUsecase extends ConfigRepo {
   Future<(bool, ConfigModel?, String?)> addConfigurations(
       ConfigModel configurations) async {
     try {
+      //delete all the configurations where the id is the same as the new configurations
+      await db.collection('config').remove({'id': configurations.id});
       await db.collection('config').insert(configurations.toMap());
 
       return Future.value(

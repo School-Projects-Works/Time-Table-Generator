@@ -3,7 +3,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:uuid/uuid.dart';
 
 class AppUtils {
   static int compareTimeOfDay(TimeOfDay time1, TimeOfDay time2) {
@@ -29,10 +28,6 @@ class AppUtils {
     return TimeOfDay.fromDateTime(format.parse(tod));
   }
 
-  static String getId() {
-    var id = const Uuid().v1();
-    return id.hashCode.toString();
-  }
 
   static Future<String?> pickExcelFIle() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(

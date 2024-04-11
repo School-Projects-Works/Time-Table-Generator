@@ -20,7 +20,7 @@ class LecturerCourseClassPairProvider extends StateNotifier<List<LCCPModel>> {
     ref.read(classCoursePairProvider.notifier).generateCCP(ref);
     var lcs = ref.watch(lectuerCoursePairProvider);
     var ccp = ref.watch(classCoursePairProvider);
-    var config = ref.watch(configurationProvider);
+    var config = ref.watch(configProvider);
     List<LCCPModel> lccpData = [];
     for (var cc in ccp) {
       var lc = lcs

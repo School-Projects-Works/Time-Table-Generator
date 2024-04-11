@@ -1,13 +1,12 @@
 //! generate a liberal course time pair
 //? for each liberal course i add a time pair(Day and period)
 
+import 'package:aamusted_timetable_generator/features/configurations/provider/config_provider.dart';
 import 'package:aamusted_timetable_generator/features/database/provider/database_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/ltp_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mongo_dart/mongo_dart.dart';
-import '../../../configurations/data/config/config_model.dart';
-import '../../../configurations/provider/config_provider.dart';
 import '../../../main/provider/main_provider.dart';
 
 final liberalTimePairProvider =
@@ -19,9 +18,8 @@ class LiberalTimePairProvider extends StateNotifier<List<LTPModel>> {
 
   void generateLTP(WidgetRef ref) {
     //! get the configuration data
-    var config = ref.watch(configurationProvider);
+    var config = ref.watch(configProvider);
     //! here i extract the data from the config (days, period)
-    var data = StudyModeModel.fromMap(config.regular);
     var libs = ref.watch(liberalsDataProvider);
     //! i filter the regular and evening libs
     var regLibs = libs
@@ -52,10 +50,10 @@ class LiberalTimePairProvider extends StateNotifier<List<LTPModel>> {
         isAsigned: false,
         courseCode: regLib.code!,
         courseTitle: regLib.title!,
-        period: data.regLibPeriod!['period'],
-        periodMap: data.regLibPeriod!,
-        day: data.regLibDay!,
-        level: data.regLibLevel!,
+        period: config.regLibPeriod!['period'],
+        periodMap: config.regLibPeriod!,
+        day: config.regLibDay!,
+        level: config.regLibLevel!,
         studyMode: regLib.studyMode!,
         year: config.year!,
         semester: config.semester!,
@@ -81,8 +79,8 @@ class LiberalTimePairProvider extends StateNotifier<List<LTPModel>> {
         period: 'period 5',
         isAsigned: false,
         periodMap: {},
-        day: data.evenLibDay!,
-        level: data.evenLibLevel!,
+        day: config.evenLibDay!,
+        level: config.evenLibLevel!,
         studyMode: evenLib.studyMode!,
         year: config.year!,
         semester: config.semester!,

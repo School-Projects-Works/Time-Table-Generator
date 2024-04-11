@@ -45,9 +45,9 @@ class CoursesUseCase extends CoursesRepo {
         'year': year,
         'semester': semester,
       }).toList();
+     
       return allCourses.map((e) => CourseModel.fromMap(e)).toList();
-      
-    } catch (_) {
+    } catch (error) {
       return [];
     }
   }
@@ -60,9 +60,9 @@ class CoursesUseCase extends CoursesRepo {
       }
       //update course
       await db.collection('courses').update(
-        where.eq('id', course.id),
-        course.toMap(),
-      );
+            where.eq('id', course.id),
+            course.toMap(),
+          );
       return (true, 'Course Updated Successfully', course);
     } catch (error) {
       return (false, error.toString(), null);

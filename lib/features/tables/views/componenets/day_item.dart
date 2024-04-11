@@ -3,6 +3,7 @@ import 'package:aamusted_timetable_generator/features/configurations/data/config
 import 'package:aamusted_timetable_generator/features/configurations/provider/config_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/table_gen_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/views/componenets/single_item.dart';
+import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,31 +20,30 @@ class DayItem extends ConsumerStatefulWidget {
 }
 
 class _DayItemState extends ConsumerState<DayItem> {
-  List<PeriodsModel> firstPeriods = [];
-  List<PeriodsModel> secondPeriods = [];
-  PeriodsModel? breakPeriod;
-  Future<List<PeriodsModel>> workOnPeriod() async {
-    var config = ref.watch(configurationProvider);
-    var configData = StudyModeModel.fromMap(config.regular);
+  List<PeriodModel> firstPeriods = [];
+  List<PeriodModel> secondPeriods = [];
+  PeriodModel? breakPeriod;
+  Future<List<PeriodModel>> workOnPeriod() async {
+    var config = ref.watch(configProvider);
     var periods =
-        configData.periods.map((e) => PeriodsModel.fromMap(e)).toList();
+        config.periods.map((e) => PeriodModel.fromMap(e)).toList();
     if (periods.isNotEmpty) {
       firstPeriods = [];
       secondPeriods = [];
       periods.sort((a, b) => compareTimeOfDay(
-          stringToTimeOfDay(a.startTime), stringToTimeOfDay(b.startTime)));
+          AppUtils.stringToTimeOfDay(a.startTime), AppUtils.stringToTimeOfDay(b.startTime)));
       //split periods at where breakTime is
 
       breakPeriod = periods.firstWhereOrNull((element) =>
           element.period.toLowerCase().replaceAll(' ', '') == 'break'.trim());
       if (breakPeriod != null) {
-        for (PeriodsModel period in periods) {
+        for (PeriodModel period in periods) {
           //we check if period start time is less than break time
-          if (stringToTimeOfDay(period.startTime).hour <
-              stringToTimeOfDay(breakPeriod!.startTime).hour) {
+          if (AppUtils.stringToTimeOfDay(period.startTime).hour <
+              AppUtils.stringToTimeOfDay(breakPeriod!.startTime).hour) {
             firstPeriods.add(period);
-          } else if (stringToTimeOfDay(period.startTime).hour >
-              stringToTimeOfDay(breakPeriod!.startTime).hour) {
+          } else if (AppUtils.stringToTimeOfDay(period.startTime).hour >
+              AppUtils.stringToTimeOfDay(breakPeriod!.startTime).hour) {
             secondPeriods.add(period);
           }
         }
@@ -78,7 +78,7 @@ class _DayItemState extends ConsumerState<DayItem> {
     //remove from group where value is empty
 
     group.removeWhere((key, value) => value.isEmpty);
-    return FutureBuilder<List<PeriodsModel>>(
+    return FutureBuilder<List<PeriodModel>>(
         future: workOnPeriod(),
         builder: (context, snapshot) {
           return SizedBox(

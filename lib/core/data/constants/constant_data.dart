@@ -36,7 +36,7 @@ final List<String> periodList = [
   'Period 2',
   'Period 3',
   'Period 4',
-  'Break'
+  'Period 5'
 ];
 
 final regularTime = [
@@ -67,4 +67,10 @@ final regularTime = [
   '7:00 PM',
   '7:30 PM',
   '8:00 PM',
+  '8:30 PM',
+  '9:00 PM',
+  '9:30 PM',
+  '10:00 PM',
+  '10:30 PM',
+  '11:00 PM',
 ];

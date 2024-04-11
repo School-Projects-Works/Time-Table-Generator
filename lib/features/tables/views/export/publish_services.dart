@@ -3,6 +3,7 @@ import 'package:aamusted_timetable_generator/core/functions/time_sorting.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/periods_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/tables_model.dart';
+import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,29 +19,29 @@ class PublishData {
       String? tableDesc,
       Uint8List? signature,
       String? footer,
-      required List<PeriodsModel> periods,
+      required List<PeriodModel> periods,
       required List<TablesModel> tables,
       required List<String> days}) async {
     CustomDialog.showLoading(message: 'Creating PDF...Please wait');
 
-    List<PeriodsModel> firstPeriods = [];
-    List<PeriodsModel> secondPeriods = [];
-    PeriodsModel? breakPeriod;
+    List<PeriodModel> firstPeriods = [];
+    List<PeriodModel> secondPeriods = [];
+    PeriodModel? breakPeriod;
     if (periods.isNotEmpty) {
       firstPeriods = [];
       secondPeriods = [];
-      periods.sort((a, b) => compareTimeOfDay(stringToTimeOfDay(a.startTime), stringToTimeOfDay(b.startTime)));
+      periods.sort((a, b) => compareTimeOfDay(AppUtils.stringToTimeOfDay(a.startTime), AppUtils.stringToTimeOfDay(b.startTime)));
       //split periods at where breakTime is
       breakPeriod = periods.firstWhereOrNull((element) =>
           element.period.toLowerCase().replaceAll(' ', '') == 'break');
       if (breakPeriod != null) {
-        for (PeriodsModel period in periods) {
+        for (PeriodModel period in periods) {
           //we check if period start time is less than break time
-          if (stringToTimeOfDay(period.startTime).hour <
-              stringToTimeOfDay(breakPeriod.startTime).hour) {
+          if (AppUtils.stringToTimeOfDay(period.startTime).hour <
+              AppUtils.stringToTimeOfDay(breakPeriod.startTime).hour) {
             firstPeriods.add(period);
-          } else if (stringToTimeOfDay(period.startTime).hour >
-              stringToTimeOfDay(breakPeriod.startTime).hour) {
+          } else if (AppUtils.stringToTimeOfDay(period.startTime).hour >
+              AppUtils.stringToTimeOfDay(breakPeriod.startTime).hour) {
             secondPeriods.add(period);
           }
         }
@@ -89,9 +90,9 @@ class PublishData {
 
   static pw.Widget headerWidget(
       {String? day,
-      PeriodsModel? breakPeriod,
-      List<PeriodsModel>? firstPeriods,
-      List<PeriodsModel>? secondPeriods,
+      PeriodModel? breakPeriod,
+      List<PeriodModel>? firstPeriods,
+      List<PeriodModel>? secondPeriods,
       Map<String?, List<TablesModel>>? data,
       String? schoolName,
       String? tableDesc,

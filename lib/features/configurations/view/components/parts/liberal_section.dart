@@ -1,21 +1,21 @@
 import 'package:aamusted_timetable_generator/core/data/constants/constant_data.dart';
-import 'package:aamusted_timetable_generator/features/configurations/view/components/regular/provider/regular_config_provider.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../provider/config_provider.dart';
 
-class RegularLiberalSection extends ConsumerStatefulWidget {
-  const RegularLiberalSection({super.key});
+class LiberalSection extends ConsumerStatefulWidget {
+  const LiberalSection({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
       _RegularLiberalSectionState();
 }
 
-class _RegularLiberalSectionState extends ConsumerState<RegularLiberalSection> {
+class _RegularLiberalSectionState extends ConsumerState<LiberalSection> {
   @override
   Widget build(BuildContext context) {
-    var configs = ref.watch(regularConfigProvider);
-    var configsNotifier = ref.read(regularConfigProvider.notifier);
+    var configs = ref.watch(configProvider);
+    var configsNotifier = ref.read(configProvider.notifier);
     return Expanded(
       child: Card(
         margin: const EdgeInsets.symmetric(vertical: 25, horizontal: 10),

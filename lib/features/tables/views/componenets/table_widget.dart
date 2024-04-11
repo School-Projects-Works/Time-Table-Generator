@@ -1,4 +1,3 @@
-import 'package:aamusted_timetable_generator/features/configurations/data/config/config_model.dart';
 import 'package:aamusted_timetable_generator/features/configurations/provider/config_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/table_gen_provider.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +15,11 @@ class TableWidget extends ConsumerStatefulWidget {
 class _TableWidgetState extends ConsumerState<TableWidget> {
   @override
   Widget build(BuildContext context) {
-    var config = ref.watch(configurationProvider);
-    var data = StudyModeModel.fromMap(config.regular);
+    var config = ref.watch(configProvider);
     var tables = ref.watch(filteredTableProvider);
     return SingleChildScrollView(
       child: Column(
-        children: data.days.map((e) {
+        children: config.days.map((e) {
           var data1 = tables.where((element) => element.day == e).toList();
 
           if (data1.isEmpty) {

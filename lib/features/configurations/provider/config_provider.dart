@@ -1,11 +1,12 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
+import 'package:aamusted_timetable_generator/features/configurations/data/config/config_model.dart';
+import 'package:aamusted_timetable_generator/features/configurations/usecase/config_usecase.dart';
 import 'package:aamusted_timetable_generator/features/database/provider/database_provider.dart';
+import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
+import 'package:aamusted_timetable_generator/features/tables/data/periods_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../main/provider/main_provider.dart';
-import '../data/config/config_model.dart';
-import '../usecase/config_usecase.dart';
-import '../view/components/regular/provider/regular_config_provider.dart';
+
 
 final configFutureProvider = FutureProvider<ConfigModel>((ref) async {
   String academicYear = ref.watch(academicYearProvider);
@@ -15,33 +16,121 @@ final configFutureProvider = FutureProvider<ConfigModel>((ref) async {
       .replaceAll(' ', '')
       .toLowerCase()
       .replaceAll('/', '-');
-  var configs = await ConfigUsecase(db: ref.watch(dbProvider)).getConfigurations();
+  var configs =
+      await ConfigUsecase(db: ref.watch(dbProvider)).getConfigurations();
   var config = configs
-      .where((element) =>element.id == id&&
-          element.year == academicYear && element.semester == academicSemester)
+      .where((element) =>
+          element.id == id &&
+          element.year == academicYear &&
+          element.semester == academicSemester)
       .toList();
   if (config.isNotEmpty) {
     var currentConfig = config[0];
-    var regularConfig = currentConfig.regular;
-    ref.read(regularConfigProvider.notifier).mode(regularConfig);
-    ref.read(configurationProvider.notifier).setConfig(currentConfig);
+    ref.read(configProvider.notifier).setConfig(currentConfig);
     return currentConfig;
   } else {
-    ref.read(regularConfigProvider.notifier).mode({});
-    ref
-        .read(configurationProvider.notifier)
-        .setConfig(ConfigModel(regular: {}));
-    return ConfigModel(regular: {});
+    ref.read(configProvider.notifier).setConfig(ConfigModel());
+    return ConfigModel();
   }
 });
 
-final configurationProvider =
-    StateNotifierProvider<ConfigurationNotifier, ConfigModel>((ref) {
-  return ConfigurationNotifier();
-});
+final configProvider =
+    StateNotifierProvider<RegularConfig, ConfigModel>((ref) => RegularConfig());
 
-class ConfigurationNotifier extends StateNotifier<ConfigModel> {
-  ConfigurationNotifier() : super(ConfigModel(regular: {},));
+class RegularConfig extends StateNotifier<ConfigModel> {
+  RegularConfig() : super(ConfigModel());
+
+  void addPeriod({required String name, required int position}) {
+    var period = PeriodModel(period: name, position: position);
+    state = state.copyWith(periods: [...state.periods, period.toMap()]);
+  }
+
+  void removePeriod(String name) {
+    var newPeriods =
+        state.periods.where((element) => element['period'] != name).toList();
+    state = state.copyWith(periods: newPeriods);
+  }
+
+  void setPeriodStartTime({required String period, required String startTime}) {
+    var periodModels =
+        state.periods.where((element) => element['period'] == period).toList();
+    if (periodModels.isNotEmpty) {
+      var periodModel = PeriodModel.fromMap(periodModels[0]);
+      periodModel.startTime = startTime;
+      state = state.copyWith(
+          periods: state.periods
+              .map((e) => e['period'] == period ? periodModel.toMap() : e)
+              .toList());
+    }
+  }
+
+  void setPeriodEndTime({required String period, required String endTime}) {
+    var periodModels =
+        state.periods.where((element) => element['period'] == period).toList();
+    if (periodModels.isNotEmpty) {
+      var periodModel = PeriodModel.fromMap(periodModels[0]);
+      periodModel.endTime = endTime;
+      state = state.copyWith(
+          periods: state.periods
+              .map((e) => e['period'] == period ? periodModel.toMap() : e)
+              .toList());
+    }
+  }
+
+  void setPeriodAsBreak(
+      {required String name, required bool isBreak, required WidgetRef ref}) {
+    var period =
+        state.periods.where((element) => element['period'] == name).toList();
+    if (period.isNotEmpty) {
+      var periodModel = PeriodModel.fromMap(period[0]);
+      periodModel.isBreak = isBreak;
+      state = state.copyWith(
+        breakTime: () => periodModel.toMap(),
+          periods: state.periods
+              .map((e) => e['period'] == name ? periodModel.toMap() : e)
+              .toList());
+    }
+  }
+
+  void addDay(String e) {
+    state = state.copyWith(days: [...state.days, e]);
+  }
+
+  void removeDay(String e) {
+    state = state.copyWith(
+        days: state.days.where((element) => element != e).toList());
+    if (state.days.isEmpty) {
+      state.copyWith(
+        regLibDay: () => null,
+        evenLibDay: () => null,
+      );
+    }
+  }
+
+  void setRegLibLevel(String? value) {
+    state = state.copyWith(regLibLevel: () => value);
+  }
+
+  void setRegLibDay(String? value) {
+    state = state.copyWith(regLibDay: () => value);
+  }
+
+  void setLiberalPeriod(String string) {
+    //get period from periods
+    var period =
+        state.periods.where((element) => element['period'] == string).toList();
+    if (period.isNotEmpty) {
+      state = state.copyWith(regLibPeriod: () => period[0]);
+    }
+  }
+
+  void setEvenLibDay(String? value) {
+    state = state.copyWith(evenLibDay: () => value);
+  }
+
+  void setEvenLibLevel(String? value) {
+    state = state.copyWith(evenLibLevel: () => value);
+  }
 
   void saveConfiguration(BuildContext context, WidgetRef ref) async {
     try {
@@ -59,8 +148,8 @@ class ConfigurationNotifier extends StateNotifier<ConfigModel> {
         year: () => year,
         semester: () => semester,
       );
-      var (success, _, message) =
-          await ConfigUsecase(db: ref.watch(dbProvider)).addConfigurations(state);
+      var (success, _, message) = await ConfigUsecase(db: ref.watch(dbProvider))
+          .addConfigurations(state);
       if (success) {
         ref.invalidate(configFutureProvider);
         CustomDialog.dismiss();
@@ -80,9 +169,8 @@ class ConfigurationNotifier extends StateNotifier<ConfigModel> {
     try {
       CustomDialog.dismiss();
       CustomDialog.showLoading(message: 'Deleting configuration..');
-      var existingConfig = ref.watch(configurationProvider);
-      var (success, _, message) =
-          await ConfigUsecase(db:ref.watch(dbProvider)).deleteConfigurations(existingConfig.id!);
+      var (success, _, message) = await ConfigUsecase(db: ref.watch(dbProvider))
+          .deleteConfigurations(state.id!);
       if (!success) {
         CustomDialog.dismiss();
         CustomDialog.showError(
@@ -90,7 +178,7 @@ class ConfigurationNotifier extends StateNotifier<ConfigModel> {
                 message ?? 'An error occurred while deleting configuration');
       } else {
         ref.invalidate(configFutureProvider);
-        state = ConfigModel(regular: {});
+        state = ConfigModel();
         CustomDialog.dismiss();
         CustomDialog.showSuccess(
             message: message ?? 'Configuration deleted successfully');
@@ -103,21 +191,12 @@ class ConfigurationNotifier extends StateNotifier<ConfigModel> {
   }
 
   void clearConfig(BuildContext context) {
-    state = ConfigModel(
-      regular: {},
-    );
+    state = ConfigModel();
   }
 
   void setConfig(ConfigModel config) {
     state = config;
   }
-
-  void studyMode(StudyModeModel? regularConfig) {
-  
-    state = state.copyWith(
-      regular: regularConfig != null && regularConfig.days.isNotEmpty
-          ? regularConfig.toMap()
-          : {},
-    );
-  }
 }
+
+

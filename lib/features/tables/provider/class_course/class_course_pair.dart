@@ -3,7 +3,6 @@
 import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/ccp_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../configurations/provider/config_provider.dart';
 
 final classCoursePairProvider =
@@ -19,7 +18,7 @@ class ClassCoursePairProvider extends StateNotifier<List<CCPModel>> {
     //! here i get the courses data
     var courses = ref.watch(coursesDataProvider);
     //! here i get the configuration data
-    var config = ref.watch(configurationProvider);
+    var config = ref.watch(configProvider);
    List<CCPModel> ccp = [];
     //! here i loop through the classes and courses and generate the class course pair
     for (var classData in classes) {
@@ -36,9 +35,9 @@ class ClassCoursePairProvider extends StateNotifier<List<CCPModel>> {
               //! here i add the class course pair to the state
           ccp.add(CCPModel(
             id: id,
-            courseId: course.id!,
-            courseCode: course.code!,
-            courseName: course.title!,
+            courseId: course.id,
+            courseCode: course.code,
+            courseName: course.title,
             course: course.toMap(),
             classId: classData.id!,
             className: classData.name!,

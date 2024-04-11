@@ -20,42 +20,42 @@ class IncompleteConditions {
   }
 
   bool configExists() {
-    return ref.watch(configurationProvider).id != null;
+    return ref.watch(configProvider).id != null;
   }
 
   bool oneStudyModeExists() {
-    var config = ref.watch(configurationProvider);
-    var regularExists = config.regular['days'] != null;
+    var config = ref.watch(configProvider);
+    var regularExists = config.days.isNotEmpty;
     return regularExists;
   }
 
   bool regularLibConfigExists() {
-    var config = ref.watch(configurationProvider);
-    var regularExists = config.regular['days'] != null;
+    var config = ref.watch(configProvider);
+    var regularExists = config.days.isNotEmpty;
     var listRegularLib = ref
         .watch(liberalsDataProvider)
         .where((element) => element.studyMode!.toLowerCase() == 'regular')
         .toList();
     return !regularExists ||
         listRegularLib.isEmpty ||
-        (config.regular['regLibDay'] != null &&
-                config.regular['regLibPeriod'] != null) &&
-            (config.regular['regLibDay'].isNotEmpty &&
-                config.regular['regLibPeriod'].isNotEmpty &&
-                config.regular['regLibLevel'].isNotEmpty);
+        (config.regLibDay != null &&
+                config.regLibPeriod != null) &&
+            (config.regLibDay!.isNotEmpty &&
+                config.regLibPeriod!.isNotEmpty &&
+                config.regLibLevel!.isNotEmpty);
   }
 
   bool eveningLibConfigExists() {
-    var config = ref.watch(configurationProvider);
+    var config = ref.watch(configProvider);
     var listEveningLib = ref
         .watch(liberalsDataProvider)
         .where((element) => element.studyMode!.toLowerCase() == 'evening')
         .toList();
     return listEveningLib.isEmpty ||
-        (config.regular['evenLibDay'] != null &&
-            config.regular['evenLibLevel'].isNotEmpty &&
-            config.regular['evenLibLevel'] != null &&
-            config.regular['evenLibDay'].isNotEmpty);
+        (config.evenLibDay != null &&
+            config.evenLibLevel!.isNotEmpty &&
+            config.evenLibLevel != null &&
+            config.evenLibDay!.isNotEmpty);
   }
 
   bool specialVenuesFixed() {

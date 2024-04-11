@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aamusted_timetable_generator/core/functions/time_sorting.dart';
 import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/components/daigonal_line.dart';
+import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -53,33 +54,31 @@ class _ExportPageState extends ConsumerState<ExportPage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    var config = ref.watch(configurationProvider);
-    var data = StudyModeModel.fromMap(config.regular);
-    var tables = ref.watch(tableDataProvider);
-    List<PeriodsModel> periods =
-        data.periods.map((e) => PeriodsModel.fromMap(e)).toList();
+    var config = ref.watch(configProvider);
 
-    periods.sort((a, b) => compareTimeOfDay(
-        stringToTimeOfDay(a.startTime), stringToTimeOfDay(b.startTime)));
-    List<PeriodsModel> firstPeriods = [];
-    List<PeriodsModel> secondPeriods = [];
-    PeriodsModel? breakPeriod;
+    var tables = ref.watch(tableDataProvider);
+    List<PeriodModel> periods =
+        config.periods.map((e) => PeriodModel.fromMap(e)).toList();
+
+    periods.sort((a, b) => a.position.compareTo(b.position));
+    List<PeriodModel> firstPeriods = [];
+    List<PeriodModel> secondPeriods = [];
+    PeriodModel? breakPeriod;
     if (periods.isNotEmpty) {
       firstPeriods = [];
       secondPeriods = [];
-      periods.sort((a, b) => compareTimeOfDay(
-          stringToTimeOfDay(a.startTime), stringToTimeOfDay(b.startTime)));
+      // periods.sort((a, b) => compareTimeOfDay(
+      //     AppUtils.stringToTimeOfDay(a.startTime),
+      //     AppUtils.stringToTimeOfDay(b.startTime)));
       //split periods at where breakTime is
-      breakPeriod = periods.firstWhereOrNull((element) =>
-          element.period.toLowerCase().replaceAll(' ', '') == 'break'.trim());
+      breakPeriod = periods.firstWhereOrNull(
+          (element) => element.isBreak == true && element.startTime.isNotEmpty);
       if (breakPeriod != null) {
-        for (PeriodsModel period in periods) {
+        for (PeriodModel period in periods) {
           //we check if period start time is less than break time
-          if (stringToTimeOfDay(period.startTime).hour <
-              stringToTimeOfDay(breakPeriod.startTime).hour) {
+          if (period.position < breakPeriod.position) {
             firstPeriods.add(period);
-          } else if (stringToTimeOfDay(period.startTime).hour >
-              stringToTimeOfDay(breakPeriod.startTime).hour) {
+          } else if (period.position > breakPeriod.position) {
             secondPeriods.add(period);
           }
         }
@@ -133,7 +132,7 @@ class _ExportPageState extends ConsumerState<ExportPage> {
                                 signature: signature,
                                 tables: tables,
                                 periods: periods,
-                                days: data.days,
+                                days: config.days,
                                 footer: footerController.text,
                               );
                             } else {
@@ -354,7 +353,7 @@ class _ExportPageState extends ConsumerState<ExportPage> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(15.0),
                                   child: Container(
-                                    color: Colors.white,
+                                      color: Colors.white,
                                       width: size.width * 0.6,
                                       child: Column(
                                         children: [

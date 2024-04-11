@@ -2,13 +2,13 @@
 // call liberal_time_pair to generate LTPs before generating tables
 
 import 'package:aamusted_timetable_generator/core/functions/time_sorting.dart';
+import 'package:aamusted_timetable_generator/features/configurations/provider/config_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/periods_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/unsaved_tables_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/venue_time_pair_provider.dart';
+import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../configurations/data/config/config_model.dart';
-import '../../../configurations/provider/config_provider.dart';
 import '../../data/ltp_model.dart';
 import '../../data/tables_model.dart';
 import '../../data/vtp_model.dart';
@@ -24,8 +24,7 @@ class LiberalTableProvider extends StateNotifier<List<TablesModel>> {
 
   void generateTables(WidgetRef ref) {
     //! here i get the configuration data
-    var config = ref.watch(configurationProvider);
-    var data = StudyModeModel.fromMap(config.regular);
+    var data = ref.watch(configProvider);
     //! here get all the venue time pair
     //? getting regular tables =========================================================================
     var vtps = ref.watch(venueTimePairProvider);
@@ -57,16 +56,16 @@ class LiberalTableProvider extends StateNotifier<List<TablesModel>> {
         : noneSpecialVTPs;
     //loop noneSpecialVTPsList and assign each to a regLib
     for (var i = 0; i < noneSpecialVTPsList.length; i++) {
-      var table = tableItem(regLibs[i], noneSpecialVTPsList[i], config);
+      var table = tableItem(regLibs[i], noneSpecialVTPsList[i], data);
       state = [...state, table];
       ref.read(unsavedTableProvider.notifier).addTable([table]);
       ref.read(liberalTimePairProvider.notifier).assignLTP(regLibs[i]);
       ref.read(venueTimePairProvider.notifier).bookVTP(noneSpecialVTPsList[i]);
     }
     //?getting evening tables =========================================================================
-    var periods = data.periods.map((e) => PeriodsModel.fromMap(e)).toList();
+    var periods = data.periods.map((e) => PeriodModel.fromMap(e)).toList();
     periods.sort((a, b) => compareTimeOfDay(
-        stringToTimeOfDay(a.startTime), stringToTimeOfDay(b.startTime)));
+        AppUtils.stringToTimeOfDay(a.startTime), AppUtils.stringToTimeOfDay(b.startTime)));
     var evenLibPeriod = periods.last;
     vtps = ref.watch(venueTimePairProvider);
     var evenVTPs = vtps
@@ -87,7 +86,7 @@ class LiberalTableProvider extends StateNotifier<List<TablesModel>> {
         ? evenVTPs.take(evenLibs.length).toList()
         : evenVTPs;
     for (var i = 0; i < evenSpecialVTPsList.length; i++) {
-      var table = tableItem(evenLibs[i], evenSpecialVTPsList[i], config);
+      var table = tableItem(evenLibs[i], evenSpecialVTPsList[i], data);
       state = [...state, table];
       ref.read(unsavedTableProvider.notifier).addTable([table]);
       ref.read(liberalTimePairProvider.notifier).assignLTP(evenLibs[i]);
