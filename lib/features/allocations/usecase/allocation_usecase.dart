@@ -7,7 +7,7 @@ import 'package:aamusted_timetable_generator/features/allocations/data/lecturers
 import 'package:aamusted_timetable_generator/features/allocations/repo/allocation_repo.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:excel/excel.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import '../../../core/data/constants/excel_headings.dart';
@@ -554,102 +554,54 @@ class AllocationUseCase extends AllocationRepo {
   @override
   Future<(bool, List<ClassModel>, List<CourseModel>, List<LecturerModel>)>
       deletateAllocation(String academicYear, String academicSemester,
-          String department) async {
-    try {
-      final Box<CourseModel> courseBox =
-          await Hive.openBox<CourseModel>('courses');
-      //check if box is open
-      if (!courseBox.isOpen) {
-        await Hive.openBox('courses');
-      }
-      final Box<ClassModel> classBox =
-          await Hive.openBox<ClassModel>('classes');
-      //check if box is open
-      if (!classBox.isOpen) {
-        await Hive.openBox('classes');
-      }
-      final Box<LecturerModel> lecturerBox =
-          await Hive.openBox<LecturerModel>('lecturers');
-      //check if box is open
-      if (!lecturerBox.isOpen) {
-        await Hive.openBox('lecturers');
+          String department,Db db) async {
+    try { 
+      if (db.state != State.open) {
+        await db.open();
       }
       if (department == 'All') {
         //delete all classes, courses and lecturers
-        var courses = courseBox.values
-            .where((element) =>
-                element.semester == academicSemester &&
-                element.year == academicYear)
-            .toList();
-        var classes = classBox.values
-            .where((element) =>
-                element.semester == academicSemester &&
-                element.year == academicYear)
-            .toList();
-        var lecturers = lecturerBox.values
-            .where((element) =>
-                element.semester == academicSemester &&
-                element.year == academicYear)
-            .toList();
-        for (var course in courses) {
-          await courseBox.delete(course.id);
-        }
-        for (var aClass in classes) {
-          await classBox.delete(aClass.id);
-        }
-        for (var lecturer in lecturers) {
-          await lecturerBox.delete(lecturer.id);
-        }
-
+        await db
+            .collection('courses')
+            .remove({'semester': academicSemester, 'year': academicYear});
+        await db
+            .collection('classes')
+            .remove({'semester': academicSemester, 'year': academicYear});
+        await db
+            .collection('lecturers')
+            .remove({'semester': academicSemester, 'year': academicYear});
         return Future.value((true, [], [], []) as FutureOr<
             (bool, List<ClassModel>, List<CourseModel>, List<LecturerModel>)>?);
       } else {
         //delete all classes, courses and lecturers for the department
-        var courses = courseBox.values
-            .where((element) =>
-                element.department == department &&
-                element.semester == academicSemester &&
-                element.year == academicYear)
-            .toList();
-        var classes = classBox.values
-            .where((element) =>
-                element.department == department &&
-                element.semester == academicSemester &&
-                element.year == academicYear)
-            .toList();
-        var lecturers = lecturerBox.values
-            .where((element) =>
-                element.department == department &&
-                element.semester == academicSemester &&
-                element.year == academicYear)
-            .toList();
-        for (var course in courses) {
-          await courseBox.delete(course.id);
-        }
-        for (var aClass in classes) {
-          await classBox.delete(aClass.id);
-        }
-        for (var lecturer in lecturers) {
-          await lecturerBox.delete(lecturer.id);
-        }
+        await db.collection('courses').remove({
+          'department': department,
+          'semester': academicSemester,
+          'year': academicYear
+        });
+        await db.collection('classes').remove({
+          'department': department,
+          'semester': academicSemester,
+          'year': academicYear
+        });
+        await db.collection('lecturers').remove({
+          'department': department,
+          'semester': academicSemester,
+          'year': academicYear
+        });
         //get remaing classes, courses and lecturers with academic year and semester
-        var remainingCourses = courseBox.values
-            .where((element) =>
-                element.semester == academicSemester &&
-                element.year == academicYear)
-            .toList();
-        var remainingClasses = classBox.values
-            .where((element) =>
-                element.semester == academicSemester &&
-                element.year == academicYear)
-            .toList();
-        var remainingLecturers = lecturerBox.values
-            .where((element) =>
-                element.semester == academicSemester &&
-                element.year == academicYear)
-            .toList();
-        return Future.value(
-            (true, remainingClasses, remainingCourses, remainingLecturers));
+        var remainingCourses = await db.collection('courses').find(
+            {'semester': academicSemester, 'year': academicYear}).toList();
+        var remainingClasses = await db.collection('classes').find(
+            {'semester': academicSemester, 'year': academicYear}).toList();
+        var remainingLecturers = await db.collection('lecturers').find(
+            {'semester': academicSemester, 'year': academicYear}).toList();
+        return Future.value((
+          true,
+          remainingClasses.map((e) => ClassModel.fromMap(e)).toList(),
+          remainingCourses.map((e) => CourseModel.fromMap(e)).toList(),
+          remainingLecturers.map((e) => LecturerModel.fromMap(e)).toList()
+        ));
       }
     } catch (e) {
       List<ClassModel> remainingClasses = [];

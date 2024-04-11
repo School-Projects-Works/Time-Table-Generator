@@ -1,75 +1,44 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
-part 'tables_model.g.dart';
-@HiveType(typeId: 7)
+
 class TablesModel {
-  @HiveField(0)
   String? id;
-  @HiveField(1)
   String? year;
-
-  @HiveField(2)
   String day;
-  @HiveField(3)
   String period;
-  @HiveField(4)
   String studyMode;
-  @HiveField(5)
-  Map<String, dynamic>? periodMap;
-
-  @HiveField(6)
+  String startTime;
+  String endTime;
   String? courseCode;
-  @HiveField(7)
   String courseId;
-  @HiveField(8)
   String lecturerName;
-  @HiveField(9)
   String? lecturerEmail;
-  @HiveField(10)
   String courseTitle;
-  @HiveField(11)
   String? creditHours;
-  @HiveField(12)
   List<Map<String, dynamic>>? specialVenues;
-
-  @HiveField(13)
   String venueName;
-  @HiveField(14)
   String venueId;
-  @HiveField(15)
   int venueCapacity;
-  @HiveField(16)
   bool? disabilityAccess;
-  @HiveField(17)
   bool? isSpecial;
-
-  @HiveField(18)
   String classLevel;
-  @HiveField(19)
   String className;
-  @HiveField(20)
   String department;
-  @HiveField(21)
   String classSize;
-  @HiveField(22)
   bool? hasDisable;
-  @HiveField(23)
   String semester;
-
-  @HiveField(24)
   String classId;
-  @HiveField(25)
   String lecturerId;
-
+  int position;
   TablesModel({
     this.id,
     this.year,
     required this.day,
     required this.period,
     required this.studyMode,
-    this.periodMap,
+    required this.startTime,
+    required this.endTime,
     this.courseCode,
     required this.courseId,
     required this.lecturerName,
@@ -90,6 +59,7 @@ class TablesModel {
     required this.semester,
     required this.classId,
     required this.lecturerId,
+    required this.position,
   });
 
   TablesModel copyWith({
@@ -98,7 +68,8 @@ class TablesModel {
     String? day,
     String? period,
     String? studyMode,
-    ValueGetter<Map<String, dynamic>?>? periodMap,
+    String? startTime,
+    String? endTime,
     ValueGetter<String?>? courseCode,
     String? courseId,
     String? lecturerName,
@@ -119,6 +90,7 @@ class TablesModel {
     String? semester,
     String? classId,
     String? lecturerId,
+    int? position,
   }) {
     return TablesModel(
       id: id != null ? id() : this.id,
@@ -126,7 +98,8 @@ class TablesModel {
       day: day ?? this.day,
       period: period ?? this.period,
       studyMode: studyMode ?? this.studyMode,
-      periodMap: periodMap != null ? periodMap() : this.periodMap,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
       courseCode: courseCode != null ? courseCode() : this.courseCode,
       courseId: courseId ?? this.courseId,
       lecturerName: lecturerName ?? this.lecturerName,
@@ -147,6 +120,7 @@ class TablesModel {
       semester: semester ?? this.semester,
       classId: classId ?? this.classId,
       lecturerId: lecturerId ?? this.lecturerId,
+      position: position ?? this.position,
     );
   }
 
@@ -157,7 +131,8 @@ class TablesModel {
       'day': day,
       'period': period,
       'studyMode': studyMode,
-      'periodMap': periodMap,
+      'startTime': startTime,
+      'endTime': endTime,
       'courseCode': courseCode,
       'courseId': courseId,
       'lecturerName': lecturerName,
@@ -178,6 +153,7 @@ class TablesModel {
       'semester': semester,
       'classId': classId,
       'lecturerId': lecturerId,
+      'position': position,
     };
   }
 
@@ -188,14 +164,15 @@ class TablesModel {
       day: map['day'] ?? '',
       period: map['period'] ?? '',
       studyMode: map['studyMode'] ?? '',
-      periodMap: Map<String, dynamic>.from(map['periodMap']),
+      startTime: map['startTime'] ?? '',
+      endTime: map['endTime'] ?? '',
       courseCode: map['courseCode'],
       courseId: map['courseId'] ?? '',
       lecturerName: map['lecturerName'] ?? '',
       lecturerEmail: map['lecturerEmail'],
       courseTitle: map['courseTitle'] ?? '',
       creditHours: map['creditHours'],
-      specialVenues: map['specialVenues'] != null ? List<Map<String, dynamic>>.from(map['specialVenues']?.map((x) => Map<String, dynamic>.from(x))) : null,
+      specialVenues: map['specialVenues'] != null ? List<Map<String, dynamic>>.from(map['specialVenues']?.map((x) => x)) : null,
       venueName: map['venueName'] ?? '',
       venueId: map['venueId'] ?? '',
       venueCapacity: map['venueCapacity']?.toInt() ?? 0,
@@ -209,16 +186,18 @@ class TablesModel {
       semester: map['semester'] ?? '',
       classId: map['classId'] ?? '',
       lecturerId: map['lecturerId'] ?? '',
+      position: map['position']?.toInt() ?? 0,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory TablesModel.fromJson(String source) => TablesModel.fromMap(json.decode(source));
+  factory TablesModel.fromJson(String source) =>
+      TablesModel.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'TablesModel(id: $id, year: $year, day: $day, period: $period, studyMode: $studyMode, periodMap: $periodMap, courseCode: $courseCode, courseId: $courseId, lecturerName: $lecturerName, lecturerEmail: $lecturerEmail, courseTitle: $courseTitle, creditHours: $creditHours, specialVenues: $specialVenues, venueName: $venueName, venueId: $venueId, venueCapacity: $venueCapacity, disabilityAccess: $disabilityAccess, isSpecial: $isSpecial, classLevel: $classLevel, className: $className, department: $department, classSize: $classSize, hasDisable: $hasDisable, semester: $semester, classId: $classId, lecturerId: $lecturerId)';
+    return 'TablesModel(id: $id, year: $year, day: $day, period: $period, studyMode: $studyMode, startTime: $startTime, endTime: $endTime, courseCode: $courseCode, courseId: $courseId, lecturerName: $lecturerName, lecturerEmail: $lecturerEmail, courseTitle: $courseTitle, creditHours: $creditHours, specialVenues: $specialVenues, venueName: $venueName, venueId: $venueId, venueCapacity: $venueCapacity, disabilityAccess: $disabilityAccess, isSpecial: $isSpecial, classLevel: $classLevel, className: $className, department: $department, classSize: $classSize, hasDisable: $hasDisable, semester: $semester, classId: $classId, lecturerId: $lecturerId, position: $position)';
   }
 
   @override
@@ -231,7 +210,8 @@ class TablesModel {
       other.day == day &&
       other.period == period &&
       other.studyMode == studyMode &&
-      mapEquals(other.periodMap, periodMap) &&
+      other.startTime == startTime &&
+      other.endTime == endTime &&
       other.courseCode == courseCode &&
       other.courseId == courseId &&
       other.lecturerName == lecturerName &&
@@ -251,7 +231,8 @@ class TablesModel {
       other.hasDisable == hasDisable &&
       other.semester == semester &&
       other.classId == classId &&
-      other.lecturerId == lecturerId;
+      other.lecturerId == lecturerId &&
+      other.position == position;
   }
 
   @override
@@ -261,7 +242,8 @@ class TablesModel {
       day.hashCode ^
       period.hashCode ^
       studyMode.hashCode ^
-      periodMap.hashCode ^
+      startTime.hashCode ^
+      endTime.hashCode ^
       courseCode.hashCode ^
       courseId.hashCode ^
       lecturerName.hashCode ^
@@ -281,6 +263,7 @@ class TablesModel {
       hasDisable.hashCode ^
       semester.hashCode ^
       classId.hashCode ^
-      lecturerId.hashCode;
+      lecturerId.hashCode ^
+      position.hashCode;
   }
 }

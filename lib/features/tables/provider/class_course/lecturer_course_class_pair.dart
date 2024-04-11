@@ -1,12 +1,12 @@
 // ! here i use the LC pai and CC pair to generate the lecturer course class pair
-
 import 'package:aamusted_timetable_generator/features/configurations/provider/config_provider.dart';
+import 'package:aamusted_timetable_generator/features/database/provider/database_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/lcc_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/class_course/class_course_pair.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/class_course/lecturer_course_pair.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 
 final lecturerCourseClassPairProvider =
     StateNotifierProvider<LecturerCourseClassPairProvider, List<LCCPModel>>(
@@ -71,8 +71,8 @@ class LecturerCourseClassPairProvider extends StateNotifier<List<LCCPModel>> {
     }).toList();
   }
 
-  void saveData() async {
-    await LCCPServices().saveData(state);
+  void saveData(WidgetRef ref) async {
+    await LCCPServices(db:ref.watch(dbProvider)).saveData(state);
   }
 
   void setLCCP(List<LCCPModel> lccp) {
@@ -81,16 +81,24 @@ class LecturerCourseClassPairProvider extends StateNotifier<List<LCCPModel>> {
 }
 
 class LCCPServices {
+  final Db db;
+
+  LCCPServices({required this.db});
   Future<void> saveData(List<LCCPModel> data) async {
     // save data to database
     try {
       // save data to database
-      final Box<LCCPModel> lccpBox = await Hive.openBox<LCCPModel>('lccp');
-      if (!lccpBox.isOpen) {
-        await Hive.openBox('lccp');
+      if (db.state != State.open) {
+        await db.open();
       }
-      for (var ltp in data) {
-        lccpBox.put(ltp.id, ltp);
+      // remove all lccp where year and semester is the same
+      await db.collection('lccp').remove({
+        'year': data[0].year,
+        'semester': data[0].semester,
+      });
+      // now add the new lccp
+      for (var e in data) {
+        await db.collection('lccp').insert(e.toMap());
       }
     } catch (e) {
       if (kDebugMode) {
@@ -103,15 +111,15 @@ class LCCPServices {
       {required String year, required String semester}) async {
     // get data from database
     try {
-      final Box<LCCPModel> lccpBox = await Hive.openBox<LCCPModel>('lccp');
-      if (!lccpBox.isOpen) {
-        await Hive.openBox('lccp');
+      if (db.state != State.open) {
+        await db.open();
       }
       // get data from database where year and semester is equal to the year and semester passed
-      List<LCCPModel> data = lccpBox.values
-          .where(
-              (element) => element.year == year && element.semester == semester)
-          .toList();
+      var lccp = await db.collection('lccp').find({
+        'year': year,
+        'semester': semester,
+      }).toList();
+      var data = lccp.map((e) => LCCPModel.fromMap(e)).toList();
       return data;
     } catch (e) {
       if (kDebugMode) {

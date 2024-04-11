@@ -24,8 +24,7 @@ class _SpecialVenueSelectState extends ConsumerState<SpecialVenueSelect> {
   List<VenueModel> selectedVenues = [];
   List<VenueModel> selectingVeneus = [];
   List<VenueModel> removingVenues = [];
-  CourseModel selectedCourse =
-      CourseModel(lecturer: [], year: '', semester: '', studyMode: '');
+  CourseModel? selectedCourse ;
   @override
   void initState() {
     //wait for widget to build
@@ -37,11 +36,9 @@ class _SpecialVenueSelectState extends ConsumerState<SpecialVenueSelect> {
       setState(() {
         specialVenues = sv;
         selectedCourse = courses.firstWhere(
-            (element) => element.id == widget.id,
-            orElse: () => CourseModel(
-                lecturer: [], year: '', semester: '', studyMode: ''));
-        if (selectedCourse.id != null && selectedCourse.venues != null) {
-          for (var venue in selectedCourse.venues!) {
+            (element) => element.id == widget.id);
+        if (selectedCourse != null&&selectedCourse!.venues!=null) {
+          for (var venue in selectedCourse!.venues!) {
             selectedVenues.add(
                 specialVenues.firstWhere((element) => element.name == venue));
           }
@@ -106,7 +103,7 @@ class _SpecialVenueSelectState extends ConsumerState<SpecialVenueSelect> {
                               getTextStyle(fontSize: 19, color: Colors.black45),
                           children: [
                             TextSpan(
-                              text: selectedCourse.title,
+                              text: selectedCourse!.title,
                               style: getTextStyle(
                                   color: primaryColor,
                                   fontSize: 22,
@@ -349,7 +346,7 @@ class _SpecialVenueSelectState extends ConsumerState<SpecialVenueSelect> {
                                                     .saveVenues(
                                                         ref: ref,
                                                         venues: selectedVenues,
-                                                        course: selectedCourse,
+                                                        course: selectedCourse!,
                                                         context: context);
                                               });
                                         }),

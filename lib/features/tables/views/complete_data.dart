@@ -9,7 +9,6 @@ import 'package:aamusted_timetable_generator/features/tables/views/componenets/t
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:screenshot/screenshot.dart';
 import '../../../config/theme/theme.dart';
 import '../provider/class_course/lecturer_course_class_pair.dart';
 import '../provider/liberay/liberal_time_pair.dart';
@@ -25,7 +24,6 @@ class CompleteDataPage extends ConsumerStatefulWidget {
 }
 
 class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
-  ScreenshotController screenshotController = ScreenshotController();
 
   @override
   Widget build(BuildContext context) {

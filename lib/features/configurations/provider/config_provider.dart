@@ -1,4 +1,5 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
+import 'package:aamusted_timetable_generator/features/database/provider/database_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../main/provider/main_provider.dart';
@@ -14,7 +15,7 @@ final configFutureProvider = FutureProvider<ConfigModel>((ref) async {
       .replaceAll(' ', '')
       .toLowerCase()
       .replaceAll('/', '-');
-  var configs = await ConfigUsecase().getConfigurations();
+  var configs = await ConfigUsecase(db: ref.watch(dbProvider)).getConfigurations();
   var config = configs
       .where((element) =>element.id == id&&
           element.year == academicYear && element.semester == academicSemester)
@@ -59,7 +60,7 @@ class ConfigurationNotifier extends StateNotifier<ConfigModel> {
         semester: () => semester,
       );
       var (success, _, message) =
-          await ConfigUsecase().addConfigurations(state);
+          await ConfigUsecase(db: ref.watch(dbProvider)).addConfigurations(state);
       if (success) {
         ref.invalidate(configFutureProvider);
         CustomDialog.dismiss();
@@ -81,7 +82,7 @@ class ConfigurationNotifier extends StateNotifier<ConfigModel> {
       CustomDialog.showLoading(message: 'Deleting configuration..');
       var existingConfig = ref.watch(configurationProvider);
       var (success, _, message) =
-          await ConfigUsecase().deleteConfigurations(existingConfig.id!);
+          await ConfigUsecase(db:ref.watch(dbProvider)).deleteConfigurations(existingConfig.id!);
       if (!success) {
         CustomDialog.dismiss();
         CustomDialog.showError(

@@ -1,9 +1,9 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/allocations/usecase/allocation_usecase.dart';
+import 'package:aamusted_timetable_generator/features/database/provider/database_provider.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_app_file/open_app_file.dart';
-
 import '../../main/provider/main_provider.dart';
 import 'classes/usecase/classes_usecase.dart';
 import 'courses/usecase/courses_usecase.dart';
@@ -42,15 +42,15 @@ class AllocationTemplateProvider extends StateNotifier<void> {
         semester: ref.watch(semesterProvider),
       );
       if (success) {
-        var classData = await ClassesUsecase().addClasses(classes);
+        var classData = await ClassesUsecase(db: ref.watch(dbProvider)).addClasses(classes);
         if (classData.isNotEmpty) {
           ref.read(classesDataProvider.notifier).addClass(classData);
         }
-        var courseData = await CoursesUseCase().addCourses(courses);
+        var courseData = await CoursesUseCase(db: ref.watch(dbProvider)).addCourses(courses);
         if (courseData.isNotEmpty) {
           ref.read(coursesDataProvider.notifier).addCourses(courseData);
         }
-        var lectData = await LecturerUseCase().addLectures(lecturers);
+        var lectData = await LecturerUseCase(db:ref.watch(dbProvider)).addLectures(lecturers);
         if (lectData.isNotEmpty) {
           ref.read(lecturersDataProvider.notifier).addLecturers(lectData);
         }
@@ -74,7 +74,7 @@ class AllocationTemplateProvider extends StateNotifier<void> {
     var academicYear = ref.watch(academicYearProvider);
     var academicSemester = ref.watch(semesterProvider);
     var (success, classes,courses,lecturers) = await AllocationUseCase()
-        .deletateAllocation(academicYear, academicSemester, department);
+        .deletateAllocation(academicYear, academicSemester, department, ref.watch(dbProvider));
     if (success) {
       ref.read(classesDataProvider.notifier).setClasses(classes);
       ref.read(coursesDataProvider.notifier).setCourses(courses);

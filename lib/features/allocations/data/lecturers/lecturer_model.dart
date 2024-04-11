@@ -1,26 +1,17 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:hive/hive.dart';
 
-part 'lecturer_model.g.dart';
 
-@HiveType(typeId: 4)
 class LecturerModel {
-  @HiveField(0)
+
   String? id;
-  @HiveField(1)
+ 
   List<String> courses;
-  @HiveField(2)
   List<Map<String,dynamic>> classes;
-  @HiveField(3)
   String? lecturerName;
-  @HiveField(4)
   String? lecturerEmail;
-  @HiveField(5)
   String? department;
-  @HiveField(6)
   String year;
-  @HiveField(7)
   String semester;
 
   LecturerModel({

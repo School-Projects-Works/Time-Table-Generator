@@ -1,37 +1,23 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:hive/hive.dart';
 
-part 'ltp_model.g.dart';
-@HiveType(typeId: 10)
+
 class LTPModel {
-  @HiveField(0)
+
   String id;
-  @HiveField(1)
   String day;
-  @HiveField(2)
   bool isAsigned;
-  @HiveField(3)
   String period;
-  @HiveField(4)
   Map<String, dynamic> periodMap;
-  @HiveField(5)
   String courseCode;
-  @HiveField(6)
   String lecturerName;
-  @HiveField(7)
   String lecturerId;
-  @HiveField(8)
   String courseTitle;
-  @HiveField(9)
   String courseId;
-  @HiveField(10)
+
   String year;
-  @HiveField(11)
   String level;
-  @HiveField(12)
   String studyMode;
-  @HiveField(13)
   String semester;
   LTPModel({
     required this.id,

@@ -1,31 +1,25 @@
 import 'dart:convert';
-
 import 'package:flutter/widgets.dart';
-import 'package:hive/hive.dart';
 
-part 'class_model.g.dart';
-
-@HiveType(typeId: 2)
 class ClassModel {
-  @HiveField(0)
   String? id;
-  @HiveField(1)
+
   String level;
-  @HiveField(2)
+
   String? studyMode;
-  @HiveField(3)
+
   String? name;
-  @HiveField(4)
+
   String? size;
-  @HiveField(5)
+
   String? hasDisability;
-  @HiveField(6)
+
   String? department;
-  @HiveField(7)
+
   String? createdAt;
-  @HiveField(8)
+
   String year;
-  @HiveField(9)
+
   String semester;
 
   ClassModel({
@@ -59,7 +53,8 @@ class ClassModel {
       studyMode: studyMode != null ? studyMode() : this.studyMode,
       name: name != null ? name() : this.name,
       size: size != null ? size() : this.size,
-      hasDisability: hasDisability != null ? hasDisability() : this.hasDisability,
+      hasDisability:
+          hasDisability != null ? hasDisability() : this.hasDisability,
       department: department != null ? department() : this.department,
       createdAt: createdAt != null ? createdAt() : this.createdAt,
       year: year ?? this.year,
@@ -99,7 +94,8 @@ class ClassModel {
 
   String toJson() => json.encode(toMap());
 
-  factory ClassModel.fromJson(String source) => ClassModel.fromMap(json.decode(source));
+  factory ClassModel.fromJson(String source) =>
+      ClassModel.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -109,31 +105,31 @@ class ClassModel {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
+
     return other is ClassModel &&
-      other.id == id &&
-      other.level == level &&
-      other.studyMode == studyMode &&
-      other.name == name &&
-      other.size == size &&
-      other.hasDisability == hasDisability &&
-      other.department == department &&
-      other.createdAt == createdAt &&
-      other.year == year &&
-      other.semester == semester;
+        other.id == id &&
+        other.level == level &&
+        other.studyMode == studyMode &&
+        other.name == name &&
+        other.size == size &&
+        other.hasDisability == hasDisability &&
+        other.department == department &&
+        other.createdAt == createdAt &&
+        other.year == year &&
+        other.semester == semester;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      level.hashCode ^
-      studyMode.hashCode ^
-      name.hashCode ^
-      size.hashCode ^
-      hasDisability.hashCode ^
-      department.hashCode ^
-      createdAt.hashCode ^
-      year.hashCode ^
-      semester.hashCode;
+        level.hashCode ^
+        studyMode.hashCode ^
+        name.hashCode ^
+        size.hashCode ^
+        hasDisability.hashCode ^
+        department.hashCode ^
+        createdAt.hashCode ^
+        year.hashCode ^
+        semester.hashCode;
   }
 }

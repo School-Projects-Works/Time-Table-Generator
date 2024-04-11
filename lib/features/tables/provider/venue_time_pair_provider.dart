@@ -36,7 +36,6 @@ class VenueTimePairProvider extends StateNotifier<List<VTPModel>> {
         }
       }
     }
-    print('Period ====== ${periods.length}');
     List<VTPModel> vtp = [];
     // combine the venues with the days and periods
     //loop through the venues and for each venue loop through the days and periods
@@ -50,16 +49,18 @@ class VenueTimePairProvider extends StateNotifier<List<VTPModel>> {
           vtp.add(VTPModel(
             isBooked: false,
             id: id,
+            startTime: period.startTime,
+            endTime: period.endTime,
+            position: period.position,
             venueName: venue.name,
             dissabledAccess: venue.disabilityAccess,
             day: day,
             period: period.period,
             venueCapacity: venue.capacity,
             venueId: venue.id,
-            periodMap: period.toMap(),
             studyMode: '',
-            year: config.year,
-            semester: config.semester,
+            year: config.year!,
+            semester: config.semester!,
             isSpecialVenue: venue.isSpecialVenue,
           ));
         }

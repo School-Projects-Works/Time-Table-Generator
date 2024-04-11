@@ -3,6 +3,7 @@ import 'package:aamusted_timetable_generator/features/main/provider/main_provide
 import 'package:aamusted_timetable_generator/features/tables/usecase/tables_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/widget/custom_dialog.dart';
+import '../../database/provider/database_provider.dart';
 import '../data/tables_model.dart';
 import 'class_course/lecturer_course_class_pair.dart';
 
@@ -49,9 +50,9 @@ class UnsavedTableProvider extends StateNotifier<List<TablesModel>> {
   }
 
   void saveTables(WidgetRef ref) async {
-    var savedTables = await TableGenUsecase().saveTables(state);
+    var savedTables = await TableGenUsecase(db: ref.watch(dbProvider)).saveTables(state);
     //save all lccp
-    ref.read(lecturerCourseClassPairProvider.notifier).saveData();
+    ref.read(lecturerCourseClassPairProvider.notifier).saveData(ref);
     if (savedTables.isNotEmpty) {
       ref.read(tableDataProvider.notifier).addTable(savedTables);
       CustomDialog.dismiss();

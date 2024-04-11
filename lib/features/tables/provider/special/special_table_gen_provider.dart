@@ -96,19 +96,44 @@ class SpecialTableGenProvider extends StateNotifier<void> {
     for (var venue in regLCCP.venues) {
       var vtp = isRegular
           ? specialVTPS.firstWhere((element) {
-              var isLibLevel = regLCCP.level==data.regLibLevel;
-              return element.venueName!.toLowerCase() == venue.toLowerCase() && element.isBooked == false&&
-                  !isLibLevel ||(isLibLevel&&element.day!= data.regLibDay&&element.period!=data.regLibPeriod!['period']);
-            }, orElse: () => VTPModel(isBooked: false))
-          : specialVTPS.firstWhere(
-              (element){
-                 var isLibLevel = regLCCP.level==data.evenLibLevel;
-                return  element.period == evenPeriod.period &&
-                 element.venueName!.toLowerCase() == venue.toLowerCase() &&
-                  element.isBooked == false &&!isLibLevel||(isLibLevel&&element.day!= data.evenLibDay);
-              }
-                 ,
-              orElse: () => VTPModel(isBooked: false));
+              var isLibLevel = regLCCP.level == data.regLibLevel;
+              return element.venueName!.toLowerCase() == venue.toLowerCase() &&
+                      element.isBooked == false &&
+                      !isLibLevel ||
+                  (isLibLevel &&
+                      element.day != data.regLibDay &&
+                      element.period != data.regLibPeriod!['period']);
+            },
+              orElse: () => VTPModel(
+                    isBooked: false,
+                    period: '',
+                    day: '',
+                    startTime: '',
+                    endTime: '',
+                    studyMode: '',
+                    year: '',
+                    semester: '',
+                    position: 0,
+                  ))
+          : specialVTPS.firstWhere((element) {
+              var isLibLevel = regLCCP.level == data.evenLibLevel;
+              return element.period == evenPeriod.period &&
+                      element.venueName!.toLowerCase() == venue.toLowerCase() &&
+                      element.isBooked == false &&
+                      !isLibLevel ||
+                  (isLibLevel && element.day != data.evenLibDay);
+            },
+              orElse: () => VTPModel(
+                    isBooked: false,
+                    period: '',
+                    day: '',
+                    startTime: '',
+                    endTime: '',
+                    studyMode: '',
+                    year: '',
+                    semester: '',
+                    position: 0,
+                  ));
       if (vtp.venueId != null) {
         venues.add(vtp);
       }
@@ -144,14 +169,16 @@ class SpecialTableGenProvider extends StateNotifier<void> {
     TablesModel table = TablesModel(
       id: id,
       year: config.year,
-      day: vtp.day!,
-      period: vtp.period!,
+      day: vtp.day,
+      position: vtp.position,
+      period: vtp.period,
       studyMode: lccp.studyMode,
-      periodMap: vtp.periodMap,
       courseCode: lccp.courseCode,
       courseId: lccp.courseId,
       lecturerName: lccp.lecturerName,
       lecturerEmail: '',
+      startTime: vtp.startTime,
+      endTime: vtp.endTime,
       courseTitle: lccp.courseName,
       creditHours: '3',
       specialVenues: [],

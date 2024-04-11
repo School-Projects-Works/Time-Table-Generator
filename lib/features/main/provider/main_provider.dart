@@ -2,6 +2,7 @@ import 'package:aamusted_timetable_generator/features/allocations/data/classes/c
 import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/provider/classes/usecase/classes_usecase.dart';
 import 'package:aamusted_timetable_generator/features/allocations/provider/lecturer/usecase/lecturer_usecase.dart';
+import 'package:aamusted_timetable_generator/features/database/provider/database_provider.dart';
 import 'package:aamusted_timetable_generator/features/liberal/usecase/liberal_usecase.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/tables_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/usecase/tables_usecase.dart';
@@ -25,47 +26,49 @@ final dbDataFutureProvider = FutureProvider<void>((ref) async {
 
   //? get classes from db
   var classes =
-      await ClassesUsecase().getClasses(academicYear, academicSemester);
+      await ClassesUsecase(db: ref.watch(dbProvider)).getClasses(academicYear, academicSemester);
   //order classes by class name
   classes.sort((a, b) => a.name!.compareTo(b.name!));
   ref.read(classesDataProvider.notifier).setClasses(classes);
   //? get courses from db
   var courses =
-      await CoursesUseCase().getCourses(academicYear, academicSemester);
+      await CoursesUseCase(db: ref.watch(dbProvider)).getCourses(academicYear, academicSemester);
   //order courses by course name
-  courses.sort((a, b) => a.code!.compareTo(b.code!));
+  courses.sort((a, b) => a.code.compareTo(b.code));
   ref.read(coursesDataProvider.notifier).setCourses(courses);
   //? get lecturers from db
   var lecturers =
-      await LecturerUseCase().getLectures(academicYear, academicSemester);
+      await LecturerUseCase(db: ref.watch(dbProvider)).getLectures(academicYear, academicSemester);
   //order lecturers by lecturer name
   lecturers.sort((a, b) => a.lecturerName!.compareTo(b.lecturerName!));
   ref.read(lecturersDataProvider.notifier).setLecturers(lecturers);
 
   //? get liberal courses from
-  var lib = await LiberalUseCase()
+  var lib = await LiberalUseCase(db: ref.watch(dbProvider))
       .getLiberals(year: academicYear, sem: academicSemester);
   // oder lib by course name
   lib.sort((a, b) => a.title!.compareTo(b.title!));
   ref.read(liberalsDataProvider.notifier).setLiberals(lib);
   //? get venue from db
-  var venues = await VenueUseCase().getVenues();
+  var venues = await VenueUseCase(db: ref.watch(dbProvider)).getVenues();
 //order venues by venue name
   venues.sort((a, b) => a.name!.compareTo(b.name!));
   ref.read(venuesDataProvider.notifier).setVenues(venues);
 
   //?get tables from db
   var tables =
-      await TableGenUsecase().getTables(academicYear, academicSemester);
+      await TableGenUsecase(
+        db: ref.watch(dbProvider),
+      ).getTables(academicYear, academicSemester);
   ref.read(tableDataProvider.notifier).setTables(tables);
 
   // get liberal course time pair ltp
-  var libLtp = await LiberalTimePairService()
+  var libLtp = await LiberalTimePairService(db: ref.watch(dbProvider))
       .getLTP(year: academicYear, semester: academicSemester);
   ref.read(liberalTimePairProvider.notifier).setLTP(libLtp);
 
   //? get all lccp
-  var lccp = await LCCPServices()
+  var lccp = await LCCPServices(db:ref.watch(dbProvider))
       .getData(year: academicYear, semester: academicSemester);
   ref.read(lecturerCourseClassPairProvider.notifier).setLCCP(lccp);
 });
@@ -229,7 +232,6 @@ class TableDataProvider extends StateNotifier<List<TablesModel>> {
 
   void setTables(List<TablesModel> tables) {
     state = tables;
-    print('tables: ${state.length}');
   }
 
   void addTable(List<TablesModel> tables) {

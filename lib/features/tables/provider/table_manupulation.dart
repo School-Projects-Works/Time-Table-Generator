@@ -3,8 +3,8 @@ import 'package:aamusted_timetable_generator/features/main/provider/main_provide
 import 'package:aamusted_timetable_generator/features/tables/usecase/tables_usecase.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:aamusted_timetable_generator/features/tables/data/tables_model.dart';
+import '../../database/provider/database_provider.dart';
 
 class TablePairModel {
   TablesModel? table1;
@@ -58,7 +58,7 @@ class TablePairProvider extends StateNotifier<TablePairModel> {
         day: table1.day,
         venueId: table1.venueId,
       );
-      var (data1, data2, message) = await TableGenUsecase()
+      var (data1, data2, message) = await TableGenUsecase(db: ref.watch(dbProvider))
           .swapTables(table1: newTable1, table2: newTable2);
       if (data1 != null && data2 != null) {
         ref.read(tableDataProvider.notifier).updateTable([data1, data2]);
@@ -98,7 +98,7 @@ class TablePairProvider extends StateNotifier<TablePairModel> {
      CustomDialog.dismiss();
     CustomDialog.showLoading(message: 'Changing lecturer...');
     var newTable = table!.copyWith(lecturerId: id, lecturerName: name);
-    var (data, message) = await TableGenUsecase().updateItem(newTable);
+    var (data, message) = await TableGenUsecase(db: ref.watch(dbProvider)).updateItem(newTable);
     if (data != null) {
       ref.read(tableDataProvider.notifier).updateTable([data]);
      // form.currentState!.reset();
