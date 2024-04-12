@@ -19,40 +19,40 @@ class AllocationUseCase extends AllocationRepo {
   Future<(bool, String?)> downloadTemplate() async {
     try {
       CustomDialog.showLoading(message: 'Downloading template...');
-      final Workbook workbook = Workbook();
-      ExcelSettings(
-              book: workbook,
-              sheetName: 'Regular-Classes',
-              columnCount: classHeader.length,
-              headings: classHeader,
-              sheetAt: 0,
-              instructions: classInstructions)
-          .sheetSettings();
-      ExcelSettings(
-              book: workbook,
-              sheetName: 'Regular-Allocations',
-              columnCount: courseAllocationHeader.length,
-              headings: courseAllocationHeader,
-              sheetAt: 1,
-              instructions: courseInstructions)
-          .sheetSettings();
-      ExcelSettings(
-              book: workbook,
-              sheetName: 'Evening-Classes',
-              columnCount: classHeader.length,
-              headings: classHeader,
-              sheetAt: 2,
-              instructions: classInstructions)
-          .sheetSettings();
-      ExcelSettings(
-              book: workbook,
-              sheetName: 'Evening-Allocations',
-              columnCount: courseAllocationHeader.length,
-              headings: courseAllocationHeader,
-              sheetAt: 3,
-              instructions: courseInstructions)
-          .sheetSettings();
-
+      //final Workbook workbook = Workbook();
+      // ExcelSettings(
+      //         book: workbook,
+      //         sheetName: 'Regular-Classes',
+      //         columnCount: classHeader.length,
+      //         headings: classHeader,
+      //         sheetAt: 0,
+      //         instructions: classInstructions)
+      //     .sheetSettings();
+      // ExcelSettings(
+      //         book: workbook,
+      //         sheetName: 'Regular-Allocations',
+      //         columnCount: courseAllocationHeader.length,
+      //         headings: courseAllocationHeader,
+      //         sheetAt: 1,
+      //         instructions: courseInstructions)
+      //     .sheetSettings();
+      // ExcelSettings(
+      //         book: workbook,
+      //         sheetName: 'Evening-Classes',
+      //         columnCount: classHeader.length,
+      //         headings: classHeader,
+      //         sheetAt: 2,
+      //         instructions: classInstructions)
+      //     .sheetSettings();
+      // ExcelSettings(
+      //         book: workbook,
+      //         sheetName: 'Evening-Allocations',
+      //         columnCount: courseAllocationHeader.length,
+      //         headings: courseAllocationHeader,
+      //         sheetAt: 3,
+      //         instructions: courseInstructions)
+      //     .sheetSettings();
+      var workbook = ExcelSettings.generateAllocationTem();
       Directory directory = await getApplicationDocumentsDirectory();
       String path = '${directory.path}/AllocationTemplate.xlsx';
       File file = File(path);

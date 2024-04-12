@@ -21,7 +21,6 @@ final List<String> liberalHeader = [
   'Course Title',
   'Lecturer ID',
   'Lecturer Name',
-  'Lecturer Free Day',
 ];
 final List<String> venueHeader = [
   'Venue',

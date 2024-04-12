@@ -37,23 +37,7 @@ class LiberalUseCase extends LiberalRepo {
   @override
   Future<(bool, String?)> downloadTemplate() async {
     try {
-      final Workbook workbook = Workbook();
-      ExcelSettings(
-              book: workbook,
-              sheetName: 'Regular-Liberal',
-              columnCount: liberalHeader.length,
-              headings: liberalHeader,
-              sheetAt: 0,
-              instructions: liberalInstructions)
-          .sheetSettings();
-      ExcelSettings(
-              book: workbook,
-              sheetName: 'Evening-Liberal',
-              columnCount: liberalHeader.length,
-              headings: liberalHeader,
-              sheetAt: 1,
-              instructions: liberalInstructions)
-          .sheetSettings();
+     var workbook = ExcelSettings.generateLiberalTem();
       Directory directory = await getApplicationDocumentsDirectory();
       String path = '${directory.path}/Liberal_Courses_template.xlsx';
       File file = File(path);

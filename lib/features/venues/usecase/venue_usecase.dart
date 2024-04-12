@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:aamusted_timetable_generator/core/data/constants/excel_headings.dart';
 import 'package:aamusted_timetable_generator/core/functions/excel_settings.dart';
 import 'package:aamusted_timetable_generator/features/venues/data/venue_model.dart';
@@ -7,7 +6,6 @@ import 'package:aamusted_timetable_generator/features/venues/repo/venue_repo.dar
 import 'package:excel/excel.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import '../../../core/data/constants/instructions.dart';
 import '../../../utils/app_utils.dart';
 
@@ -68,15 +66,7 @@ class VenueUseCase extends VenueRepo {
   @override
   Future<(bool, String?)> downloadTemplate() async {
     try {
-      final Workbook workbook = Workbook();
-      ExcelSettings(
-              book: workbook,
-              sheetName: 'Venues',
-              columnCount: venueHeader.length,
-              headings: venueHeader,
-              sheetAt: 0,
-              instructions: venueInstructions)
-          .sheetSettings();
+      var workbook = ExcelSettings.generateVenueTem();
 
       Directory directory = await getApplicationDocumentsDirectory();
       String path = '${directory.path}/venues_template.xlsx';

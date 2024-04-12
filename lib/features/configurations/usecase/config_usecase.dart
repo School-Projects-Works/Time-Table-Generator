@@ -1,5 +1,4 @@
 import 'package:mongo_dart/mongo_dart.dart';
-
 import 'package:aamusted_timetable_generator/features/configurations/data/config/config_model.dart';
 import 'package:aamusted_timetable_generator/features/configurations/repo/config_repo.dart';
 
