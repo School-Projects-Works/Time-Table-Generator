@@ -25,20 +25,20 @@ final dbDataFutureProvider = FutureProvider<void>((ref) async {
   String academicSemester = ref.watch(semesterProvider);
 
   //? get classes from db
-  var classes =
-      await ClassesUsecase(db: ref.watch(dbProvider)).getClasses(academicYear, academicSemester);
+  var classes = await ClassesUsecase(db: ref.watch(dbProvider))
+      .getClasses(academicYear, academicSemester);
   //order classes by class name
   classes.sort((a, b) => a.name!.compareTo(b.name!));
   ref.read(classesDataProvider.notifier).setClasses(classes);
   //? get courses from db
-  var courses =
-      await CoursesUseCase(db: ref.watch(dbProvider)).getCourses(academicYear, academicSemester);
+  var courses = await CoursesUseCase(db: ref.watch(dbProvider))
+      .getCourses(academicYear, academicSemester);
   //order courses by course name
   courses.sort((a, b) => a.code.compareTo(b.code));
   ref.read(coursesDataProvider.notifier).setCourses(courses);
   //? get lecturers from db
-  var lecturers =
-      await LecturerUseCase(db: ref.watch(dbProvider)).getLectures(academicYear, academicSemester);
+  var lecturers = await LecturerUseCase(db: ref.watch(dbProvider))
+      .getLectures(academicYear, academicSemester);
   //order lecturers by lecturer name
   lecturers.sort((a, b) => a.lecturerName!.compareTo(b.lecturerName!));
   ref.read(lecturersDataProvider.notifier).setLecturers(lecturers);
@@ -56,10 +56,9 @@ final dbDataFutureProvider = FutureProvider<void>((ref) async {
   ref.read(venuesDataProvider.notifier).setVenues(venues);
 
   //?get tables from db
-  var tables =
-      await TableGenUsecase(
-        db: ref.watch(dbProvider),
-      ).getTables(academicYear, academicSemester);
+  var tables = await TableGenUsecase(
+    db: ref.watch(dbProvider),
+  ).getTables(academicYear, academicSemester);
   ref.read(tableDataProvider.notifier).setTables(tables);
 
   // get liberal course time pair ltp
@@ -68,7 +67,7 @@ final dbDataFutureProvider = FutureProvider<void>((ref) async {
   ref.read(liberalTimePairProvider.notifier).setLTP(libLtp);
 
   //? get all lccp
-  var lccp = await LCCPServices(db:ref.watch(dbProvider))
+  var lccp = await LCCPServices(db: ref.watch(dbProvider))
       .getData(year: academicYear, semester: academicSemester);
   ref.read(lecturerCourseClassPairProvider.notifier).setLCCP(lccp);
 });
@@ -253,3 +252,14 @@ class TableDataProvider extends StateNotifier<List<TablesModel>> {
     }).toList();
   }
 }
+
+final cuurentTimeStreamProvider = StreamProvider<String>((ref) {
+  var currentTime = Stream<DateTime>.periodic(const Duration(seconds: 1), (x) {
+    return DateTime.now();
+  });
+  //time format with am and pm
+  var currentTimeAmPm = currentTime.map((event) {
+    return '${event.hour}:${event.minute}';
+  });
+  return currentTimeAmPm;
+});

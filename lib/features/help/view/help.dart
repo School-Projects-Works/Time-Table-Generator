@@ -15,7 +15,10 @@ class HelpPage extends ConsumerStatefulWidget {
 class _HelpPageState extends ConsumerState<HelpPage> {
   late final player = Player();
   // Create a [VideoController] to handle video output from [Player].
-  late final controller = VideoController(player);
+  late final controller = VideoController(
+    player,
+    //set autoplay to false
+  );
 
   @override
   void initState() {
@@ -44,15 +47,16 @@ class _HelpPageState extends ConsumerState<HelpPage> {
                         shrinkWrap: true,
                         styleSheet: MarkdownStyleSheet(
                           p: getTextStyle(
-                            color: Colors.black45,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
+                            color: Colors.black54,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
                           ),
                           h2: getTextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
                           ),
+                          
                         ),
                       ),
                     ),
@@ -63,7 +67,12 @@ class _HelpPageState extends ConsumerState<HelpPage> {
                           width: 600,
                           height: 450,
                           // Use [Video] widget to display video output.
-                          child: Video(controller: controller),
+                          child: Video(
+                            controller: controller,
+                            fit: BoxFit.fill,
+                            width: 600,
+                            height: 450,
+                          ),
                         ),
                         const SizedBox(height: 20),
                         //add contact details if futher help is needed

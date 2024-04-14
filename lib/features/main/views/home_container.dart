@@ -1,11 +1,13 @@
+import 'package:aamusted_timetable_generator/config/theme/theme.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/main/views/components/window_buttons.dart';
-import 'package:aamusted_timetable_generator/generated/assets.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluent_ui;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:window_manager/window_manager.dart';
 import '../../../core/data/constants/constant_data.dart';
 import '../../database/provider/database_provider.dart';
@@ -175,8 +177,96 @@ class _MyHomePageState extends ConsumerState<MainPage> with WindowListener {
                     compactWidth: 60, openWidth: 150),
                 selected: SideBar(context: context).calculateSelectedIndex(),
                 header: SizedBox(
-                  height: 120,
-                  child: Image.asset(Assets.assetsLogoLight),
+                  height: 150,
+                  child: fluent_ui.Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                              color: Colors.indigo.shade500, width: 3),
+                        ),
+                        child: Container(
+                          height: 50,
+                          width: 200,
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            color: Colors.indigo.shade900,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: ref.watch(cuurentTimeStreamProvider).when(
+                              data: (data) {
+                                return Text(data,
+                                    style: getTextStyle(
+                                        fontSize: 35, color: Colors.white));
+                              },
+                              error: (error, stack) {
+                                return Text(
+                                  'Loading..',
+                                  style: getTextStyle(
+                                      fontSize: 10, color: Colors.white),
+                                );
+                              },
+                              loading: () => const fluent_ui.SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: fluent_ui.ProgressRing(
+                                    activeColor: Colors.white,
+                                  ))),
+                        ),
+                      ),
+                      Container(
+                        height: 15,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Colors.indigo.shade900,
+                          borderRadius: BorderRadius.circular(2),
+                          //border: Border.all(color: primaryColor, width: 2),
+                        ),
+                      ),
+                      Transform.translate(
+                        offset: const Offset(0, -10),
+                        child: fluent_ui.Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Transform.rotate(
+                              angle: 0.5,
+                              child: Container(
+                                height: 40,
+                                width: 10,
+                                decoration: BoxDecoration(
+                                  color: Colors.indigo.shade900,
+                                  borderRadius: BorderRadius.circular(5),
+                                  //border: Border.all(color: primaryColor, width: 2),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 40,
+                            ),
+                            Transform.rotate(
+                              angle: -0.5,
+                              child: Container(
+                                height: 40,
+                                width: 10,
+                                decoration: BoxDecoration(
+                                  color: Colors.indigo.shade900,
+                                  borderRadius: BorderRadius.circular(5),
+                                  //border: Border.all(color: primaryColor, width: 2),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 indicator: const fluent_ui.StickyNavigationIndicator(),
                 items: SideBar(context: context).getItems(),
