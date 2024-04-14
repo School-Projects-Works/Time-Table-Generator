@@ -21,29 +21,31 @@ dependencies:
   font_awesome_flutter: ^10.7.0
   intl: ^0.18.1
   open_app_file: ^4.0.2
-  syncfusion_flutter_xlsio: ^25.1.35
+  syncfusion_flutter_xlsio: ^25.1.39
   http: ^1.2.1
-  url_launcher: ^6.2.5
+  url_launcher: ^6.2.6
   string_similarity: ^2.0.0
-  syncfusion_flutter_pdf: ^25.1.35
-  fluent_ui: ^4.8.6
-  go_router: ^13.2.1
-  # firedart:
-  #   git:
-  #     url: https://github.com/BST-Forked-Projects/firedart.git
+  syncfusion_flutter_pdf: ^25.1.39
+  fluent_ui: ^4.8.7
+  go_router: ^13.2.4
+ 
   pdf: ^3.10.8
   google_fonts: ^6.2.1
   file_picker: ^8.0.0+1
   riverpod: ^2.5.1
   flutter_riverpod: ^2.5.1
-  fluttertoast: ^8.2.4
+  fluttertoast: ^8.2.5
   excel: ^4.0.3
-  path_provider: ^2.1.2
-  data_table_2: ^2.5.11
+  path_provider: ^2.1.3
+  # data_table_2: ^2.5.12
   collection: ^1.18.0
   # screenshot: ^2.3.0
   badges: ^3.1.2
   mongo_dart: ^0.10.1
+  flutter_markdown: ^0.6.22+1
+  media_kit: ^1.1.10+1                             # Primary package.
+  media_kit_video: ^1.2.4
+  media_kit_libs_video: ^1.0.4 
 
 
  
@@ -54,7 +56,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^2.0.3
+  flutter_lints: ^3.0.2
   hive_generator: ^2.0.1
   build_runner: any
 

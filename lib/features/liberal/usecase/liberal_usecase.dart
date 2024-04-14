@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:aamusted_timetable_generator/core/data/constants/instructions.dart';
+import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/liberal/data/liberal/liberal_model.dart';
 import 'package:aamusted_timetable_generator/features/liberal/repo/liberal_repo.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:excel/excel.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
@@ -37,22 +39,26 @@ class LiberalUseCase extends LiberalRepo {
   @override
   Future<(bool, String?)> downloadTemplate() async {
     try {
-     var workbook = ExcelSettings.generateLiberalTem();
-      Directory directory = await getApplicationDocumentsDirectory();
-      String path = '${directory.path}/Liberal_Courses_template.xlsx';
-      File file = File(path);
-      if (!file.existsSync()) {
-        file.createSync();
+      CustomDialog.showLoading(message: 'Downloading template...');
+      var workbook = ExcelSettings.generateLiberalTem();
+      String? outputFile = await FilePicker.platform.saveFile(
+        dialogTitle: 'Please select an output file:',
+        fileName: 'liberal_template.xlsx',
+      );
+      CustomDialog.dismiss();
+      CustomDialog.showText(
+        text: 'Saving template... Please wait',
+      );
+      //delay to show the saving text
+      await Future.delayed(const Duration(seconds: 1));
+      if (outputFile == null) {
+        CustomDialog.dismiss();
+        return Future.value((false, 'Unable to download template'));
       } else {
-        file.deleteSync();
-        file.createSync();
-      }
-      file.writeAsBytesSync(workbook.saveAsStream());
-      // workbook.dispose();
-      if (file.existsSync()) {
+        var file = File(outputFile);
+        await file.writeAsBytes(workbook.saveAsStream());
+        CustomDialog.dismiss();
         return Future.value((true, file.path));
-      } else {
-        return Future.value((false, 'Error downloading template'));
       }
     } catch (e) {
       return Future.value((false, e.toString()));

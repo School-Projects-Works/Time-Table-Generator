@@ -65,6 +65,42 @@ class SideBar {
           }
         },
       ),
+      PaneItem(
+        key: const ValueKey('space1'),
+        icon: const SizedBox.shrink(),
+        enabled: false,
+        body: const SizedBox.shrink(),
+      ),
+      //add a divider
+      PaneItemSeparator(thickness: 4),
+      PaneItem(
+        key: const ValueKey('space2'),
+        icon: const SizedBox.shrink(),
+        enabled: false,
+        body: const SizedBox.shrink(),
+      ),
+      PaneItem(
+        key: const ValueKey('/help'),
+        icon: const Icon(FluentIcons.help),
+        title: const Text('Help'),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != '/help') {
+            context.go('/help');
+          }
+        },
+      ),
+      PaneItem(
+        key: const ValueKey('/about'),
+        icon: const Icon(FluentIcons.user_gauge),
+        title: const Text('About'),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != '/about') {
+            context.go('/about');
+          }
+        },
+      ),
     ];
   }
 

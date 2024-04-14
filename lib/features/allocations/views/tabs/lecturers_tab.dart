@@ -3,7 +3,6 @@ import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../config/theme/theme.dart';
-import '../../../../core/widget/custom_dialog.dart';
 import '../../../../core/widget/custom_input.dart';
 import '../../../../core/widget/table/data/models/custom_table_columns_model.dart';
 import '../../../../core/widget/table/data/models/custom_table_rows_model.dart';
@@ -103,15 +102,7 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
               item.department ?? '',
               style: tableTextStyle,
             ),
-          ),
-          CustomTableColumn(
-            title: 'Email',
-            width: 200,
-            cellBuilder: (item) => Text(
-              item.lecturerEmail ?? '',
-              style: tableTextStyle,
-            ),
-          ),
+          ),       
           CustomTableColumn(
             title: 'Courses',
             width: 200,
@@ -121,10 +112,10 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
             ),
           ),
           CustomTableColumn(
-            title: 'Classes',
+            title: 'Free Day',
             width: 200,
             cellBuilder: (item) => Text(
-              item.classes.map((e) => e['name']).join(','),
+              item.freeDay,
               style: tableTextStyle,
             ),
           ),

@@ -35,8 +35,8 @@ class LecturerCoursePairProvider extends StateNotifier<List<LCModel>> {
               lecturerId: lecturer.id!,
               lecturerName: lecturer.lecturerName!,
               lecturer: lecturer.toMap(),
-              courseId: course,
-              classes: lecturer.classes.map((e) => e['id'].toString()).toList(),
+              courseId: '',
+              classes: [],
               courseCode: courseObject.code!,
               requireSpecialVenue: courseObject.specialVenue != null &&
                   courseObject.specialVenue!.isNotEmpty &&

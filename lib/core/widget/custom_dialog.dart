@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 import '../../config/theme/theme.dart';
 
 enum ToastType { success, error, warning, info }
@@ -78,11 +79,10 @@ class CustomDialog {
                               Theme.of(context).textTheme.bodyLarge!.color,
                         ),
                         onPressed: () => SmartDialog.dismiss(),
-                        child: Center(
-                            child: Text(
+                        child: Text(
                           'Okey',
                           style: getTextStyle(fontSize: 14),
-                        )),
+                        ),
                       ),
                     )
                   ],
@@ -152,11 +152,10 @@ class CustomDialog {
                               Theme.of(_).textTheme.bodyLarge!.color,
                         ),
                         onPressed: () => SmartDialog.dismiss(),
-                        child: Center(
-                            child: Text(
+                        child: Text(
                           'Okey',
                           style: getTextStyle(fontSize: 14),
-                        )),
+                        ),
                       ),
                     )
                   ],
@@ -245,7 +244,7 @@ class CustomDialog {
                                   SmartDialog.dismiss();
                                 }
                               },
-                              child: Center(child: Text(buttonText)),
+                              child: Text(buttonText),
                             ),
                           ),
                         ],
@@ -273,8 +272,7 @@ class CustomDialog {
                                   SmartDialog.dismiss();
                                 }
                               },
-                              child:
-                                  Center(child: Text(buttonText2 ?? 'Cancel')),
+                              child: Text(buttonText2 ?? 'Cancel'),
                             ),
                           ),
                         ],
@@ -308,6 +306,38 @@ class CustomDialog {
           width: width ?? 900,
           height: height,
           child: ui,
+        );
+      },
+    );
+  }
+
+  static Future<void> showText({required String text}) async {
+    SmartDialog.show(
+      alignment: Alignment.center,
+      animationType: SmartAnimationType.centerScale_otherSlide,
+      clickMaskDismiss: false,
+      builder: (_) {
+        return Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: const Offset(0, 3), // changes position of shadow
+              ),
+            ],
+          ),
+          width: 300,
+          height: 120,
+          child: Text(
+            text,
+            style: getTextStyle(color: Colors.white),
+          ),
         );
       },
     );

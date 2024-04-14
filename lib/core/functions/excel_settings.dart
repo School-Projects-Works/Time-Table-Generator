@@ -109,8 +109,7 @@ class ExcelSettings {
       ..cellStyle.locked = false;
     //now set a drop down list for the department
     final DataValidation listValidation = regClassSheet
-        .getRangeByName(
-            '${listOfAlpha[1]}${classInstructions.length + 2}:${listOfAlpha[columnCount - 1]}${classInstructions.length + 2}')
+        .getRangeByName('${listOfAlpha[1]}${classInstructions.length + 2}')
         .dataValidation;
     listValidation.listOfValues = [
       'Dep 01',
@@ -528,7 +527,7 @@ class ExcelSettings {
     return workbook;
   }
 
-  static Workbook generateVenueTem(){
+  static Workbook generateVenueTem() {
     final Workbook workbook = Workbook();
     var headers = venueHeader;
     var columnCount = venueHeader.length;
@@ -587,5 +586,4 @@ class ExcelSettings {
     }
     return workbook;
   }
-  
 }

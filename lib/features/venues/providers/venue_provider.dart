@@ -180,12 +180,10 @@ class VenueDataImport extends StateNotifier<void> {
   }
 
   void downloadTemplate(WidgetRef ref) async {
-    CustomDialog.showLoading(message: 'Downloading Venues Template....');
     var (success, message) = await VenueUseCase(db: ref.watch(dbProvider)).downloadTemplate();
     if (success) {
-      CustomDialog.dismiss();
-      //open file
       if (message != null) {
+        CustomDialog.showSuccess(message: 'Template downloaded successfully');
         await OpenAppFile.open(message);
       }
     } else {

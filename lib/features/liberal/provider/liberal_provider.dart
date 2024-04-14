@@ -155,14 +155,15 @@ class LiberalDataImport extends StateNotifier<void> {
     //open file picker
     String? pickedFilePath = await AppUtils.pickExcelFIle();
     if (pickedFilePath != null) {
-      var (success, message, liberal) = await LiberalUseCase(db: ref.watch(dbProvider))
-          .importLiberal(
+      var (success, message, liberal) =
+          await LiberalUseCase(db: ref.watch(dbProvider)).importLiberal(
               path: pickedFilePath,
               academicYear: academicYear,
               semester: academicSemester);
       if (success) {
         //save to db
-        var (success, message) = await LiberalUseCase(db: ref.watch(dbProvider)).addLiberals(liberal!);
+        var (success, message) = await LiberalUseCase(db: ref.watch(dbProvider))
+            .addLiberals(liberal!);
         if (success) {
           ref.read(liberalsDataProvider.notifier).addLiberal(liberal);
         }
@@ -178,16 +179,13 @@ class LiberalDataImport extends StateNotifier<void> {
   }
 
   void downloadTemplate(WidgetRef ref) async {
-    CustomDialog.showLoading(message: 'Downloading template...');
-    var (success, message) = await LiberalUseCase(db: ref.watch(dbProvider)).downloadTemplate();
+    var (success, message) =
+        await LiberalUseCase(db: ref.watch(dbProvider)).downloadTemplate();
     if (success) {
-      CustomDialog.dismiss();
       //open file
-      if (message != null) {
-        await OpenAppFile.open(message);
-      }
+      CustomDialog.showSuccess(message: 'Template downloaded successfully ');
+      await OpenAppFile.open(message!);
     } else {
-      CustomDialog.dismiss();
       CustomDialog.showError(message: message!);
     }
   }
@@ -197,16 +195,15 @@ class LiberalDataImport extends StateNotifier<void> {
     CustomDialog.showLoading(message: 'Deleting all liberal courses...');
     var academicYear = ref.watch(academicYearProvider);
     var academicSemester = ref.watch(semesterProvider);
-       var (success, message) = await LiberalUseCase(db: ref.watch(dbProvider)).deleteLiberals(
-          academicYear: academicYear, semester: academicSemester);
-      if (success) {
-        ref.read(liberalsDataProvider.notifier).setLiberals([]);
-        CustomDialog.dismiss();
-        CustomDialog.showSuccess(message: message);
-      } else {
-        CustomDialog.dismiss();
-        CustomDialog.showError(message: message);
-      }
-   
+    var (success, message) = await LiberalUseCase(db: ref.watch(dbProvider))
+        .deleteLiberals(academicYear: academicYear, semester: academicSemester);
+    if (success) {
+      ref.read(liberalsDataProvider.notifier).setLiberals([]);
+      CustomDialog.dismiss();
+      CustomDialog.showSuccess(message: message);
+    } else {
+      CustomDialog.dismiss();
+      CustomDialog.showError(message: message);
+    }
   }
 }

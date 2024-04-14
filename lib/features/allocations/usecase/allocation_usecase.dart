@@ -7,9 +7,8 @@ import 'package:aamusted_timetable_generator/features/allocations/data/lecturers
 import 'package:aamusted_timetable_generator/features/allocations/repo/allocation_repo.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:excel/excel.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import '../../../core/data/constants/excel_headings.dart';
 import '../../../core/data/constants/instructions.dart';
 import '../../../core/functions/excel_settings.dart';
@@ -19,60 +18,36 @@ class AllocationUseCase extends AllocationRepo {
   Future<(bool, String?)> downloadTemplate() async {
     try {
       CustomDialog.showLoading(message: 'Downloading template...');
-      //final Workbook workbook = Workbook();
-      // ExcelSettings(
-      //         book: workbook,
-      //         sheetName: 'Regular-Classes',
-      //         columnCount: classHeader.length,
-      //         headings: classHeader,
-      //         sheetAt: 0,
-      //         instructions: classInstructions)
-      //     .sheetSettings();
-      // ExcelSettings(
-      //         book: workbook,
-      //         sheetName: 'Regular-Allocations',
-      //         columnCount: courseAllocationHeader.length,
-      //         headings: courseAllocationHeader,
-      //         sheetAt: 1,
-      //         instructions: courseInstructions)
-      //     .sheetSettings();
-      // ExcelSettings(
-      //         book: workbook,
-      //         sheetName: 'Evening-Classes',
-      //         columnCount: classHeader.length,
-      //         headings: classHeader,
-      //         sheetAt: 2,
-      //         instructions: classInstructions)
-      //     .sheetSettings();
-      // ExcelSettings(
-      //         book: workbook,
-      //         sheetName: 'Evening-Allocations',
-      //         columnCount: courseAllocationHeader.length,
-      //         headings: courseAllocationHeader,
-      //         sheetAt: 3,
-      //         instructions: courseInstructions)
-      //     .sheetSettings();
       var workbook = ExcelSettings.generateAllocationTem();
-      Directory directory = await getApplicationDocumentsDirectory();
-      String path = '${directory.path}/AllocationTemplate.xlsx';
-      File file = File(path);
-      if (!file.existsSync()) {
-        file.createSync();
-      } else {
-        file.deleteSync();
-        file.createSync();
-      }
-      file.writeAsBytesSync(workbook.saveAsStream());
-      // workbook.dispose();
+
+      String? outputFile = await FilePicker.platform.saveFile(
+        dialogTitle: 'Please select an output file:',
+        fileName: 'AllocationTemplate.xlsx',
+      );
       CustomDialog.dismiss();
-      if (file.existsSync()) {
-        return Future.value((true, file.path));
+      CustomDialog.showText(
+        text: 'Saving template... Please wait',
+      );
+      //delay to show the saving text
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (outputFile == null) {
+        CustomDialog.dismiss();
+        return Future.value((false, 'Unable to download template'));
       } else {
-        return Future.value((false, 'Error downloading template'));
+        var file = File(outputFile);
+        await file.writeAsBytes(workbook.saveAsStream());
+        CustomDialog.dismiss();
+        if (file.existsSync()) {
+          return Future.value((true, file.path));
+        } else {
+          return Future.value((false, 'Error downloading template'));
+        }
       }
     } catch (e) {
       CustomDialog.dismiss();
-      return Future.value((false, e.toString()));
+      return Future.value(
+          (false, 'Error downloading template, Check file is already Opened'));
     }
   }
 
@@ -267,17 +242,14 @@ class AllocationUseCase extends AllocationRepo {
 
         // Lecturers extraction
         LecturerModel lecturer = LecturerModel(
-          courses: [courseId],
-          classes: [],
-          id: lecturerId,
-          lecturerName: lecturerName,
-          department: department,
-          semester: semester,
-          year: year,
-          lecturerEmail: row[7] != null && row[7]!.value != null
-              ? row[7]!.value.toString()
-              : '',
-        );
+            courses: [],
+            classes: [],
+            id: lecturerId,
+            lecturerName: lecturerName,
+            department: department,
+            semester: semester,
+            year: year,
+            freeDay: '');
 
         var level = row[2]!.value.toString().trim().replaceAll(' ', '');
         var lecturerClass = row[8] != null && row[8]!.value != null
@@ -295,16 +267,16 @@ class AllocationUseCase extends AllocationRepo {
                 .firstOrNull;
 
             if (theClass != null) {
-              lecturer.classes.add(theClass.toMap());
+              lecturer.classes.add('');
             }
           }
         } else {
           // add all classes with same level to lecturer
-          lecturer.classes = classes
-              .where((element) =>
-                  element.level.trim().replaceAll(' ', '') == level)
-              .map((e) => e.toMap())
-              .toList();
+          // lecturer.classes = classes
+          //     .where((element) =>
+          //         element.level.trim().replaceAll(' ', '') == level)
+          //     .map((e) => e.toMap())
+          //     .toList();
         }
 
         // Check if the lecturer already exists in the list of lecturers
@@ -462,16 +434,14 @@ class AllocationUseCase extends AllocationRepo {
           var lecturerName = row[6]!.value.toString();
           //? Lecturers extraction.....................................................
           LecturerModel lecturer = LecturerModel(
-            courses: [courseId],
+            courses: [],
             classes: [],
             id: lecturerId,
             lecturerName: lecturerName,
             department: department,
             semester: semester,
             year: year,
-            lecturerEmail: row[7] != null && row[7]!.value != null
-                ? row[7]!.value.toString()
-                : '',
+            freeDay: '',
           );
 
           var level = row[2]!.value.toString().trim().replaceAll(' ', '');
@@ -487,16 +457,16 @@ class AllocationUseCase extends AllocationRepo {
                       aClass.trim().toLowerCase())
                   .firstOrNull;
               if (theClass != null) {
-                lecturer.classes.add(theClass.toMap());
+                lecturer.classes.add('');
               }
             }
           } else {
             // add all classes with same level to lecturer
-            lecturer.classes = classes
-                .where((element) =>
-                    element.level.trim().replaceAll(' ', '') == level)
-                .map((e) => e.toMap())
-                .toList();
+            // lecturer.classes = classes
+            //     .where((element) =>
+            //         element.level.trim().replaceAll(' ', '') == level)
+            //     .map((e) => e.toMap())
+            //     .toList();
           }
 
           if (!lecturers.any((element) => element.id == lecturerId)) {
@@ -554,8 +524,8 @@ class AllocationUseCase extends AllocationRepo {
   @override
   Future<(bool, List<ClassModel>, List<CourseModel>, List<LecturerModel>)>
       deletateAllocation(String academicYear, String academicSemester,
-          String department,Db db) async {
-    try { 
+          String department, Db db) async {
+    try {
       if (db.state != State.open) {
         await db.open();
       }

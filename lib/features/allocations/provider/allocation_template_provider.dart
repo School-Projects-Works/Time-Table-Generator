@@ -17,15 +17,15 @@ final allocationTemplateProvider =
 class AllocationTemplateProvider extends StateNotifier<void> {
   AllocationTemplateProvider() : super(null);
   final _allocationUsecase = AllocationUseCase();
-  Future<void> downloadTemplate() async {
+  void downloadTemplate() async {
     var (success, path) = await _allocationUsecase.downloadTemplate();
-
     if (success) {
       CustomDialog.showSuccess(message: 'Template downloaded successfully');
       if (path != null) {
         await OpenAppFile.open(path);
       }
     } else {
+      CustomDialog.dismiss();
       CustomDialog.showError(message: 'Failed to download template');
     }
   }
@@ -42,15 +42,18 @@ class AllocationTemplateProvider extends StateNotifier<void> {
         semester: ref.watch(semesterProvider),
       );
       if (success) {
-        var classData = await ClassesUsecase(db: ref.watch(dbProvider)).addClasses(classes);
+        var classData =
+            await ClassesUsecase(db: ref.watch(dbProvider)).addClasses(classes);
         if (classData.isNotEmpty) {
           ref.read(classesDataProvider.notifier).addClass(classData);
         }
-        var courseData = await CoursesUseCase(db: ref.watch(dbProvider)).addCourses(courses);
+        var courseData =
+            await CoursesUseCase(db: ref.watch(dbProvider)).addCourses(courses);
         if (courseData.isNotEmpty) {
           ref.read(coursesDataProvider.notifier).addCourses(courseData);
         }
-        var lectData = await LecturerUseCase(db:ref.watch(dbProvider)).addLectures(lecturers);
+        var lectData = await LecturerUseCase(db: ref.watch(dbProvider))
+            .addLectures(lecturers);
         if (lectData.isNotEmpty) {
           ref.read(lecturersDataProvider.notifier).addLecturers(lectData);
         }
@@ -73,18 +76,18 @@ class AllocationTemplateProvider extends StateNotifier<void> {
     CustomDialog.showLoading(message: 'Clearing allocations...');
     var academicYear = ref.watch(academicYearProvider);
     var academicSemester = ref.watch(semesterProvider);
-    var (success, classes,courses,lecturers) = await AllocationUseCase()
-        .deletateAllocation(academicYear, academicSemester, department, ref.watch(dbProvider));
+    var (success, classes, courses, lecturers) = await AllocationUseCase()
+        .deletateAllocation(
+            academicYear, academicSemester, department, ref.watch(dbProvider));
     if (success) {
       ref.read(classesDataProvider.notifier).setClasses(classes);
       ref.read(coursesDataProvider.notifier).setCourses(courses);
       ref.read(lecturersDataProvider.notifier).setLecturers(lecturers);
-       CustomDialog.dismiss();
+      CustomDialog.dismiss();
       CustomDialog.showSuccess(message: 'Allocations delected successfully');
-    }else{
+    } else {
       CustomDialog.dismiss();
       CustomDialog.showError(message: 'Failed to clear allocations');
     }
-    
   }
 }

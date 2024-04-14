@@ -1,5 +1,7 @@
+import 'package:aamusted_timetable_generator/features/help/view/help.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
+import '../../features/about/view/about.dart';
 import '../../features/allocations/views/allocations_page.dart';
 import '../../features/configurations/view/config_page.dart';
 import '../../features/liberal/views/liberal_course_page.dart';
@@ -37,11 +39,16 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
       GoRoute(
           path: '/liberal', builder: (context, state) => const LiberalPage()),
       GoRoute(
-          path: '/special_venues/:id',
-          name: 'special_venue_page',
+          path: '/help',
           builder: (context, state) {
            // var id = state.pathParameters['id'];
-            return Container();
+            return const HelpPage();
+          }),
+          GoRoute(
+          path: '/about',
+          builder: (context, state) {
+            // var id = state.pathParameters['id'];
+            return const AboutPage();
           }),
     ],
   ),
