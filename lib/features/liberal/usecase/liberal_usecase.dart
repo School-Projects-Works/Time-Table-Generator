@@ -7,8 +7,6 @@ import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 import '../../../core/data/constants/excel_headings.dart';
 import '../../../core/functions/excel_settings.dart';
 
@@ -112,15 +110,15 @@ class LiberalUseCase extends LiberalRepo {
 
   List<LiberalModel> getRegularLib(
       Excel excel, String academicYear, String semester) {
-    var regularSheet = excel.tables['Regular-Liberal'];
+    var regularSheet = excel.tables['Regular-Lib'];
     if (regularSheet == null) {
       return [];
     }
     List<LiberalModel> regularCourses = [];
-    var headingRow = regularSheet.row(liberalInstructions.length + 2);
+    var headingRow = regularSheet.row(liberalInstructions.length + 1);
 
     if (AppUtils.validateExcel(headingRow, liberalHeader)) {
-      var rowStart = liberalInstructions.length + 3;
+      var rowStart = liberalInstructions.length + 2;
       for (int i = rowStart; i < regularSheet.maxRows; i++) {
         var row = regularSheet.row(i);
         if (validateLiberalRow(row)) {
@@ -129,15 +127,12 @@ class LiberalUseCase extends LiberalRepo {
           var title = row[1]!.value.toString();
           var lecturerId = row[2]!.value.toString().replaceAll(' ', '');
           var lecturerName = row[3]!.value.toString();
-          var lecturerEmail =
-              row[4]!.value != null ? row[4]!.value.toString().trim() : '';
           var lb = LiberalModel()
             ..code = code
             ..id = id
             ..title = title
             ..lecturerId = lecturerId
             ..lecturerName = lecturerName
-            ..lecturerEmail = lecturerEmail
             ..year = academicYear
             ..semester = semester
             ..studyMode = 'Regular';
@@ -153,12 +148,12 @@ class LiberalUseCase extends LiberalRepo {
 
   List<LiberalModel> getEveningLib(
       Excel excel, String academicYear, String semester) {
-    var eveningSheet = excel.tables['Evening-Liberal']!;
+    var eveningSheet = excel.tables['Evening-Lib']!;
     List<LiberalModel> regularCourses = [];
-    var headingRow = eveningSheet.row(liberalInstructions.length + 2);
+    var headingRow = eveningSheet.row(liberalInstructions.length + 1);
 
     if (AppUtils.validateExcel(headingRow, liberalHeader)) {
-      var rowStart = liberalInstructions.length + 3;
+      var rowStart = liberalInstructions.length + 2;
       for (int i = rowStart; i < eveningSheet.maxRows; i++) {
         var row = eveningSheet.row(i);
         if (validateLiberalRow(row)) {
@@ -167,8 +162,6 @@ class LiberalUseCase extends LiberalRepo {
           var title = row[1]!.value.toString();
           var lecturerId = row[2]!.value.toString().replaceAll(' ', '');
           var lecturerName = row[3]!.value.toString();
-          var lecturerEmail =
-              row[4]!.value != null ? row[4]!.value.toString().trim() : '';
           regularCourses.add(LiberalModel(
               id: id,
               code: code,
@@ -176,7 +169,6 @@ class LiberalUseCase extends LiberalRepo {
               studyMode: 'Evening',
               lecturerId: lecturerId,
               lecturerName: lecturerName,
-              lecturerEmail: lecturerEmail,
               year: academicYear,
               semester: semester));
         }

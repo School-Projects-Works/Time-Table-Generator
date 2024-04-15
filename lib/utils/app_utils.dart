@@ -28,7 +28,6 @@ class AppUtils {
     return TimeOfDay.fromDateTime(format.parse(tod));
   }
 
-
   static Future<String?> pickExcelFIle() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -41,9 +40,12 @@ class AppUtils {
   static bool validateExcel(List<Data?>? headerRow, List<String> columns) {
     if (headerRow == null) return false;
     // GEt the header row
-    List<String> fileColumns =
-        headerRow.map<String>((data) => data!.value.toString()).toList();
-
+    List<String> fileColumns = [];
+    for (int i = 0; i < columns.length; i++) {
+      if (headerRow[i] != null) {
+        fileColumns.add(headerRow[i]!.value.toString());
+      }
+    }
     return listEquals(fileColumns, columns);
   }
 }

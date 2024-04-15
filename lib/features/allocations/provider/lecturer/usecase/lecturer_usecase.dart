@@ -10,16 +10,16 @@ class LecturerUseCase extends LectureRepo {
   @override
   Future<List<LecturerModel>> addLectures(List<LecturerModel> lecturers) async {
     try {
-      if(db.state != State.open){
+      if (db.state != State.open) {
         await db.open();
       }
       //remove all lecturers where academic year, semester and department is the same
-       await db.collection('lecturers').remove({
+      await db.collection('lecturers').remove({
         'year': lecturers[0].year,
         'semester': lecturers[0].semester,
         'department': lecturers[0].department,
       });
-     
+
       // check if lecturer already exist then append courses and classes
       for (var lecturer in lecturers) {
         var existingLecturer = await db.collection('lecturers').findOne({
@@ -46,17 +46,22 @@ class LecturerUseCase extends LectureRepo {
           await db.collection('lecturers').insert(lecturer.toMap());
         }
       }
-      return Future.value(lecturers);
+      //get all recturers
+
+      var lecturerList = await db.collection('lecturers').find({
+        'year': lecturers[0].year,
+        'semester': lecturers[0].semester,
+      }).toList();
+      return lecturerList.map((e) => LecturerModel.fromMap(e)).toList();
     } catch (_) {
       return [];
     }
   }
 
- 
   @override
   Future<List<LecturerModel>> getLectures(String year, String semester) async {
     try {
-      if(db.state != State.open){
+      if (db.state != State.open) {
         await db.open();
       }
       //get all lecturers where academic year and semester is the same
@@ -76,7 +81,7 @@ class LecturerUseCase extends LectureRepo {
       if (db.state != State.open) {
         await db.open();
       }
-     
+
       if (department.toLowerCase() == 'All'.toLowerCase()) {
         //delete all classes where academic year and semester is the same
         await db.collection('lecturers').remove({
@@ -86,20 +91,15 @@ class LecturerUseCase extends LectureRepo {
         return true;
       }
       //delete all classes where academic year, semester and department is the same
-      await db.collection('lecturers').remove({
-        'year': year,
-        'semester': semester,
-        'department': department
-      });
+      await db.collection('lecturers').remove(
+          {'year': year, 'semester': semester, 'department': department});
       return true;
     } catch (_) {
       return false;
     }
   }
 
-
-
-  Future<(bool, String)>updateLecturers(LecturerModel libLecturers)async {
+  Future<(bool, String)> updateLecturers(LecturerModel libLecturers) async {
     try {
       if (db.state != State.open) {
         await db.open();

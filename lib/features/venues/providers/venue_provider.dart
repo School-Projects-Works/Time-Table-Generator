@@ -176,6 +176,8 @@ class VenueDataImport extends StateNotifier<void> {
         CustomDialog.dismiss();
         CustomDialog.showError(message: message);
       }
+    }else{
+      CustomDialog.dismiss();
     }
   }
 

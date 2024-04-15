@@ -101,10 +101,9 @@ class VenueUseCase extends VenueRepo {
       Excel excel = Excel.decodeBytes(List<int>.from(bytes));
       List<VenueModel> venues = [];
       var venueSheet = excel.tables['Venues']!;
-      List<Data?>? venueHeaderRow =
-          venueSheet.row(venueInstructions.length + 1);
+      List<Data?>? venueHeaderRow = venueSheet.row(venueInstructions.length);
       if (AppUtils.validateExcel(venueHeaderRow, venueHeader)) {
-        var rowStart = venueInstructions.length + 2;
+        var rowStart = venueInstructions.length + 1;
         for (int i = rowStart; i < venueSheet.maxRows; i++) {
           var row = venueSheet.row(i);
           if (row[0] == null || row[0]!.value == null) {

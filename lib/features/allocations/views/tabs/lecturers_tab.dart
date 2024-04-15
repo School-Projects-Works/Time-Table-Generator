@@ -1,3 +1,4 @@
+import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/provider/lecturer/provider/lecturer_provider.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';
@@ -89,7 +90,7 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
           ),
           CustomTableColumn(
             title: 'Lecturer Name',
-            width: 200,
+            width: 300,
             cellBuilder: (item) => Text(
               item.lecturerName ?? '',
               style: tableTextStyle,
@@ -97,17 +98,20 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
           ),
           CustomTableColumn(
             title: 'Department',
-            width: 200,
+            //width: 200,
             cellBuilder: (item) => Text(
               item.department ?? '',
               style: tableTextStyle,
             ),
-          ),       
+          ),
           CustomTableColumn(
             title: 'Courses',
-            width: 200,
+            //width: 200,
             cellBuilder: (item) => Text(
-              item.courses.join(','),
+              item.courses
+                  .map((e) => CourseModel.fromMap(e).id)
+                  .toList()
+                  .join(','),
               style: tableTextStyle,
             ),
           ),
@@ -191,7 +195,6 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
           //     ],
           //   ),
           // ),
-        
         ],
       ),
     );

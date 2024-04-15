@@ -103,7 +103,7 @@ class _SpecialVenueSelectState extends ConsumerState<SpecialVenueSelect> {
                               getTextStyle(fontSize: 19, color: Colors.black45),
                           children: [
                             TextSpan(
-                              text: selectedCourse!.title,
+                              text:selectedCourse!=null? selectedCourse!.title:'',
                               style: getTextStyle(
                                   color: primaryColor,
                                   fontSize: 22,

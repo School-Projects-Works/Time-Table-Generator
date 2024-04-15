@@ -1,25 +1,16 @@
 import 'dart:convert';
+
 import 'package:flutter/widgets.dart';
 
 class ClassModel {
   String? id;
-
   String level;
-
   String? studyMode;
-
   String? name;
-
   String? size;
-
   String? hasDisability;
-
   String? department;
-
-  String? createdAt;
-
   String year;
-
   String semester;
 
   ClassModel({
@@ -30,7 +21,6 @@ class ClassModel {
     this.size,
     this.hasDisability,
     this.department,
-    this.createdAt,
     required this.year,
     required this.semester,
   });
@@ -43,7 +33,6 @@ class ClassModel {
     ValueGetter<String?>? size,
     ValueGetter<String?>? hasDisability,
     ValueGetter<String?>? department,
-    ValueGetter<String?>? createdAt,
     String? year,
     String? semester,
   }) {
@@ -56,7 +45,6 @@ class ClassModel {
       hasDisability:
           hasDisability != null ? hasDisability() : this.hasDisability,
       department: department != null ? department() : this.department,
-      createdAt: createdAt != null ? createdAt() : this.createdAt,
       year: year ?? this.year,
       semester: semester ?? this.semester,
     );
@@ -71,7 +59,6 @@ class ClassModel {
       'size': size,
       'hasDisability': hasDisability,
       'department': department,
-      'createdAt': createdAt,
       'year': year,
       'semester': semester,
     };
@@ -86,7 +73,6 @@ class ClassModel {
       size: map['size'],
       hasDisability: map['hasDisability'],
       department: map['department'],
-      createdAt: map['createdAt'],
       year: map['year'] ?? '',
       semester: map['semester'] ?? '',
     );
@@ -99,7 +85,7 @@ class ClassModel {
 
   @override
   String toString() {
-    return 'ClassModel(id: $id, level: $level, studyMode: $studyMode, name: $name, size: $size, hasDisability: $hasDisability, department: $department, createdAt: $createdAt, year: $year, semester: $semester)';
+    return 'ClassModel(id: $id, level: $level, studyMode: $studyMode, name: $name, size: $size, hasDisability: $hasDisability, department: $department, year: $year, semester: $semester)';
   }
 
   @override
@@ -114,7 +100,6 @@ class ClassModel {
         other.size == size &&
         other.hasDisability == hasDisability &&
         other.department == department &&
-        other.createdAt == createdAt &&
         other.year == year &&
         other.semester == semester;
   }
@@ -128,7 +113,6 @@ class ClassModel {
         size.hashCode ^
         hasDisability.hashCode ^
         department.hashCode ^
-        createdAt.hashCode ^
         year.hashCode ^
         semester.hashCode;
   }

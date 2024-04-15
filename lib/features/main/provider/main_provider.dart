@@ -136,14 +136,6 @@ class LecturersDataProvider extends StateNotifier<List<LecturerModel>> {
   }
 
   void addLecturers(List<LecturerModel> lecturers) {
-    // for (var element in lecturers) {
-    //   state = state.map((e) {
-    //     if (e.id == element.id) {
-    //       return element;
-    //     }
-    //     return e;
-    //   }).toList();
-    // }
     state = [...lecturers];
   }
 
