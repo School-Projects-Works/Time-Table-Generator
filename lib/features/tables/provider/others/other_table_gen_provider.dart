@@ -1,6 +1,6 @@
 import 'package:aamusted_timetable_generator/core/functions/time_sorting.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/lcc_model.dart';
-import 'package:aamusted_timetable_generator/features/tables/data/vtp_model.dart';
+import 'package:aamusted_timetable_generator/features/tables/data/venue_time_pair_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/class_course/lecturer_course_class_pair.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,7 +27,7 @@ class OtherTableGenProvider extends StateNotifier<void> {
             (element) => !element.requireSpecialVenue && element.venues.isEmpty)
         .toList();
     var config = ref.watch(configProvider);
-    
+
     //get all vtps which are special venues
     //! here i work on regualr courses only=================================================================
 
@@ -45,8 +45,7 @@ class OtherTableGenProvider extends StateNotifier<void> {
               element.isSpecialVenue != true && element.isBooked == false)
           .toList();
       var noneSpecialVTP = pickSpecialVenue(
-          lccp: lccp, noneSpecialVTPS: noneSpecialVtps, ref: ref, data: config
-      );
+          lccp: lccp, noneSpecialVTPS: noneSpecialVtps, ref: ref, data: config);
       if (noneSpecialVTP != null) {
         var table = buildTableItem(lccp, noneSpecialVTP, config);
 
@@ -71,8 +70,7 @@ class OtherTableGenProvider extends StateNotifier<void> {
               element.isSpecialVenue != true && element.isBooked == false)
           .toList();
       var noneSpecialVTP = pickSpecialVenue(
-          lccp: lccp, noneSpecialVTPS: noneSpecialVtps, ref: ref, data: config
-      );
+          lccp: lccp, noneSpecialVTPS: noneSpecialVtps, ref: ref, data: config);
       if (noneSpecialVTP != null) {
         var table = buildTableItem(lccp, noneSpecialVTP, config);
         ref.read(unsavedTableProvider.notifier).addTable([table]);
@@ -83,7 +81,11 @@ class OtherTableGenProvider extends StateNotifier<void> {
     }
   }
 
-  VTPModel? pickSpecialVenue({required LCCPModel lccp, required List<VTPModel> noneSpecialVTPS, required WidgetRef ref,required ConfigModel data}) {
+  VenueTimePairModel? pickSpecialVenue(
+      {required LCCPModel lccp,
+      required List<VenueTimePairModel> noneSpecialVTPS,
+      required WidgetRef ref,
+      required ConfigModel data}) {
     // print(
     //     '${regLCCP.courseCode}_${regLCCP.className}_${regLCCP.venues.length}==================');
     var unsavedTables = ref.watch(unsavedTableProvider);
@@ -93,9 +95,10 @@ class OtherTableGenProvider extends StateNotifier<void> {
     //get last period
     var periods = data.periods.map((e) => PeriodModel.fromMap(e)).toList();
     periods.sort((a, b) => compareTimeOfDay(
-        AppUtils.stringToTimeOfDay(a.startTime), AppUtils.stringToTimeOfDay(b.startTime)));
+        AppUtils.stringToTimeOfDay(a.startTime),
+        AppUtils.stringToTimeOfDay(b.startTime)));
     var evenPeriod = periods.last;
-    List<VTPModel> venues = [];
+    List<VenueTimePairModel> venues = [];
     for (var venue in noneSpecialVTPS) {
       if (isRegular) {
         var isLibLevel = lccp.level == data.regLibLevel;
@@ -159,7 +162,7 @@ class OtherTableGenProvider extends StateNotifier<void> {
   }
 
   TablesModel buildTableItem(
-      LCCPModel lccp, VTPModel vtp, ConfigModel config) {
+      LCCPModel lccp, VenueTimePairModel vtp, ConfigModel config) {
     var id = '${lccp.id}${vtp.id}'
         .trim()
         .replaceAll(' ', '')

@@ -82,11 +82,20 @@ class RegularConfig extends StateNotifier<ConfigModel> {
     var period =
         state.periods.where((element) => element['period'] == name).toList();
     if (period.isNotEmpty) {
+      //set all other periods as not break
+      var periods = state.periods
+          .map((e) => PeriodModel.fromMap(e))
+          .toList();
+          List<Map<String,dynamic>> newPeriods = [];
+      for (var element in periods) {
+        element.isBreak = false;
+        newPeriods.add(element.toMap());
+      }
       var periodModel = PeriodModel.fromMap(period[0]);
       periodModel.isBreak = isBreak;
       state = state.copyWith(
         breakTime: () => periodModel.toMap(),
-          periods: state.periods
+          periods: newPeriods
               .map((e) => e['period'] == name ? periodModel.toMap() : e)
               .toList());
     }

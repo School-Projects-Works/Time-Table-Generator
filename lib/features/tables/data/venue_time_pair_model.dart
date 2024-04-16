@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-class VTPModel {
+class VenueTimePairModel {
   String? id;
   String? venueName;
   String? venueId;
@@ -19,7 +19,7 @@ class VTPModel {
   bool? isSpecialVenue;
   bool isBooked;
   int position;
-  VTPModel({
+  VenueTimePairModel({
     this.id,
     this.venueName,
     this.venueId,
@@ -37,7 +37,7 @@ class VTPModel {
     required this.position,
   });
 
-  VTPModel copyWith({
+  VenueTimePairModel copyWith({
     ValueGetter<String?>? id,
     ValueGetter<String?>? venueName,
     ValueGetter<String?>? venueId,
@@ -54,12 +54,14 @@ class VTPModel {
     bool? isBooked,
     int? position,
   }) {
-    return VTPModel(
+    return VenueTimePairModel(
       id: id != null ? id() : this.id,
       venueName: venueName != null ? venueName() : this.venueName,
       venueId: venueId != null ? venueId() : this.venueId,
-      venueCapacity: venueCapacity != null ? venueCapacity() : this.venueCapacity,
-      dissabledAccess: dissabledAccess != null ? dissabledAccess() : this.dissabledAccess,
+      venueCapacity:
+          venueCapacity != null ? venueCapacity() : this.venueCapacity,
+      dissabledAccess:
+          dissabledAccess != null ? dissabledAccess() : this.dissabledAccess,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       day: day ?? this.day,
@@ -67,7 +69,8 @@ class VTPModel {
       period: period ?? this.period,
       year: year ?? this.year,
       semester: semester ?? this.semester,
-      isSpecialVenue: isSpecialVenue != null ? isSpecialVenue() : this.isSpecialVenue,
+      isSpecialVenue:
+          isSpecialVenue != null ? isSpecialVenue() : this.isSpecialVenue,
       isBooked: isBooked ?? this.isBooked,
       position: position ?? this.position,
     );
@@ -93,8 +96,8 @@ class VTPModel {
     };
   }
 
-  factory VTPModel.fromMap(Map<String, dynamic> map) {
-    return VTPModel(
+  factory VenueTimePairModel.fromMap(Map<String, dynamic> map) {
+    return VenueTimePairModel(
       id: map['id'],
       venueName: map['venueName'],
       venueId: map['venueId'],
@@ -115,8 +118,8 @@ class VTPModel {
 
   String toJson() => json.encode(toMap());
 
-  factory VTPModel.fromJson(String source) =>
-      VTPModel.fromMap(json.decode(source));
+  factory VenueTimePairModel.fromJson(String source) =>
+      VenueTimePairModel.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -126,41 +129,41 @@ class VTPModel {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
-    return other is VTPModel &&
-      other.id == id &&
-      other.venueName == venueName &&
-      other.venueId == venueId &&
-      other.venueCapacity == venueCapacity &&
-      other.dissabledAccess == dissabledAccess &&
-      other.startTime == startTime &&
-      other.endTime == endTime &&
-      other.day == day &&
-      other.studyMode == studyMode &&
-      other.period == period &&
-      other.year == year &&
-      other.semester == semester &&
-      other.isSpecialVenue == isSpecialVenue &&
-      other.isBooked == isBooked &&
-      other.position == position;
+
+    return other is VenueTimePairModel &&
+        other.id == id &&
+        other.venueName == venueName &&
+        other.venueId == venueId &&
+        other.venueCapacity == venueCapacity &&
+        other.dissabledAccess == dissabledAccess &&
+        other.startTime == startTime &&
+        other.endTime == endTime &&
+        other.day == day &&
+        other.studyMode == studyMode &&
+        other.period == period &&
+        other.year == year &&
+        other.semester == semester &&
+        other.isSpecialVenue == isSpecialVenue &&
+        other.isBooked == isBooked &&
+        other.position == position;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      venueName.hashCode ^
-      venueId.hashCode ^
-      venueCapacity.hashCode ^
-      dissabledAccess.hashCode ^
-      startTime.hashCode ^
-      endTime.hashCode ^
-      day.hashCode ^
-      studyMode.hashCode ^
-      period.hashCode ^
-      year.hashCode ^
-      semester.hashCode ^
-      isSpecialVenue.hashCode ^
-      isBooked.hashCode ^
-      position.hashCode;
+        venueName.hashCode ^
+        venueId.hashCode ^
+        venueCapacity.hashCode ^
+        dissabledAccess.hashCode ^
+        startTime.hashCode ^
+        endTime.hashCode ^
+        day.hashCode ^
+        studyMode.hashCode ^
+        period.hashCode ^
+        year.hashCode ^
+        semester.hashCode ^
+        isSpecialVenue.hashCode ^
+        isBooked.hashCode ^
+        position.hashCode;
   }
 }

@@ -30,10 +30,11 @@ class UnsavedTableProvider extends StateNotifier<List<TablesModel>> {
           return e;
         }).toList();
         continue;
+      }else{
+        //add
+        state = [...state, element];
       }
     }
-
-    state = [...state, ...tables];
   }
 
   void deleteTable(String id) {

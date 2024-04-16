@@ -8,7 +8,7 @@ import '../../../../core/functions/time_sorting.dart';
 import '../../../configurations/data/config/config_model.dart';
 import '../../../configurations/provider/config_provider.dart';
 import '../../data/tables_model.dart';
-import '../../data/vtp_model.dart';
+import '../../data/venue_time_pair_model.dart';
 import '../unsaved_tables_provider.dart';
 import '../venue_time_pair_provider.dart';
 
@@ -45,8 +45,7 @@ class SpecialTableGenProvider extends StateNotifier<void> {
               element.isSpecialVenue == true && element.isBooked == false)
           .toList();
       var specialVTP = pickSpecialVenue(
-          lccp: lccp, specialVTPS: specialVtps, ref: ref, data: config
-      );
+          lccp: lccp, specialVTPS: specialVtps, ref: ref, data: config);
       if (specialVTP != null) {
         var table = buildTableItem(lccp, specialVTP, config);
 
@@ -71,8 +70,7 @@ class SpecialTableGenProvider extends StateNotifier<void> {
               element.isSpecialVenue == true && element.isBooked == false)
           .toList();
       var specialVTP = pickSpecialVenue(
-          lccp: lccp, specialVTPS: specialVtps, ref: ref, data: config
-      );
+          lccp: lccp, specialVTPS: specialVtps, ref: ref, data: config);
       if (specialVTP != null) {
         var table = buildTableItem(lccp, specialVTP, config);
         ref.read(unsavedTableProvider.notifier).addTable([table]);
@@ -83,8 +81,11 @@ class SpecialTableGenProvider extends StateNotifier<void> {
     }
   }
 
-  VTPModel? pickSpecialVenue(
-      {required LCCPModel lccp, required List<VTPModel> specialVTPS, required WidgetRef ref,required ConfigModel data}) {
+  VenueTimePairModel? pickSpecialVenue(
+      {required LCCPModel lccp,
+      required List<VenueTimePairModel> specialVTPS,
+      required WidgetRef ref,
+      required ConfigModel data}) {
     // print(
     //     '${regLCCP.courseCode}_${regLCCP.className}_${regLCCP.venues.length}==================');
     var unsavedTables = ref.watch(unsavedTableProvider);
@@ -97,7 +98,7 @@ class SpecialTableGenProvider extends StateNotifier<void> {
         AppUtils.stringToTimeOfDay(a.startTime),
         AppUtils.stringToTimeOfDay(b.startTime)));
     var evenPeriod = periods.last;
-    List<VTPModel> venues = [];
+    List<VenueTimePairModel> venues = [];
     for (var venue in lccp.venues) {
       var vtp = isRegular
           ? specialVTPS.firstWhere((element) {
@@ -109,7 +110,7 @@ class SpecialTableGenProvider extends StateNotifier<void> {
                       element.day != data.regLibDay &&
                       element.period != data.regLibPeriod!['period']);
             },
-              orElse: () => VTPModel(
+              orElse: () => VenueTimePairModel(
                     isBooked: false,
                     period: '',
                     day: '',
@@ -128,7 +129,7 @@ class SpecialTableGenProvider extends StateNotifier<void> {
                       !isLibLevel ||
                   (isLibLevel && element.day != data.evenLibDay);
             },
-              orElse: () => VTPModel(
+              orElse: () => VenueTimePairModel(
                     isBooked: false,
                     period: '',
                     day: '',
@@ -164,7 +165,7 @@ class SpecialTableGenProvider extends StateNotifier<void> {
   }
 
   TablesModel buildTableItem(
-      LCCPModel lccp, VTPModel vtp, ConfigModel config) {
+      LCCPModel lccp, VenueTimePairModel vtp, ConfigModel config) {
     var id = '${lccp.id}${vtp.id}'
         .trim()
         .replaceAll(' ', '')

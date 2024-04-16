@@ -2,7 +2,7 @@ import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/configurations/data/config/config_model.dart';
 import 'package:aamusted_timetable_generator/features/database/provider/database_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/lcc_model.dart';
-import 'package:aamusted_timetable_generator/features/tables/data/ltp_model.dart';
+import 'package:aamusted_timetable_generator/features/tables/data/lib_time_pair_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/tables_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/usecase/tables_usecase.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
@@ -11,11 +11,12 @@ import '../../../core/functions/time_sorting.dart';
 import '../../configurations/provider/config_provider.dart';
 import '../../main/provider/main_provider.dart';
 import '../data/periods_model.dart';
-import '../data/vtp_model.dart';
+import '../data/venue_time_pair_model.dart';
 
-final vtpProvider = StateNotifierProvider<VTP, List<VTPModel>>((ref) => VTP());
+final vtpProvider =
+    StateNotifierProvider<VTP, List<VenueTimePairModel>>((ref) => VTP());
 
-class VTP extends StateNotifier<List<VTPModel>> {
+class VTP extends StateNotifier<List<VenueTimePairModel>> {
   VTP() : super([]);
 }
 
@@ -51,16 +52,16 @@ class UnassignedLCCList extends StateNotifier<List<LCCPModel>> {
 }
 
 final unassignedLTPProvider =
-    StateNotifierProvider<UnassignedLTPs, List<LTPModel>>(
+    StateNotifierProvider<UnassignedLTPs, List<LibTimePairModel>>(
         (ref) => UnassignedLTPs());
 
-class UnassignedLTPs extends StateNotifier<List<LTPModel>> {
+class UnassignedLTPs extends StateNotifier<List<LibTimePairModel>> {
   UnassignedLTPs() : super([]);
-  void addLTP(LTPModel ltp) {
+  void addLTP(LibTimePairModel ltp) {
     state = [...state, ltp];
   }
 
-  void removeLTP(LTPModel ltp) {
+  void removeLTP(LibTimePairModel ltp) {
     state = state.where((element) => element.id != ltp.id).toList();
   }
 }
@@ -74,7 +75,7 @@ class TableGenProvider extends StateNotifier<void> {
   void generateTables(WidgetRef ref) async {
     CustomDialog.dismiss();
     CustomDialog.showLoading(message: 'Generating Tables...');
-    List<VTPModel> vtps = ref.watch(vtpProvider);
+    List<VenueTimePairModel> vtps = ref.watch(vtpProvider);
     var specialVTPS =
         vtps.where((element) => (element.isSpecialVenue ?? false)).toList();
     var nonSpecialVTPS =
@@ -176,8 +177,11 @@ class TableGenProvider extends StateNotifier<void> {
     }
   }
 
-  List<TablesModel> generateLibTables(List<LTPModel> ltps,
-      List<VTPModel> nonSpecialVTPS, ConfigModel config, WidgetRef ref) {
+  List<TablesModel> generateLibTables(
+      List<LibTimePairModel> ltps,
+      List<VenueTimePairModel> nonSpecialVTPS,
+      ConfigModel config,
+      WidgetRef ref) {
     List<TablesModel> tables = [];
     //! get all regular lib courses=====================================================
     var regLibs = ltps
@@ -260,7 +264,7 @@ class TableGenProvider extends StateNotifier<void> {
   }
 
   List<TablesModel> generateSpecialTables(List<LCCPModel> lccpWithSpecialVenue,
-      List<VTPModel> specialVTPS, ConfigModel config, WidgetRef ref) {
+      List<VenueTimePairModel> specialVTPS, ConfigModel config, WidgetRef ref) {
     List<TablesModel> tables = [];
     var reg = lccpWithSpecialVenue
         .where((element) =>
@@ -283,7 +287,8 @@ class TableGenProvider extends StateNotifier<void> {
           .where((element) =>
               element.period == evenPeriod.period && element.isBooked == false)
           .toList();
-      var vtp = pickVenue(lccp: evenLCCP, specialVTPS: evenVTP, ref: ref, config: config);
+      var vtp = pickVenue(
+          lccp: evenLCCP, specialVTPS: evenVTP, ref: ref, config: config);
       if (vtp == null) {
         ref.read(unassignedLCCPProvider.notifier).addLCCP(evenLCCP);
         continue;
@@ -295,7 +300,8 @@ class TableGenProvider extends StateNotifier<void> {
       specialVTPS.firstWhere((element) => element.id == vtp.id).isBooked = true;
     }
     for (var regLCCP in reg) {
-      var vtp = pickVenue(lccp: regLCCP, specialVTPS: specialVTPS, ref: ref, config: config);
+      var vtp = pickVenue(
+          lccp: regLCCP, specialVTPS: specialVTPS, ref: ref, config: config);
       if (vtp == null) {
         ref.read(unassignedLCCPProvider.notifier).addLCCP(regLCCP);
         continue;
@@ -310,8 +316,11 @@ class TableGenProvider extends StateNotifier<void> {
     return tables;
   }
 
-  VTPModel? pickVenue(
-      {required LCCPModel lccp, required List<VTPModel> specialVTPS, required WidgetRef ref, required ConfigModel config}) {
+  VenueTimePairModel? pickVenue(
+      {required LCCPModel lccp,
+      required List<VenueTimePairModel> specialVTPS,
+      required WidgetRef ref,
+      required ConfigModel config}) {
     var isLibLevel = lccp.level == config.regLibLevel;
     var freeVenue = isLibLevel
         ? specialVTPS
@@ -354,8 +363,11 @@ class TableGenProvider extends StateNotifier<void> {
     return finalVenue;
   }
 
-  List<TablesModel> generateOtherTables(List<LCCPModel> lccpWithNoSpecialVenue,
-      List<VTPModel> nonSpecialVTPS, ConfigModel config, WidgetRef ref) {
+  List<TablesModel> generateOtherTables(
+      List<LCCPModel> lccpWithNoSpecialVenue,
+      List<VenueTimePairModel> nonSpecialVTPS,
+      ConfigModel config,
+      WidgetRef ref) {
     List<TablesModel> generateTables = [];
     //split lccpWithNoSpecialVenue into regular and evening
     var reg = lccpWithNoSpecialVenue
@@ -384,8 +396,7 @@ class TableGenProvider extends StateNotifier<void> {
                   : true))
           .toList();
       var vtp = pickVenue(
-        lccp: evenLCCP, ref: ref, specialVTPS: evenVTP, config: config
-      );
+          lccp: evenLCCP, ref: ref, specialVTPS: evenVTP, config: config);
       if (vtp == null) {
         ref.read(unassignedLCCPProvider.notifier).addLCCP(evenLCCP);
         continue;
@@ -399,8 +410,7 @@ class TableGenProvider extends StateNotifier<void> {
     }
     for (var regLCCP in reg) {
       var vtp = pickVenue(
-        lccp: regLCCP, ref: ref, specialVTPS: nonSpecialVTPS, config: config
-      );
+          lccp: regLCCP, ref: ref, specialVTPS: nonSpecialVTPS, config: config);
       if (vtp == null) {
         ref.read(unassignedLCCPProvider.notifier).addLCCP(regLCCP);
         continue;
@@ -417,8 +427,10 @@ class TableGenProvider extends StateNotifier<void> {
     return generateTables;
   }
 
-  void assignUnassignedLCCP(WidgetRef ref, List<VTPModel> nonSpecialVTPS,
-      List<VTPModel> specialVTPS) {
+  void assignUnassignedLCCP(
+      WidgetRef ref,
+      List<VenueTimePairModel> nonSpecialVTPS,
+      List<VenueTimePairModel> specialVTPS) {
     var config = ref.watch(configProvider);
 
     //split unassigned LCCP into regular and evening
@@ -447,9 +459,8 @@ class TableGenProvider extends StateNotifier<void> {
       var vtpp = specialVenues
           .where((element) => ccpVenues.contains(element.venueName))
           .toList();
-      var vtp = pickVenue(
-        lccp: regLCCP, ref: ref, specialVTPS: vtpp, config: config
-      );
+      var vtp =
+          pickVenue(lccp: regLCCP, ref: ref, specialVTPS: vtpp, config: config);
       if (vtp != null) {
         var table = buildTableItem(regLCCP, vtp, config);
         ref.read(generatingTableProvider.notifier).addTable([table]);
@@ -463,8 +474,7 @@ class TableGenProvider extends StateNotifier<void> {
     //assign non special reg
     for (var regLCCP in nonSpecialReg) {
       var vtp = pickVenue(
-        lccp: regLCCP, ref: ref, specialVTPS: nonSpecialVTPS, config: config
-      );
+          lccp: regLCCP, ref: ref, specialVTPS: nonSpecialVTPS, config: config);
       if (vtp != null) {
         var table = buildTableItem(regLCCP, vtp, config);
         ref.read(generatingTableProvider.notifier).addTable([table]);
@@ -501,8 +511,7 @@ class TableGenProvider extends StateNotifier<void> {
           .where((element) => ccpVenues.contains(element.venueName))
           .toList();
       var vtp = pickVenue(
-        lccp: evenLCCP, ref: ref, specialVTPS: vtpp, config: config
-      );
+          lccp: evenLCCP, ref: ref, specialVTPS: vtpp, config: config);
       if (vtp != null) {
         var table = buildTableItem(evenLCCP, vtp, config);
         ref.read(generatingTableProvider.notifier).addTable([table]);
@@ -516,8 +525,10 @@ class TableGenProvider extends StateNotifier<void> {
     //assign non special even
     for (var evenLCCP in nonSpecialEven) {
       var vtp = pickVenue(
-        lccp: evenLCCP, ref: ref, specialVTPS: nonSpecialVTPS, config: config
-      );
+          lccp: evenLCCP,
+          ref: ref,
+          specialVTPS: nonSpecialVTPS,
+          config: config);
       if (vtp != null) {
         var table = buildTableItem(evenLCCP, vtp, config);
         ref.read(generatingTableProvider.notifier).addTable([table]);
@@ -530,11 +541,13 @@ class TableGenProvider extends StateNotifier<void> {
     }
   }
 
-  void assignUnassignedLTP(WidgetRef ref, List<VTPModel> nonSpecialVTPS,
-      List<VTPModel> specialVTPS) {}
+  void assignUnassignedLTP(
+      WidgetRef ref,
+      List<VenueTimePairModel> nonSpecialVTPS,
+      List<VenueTimePairModel> specialVTPS) {}
 
   TablesModel buildLibTableItem(
-      LTPModel ltp, VTPModel vtp, ConfigModel config) {
+      LibTimePairModel ltp, VenueTimePairModel vtp, ConfigModel config) {
     var id = '${ltp.id}${vtp.id}'
         .trim()
         .replaceAll(' ', '')
@@ -574,7 +587,8 @@ class TableGenProvider extends StateNotifier<void> {
     return table;
   }
 
-  TablesModel buildTableItem(LCCPModel lccp, VTPModel vtp, ConfigModel config) {
+  TablesModel buildTableItem(
+      LCCPModel lccp, VenueTimePairModel vtp, ConfigModel config) {
     var id = '${lccp.id}${vtp.id}'
         .trim()
         .replaceAll(' ', '')

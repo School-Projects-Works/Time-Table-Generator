@@ -1,17 +1,12 @@
 //! here we generate only tables for liberal Courses
 // call liberal_time_pair to generate LTPs before generating tables
 
-import 'package:aamusted_timetable_generator/core/functions/time_sorting.dart';
-import 'package:aamusted_timetable_generator/features/configurations/provider/config_provider.dart';
-import 'package:aamusted_timetable_generator/features/tables/data/periods_model.dart';
+import 'package:aamusted_timetable_generator/features/tables/data/lib_time_pair_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/unsaved_tables_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/venue_time_pair_provider.dart';
-import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../configurations/data/config/config_model.dart';
-import '../../data/ltp_model.dart';
 import '../../data/tables_model.dart';
-import '../../data/vtp_model.dart';
+import '../../data/venue_time_pair_model.dart';
 import 'liberal_time_pair.dart';
 
 final liberalTableGenerationProvider =
@@ -20,83 +15,39 @@ final liberalTableGenerationProvider =
 
 class LiberalTableProvider extends StateNotifier<List<TablesModel>> {
   LiberalTableProvider() : super([]);
- 
 
   void generateTables(WidgetRef ref) {
-    //! here i get the configuration data
-    var data = ref.watch(configProvider);
     //! here get all the venue time pair
     //? getting regular tables =========================================================================
-    var vtps = ref.watch(venueTimePairProvider);
-    //! here i get all none special venue time pair and period and day from the config
-    var noneSpecialVTPs = vtps
-        .where((element) =>
-            element.isSpecialVenue == false &&
-            element.day == data.regLibDay &&
-            element.period == data.regLibPeriod!['period'] &&
-            element.isBooked == false)
-        .toList();
-    //! here i sort the vtp according to the venue capacity from the highest to the lowest
-    //! this is to ensure that the largest class size is assigned to the largest venue
-    noneSpecialVTPs
-        .sort((a, b) => b.venueCapacity!.compareTo(a.venueCapacity!));
-    //? now get all liberal time pair
-    var ltps = ref.watch(liberalTimePairProvider);
-    //! here i filter and get only regular liberal course time pair
-    var regLibs = ltps
-        .where((element) =>
-            element.studyMode.toLowerCase().replaceAll(' ', '') ==
-                'regular'.toLowerCase() &&
-            element.isAsigned == false)
-        .toList();
-    //! pick a list of biggest noneSpecialVTPs with list size of regLibs.
-    //? pick all noneSpecialVTPs if the size is less than regLibs
-    var noneSpecialVTPsList = noneSpecialVTPs.length >= regLibs.length
-        ? noneSpecialVTPs.take(regLibs.length).toList()
-        : noneSpecialVTPs;
-    //loop noneSpecialVTPsList and assign each to a regLib
-    for (var i = 0; i < noneSpecialVTPsList.length; i++) {
-      var table = tableItem(regLibs[i], noneSpecialVTPsList[i], data);
-      state = [...state, table];
-      ref.read(unsavedTableProvider.notifier).addTable([table]);
-      ref.read(liberalTimePairProvider.notifier).assignLTP(regLibs[i]);
-      ref.read(venueTimePairProvider.notifier).bookVTP(noneSpecialVTPsList[i]);
-    }
-    //?getting evening tables =========================================================================
-    var periods = data.periods.map((e) => PeriodModel.fromMap(e)).toList();
-    periods.sort((a, b) => compareTimeOfDay(
-        AppUtils.stringToTimeOfDay(a.startTime), AppUtils.stringToTimeOfDay(b.startTime)));
-    var evenLibPeriod = periods.last;
-    vtps = ref.watch(venueTimePairProvider);
-    var evenVTPs = vtps
-        .where((element) =>
-            element.isSpecialVenue == false &&
-            element.day == data.evenLibDay &&
-            element.period == evenLibPeriod.period &&
-            element.isBooked == false)
-        .toList();
-    evenVTPs.sort((a, b) => b.venueCapacity!.compareTo(a.venueCapacity!));
-    var evenLibs = ltps
-        .where((element) =>
-            element.studyMode.toLowerCase().replaceAll(' ', '') ==
-                'evening'.toLowerCase() &&
-            element.isAsigned == false)
-        .toList();
-    var evenSpecialVTPsList = evenVTPs.length >= evenLibs.length
-        ? evenVTPs.take(evenLibs.length).toList()
-        : evenVTPs;
-    for (var i = 0; i < evenSpecialVTPsList.length; i++) {
-      var table = tableItem(evenLibs[i], evenSpecialVTPsList[i], data);
-      state = [...state, table];
-      ref.read(unsavedTableProvider.notifier).addTable([table]);
-      ref.read(liberalTimePairProvider.notifier).assignLTP(evenLibs[i]);
-      ref.read(venueTimePairProvider.notifier).bookVTP(evenSpecialVTPsList[i]);
-    }
 
+    var libTimePairs = ref.watch(liberalTimePairProvider);
+    for (var libTimePair in libTimePairs) {
+      var venueTimePairs = ref.watch(venueTimePairProvider);
+      venueTimePairs
+          .sort((a, b) => b.venueCapacity!.compareTo(a.venueCapacity!));
+      var venueTimePair = venueTimePairs
+          .where((element) =>
+              element.day == libTimePair.day &&
+              element.period == libTimePair.period &&
+              element.isSpecialVenue == false &&
+              element.position == libTimePair.periodPosition &&
+              element.isBooked == false)
+          .firstOrNull;
+      if (venueTimePair == null) {
+        continue;
+      } else {
+        var table = tableItem(ltp: libTimePair, vtp: venueTimePair);
+        state = [...state, table];
+        ref.read(unsavedTableProvider.notifier).addTable([table]);
+        ref.read(liberalTimePairProvider.notifier).assignLTP(libTimePair);
+        ref.read(venueTimePairProvider.notifier).bookVTP(venueTimePair);
+      }
+    }
     ref.read(liberalTimePairProvider.notifier).saveData(ref);
   }
 
-  TablesModel tableItem(LTPModel ltp, VTPModel vtp, ConfigModel config) {
+  TablesModel tableItem(
+      {required LibTimePairModel ltp, required VenueTimePairModel vtp}) {
     var id = '${ltp.id}${vtp.id}'
         .trim()
         .replaceAll(' ', '')
@@ -105,10 +56,10 @@ class LiberalTableProvider extends StateNotifier<List<TablesModel>> {
         .toString();
     TablesModel table = TablesModel(
       id: id,
-      year: config.year,
+      year: ltp.year,
       day: vtp.day,
       position: vtp.position,
-      period: vtp.period,    
+      period: vtp.period,
       studyMode: ltp.studyMode,
       startTime: vtp.startTime,
       endTime: vtp.endTime,

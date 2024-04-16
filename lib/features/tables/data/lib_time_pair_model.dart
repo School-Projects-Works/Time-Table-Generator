@@ -1,30 +1,30 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 
-
-class LTPModel {
-
+class LibTimePairModel {
   String id;
   String day;
   bool isAsigned;
   String period;
-  Map<String, dynamic> periodMap;
+  int periodPosition;
+  String periodStart;
+  String periodEnd;
   String courseCode;
   String lecturerName;
   String lecturerId;
   String courseTitle;
   String courseId;
-
   String year;
   String level;
   String studyMode;
   String semester;
-  LTPModel({
+  LibTimePairModel({
     required this.id,
     required this.day,
     required this.isAsigned,
     required this.period,
-    required this.periodMap,
+    required this.periodPosition,
+    required this.periodStart,
+    required this.periodEnd,
     required this.courseCode,
     required this.lecturerName,
     required this.lecturerId,
@@ -36,12 +36,14 @@ class LTPModel {
     required this.semester,
   });
 
-  LTPModel copyWith({
+  LibTimePairModel copyWith({
     String? id,
     String? day,
     bool? isAsigned,
     String? period,
-    Map<String, dynamic>? periodMap,
+    int? periodPosition,
+    String? periodStart,
+    String? periodEnd,
     String? courseCode,
     String? lecturerName,
     String? lecturerId,
@@ -52,12 +54,14 @@ class LTPModel {
     String? studyMode,
     String? semester,
   }) {
-    return LTPModel(
+    return LibTimePairModel(
       id: id ?? this.id,
       day: day ?? this.day,
       isAsigned: isAsigned ?? this.isAsigned,
       period: period ?? this.period,
-      periodMap: periodMap ?? this.periodMap,
+      periodPosition: periodPosition ?? this.periodPosition,
+      periodStart: periodStart ?? this.periodStart,
+      periodEnd: periodEnd ?? this.periodEnd,
       courseCode: courseCode ?? this.courseCode,
       lecturerName: lecturerName ?? this.lecturerName,
       lecturerId: lecturerId ?? this.lecturerId,
@@ -76,7 +80,9 @@ class LTPModel {
       'day': day,
       'isAsigned': isAsigned,
       'period': period,
-      'periodMap': periodMap,
+      'periodPosition': periodPosition,
+      'periodStart': periodStart,
+      'periodEnd': periodEnd,
       'courseCode': courseCode,
       'lecturerName': lecturerName,
       'lecturerId': lecturerId,
@@ -89,13 +95,15 @@ class LTPModel {
     };
   }
 
-  factory LTPModel.fromMap(Map<String, dynamic> map) {
-    return LTPModel(
+  factory LibTimePairModel.fromMap(Map<String, dynamic> map) {
+    return LibTimePairModel(
       id: map['id'] ?? '',
       day: map['day'] ?? '',
       isAsigned: map['isAsigned'] ?? false,
       period: map['period'] ?? '',
-      periodMap: Map<String, dynamic>.from(map['periodMap']),
+      periodPosition: map['periodPosition']?.toInt() ?? 0,
+      periodStart: map['periodStart'] ?? '',
+      periodEnd: map['periodEnd'] ?? '',
       courseCode: map['courseCode'] ?? '',
       lecturerName: map['lecturerName'] ?? '',
       lecturerId: map['lecturerId'] ?? '',
@@ -110,24 +118,25 @@ class LTPModel {
 
   String toJson() => json.encode(toMap());
 
-  factory LTPModel.fromJson(String source) =>
-      LTPModel.fromMap(json.decode(source));
+  factory LibTimePairModel.fromJson(String source) => LibTimePairModel.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'LTPModel(id: $id, day: $day, isAsigned: $isAsigned, period: $period, periodMap: $periodMap, courseCode: $courseCode, lecturerName: $lecturerName, lecturerId: $lecturerId, courseTitle: $courseTitle, courseId: $courseId, year: $year, level: $level, studyMode: $studyMode, semester: $semester)';
+    return 'LibTimePairModel(id: $id, day: $day, isAsigned: $isAsigned, period: $period, periodPosition: $periodPosition, periodStart: $periodStart, periodEnd: $periodEnd, courseCode: $courseCode, lecturerName: $lecturerName, lecturerId: $lecturerId, courseTitle: $courseTitle, courseId: $courseId, year: $year, level: $level, studyMode: $studyMode, semester: $semester)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
   
-    return other is LTPModel &&
+    return other is LibTimePairModel &&
       other.id == id &&
       other.day == day &&
       other.isAsigned == isAsigned &&
       other.period == period &&
-      mapEquals(other.periodMap, periodMap) &&
+      other.periodPosition == periodPosition &&
+      other.periodStart == periodStart &&
+      other.periodEnd == periodEnd &&
       other.courseCode == courseCode &&
       other.lecturerName == lecturerName &&
       other.lecturerId == lecturerId &&
@@ -145,7 +154,9 @@ class LTPModel {
       day.hashCode ^
       isAsigned.hashCode ^
       period.hashCode ^
-      periodMap.hashCode ^
+      periodPosition.hashCode ^
+      periodStart.hashCode ^
+      periodEnd.hashCode ^
       courseCode.hashCode ^
       lecturerName.hashCode ^
       lecturerId.hashCode ^
