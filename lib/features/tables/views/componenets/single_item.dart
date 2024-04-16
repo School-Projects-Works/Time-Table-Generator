@@ -2,6 +2,7 @@ import 'package:aamusted_timetable_generator/config/theme/theme.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_button.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_input.dart';
+import 'package:aamusted_timetable_generator/features/tables/data/empty_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,12 +15,14 @@ import '../../provider/table_manupulation.dart';
 // ignore: must_be_immutable
 class SingleItem extends ConsumerStatefulWidget implements pw.Widget {
   SingleItem({
-    Key? key,
+    super.key,
     this.venue,
     this.table,
-  }) : super(key: key);
+    this.empty,
+  });
   final String? venue;
   final TablesModel? table;
+  final EmptyModel? empty;
 
   @override
   ConsumerState<SingleItem> createState() => _SingleItemState();
@@ -51,6 +54,9 @@ class _SingleItemState extends ConsumerState<SingleItem> {
   final nameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    if (widget.venue != null) {
+      return _buildVenueItem(venue: widget.venue);
+    }
     var pair = ref.watch(tablePairProvider);
     return InkWell(
       onHover: (value) {
@@ -284,5 +290,17 @@ class _SingleItemState extends ConsumerState<SingleItem> {
         ),
       ),
     );
+  }
+
+  Widget _buildVenueItem({String? venue}) {
+    return Container(
+        width: 260,
+        height: 100,
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.black),
+        ),
+        alignment: Alignment.centerLeft);
   }
 }

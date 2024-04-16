@@ -1,7 +1,7 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/configurations/data/config/config_model.dart';
 import 'package:aamusted_timetable_generator/features/database/provider/database_provider.dart';
-import 'package:aamusted_timetable_generator/features/tables/data/lcc_model.dart';
+import 'package:aamusted_timetable_generator/features/tables/data/lecturer_class_course_pair.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/lib_time_pair_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/tables_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/usecase/tables_usecase.dart';

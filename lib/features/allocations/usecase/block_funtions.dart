@@ -3,6 +3,7 @@ import 'package:aamusted_timetable_generator/core/data/constants/instructions.da
 import 'package:aamusted_timetable_generator/features/allocations/data/classes/class_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/lecturers/lecturer_model.dart';
+import 'package:aamusted_timetable_generator/features/configurations/data/config/config_model.dart';
 import 'package:excel/excel.dart';
 
 class AllocationBlocks {
@@ -19,12 +20,14 @@ class AllocationBlocks {
           required String semester,
           required String year,
           required String studyMode,
+          required ConfigModel config,
           required List<ClassModel> classes}) {
     List<LecturerModel> lecturers = extractLecturerList(
         allocationsSheet: allocationsSheet,
         year: year,
         semester: semester,
         classes: classes,
+              confg: config,
         department: department);
     List<CourseModel> courses = extractCourseList(
         allocationsSheet: allocationsSheet,
@@ -32,6 +35,7 @@ class AllocationBlocks {
         semester: semester,
         department: department,
         studyMode: studyMode,
+  
         lecturers: lecturers);
     return (courses, lecturers);
   }
@@ -46,9 +50,12 @@ class AllocationBlocks {
       required String year,
       required String semester,
       required List<ClassModel> classes,
+      required ConfigModel confg,
       required String department}) {
     var rowStart = courseInstructions.length + 2;
     List<LecturerModel> lecturers = [];
+    var days = confg.days;
+    
     for (var i = rowStart; i < allocationsSheet.maxRows; i++) {
       var row = allocationsSheet.row(i);
       if (validateAllocationRow(row)) {
@@ -60,6 +67,11 @@ class AllocationBlocks {
         var lecturerClass = row[8] != null && row[8]!.value != null
             ? row[8]!.value.toString()
             : '';
+            var dayInit = lecturerFreeDay.length > 3
+            ? lecturerFreeDay.toLowerCase().substring(0, 3)
+            : lecturerFreeDay.toLowerCase();
+        var day = days
+            .firstWhere((element) => element.toLowerCase().startsWith(dayInit));
         var lecturer = LecturerModel(
             id: lecturerId,
             courses: [],
@@ -68,11 +80,12 @@ class AllocationBlocks {
             department: department,
             year: year,
             semester: semester,
-            freeDay: lecturerFreeDay);
+            freeDay: day);
 
         /// check if lecturer class is not empty split the classes with comma
         /// after the spliting check if the class is in the list of classes using the class name
         /// then add the class  id to the clecturer to the lecturer
+        
         List<String> lecturerClassesList = [];
         if (lecturerClass.isNotEmpty) {
           var lecturerClasses = lecturerClass.split(RegExp(r'[,.]'));

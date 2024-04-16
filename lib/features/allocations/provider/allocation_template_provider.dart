@@ -1,5 +1,6 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/allocations/usecase/allocation_usecase.dart';
+import 'package:aamusted_timetable_generator/features/configurations/provider/config_provider.dart';
 import 'package:aamusted_timetable_generator/features/database/provider/database_provider.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,11 +36,13 @@ class AllocationTemplateProvider extends StateNotifier<void> {
     CustomDialog.showLoading(message: 'Importing allocations...');
     String? pickedFilePath = await AppUtils.pickExcelFIle();
     if (pickedFilePath != null) {
+      var config = ref.watch(configProvider);
       var (success, (courses, classes, lecturers), message) =
           await _allocationUsecase.importAllocation(
         path: pickedFilePath,
         year: ref.watch(academicYearProvider),
         semester: ref.watch(semesterProvider),
+        config: config,
       );
       if (success) {
         var classData =

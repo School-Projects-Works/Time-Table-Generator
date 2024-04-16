@@ -1,4 +1,4 @@
-import 'package:aamusted_timetable_generator/features/tables/data/lcc_model.dart';
+import 'package:aamusted_timetable_generator/features/tables/data/lecturer_class_course_pair.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/periods_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/class_course/lecturer_course_class_pair.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,10 +25,10 @@ class SpecialTableGenProvider extends StateNotifier<void> {
             element.requireSpecialVenue && element.venues.isNotEmpty)
         .toList();
     //i get all last periods of the vtps
-
     var config = ref.watch(configProvider);
+    List<LecturerClassCoursePair> unAssignedLccps = [];
     //remove the break period
-
+    print('special lccps ${specialLccps.length}');
     for (var lccpItem in specialLccps) {
       var vtps = ref.watch(venueTimePairProvider);
       var specialVtps = vtps
@@ -37,15 +37,19 @@ class SpecialTableGenProvider extends StateNotifier<void> {
           .toList();
       var specialVTP = pickSpecialVenue(
           lccp: lccpItem, data: config, ref: ref, specialVTPS: specialVtps);
-          if (specialVTP != null) {
+      if (specialVTP != null) {
         var table = buildTableItem(lccpItem, specialVTP, config);
 
         ref.read(unsavedTableProvider.notifier).addTable([table]);
-        ref.read(lecturerCourseClassPairProvider.notifier).markedAsigned(lccpItem);
+        ref
+            .read(lecturerCourseClassPairProvider.notifier)
+            .markedAsigned(lccpItem);
         ref.read(venueTimePairProvider.notifier).bookVTP(specialVTP);
+      } else {
+        unAssignedLccps.add(lccpItem);
       }
     }
-
+    print('unassigned lccps ${unAssignedLccps.length}');
   }
 
   VenueTimePairModel? pickSpecialVenue(
@@ -68,8 +72,8 @@ class SpecialTableGenProvider extends StateNotifier<void> {
           ? specialVTPS.firstWhere((element) {
               var isLibLevel = lccp.level == data.regLibLevel;
               return element.venueName!.toLowerCase() == venue.toLowerCase() &&
-                      element.isBooked == false &&
-                      !isLibLevel ||
+                  element.day != lccp.lecturerFreeDay&&
+              element.isBooked == false && !isLibLevel ||
                   (isLibLevel &&
                       element.day != data.regLibDay &&
                       element.position != data.regLibPeriod!['position']);
@@ -89,6 +93,7 @@ class SpecialTableGenProvider extends StateNotifier<void> {
               var isLibLevel = lccp.level == data.evenLibLevel;
               return element.period == evenPeriod.period &&
                       element.venueName!.toLowerCase() == venue.toLowerCase() &&
+                       element.day != lccp.lecturerFreeDay &&
                       element.isBooked == false &&
                       !isLibLevel ||
                   (isLibLevel && element.day != data.evenLibDay);
@@ -108,10 +113,15 @@ class SpecialTableGenProvider extends StateNotifier<void> {
         venues.add(vtp);
       }
     }
+    if (venues.isEmpty) {
+      print(
+          'no venue found for ${lccp.courseCode} ${lccp.className} ${lccp.lecturerName} ${lccp.venues.length}');
+    }
     //? here i sort the venues according to the venue capacity from the highest to the lowest
     //! this is to ensure that the largest class size is assigned to the largest venue
     venues.sort((a, b) => b.venueCapacity!.compareTo(a.venueCapacity!));
     // loop through the venues and pick one
+    List<VenueTimePairModel> finalVenues = [];
     for (var venue in venues) {
       //! here check if the lecture or class does not have a class on the same day and period
       var isAvailable = unsavedTables
@@ -122,11 +132,16 @@ class SpecialTableGenProvider extends StateNotifier<void> {
                   element.lecturerId == lccp.lecturerId))
           .isEmpty;
       if (isAvailable) {
-        return venue;
-        
+        finalVenues.add(venue);
       }
     }
-    return null;
+    if (finalVenues.isNotEmpty) {
+      return finalVenues.first;
+    } else {
+      print(
+          'no venue found for ${lccp.courseCode} ${lccp.className} ${lccp.lecturerName} ${lccp.venues}');
+      return null;
+    }
   }
 
   TablesModel buildTableItem(LecturerClassCoursePair lccp,

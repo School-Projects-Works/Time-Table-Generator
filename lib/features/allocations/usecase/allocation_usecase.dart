@@ -6,6 +6,7 @@ import 'package:aamusted_timetable_generator/features/allocations/data/courses/c
 import 'package:aamusted_timetable_generator/features/allocations/data/lecturers/lecturer_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/repo/allocation_repo.dart';
 import 'package:aamusted_timetable_generator/features/allocations/usecase/block_funtions.dart';
+import 'package:aamusted_timetable_generator/features/configurations/data/config/config_model.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
@@ -63,6 +64,7 @@ class AllocationUseCase extends AllocationRepo {
     required String path,
     required String year,
     required String semester,
+    required ConfigModel config,
   }) async {
     try {
       List<CourseModel> courses = [];
@@ -153,6 +155,7 @@ class AllocationUseCase extends AllocationRepo {
               allocationsSheet: regAllocationsSheet,
               department: department,
               semester: semester,
+              config: config,
               year: year,
               classes: regClasses,
               studyMode: 'Regular');
@@ -162,6 +165,7 @@ class AllocationUseCase extends AllocationRepo {
               department: department,
               semester: semester,
               year: year,
+              config: config,
               classes: evenClasses,
               studyMode: 'Evening');
 

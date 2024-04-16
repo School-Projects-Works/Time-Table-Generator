@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 
 class LecturerClassCoursePair {
@@ -23,6 +24,7 @@ class LecturerClassCoursePair {
   String semester;
   String department;
   bool hasDisability;
+  String lecturerFreeDay;
   LecturerClassCoursePair({
     required this.id,
     required this.lecturerId,
@@ -45,6 +47,7 @@ class LecturerClassCoursePair {
     required this.semester,
     required this.department,
     required this.hasDisability,
+    required this.lecturerFreeDay,
   });
 
   LecturerClassCoursePair copyWith({
@@ -69,6 +72,7 @@ class LecturerClassCoursePair {
     String? semester,
     String? department,
     bool? hasDisability,
+    String? lecturerFreeDay,
   }) {
     return LecturerClassCoursePair(
       id: id ?? this.id,
@@ -92,6 +96,7 @@ class LecturerClassCoursePair {
       semester: semester ?? this.semester,
       department: department ?? this.department,
       hasDisability: hasDisability ?? this.hasDisability,
+      lecturerFreeDay: lecturerFreeDay ?? this.lecturerFreeDay,
     );
   }
 
@@ -118,6 +123,7 @@ class LecturerClassCoursePair {
       'semester': semester,
       'department': department,
       'hasDisability': hasDisability,
+      'lecturerFreeDay': lecturerFreeDay,
     };
   }
 
@@ -144,6 +150,7 @@ class LecturerClassCoursePair {
       semester: map['semester'] ?? '',
       department: map['department'] ?? '',
       hasDisability: map['hasDisability'] ?? false,
+      lecturerFreeDay: map['lecturerFreeDay'] ?? '',
     );
   }
 
@@ -154,59 +161,61 @@ class LecturerClassCoursePair {
 
   @override
   String toString() {
-    return 'LCCPModel(id: $id, lecturerId: $lecturerId, lecturerName: $lecturerName, isAsigned: $isAsigned, lecturer: $lecturer, courseId: $courseId, courseCode: $courseCode, requireSpecialVenue: $requireSpecialVenue, venues: $venues, courseName: $courseName, course: $course, classId: $classId, className: $className, classData: $classData, classCapacity: $classCapacity, studyMode: $studyMode, level: $level, year: $year, semester: $semester, department: $department, hasDisability: $hasDisability)';
+    return 'LecturerClassCoursePair(id: $id, lecturerId: $lecturerId, lecturerName: $lecturerName, isAsigned: $isAsigned, lecturer: $lecturer, courseId: $courseId, courseCode: $courseCode, requireSpecialVenue: $requireSpecialVenue, venues: $venues, courseName: $courseName, course: $course, classId: $classId, className: $className, classData: $classData, classCapacity: $classCapacity, studyMode: $studyMode, level: $level, year: $year, semester: $semester, department: $department, hasDisability: $hasDisability, lecturerFreeDay: $lecturerFreeDay)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-
+  
     return other is LecturerClassCoursePair &&
-        other.id == id &&
-        other.lecturerId == lecturerId &&
-        other.lecturerName == lecturerName &&
-        other.isAsigned == isAsigned &&
-        mapEquals(other.lecturer, lecturer) &&
-        other.courseId == courseId &&
-        other.courseCode == courseCode &&
-        other.requireSpecialVenue == requireSpecialVenue &&
-        listEquals(other.venues, venues) &&
-        other.courseName == courseName &&
-        mapEquals(other.course, course) &&
-        other.classId == classId &&
-        other.className == className &&
-        mapEquals(other.classData, classData) &&
-        other.classCapacity == classCapacity &&
-        other.studyMode == studyMode &&
-        other.level == level &&
-        other.year == year &&
-        other.semester == semester &&
-        other.department == department &&
-        other.hasDisability == hasDisability;
+      other.id == id &&
+      other.lecturerId == lecturerId &&
+      other.lecturerName == lecturerName &&
+      other.isAsigned == isAsigned &&
+      mapEquals(other.lecturer, lecturer) &&
+      other.courseId == courseId &&
+      other.courseCode == courseCode &&
+      other.requireSpecialVenue == requireSpecialVenue &&
+      listEquals(other.venues, venues) &&
+      other.courseName == courseName &&
+      mapEquals(other.course, course) &&
+      other.classId == classId &&
+      other.className == className &&
+      mapEquals(other.classData, classData) &&
+      other.classCapacity == classCapacity &&
+      other.studyMode == studyMode &&
+      other.level == level &&
+      other.year == year &&
+      other.semester == semester &&
+      other.department == department &&
+      other.hasDisability == hasDisability &&
+      other.lecturerFreeDay == lecturerFreeDay;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-        lecturerId.hashCode ^
-        lecturerName.hashCode ^
-        isAsigned.hashCode ^
-        lecturer.hashCode ^
-        courseId.hashCode ^
-        courseCode.hashCode ^
-        requireSpecialVenue.hashCode ^
-        venues.hashCode ^
-        courseName.hashCode ^
-        course.hashCode ^
-        classId.hashCode ^
-        className.hashCode ^
-        classData.hashCode ^
-        classCapacity.hashCode ^
-        studyMode.hashCode ^
-        level.hashCode ^
-        year.hashCode ^
-        semester.hashCode ^
-        department.hashCode ^
-        hasDisability.hashCode;
+      lecturerId.hashCode ^
+      lecturerName.hashCode ^
+      isAsigned.hashCode ^
+      lecturer.hashCode ^
+      courseId.hashCode ^
+      courseCode.hashCode ^
+      requireSpecialVenue.hashCode ^
+      venues.hashCode ^
+      courseName.hashCode ^
+      course.hashCode ^
+      classId.hashCode ^
+      className.hashCode ^
+      classData.hashCode ^
+      classCapacity.hashCode ^
+      studyMode.hashCode ^
+      level.hashCode ^
+      year.hashCode ^
+      semester.hashCode ^
+      department.hashCode ^
+      hasDisability.hashCode ^
+      lecturerFreeDay.hashCode;
   }
 }

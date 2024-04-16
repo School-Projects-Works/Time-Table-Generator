@@ -1,5 +1,5 @@
 import 'package:aamusted_timetable_generator/core/functions/time_sorting.dart';
-import 'package:aamusted_timetable_generator/features/tables/data/lcc_model.dart';
+import 'package:aamusted_timetable_generator/features/tables/data/lecturer_class_course_pair.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/venue_time_pair_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/class_course/lecturer_course_class_pair.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';

@@ -3,9 +3,8 @@ import 'package:aamusted_timetable_generator/features/allocations/data/lecturers
 import 'package:aamusted_timetable_generator/features/database/provider/database_provider.dart';
 import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/class_course_pair_model.dart';
-import 'package:aamusted_timetable_generator/features/tables/data/lcc_model.dart';
+import 'package:aamusted_timetable_generator/features/tables/data/lecturer_class_course_pair.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/class_course/class_course_pair.dart';
-import 'package:aamusted_timetable_generator/features/tables/provider/class_course/lecturer_course_pair.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mongo_dart/mongo_dart.dart';
@@ -19,7 +18,6 @@ class LecturerCourseClassPairProvider
   LecturerCourseClassPairProvider() : super([]);
 
   generateLCCP(WidgetRef ref) {
-    ref.read(lectuerCoursePairProvider.notifier).generateLC(ref);
     ref.read(classCoursePairProvider.notifier).generateCCP(ref);
     var classCoursePair = ref.watch(classCoursePairProvider);
 
@@ -67,6 +65,7 @@ class LecturerCourseClassPairProvider
         courseCode: cc.courseCode,
         courseId: cc.courseId,
         isAsigned: false,
+        lecturerFreeDay: lecturer.freeDay,
         className: cc.className,
         courseName: cc.courseName,
         lecturer: lecturer.toMap(),

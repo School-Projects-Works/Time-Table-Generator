@@ -35,7 +35,7 @@ class _DayItemState extends ConsumerState<DayItem> {
       //split periods at where breakTime is
 
       breakPeriod = periods.firstWhereOrNull((element) =>
-          element.period.toLowerCase().replaceAll(' ', '') == 'break'.trim());
+          element.isBreak);
       if (breakPeriod != null) {
         for (PeriodModel period in periods) {
           //we check if period start time is less than break time
