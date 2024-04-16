@@ -37,16 +37,16 @@ class GeneratingTableProvider extends StateNotifier<List<TablesModel>> {
 }
 
 final unassignedLCCPProvider =
-    StateNotifierProvider<UnassignedLCCList, List<LCCPModel>>(
+    StateNotifierProvider<UnassignedLCCList, List<LecturerClassCoursePair>>(
         (ref) => UnassignedLCCList());
 
-class UnassignedLCCList extends StateNotifier<List<LCCPModel>> {
+class UnassignedLCCList extends StateNotifier<List<LecturerClassCoursePair>> {
   UnassignedLCCList() : super([]);
-  void addLCCP(LCCPModel lccp) {
+  void addLCCP(LecturerClassCoursePair lccp) {
     state = [...state, lccp];
   }
 
-  void removeLCCP(LCCPModel lccp) {
+  void removeLCCP(LecturerClassCoursePair lccp) {
     state = state.where((element) => element.id != lccp.id).toList();
   }
 }
@@ -80,7 +80,7 @@ class TableGenProvider extends StateNotifier<void> {
         vtps.where((element) => (element.isSpecialVenue ?? false)).toList();
     var nonSpecialVTPS =
         vtps.where((element) => !(element.isSpecialVenue ?? false)).toList();
-    List<LCCPModel> lccps = [];
+    List<LecturerClassCoursePair> lccps = [];
 
     var config = ref.watch(configProvider);
     var tables = ref.watch(generatingTableProvider);
@@ -263,8 +263,11 @@ class TableGenProvider extends StateNotifier<void> {
     return tables;
   }
 
-  List<TablesModel> generateSpecialTables(List<LCCPModel> lccpWithSpecialVenue,
-      List<VenueTimePairModel> specialVTPS, ConfigModel config, WidgetRef ref) {
+  List<TablesModel> generateSpecialTables(
+      List<LecturerClassCoursePair> lccpWithSpecialVenue,
+      List<VenueTimePairModel> specialVTPS,
+      ConfigModel config,
+      WidgetRef ref) {
     List<TablesModel> tables = [];
     var reg = lccpWithSpecialVenue
         .where((element) =>
@@ -317,7 +320,7 @@ class TableGenProvider extends StateNotifier<void> {
   }
 
   VenueTimePairModel? pickVenue(
-      {required LCCPModel lccp,
+      {required LecturerClassCoursePair lccp,
       required List<VenueTimePairModel> specialVTPS,
       required WidgetRef ref,
       required ConfigModel config}) {
@@ -364,7 +367,7 @@ class TableGenProvider extends StateNotifier<void> {
   }
 
   List<TablesModel> generateOtherTables(
-      List<LCCPModel> lccpWithNoSpecialVenue,
+      List<LecturerClassCoursePair> lccpWithNoSpecialVenue,
       List<VenueTimePairModel> nonSpecialVTPS,
       ConfigModel config,
       WidgetRef ref) {
@@ -587,8 +590,8 @@ class TableGenProvider extends StateNotifier<void> {
     return table;
   }
 
-  TablesModel buildTableItem(
-      LCCPModel lccp, VenueTimePairModel vtp, ConfigModel config) {
+  TablesModel buildTableItem(LecturerClassCoursePair lccp,
+      VenueTimePairModel vtp, ConfigModel config) {
     var id = '${lccp.id}${vtp.id}'
         .trim()
         .replaceAll(' ', '')

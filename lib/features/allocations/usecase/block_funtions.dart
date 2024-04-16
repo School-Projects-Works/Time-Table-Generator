@@ -75,7 +75,7 @@ class AllocationBlocks {
         /// then add the class  id to the clecturer to the lecturer
         List<String> lecturerClassesList = [];
         if (lecturerClass.isNotEmpty) {
-          var lecturerClasses = lecturerClass.split(',');
+          var lecturerClasses = lecturerClass.split(RegExp(r'[,.]'));
           for (var aClass in lecturerClasses) {
             var theClass = classes
                 .where((element) =>
@@ -90,8 +90,7 @@ class AllocationBlocks {
           /// add all classes with same level and department to lecturer
           lecturerClassesList = classes
               .where((element) =>
-                  element.level.trim().replaceAll(' ', '') == level &&
-                  element.department == department)
+                  element.level == level && element.department == department)
               .map((e) => e.id!)
               .toList();
         }
@@ -99,6 +98,7 @@ class AllocationBlocks {
         lecturers.add(lecturer);
       }
     }
+    
     return lecturers;
   }
 
@@ -170,9 +170,7 @@ class AllocationBlocks {
             courses.add(course);
           }
         }
-        
       }
-     
     }
     return courses;
   }

@@ -20,15 +20,16 @@ class TableGenerationProvider extends StateNotifier<void> {
     CustomDialog.dismiss();
     CustomDialog.showLoading(message: 'Generating Table.....');
     ref.read(venueTimePairProvider.notifier).generateVTP(ref);
-    var vtps = ref.watch(venueTimePairProvider);
     ref.read(liberalTimePairProvider.notifier).generateLTP(ref);
     ref.read(liberalTableGenerationProvider.notifier).generateTables(ref);
-    // //! generate the LCCP data
-    // ref.read(lecturerCourseClassPairProvider.notifier).generateLCCP(ref);
+    // //! generate the Lecturer class course pair data
+    ref.read(lecturerCourseClassPairProvider.notifier).generateLCCP(ref);
+    //var lccp = ref.watch(lecturerCourseClassPairProvider);
+   // print('length of lccp ${lccp.length}');
     // //! generate the special table
-    // ref.read(spcialTableGenProvider.notifier).generateTable(ref);
+    ref.read(spcialTableGenProvider.notifier).generateTable(ref);
     // //! generate the other table
-    // ref.read(otherTableGenProvider.notifier).generateTable(ref);
+    ref.read(otherTableGenProvider.notifier).generateTable(ref);
     ref.read(unsavedTableProvider.notifier).saveTables(ref);
     CustomDialog.dismiss();
   }

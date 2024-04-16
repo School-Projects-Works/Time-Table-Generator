@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
-
-class LCCPModel {
+class LecturerClassCoursePair {
   String id;
   String lecturerId;
   String lecturerName;
@@ -24,7 +23,7 @@ class LCCPModel {
   String semester;
   String department;
   bool hasDisability;
-  LCCPModel({
+  LecturerClassCoursePair({
     required this.id,
     required this.lecturerId,
     required this.lecturerName,
@@ -48,7 +47,7 @@ class LCCPModel {
     required this.hasDisability,
   });
 
-  LCCPModel copyWith({
+  LecturerClassCoursePair copyWith({
     String? id,
     String? lecturerId,
     String? lecturerName,
@@ -71,7 +70,7 @@ class LCCPModel {
     String? department,
     bool? hasDisability,
   }) {
-    return LCCPModel(
+    return LecturerClassCoursePair(
       id: id ?? this.id,
       lecturerId: lecturerId ?? this.lecturerId,
       lecturerName: lecturerName ?? this.lecturerName,
@@ -122,8 +121,8 @@ class LCCPModel {
     };
   }
 
-  factory LCCPModel.fromMap(Map<String, dynamic> map) {
-    return LCCPModel(
+  factory LecturerClassCoursePair.fromMap(Map<String, dynamic> map) {
+    return LecturerClassCoursePair(
       id: map['id'] ?? '',
       lecturerId: map['lecturerId'] ?? '',
       lecturerName: map['lecturerName'] ?? '',
@@ -150,7 +149,8 @@ class LCCPModel {
 
   String toJson() => json.encode(toMap());
 
-  factory LCCPModel.fromJson(String source) => LCCPModel.fromMap(json.decode(source));
+  factory LecturerClassCoursePair.fromJson(String source) =>
+      LecturerClassCoursePair.fromMap(json.decode(source));
 
   @override
   String toString() {
@@ -160,53 +160,53 @@ class LCCPModel {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-  
-    return other is LCCPModel &&
-      other.id == id &&
-      other.lecturerId == lecturerId &&
-      other.lecturerName == lecturerName &&
-      other.isAsigned == isAsigned &&
-      mapEquals(other.lecturer, lecturer) &&
-      other.courseId == courseId &&
-      other.courseCode == courseCode &&
-      other.requireSpecialVenue == requireSpecialVenue &&
-      listEquals(other.venues, venues) &&
-      other.courseName == courseName &&
-      mapEquals(other.course, course) &&
-      other.classId == classId &&
-      other.className == className &&
-      mapEquals(other.classData, classData) &&
-      other.classCapacity == classCapacity &&
-      other.studyMode == studyMode &&
-      other.level == level &&
-      other.year == year &&
-      other.semester == semester &&
-      other.department == department &&
-      other.hasDisability == hasDisability;
+
+    return other is LecturerClassCoursePair &&
+        other.id == id &&
+        other.lecturerId == lecturerId &&
+        other.lecturerName == lecturerName &&
+        other.isAsigned == isAsigned &&
+        mapEquals(other.lecturer, lecturer) &&
+        other.courseId == courseId &&
+        other.courseCode == courseCode &&
+        other.requireSpecialVenue == requireSpecialVenue &&
+        listEquals(other.venues, venues) &&
+        other.courseName == courseName &&
+        mapEquals(other.course, course) &&
+        other.classId == classId &&
+        other.className == className &&
+        mapEquals(other.classData, classData) &&
+        other.classCapacity == classCapacity &&
+        other.studyMode == studyMode &&
+        other.level == level &&
+        other.year == year &&
+        other.semester == semester &&
+        other.department == department &&
+        other.hasDisability == hasDisability;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-      lecturerId.hashCode ^
-      lecturerName.hashCode ^
-      isAsigned.hashCode ^
-      lecturer.hashCode ^
-      courseId.hashCode ^
-      courseCode.hashCode ^
-      requireSpecialVenue.hashCode ^
-      venues.hashCode ^
-      courseName.hashCode ^
-      course.hashCode ^
-      classId.hashCode ^
-      className.hashCode ^
-      classData.hashCode ^
-      classCapacity.hashCode ^
-      studyMode.hashCode ^
-      level.hashCode ^
-      year.hashCode ^
-      semester.hashCode ^
-      department.hashCode ^
-      hasDisability.hashCode;
+        lecturerId.hashCode ^
+        lecturerName.hashCode ^
+        isAsigned.hashCode ^
+        lecturer.hashCode ^
+        courseId.hashCode ^
+        courseCode.hashCode ^
+        requireSpecialVenue.hashCode ^
+        venues.hashCode ^
+        courseName.hashCode ^
+        course.hashCode ^
+        classId.hashCode ^
+        className.hashCode ^
+        classData.hashCode ^
+        classCapacity.hashCode ^
+        studyMode.hashCode ^
+        level.hashCode ^
+        year.hashCode ^
+        semester.hashCode ^
+        department.hashCode ^
+        hasDisability.hashCode;
   }
 }

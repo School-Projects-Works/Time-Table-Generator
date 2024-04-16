@@ -108,10 +108,15 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
             title: 'Courses',
             //width: 200,
             cellBuilder: (item) => Text(
-              item.courses
-                  .map((e) => CourseModel.fromMap(e).id)
-                  .toList()
-                  .join(','),
+              item.courses.length.toString(),
+              style: tableTextStyle,
+            ),
+          ),
+          CustomTableColumn(
+            title: 'Class',
+            width: 200,
+            cellBuilder: (item) => Text(
+              item.classes.length.toString(),
               style: tableTextStyle,
             ),
           ),

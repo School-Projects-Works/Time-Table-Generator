@@ -2,12 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-class CCPModel {
+class ClassCoursePairModel {
   //! class-course pair model
   String id;
   String courseId;
   String courseCode;
   String courseName;
+  bool requiredSpecialVenue;
+  List<String> lecturers;
+  List<String> venues;
   Map<String, dynamic> course;
   String classId;
   String className;
@@ -19,11 +22,15 @@ class CCPModel {
   String semester;
   String department;
   bool hasDisability;
-  CCPModel({
+  bool isPaired;
+  ClassCoursePairModel({
     required this.id,
     required this.courseId,
     required this.courseCode,
     required this.courseName,
+    required this.requiredSpecialVenue,
+    required this.lecturers,
+    required this.venues,
     required this.course,
     required this.classId,
     required this.className,
@@ -35,14 +42,17 @@ class CCPModel {
     required this.semester,
     required this.department,
     required this.hasDisability,
+     this.isPaired=false,
   });
-  
 
-  CCPModel copyWith({
+  ClassCoursePairModel copyWith({
     String? id,
     String? courseId,
     String? courseCode,
     String? courseName,
+    bool? requiredSpecialVenue,
+    List<String>? lecturers,
+    List<String>? venues,
     Map<String, dynamic>? course,
     String? classId,
     String? className,
@@ -54,12 +64,16 @@ class CCPModel {
     String? semester,
     String? department,
     bool? hasDisability,
+    bool? isPaired,
   }) {
-    return CCPModel(
+    return ClassCoursePairModel(
       id: id ?? this.id,
       courseId: courseId ?? this.courseId,
       courseCode: courseCode ?? this.courseCode,
       courseName: courseName ?? this.courseName,
+      requiredSpecialVenue: requiredSpecialVenue ?? this.requiredSpecialVenue,
+      lecturers: lecturers ?? this.lecturers,
+      venues: venues ?? this.venues,
       course: course ?? this.course,
       classId: classId ?? this.classId,
       className: className ?? this.className,
@@ -71,6 +85,7 @@ class CCPModel {
       semester: semester ?? this.semester,
       department: department ?? this.department,
       hasDisability: hasDisability ?? this.hasDisability,
+      isPaired: isPaired ?? this.isPaired,
     );
   }
 
@@ -80,6 +95,9 @@ class CCPModel {
       'courseId': courseId,
       'courseCode': courseCode,
       'courseName': courseName,
+      'requiredSpecialVenue': requiredSpecialVenue,
+      'lecturers': lecturers,
+      'venues': venues,
       'course': course,
       'classId': classId,
       'className': className,
@@ -91,15 +109,19 @@ class CCPModel {
       'semester': semester,
       'department': department,
       'hasDisability': hasDisability,
+      'isPaired': isPaired,
     };
   }
 
-  factory CCPModel.fromMap(Map<String, dynamic> map) {
-    return CCPModel(
+  factory ClassCoursePairModel.fromMap(Map<String, dynamic> map) {
+    return ClassCoursePairModel(
       id: map['id'] ?? '',
       courseId: map['courseId'] ?? '',
       courseCode: map['courseCode'] ?? '',
       courseName: map['courseName'] ?? '',
+      requiredSpecialVenue: map['requiredSpecialVenue'] ?? false,
+      lecturers: List<String>.from(map['lecturers']),
+      venues: List<String>.from(map['venues']),
       course: Map<String, dynamic>.from(map['course']),
       classId: map['classId'] ?? '',
       className: map['className'] ?? '',
@@ -111,27 +133,32 @@ class CCPModel {
       semester: map['semester'] ?? '',
       department: map['department'] ?? '',
       hasDisability: map['hasDisability'] ?? false,
+      isPaired: map['isPaired'] ?? false,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory CCPModel.fromJson(String source) => CCPModel.fromMap(json.decode(source));
+  factory ClassCoursePairModel.fromJson(String source) =>
+      ClassCoursePairModel.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'CCPModel(id: $id, courseId: $courseId, courseCode: $courseCode, courseName: $courseName, course: $course, classId: $classId, className: $className, classData: $classData, classCapacity: $classCapacity, studyMode: $studyMode, level: $level, year: $year, semester: $semester, department: $department, hasDisability: $hasDisability)';
+    return 'ClassCoursePairModel(id: $id, courseId: $courseId, courseCode: $courseCode, courseName: $courseName, requiredSpecialVenue: $requiredSpecialVenue, lecturers: $lecturers, venues: $venues, course: $course, classId: $classId, className: $className, classData: $classData, classCapacity: $classCapacity, studyMode: $studyMode, level: $level, year: $year, semester: $semester, department: $department, hasDisability: $hasDisability, isPaired: $isPaired)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
   
-    return other is CCPModel &&
+    return other is ClassCoursePairModel &&
       other.id == id &&
       other.courseId == courseId &&
       other.courseCode == courseCode &&
       other.courseName == courseName &&
+      other.requiredSpecialVenue == requiredSpecialVenue &&
+      listEquals(other.lecturers, lecturers) &&
+      listEquals(other.venues, venues) &&
       mapEquals(other.course, course) &&
       other.classId == classId &&
       other.className == className &&
@@ -142,7 +169,8 @@ class CCPModel {
       other.year == year &&
       other.semester == semester &&
       other.department == department &&
-      other.hasDisability == hasDisability;
+      other.hasDisability == hasDisability &&
+      other.isPaired == isPaired;
   }
 
   @override
@@ -151,6 +179,9 @@ class CCPModel {
       courseId.hashCode ^
       courseCode.hashCode ^
       courseName.hashCode ^
+      requiredSpecialVenue.hashCode ^
+      lecturers.hashCode ^
+      venues.hashCode ^
       course.hashCode ^
       classId.hashCode ^
       className.hashCode ^
@@ -161,6 +192,7 @@ class CCPModel {
       year.hashCode ^
       semester.hashCode ^
       department.hashCode ^
-      hasDisability.hashCode;
+      hasDisability.hashCode ^
+      isPaired.hashCode;
   }
 }

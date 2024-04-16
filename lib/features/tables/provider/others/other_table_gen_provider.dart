@@ -27,62 +27,25 @@ class OtherTableGenProvider extends StateNotifier<void> {
             (element) => !element.requireSpecialVenue && element.venues.isEmpty)
         .toList();
     var config = ref.watch(configProvider);
-
-    //get all vtps which are special venues
-    //! here i work on regualr courses only=================================================================
-
-    var regNoneSpecialLccp = noneSpecialLccps
-        .where((element) =>
-            element.studyMode.toLowerCase().replaceAll(' ', '') ==
-                'regular'.toLowerCase() &&
-            element.isAsigned == false)
-        .toList();
-    //?here i loop through the regular special lccp and assign them to special vtps
-    for (var lccp in regNoneSpecialLccp) {
+    for (var lccpItem in noneSpecialLccps) {
       var vtps = ref.watch(venueTimePairProvider);
       var noneSpecialVtps = vtps
           .where((element) =>
               element.isSpecialVenue != true && element.isBooked == false)
           .toList();
-      var noneSpecialVTP = pickSpecialVenue(
-          lccp: lccp, noneSpecialVTPS: noneSpecialVtps, ref: ref, data: config);
+           var noneSpecialVTP = pickSpecialVenue(
+          lccp: lccpItem, noneSpecialVTPS: noneSpecialVtps, ref: ref, data: config);
       if (noneSpecialVTP != null) {
-        var table = buildTableItem(lccp, noneSpecialVTP, config);
-
+        var table = buildTableItem(lccpItem, noneSpecialVTP, config);
         ref.read(unsavedTableProvider.notifier).addTable([table]);
-        ref.read(lecturerCourseClassPairProvider.notifier).markedAsigned(lccp);
-        ref.read(venueTimePairProvider.notifier).bookVTP(noneSpecialVTP);
-      }
-    }
-
-    //! work on evening courses only=================================================================
-    var eveNoneSpecialLccp = noneSpecialLccps
-        .where((element) =>
-            element.studyMode.toLowerCase().replaceAll(' ', '') ==
-                'evening'.toLowerCase() &&
-            element.isAsigned == false)
-        .toList();
-    //?here i loop through the evening special lccp and assign them to special vtps
-    for (var lccp in eveNoneSpecialLccp) {
-      var vtps = ref.watch(venueTimePairProvider);
-      var noneSpecialVtps = vtps
-          .where((element) =>
-              element.isSpecialVenue != true && element.isBooked == false)
-          .toList();
-      var noneSpecialVTP = pickSpecialVenue(
-          lccp: lccp, noneSpecialVTPS: noneSpecialVtps, ref: ref, data: config);
-      if (noneSpecialVTP != null) {
-        var table = buildTableItem(lccp, noneSpecialVTP, config);
-        ref.read(unsavedTableProvider.notifier).addTable([table]);
-
-        ref.read(lecturerCourseClassPairProvider.notifier).markedAsigned(lccp);
+        ref.read(lecturerCourseClassPairProvider.notifier).markedAsigned(lccpItem);
         ref.read(venueTimePairProvider.notifier).bookVTP(noneSpecialVTP);
       }
     }
   }
 
   VenueTimePairModel? pickSpecialVenue(
-      {required LCCPModel lccp,
+      {required LecturerClassCoursePair lccp,
       required List<VenueTimePairModel> noneSpecialVTPS,
       required WidgetRef ref,
       required ConfigModel data}) {
@@ -106,7 +69,7 @@ class OtherTableGenProvider extends StateNotifier<void> {
             (isLibLevel &&
                     venue.day != data.regLibDay &&
                     venue.period != data.regLibPeriod!['period']) &&
-                venue.venueCapacity! >= lccp.classCapacity - 20) {
+                venue.venueCapacity! >= lccp.classCapacity - 25) {
           venues.add(venue);
         }
       } else {
@@ -114,7 +77,7 @@ class OtherTableGenProvider extends StateNotifier<void> {
         if (!isLibLevel ||
             (isLibLevel && venue.day != data.evenLibDay) &&
                 venue.period == evenPeriod.period &&
-                venue.venueCapacity! >= lccp.classCapacity - 20) {
+                venue.venueCapacity! >= lccp.classCapacity - 25) {
           venues.add(venue);
         }
       }
@@ -128,7 +91,7 @@ class OtherTableGenProvider extends StateNotifier<void> {
             (isLibLevel &&
                 venue.isBooked == false &&
                 venue.day != data.regLibDay &&
-                venue.period != data.regLibPeriod!['period']);
+                venue.position != data.regLibPeriod!['position']);
       }).toList();
 
       venues.addAll(randomVenues);
@@ -161,8 +124,8 @@ class OtherTableGenProvider extends StateNotifier<void> {
     return null;
   }
 
-  TablesModel buildTableItem(
-      LCCPModel lccp, VenueTimePairModel vtp, ConfigModel config) {
+  TablesModel buildTableItem(LecturerClassCoursePair lccp,
+      VenueTimePairModel vtp, ConfigModel config) {
     var id = '${lccp.id}${vtp.id}'
         .trim()
         .replaceAll(' ', '')

@@ -1,15 +1,16 @@
 //! here i generate the class_course_pair.dart file
 
 import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
-import 'package:aamusted_timetable_generator/features/tables/data/ccp_model.dart';
+import 'package:aamusted_timetable_generator/features/tables/data/class_course_pair_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../configurations/provider/config_provider.dart';
 
 final classCoursePairProvider =
-    StateNotifierProvider<ClassCoursePairProvider, List<CCPModel>>(
+    StateNotifierProvider<ClassCoursePairProvider, List<ClassCoursePairModel>>(
         (ref) => ClassCoursePairProvider());
 
-class ClassCoursePairProvider extends StateNotifier<List<CCPModel>> {
+class ClassCoursePairProvider
+    extends StateNotifier<List<ClassCoursePairModel>> {
   ClassCoursePairProvider() : super([]);
 
   generateCCP(WidgetRef ref) {
@@ -19,21 +20,22 @@ class ClassCoursePairProvider extends StateNotifier<List<CCPModel>> {
     var courses = ref.watch(coursesDataProvider);
     //! here i get the configuration data
     var config = ref.watch(configProvider);
-   List<CCPModel> ccp = [];
+    List<ClassCoursePairModel> classCoursePair = [];
     //! here i loop through the classes and courses and generate the class course pair
     for (var classData in classes) {
       //! here i loop through the courses
       for (var course in courses) {
         //! here i check if the course study mode and level is the same as the class study mode and level
         if (course.studyMode == classData.studyMode &&
-            course.level == classData.level) {
-              //! here i generate the id for the class course pair
+            course.level == classData.level &&
+            course.department == classData.department) {
+          //! here i generate the id for the class course pair
           var id = '${classData.id}${course.id}'
               .trim()
               .replaceAll(' ', '')
               .toLowerCase();
-              //! here i add the class course pair to the state
-          ccp.add(CCPModel(
+          //! here i add the class course pair to the state
+          classCoursePair.add(ClassCoursePairModel(
             id: id,
             courseId: course.id,
             courseCode: course.code,
@@ -49,12 +51,17 @@ class ClassCoursePairProvider extends StateNotifier<List<CCPModel>> {
             semester: config.semester!,
             department: classData.department!,
             hasDisability: classData.hasDisability!.toLowerCase() == 'yes',
+            requiredSpecialVenue: course.specialVenue != null &&
+                course.specialVenue!.toLowerCase() != 'no' &&
+                course.venues != null &&
+                course.venues!.isNotEmpty,
+                venues: course.venues ?? [],
+            lecturers: course.lecturer.map((e) => e['id'].toString()).toList(),
           ));
           //! here i add the class course pair to the state
-          
         }
       }
     }
-        state = [...ccp];
+    state = [...classCoursePair];
   }
 }

@@ -189,8 +189,8 @@ class AllocationUseCase extends AllocationRepo {
             lecturers.where((element) => element.id == lecturer.id).firstOrNull;
         if (theExistenLecturer != null) {
           // append classes if not already exist and append courses as well
-          var existCourses = theExistenLecturer.courses;
-          var existClasses = theExistenLecturer.classes;
+          var existCourses = lecturer.courses;
+          var existClasses = lecturer.classes;
           for (var element in existCourses) {
             if (!theExistenLecturer.courses
                 .any((c) => c['id'] == element['id'])) {
@@ -220,13 +220,16 @@ class AllocationUseCase extends AllocationRepo {
             lectCourses.add(course);
           }
         }
+
         lecturer.courses = lectCourses.map((e) => e.toMap()).toList();
+
         var theExistenLecturer =
             lecturers.where((element) => element.id == lecturer.id).firstOrNull;
-           if (theExistenLecturer != null) {
+        if (theExistenLecturer != null) {
+         
           // append classes if not already exist and append courses as well
-          var existCourses = theExistenLecturer.courses;
-          var existClasses = theExistenLecturer.classes;
+          var existCourses = lecturer.courses;
+          var existClasses = lecturer.classes;
           for (var element in existCourses) {
             if (!theExistenLecturer.courses
                 .any((c) => c['id'] == element['id'])) {
