@@ -68,6 +68,7 @@ class OtherTableGenProvider extends StateNotifier<void> {
         if (!isLibLevel ||
             (isLibLevel &&
                     venue.day != data.regLibDay &&
+                    venue.day != lccp.lecturerFreeDay &&
                     venue.period != data.regLibPeriod!['period']) &&
                 venue.venueCapacity! >= lccp.classCapacity - 25) {
           venues.add(venue);
@@ -77,6 +78,7 @@ class OtherTableGenProvider extends StateNotifier<void> {
         if (!isLibLevel ||
             (isLibLevel && venue.day != data.evenLibDay) &&
                 venue.period == evenPeriod.period &&
+                venue.day != lccp.lecturerFreeDay &&
                 venue.venueCapacity! >= lccp.classCapacity - 25) {
           venues.add(venue);
         }
@@ -113,6 +115,7 @@ class OtherTableGenProvider extends StateNotifier<void> {
       var isAvailable = unsavedTables
           .where((element) =>
               element.day == venue.day &&
+              
               element.period == venue.period &&
               (element.classId == lccp.classId ||
                   element.lecturerId == lccp.lecturerId))
