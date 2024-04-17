@@ -389,7 +389,7 @@ class _SingleItemState extends ConsumerState<SingleItem> {
                               if (unAsignedLTP.isNotEmpty ||
                                   unAssignedLCCP.isNotEmpty) {
                                 ref
-                                    .read(enptyAssignProvider.notifier)
+                                    .read(emptyAssignProvider.notifier)
                                     .setEmpty(empty!);
                                 CustomDialog.showCustom(
                                     width:

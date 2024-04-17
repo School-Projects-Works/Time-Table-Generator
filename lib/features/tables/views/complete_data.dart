@@ -12,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../config/theme/theme.dart';
 import '../provider/class_course/lecturer_course_class_pair.dart';
 import '../provider/liberay/liberal_time_pair.dart';
+import '../provider/table_manupulation.dart';
 import 'export/export_page.dart';
 import 'filter_box.dart';
 
@@ -119,6 +120,7 @@ class _CompleteDataPageState extends ConsumerState<CompleteDataPage> {
                             message: 'No unassigned courses or classes');
                         return;
                       }
+                       ref.read(emptyAssignProvider.notifier).setEmpty(null);
                       CustomDialog.showCustom(
                           width: MediaQuery.of(context).size.width * .9,
                           height: 650,

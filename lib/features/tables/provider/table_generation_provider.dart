@@ -49,6 +49,10 @@ class UnassignedLCCList extends StateNotifier<List<LecturerClassCoursePair>> {
   void removeLCCP(LecturerClassCoursePair lccp) {
     state = state.where((element) => element.id != lccp.id).toList();
   }
+
+  void removeLCCPWithId(String id) {
+    state = state.where((element) => element.id != id).toList();
+  }
 }
 
 final unassignedLTPProvider =
@@ -63,6 +67,10 @@ class UnassignedLTPs extends StateNotifier<List<LibTimePairModel>> {
 
   void removeLTP(LibTimePairModel ltp) {
     state = state.where((element) => element.id != ltp.id).toList();
+  }
+
+  void removeLTPWithId(String id) {
+    state = state.where((element) => element.id != id).toList();
   }
 }
 

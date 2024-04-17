@@ -1,11 +1,14 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
+import 'package:aamusted_timetable_generator/features/tables/provider/table_generation_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/usecase/tables_usecase.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/tables_model.dart';
+import '../../configurations/provider/config_provider.dart';
 import '../../database/provider/database_provider.dart';
 import '../data/empty_model.dart';
+import '../data/periods_model.dart';
 import '../data/unassigned_model.dart';
 
 class TablePairModel {
@@ -202,15 +205,78 @@ class TablePairProvider extends StateNotifier<TablePairModel> {
   }
 }
 
-final enptyAssignProvider =
+final emptyAssignProvider =
     StateNotifierProvider<EmptyAssignProvider, EmptyModel?>((ref) {
   return EmptyAssignProvider();
 });
 
 class EmptyAssignProvider extends StateNotifier<EmptyModel?> {
   EmptyAssignProvider() : super(null);
-  void setEmpty(EmptyModel empty) {
+  void setEmpty(EmptyModel? empty) {
     state = empty;
+  }
+
+  void assignItem({required WidgetRef ref}) async {
+    CustomDialog.dismiss();
+    CustomDialog.showLoading(message: 'Assigning item...');
+    var config = ref.watch(configProvider);
+    var venueList = ref.watch(venuesDataProvider);
+    var venue =
+        venueList.where((element) => element.name == state!.venue).firstOrNull;
+    var periods = config.periods.map((e) => PeriodModel.fromMap(e)).toList();
+    //remove break
+    periods.removeWhere((element) => element.isBreak);
+    //sort by position from highest to lowest
+    periods.sort((a, b) => a.position.compareTo(b.position));
+    var item = ref.watch(selectedUnassignedProvider);
+    if (state != null && item != null) {
+      var id = '${item.id}${venue != null ? venue.id : '_'}'
+          .trim()
+          .replaceAll(' ', '')
+          .toLowerCase()
+          .hashCode
+          .toString();
+      var table = TablesModel(
+        id: id,
+        day: state!.day,
+        period: state!.period.period,
+        studyMode: item.studyMode,
+        startTime: state!.period.startTime,
+        endTime: state!.period.endTime,
+        courseId: item.courseId,
+        lecturerName: item.lecturer,
+        courseTitle: item.courseName,
+        courseCode: item.code,
+        venueName: venue != null ? venue.name! : state!.venue,
+        venueId: venue != null ? venue.id! : state!.venue,
+        venueCapacity: venue != null ? venue.capacity! : 0,
+        classLevel: item.level,
+        className: item.className!,
+        department: item.department,
+        classSize: item.classSize.toString(),
+        semester: item.semester,
+        classId: item.classId,
+        lecturerId: item.lecturerId,
+        position: state!.period.position,
+      );
+      var (data1, message) =
+          await TableGenUsecase(db: ref.watch(dbProvider)).updateItem(table);
+      if (data1 != null) {
+        ref.read(tableDataProvider.notifier).updateTable([data1]);
+        //update unassignedLCCPProvider in data base 
+        
+        ref.read(unassignedLCCPProvider.notifier).removeLCCPWithId(item.id);
+        ref.read(selectedUnassignedProvider.notifier).state = null;
+        ref.read(unassignedLTPProvider.notifier).removeLTPWithId(item.id);
+        state = null;
+        CustomDialog.dismiss();
+        CustomDialog.dismiss();
+        CustomDialog.showSuccess(message: message);
+      } else {
+        CustomDialog.dismiss();
+        CustomDialog.showError(message: message);
+      }
+    }
   }
 }
 

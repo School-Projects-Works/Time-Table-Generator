@@ -8,10 +8,17 @@ class UnassignedModel {
   String code;
   String? className;
   String courseName;
+  String courseId;
+  String classId;
+  String year;
+  String semester;
+  String department;
+  int classSize;
   String lecturer;
   String lecturerId;
   String level;
   String studyMode;
+  bool isAssinable;
   bool requireSpecialVenue;
   UnassignedModel({
     required this.id,
@@ -19,10 +26,17 @@ class UnassignedModel {
     required this.code,
     this.className,
     required this.courseName,
+    required this.courseId,
+    required this.classId,
+    required this.year,
+    required this.semester,
+    required this.department,
+    required this.classSize,
     required this.lecturer,
     required this.lecturerId,
     required this.level,
     required this.studyMode,
+    required this.isAssinable,
     required this.requireSpecialVenue,
   });
 
@@ -32,10 +46,17 @@ class UnassignedModel {
     String? code,
     ValueGetter<String?>? className,
     String? courseName,
+    String? courseId,
+    String? classId,
+    String? year,
+    String? semester,
+    String? department,
+    int? classSize,
     String? lecturer,
     String? lecturerId,
     String? level,
     String? studyMode,
+    bool? isAssinable,
     bool? requireSpecialVenue,
   }) {
     return UnassignedModel(
@@ -44,10 +65,17 @@ class UnassignedModel {
       code: code ?? this.code,
       className: className != null ? className() : this.className,
       courseName: courseName ?? this.courseName,
+      courseId: courseId ?? this.courseId,
+      classId: classId ?? this.classId,
+      year: year ?? this.year,
+      semester: semester ?? this.semester,
+      department: department ?? this.department,
+      classSize: classSize ?? this.classSize,
       lecturer: lecturer ?? this.lecturer,
       lecturerId: lecturerId ?? this.lecturerId,
       level: level ?? this.level,
       studyMode: studyMode ?? this.studyMode,
+      isAssinable: isAssinable ?? this.isAssinable,
       requireSpecialVenue: requireSpecialVenue ?? this.requireSpecialVenue,
     );
   }
@@ -59,10 +87,17 @@ class UnassignedModel {
       'code': code,
       'className': className,
       'courseName': courseName,
+      'courseId': courseId,
+      'classId': classId,
+      'year': year,
+      'semester': semester,
+      'department': department,
+      'classSize': classSize,
       'lecturer': lecturer,
       'lecturerId': lecturerId,
       'level': level,
       'studyMode': studyMode,
+      'isAssinable': isAssinable,
       'requireSpecialVenue': requireSpecialVenue,
     };
   }
@@ -74,10 +109,17 @@ class UnassignedModel {
       code: map['code'] ?? '',
       className: map['className'],
       courseName: map['courseName'] ?? '',
+      courseId: map['courseId'] ?? '',
+      classId: map['classId'] ?? '',
+      year: map['year'] ?? '',
+      semester: map['semester'] ?? '',
+      department: map['department'] ?? '',
+      classSize: map['classSize']?.toInt() ?? 0,
       lecturer: map['lecturer'] ?? '',
       lecturerId: map['lecturerId'] ?? '',
       level: map['level'] ?? '',
       studyMode: map['studyMode'] ?? '',
+      isAssinable: map['isAssinable'] ?? false,
       requireSpecialVenue: map['requireSpecialVenue'] ?? false,
     );
   }
@@ -89,7 +131,7 @@ class UnassignedModel {
 
   @override
   String toString() {
-    return 'UnassignedModel(id: $id, type: $type, code: $code, className: $className, courseName: $courseName, lecturer: $lecturer, lecturerId: $lecturerId, level: $level, studyMode: $studyMode, requireSpecialVenue: $requireSpecialVenue)';
+    return 'UnassignedModel(id: $id, type: $type, code: $code, className: $className, courseName: $courseName, courseId: $courseId, classId: $classId, year: $year, semester: $semester, department: $department, classSize: $classSize, lecturer: $lecturer, lecturerId: $lecturerId, level: $level, studyMode: $studyMode, isAssinable: $isAssinable, requireSpecialVenue: $requireSpecialVenue)';
   }
 
   @override
@@ -102,10 +144,17 @@ class UnassignedModel {
       other.code == code &&
       other.className == className &&
       other.courseName == courseName &&
+      other.courseId == courseId &&
+      other.classId == classId &&
+      other.year == year &&
+      other.semester == semester &&
+      other.department == department &&
+      other.classSize == classSize &&
       other.lecturer == lecturer &&
       other.lecturerId == lecturerId &&
       other.level == level &&
       other.studyMode == studyMode &&
+      other.isAssinable == isAssinable &&
       other.requireSpecialVenue == requireSpecialVenue;
   }
 
@@ -116,10 +165,17 @@ class UnassignedModel {
       code.hashCode ^
       className.hashCode ^
       courseName.hashCode ^
+      courseId.hashCode ^
+      classId.hashCode ^
+      year.hashCode ^
+      semester.hashCode ^
+      department.hashCode ^
+      classSize.hashCode ^
       lecturer.hashCode ^
       lecturerId.hashCode ^
       level.hashCode ^
       studyMode.hashCode ^
+      isAssinable.hashCode ^
       requireSpecialVenue.hashCode;
   }
 }
