@@ -162,7 +162,6 @@ class SpecialTableGenProvider extends StateNotifier<void> {
       courseCode: lccp.courseCode,
       courseId: lccp.courseId,
       lecturerName: lccp.lecturerName,
-      lecturerEmail: '',
       startTime: vtp.startTime,
       endTime: vtp.endTime,
       courseTitle: lccp.courseName,

@@ -66,7 +66,6 @@ class LiberalTableProvider extends StateNotifier<List<TablesModel>> {
       courseCode: ltp.courseCode,
       courseId: ltp.courseId,
       lecturerName: ltp.lecturerName,
-      lecturerEmail: '',
       courseTitle: ltp.courseTitle,
       creditHours: '3',
       specialVenues: [],

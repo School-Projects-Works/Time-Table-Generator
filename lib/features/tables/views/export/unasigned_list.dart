@@ -2,6 +2,7 @@ import 'package:aamusted_timetable_generator/config/theme/theme.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/core/widget/table/data/models/custom_table_columns_model.dart';
 import 'package:aamusted_timetable_generator/core/widget/table/widgets/custom_table.dart';
+import 'package:fluent_ui/fluent_ui.dart' as fluent_ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -61,12 +62,20 @@ class _UnassignedListState extends ConsumerState<UnassignedList> {
     }
 
     return Card(
-      elevation: 6,
+      elevation: 10,
       color: Colors.white,
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: Colors.white),
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: const Offset(0, 3))
+            ]),
         child: Column(
           children: [
             Row(
@@ -118,6 +127,13 @@ class _UnassignedListState extends ConsumerState<UnassignedList> {
                   ],
                   columns: [
                     CustomTableColumn(
+                        title: 'Select',
+                        width: 50,
+                        cellBuilder: (item) => fluent_ui.Checkbox(
+                              onChanged: (value) {},
+                              checked: false,
+                            )),
+                    CustomTableColumn(
                       title: 'Code',
                       width: 100,
                       cellBuilder: (item) => Text(
@@ -156,7 +172,7 @@ class _UnassignedListState extends ConsumerState<UnassignedList> {
                     ),
                     CustomTableColumn(
                       title: 'Level',
-                      width: 100,
+                      width: 80,
                       cellBuilder: (item) => Text(
                         item.level,
                         style: tableTextStyle,

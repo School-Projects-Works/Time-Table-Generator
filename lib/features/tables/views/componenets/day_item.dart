@@ -1,6 +1,7 @@
 import 'package:aamusted_timetable_generator/core/functions/time_sorting.dart';
 import 'package:aamusted_timetable_generator/features/configurations/data/config/config_model.dart';
 import 'package:aamusted_timetable_generator/features/configurations/provider/config_provider.dart';
+import 'package:aamusted_timetable_generator/features/tables/data/empty_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/table_gen_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/views/componenets/single_item.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
@@ -290,7 +291,12 @@ class _DayItemState extends ConsumerState<DayItem> {
                                                     table: table,
                                                   );
                                                 } else {
-                                                  return SingleItem();
+                                                  return SingleItem(
+                                                      empty: EmptyModel(
+                                                        day: widget.day,
+                                                        venue: venue,
+                                                        period: period),
+                                                  );
                                                 }
                                               }).toList(),
                                             ),
@@ -345,7 +351,9 @@ class _DayItemState extends ConsumerState<DayItem> {
                                                     table: table,
                                                   );
                                                 } else {
-                                                  return SingleItem();
+                                                  return SingleItem(
+                                                    empty: EmptyModel(day: widget.day, venue: venue, period: period),
+                                                  );
                                                 }
                                               }).toList(),
                                             ),

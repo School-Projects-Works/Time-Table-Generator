@@ -144,7 +144,6 @@ class OtherTableGenProvider extends StateNotifier<void> {
       courseCode: lccp.courseCode,
       courseId: lccp.courseId,
       lecturerName: lccp.lecturerName,
-      lecturerEmail: '',
       courseTitle: lccp.courseName,
       creditHours: '3',
       specialVenues: [],

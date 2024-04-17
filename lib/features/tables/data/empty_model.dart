@@ -1,11 +1,9 @@
 import 'dart:convert';
-
 import 'package:aamusted_timetable_generator/features/tables/data/periods_model.dart';
-import 'package:aamusted_timetable_generator/features/venues/data/venue_model.dart';
 
 class EmptyModel {
   PeriodModel period;
-  VenueModel venue;
+  String venue;
   String day;
   EmptyModel({
     required this.period,
@@ -15,7 +13,7 @@ class EmptyModel {
 
   EmptyModel copyWith({
     PeriodModel? period,
-    VenueModel? venue,
+    String? venue,
     String? day,
   }) {
     return EmptyModel(
@@ -28,7 +26,7 @@ class EmptyModel {
   Map<String, dynamic> toMap() {
     return {
       'period': period.toMap(),
-      'venue': venue.toMap(),
+      'venue': venue,
       'day': day,
     };
   }
@@ -36,7 +34,7 @@ class EmptyModel {
   factory EmptyModel.fromMap(Map<String, dynamic> map) {
     return EmptyModel(
       period: PeriodModel.fromMap(map['period']),
-      venue: VenueModel.fromMap(map['venue']),
+      venue: map['venue'] ?? '',
       day: map['day'] ?? '',
     );
   }
