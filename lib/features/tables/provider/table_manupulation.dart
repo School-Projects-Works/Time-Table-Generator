@@ -1,5 +1,6 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
+import 'package:aamusted_timetable_generator/features/tables/provider/class_course/lecturer_course_class_pair.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/table_generation_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/usecase/tables_usecase.dart';
 import 'package:flutter/widgets.dart';
@@ -255,28 +256,23 @@ class EmptyAssignProvider extends StateNotifier<EmptyModel?> {
         department: item.department,
         classSize: item.classSize.toString(),
         semester: item.semester,
+        year: item.year,
+        disabilityAccess: venue != null ? venue.disabilityAccess : false,      
         classId: item.classId,
         lecturerId: item.lecturerId,
         position: state!.period.position,
       );
-      var (data1, message) =
-          await TableGenUsecase(db: ref.watch(dbProvider)).updateItem(table);
-      if (data1 != null) {
-        ref.read(tableDataProvider.notifier).updateTable([data1]);
-        //update unassignedLCCPProvider in data base 
-        
-        ref.read(unassignedLCCPProvider.notifier).removeLCCPWithId(item.id);
-        ref.read(selectedUnassignedProvider.notifier).state = null;
-        ref.read(unassignedLTPProvider.notifier).removeLTPWithId(item.id);
-        state = null;
-        CustomDialog.dismiss();
-        CustomDialog.dismiss();
-        CustomDialog.showSuccess(message: message);
-      } else {
-        CustomDialog.dismiss();
-        CustomDialog.showError(message: message);
-      }
-    }
+      var (data1) =
+          await TableGenUsecase(db: ref.watch(dbProvider)).appendTable(table);
+      ref.read(tableDataProvider.notifier).addTableItem(data1!);
+      //update unassignedLCCPProvider in data provider
+      ref.read(lecturerCourseClassPairProvider.notifier).updateData(item.id,ref);
+      ref.read(selectedUnassignedProvider.notifier).state = null;
+      state = null;
+      CustomDialog.dismiss();
+      CustomDialog.dismiss();
+      CustomDialog.showSuccess(message: 'Item assigned successfully');
+        }
   }
 }
 

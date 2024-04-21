@@ -4,6 +4,7 @@ import 'package:aamusted_timetable_generator/features/database/provider/database
 import 'package:aamusted_timetable_generator/features/tables/data/lecturer_class_course_pair.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/lib_time_pair_model.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/tables_model.dart';
+import 'package:aamusted_timetable_generator/features/tables/provider/class_course/lecturer_course_class_pair.dart';
 import 'package:aamusted_timetable_generator/features/tables/usecase/tables_usecase.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,9 +51,6 @@ class UnassignedLCCList extends StateNotifier<List<LecturerClassCoursePair>> {
     state = state.where((element) => element.id != lccp.id).toList();
   }
 
-  void removeLCCPWithId(String id) {
-    state = state.where((element) => element.id != id).toList();
-  }
 }
 
 final unassignedLTPProvider =

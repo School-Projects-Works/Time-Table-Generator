@@ -228,6 +228,9 @@ class TableDataProvider extends StateNotifier<List<TablesModel>> {
   void addTable(List<TablesModel> tables) {
     state = [...tables];
   }
+  void addTableItem(TablesModel table) {
+    state = [...state, table];
+  }
 
   void deleteTable(String id) {
     state = state.where((element) => element.id != id).toList();

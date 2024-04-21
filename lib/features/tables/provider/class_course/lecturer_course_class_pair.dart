@@ -95,6 +95,16 @@ class LecturerCourseClassPairProvider
     await LCCPServices(db: ref.watch(dbProvider)).saveData(state);
   }
 
+  void updateData(String  id , WidgetRef ref) async {
+    var lccp = state.where((element) => element.id == id).firstOrNull;
+    if (lccp != null) {
+      lccp.isAsigned = true;
+       await LCCPServices(db: ref.watch(dbProvider)).updateData(lccp);
+    }
+    
+   
+  }
+
   void setLCCP(List<LecturerClassCoursePair> lccp) {
     state = lccp;
   }
@@ -120,6 +130,20 @@ class LCCPServices {
       for (var e in data) {
         await db.collection('lccp').insert(e.toMap());
       }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+  Future<void> updateData(LecturerClassCoursePair data)async{
+    // update data in database
+    try {
+      if (db.state != State.open) {
+        await db.open();
+      }
+      // update data in database where id is equal to the id passed
+      await db.collection('lccp').update({'id': data.id}, data.toMap());
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());
