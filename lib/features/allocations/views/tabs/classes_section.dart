@@ -1,5 +1,4 @@
 import 'package:aamusted_timetable_generator/config/theme/theme.dart';
-import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_input.dart';
 import 'package:aamusted_timetable_generator/core/widget/table/widgets/custom_table.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/classes/class_model.dart';

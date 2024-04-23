@@ -2,11 +2,7 @@ import 'package:aamusted_timetable_generator/config/theme/theme.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/main/views/components/window_buttons.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluent_ui;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:window_manager/window_manager.dart';
 import '../../../core/data/constants/constant_data.dart';
@@ -175,7 +171,7 @@ class _MyHomePageState extends ConsumerState<MainPage> with WindowListener {
               pane: fluent_ui.NavigationPane(
                 size: const fluent_ui.NavigationPaneSize(
                     compactWidth: 60, openWidth: 150),
-                selected: SideBar(context: context).calculateSelectedIndex(),
+                selected: SideBar(context: context,ref: ref).calculateSelectedIndex(),
                 header: SizedBox(
                   height: 150,
                   child: fluent_ui.Column(
@@ -269,7 +265,7 @@ class _MyHomePageState extends ConsumerState<MainPage> with WindowListener {
                   ),
                 ),
                 indicator: const fluent_ui.StickyNavigationIndicator(),
-                items: SideBar(context: context).getItems(),
+                items: SideBar(context: context,ref: ref).getItems(),
               ));
         });
   }

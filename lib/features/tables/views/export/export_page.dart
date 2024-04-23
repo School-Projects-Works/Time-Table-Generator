@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:aamusted_timetable_generator/core/functions/time_sorting.dart';
 import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/components/daigonal_line.dart';
-import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +9,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 // ignore: depend_on_referenced_packages
 import 'package:image/image.dart' as img;
 import '../../../../config/theme/theme.dart';
 import '../../../../core/widget/custom_button.dart';
 import '../../../../core/widget/custom_dialog.dart';
 import '../../../../core/widget/custom_input.dart';
-import '../../../configurations/data/config/config_model.dart';
 import '../../../configurations/provider/config_provider.dart';
 import '../../data/periods_model.dart';
 import 'publish_services.dart';

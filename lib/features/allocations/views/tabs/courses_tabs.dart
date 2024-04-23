@@ -3,11 +3,8 @@ import 'package:aamusted_timetable_generator/features/allocations/provider/cours
 import 'package:aamusted_timetable_generator/features/tables/usecase/condition.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../config/theme/theme.dart';
-import '../../../../core/widget/custom_button.dart';
 import '../../../../core/widget/custom_dialog.dart';
 import '../../../../core/widget/custom_input.dart';
 import '../../../../core/widget/table/data/models/custom_table_columns_model.dart';
@@ -154,7 +151,7 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                   title: 'Course Code',
                   width: 100,
                   cellBuilder: (item) => Text(
-                    item.code ?? '',
+                    item.code,
                     style: tableTextStyle,
                   ),
                 ),
@@ -162,7 +159,7 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                   title: 'Course Name',
                   width: 200,
                   cellBuilder: (item) => Text(
-                    item.title ?? '',
+                    item.title,
                     style: tableTextStyle,
                   ),
                 ),
@@ -187,7 +184,7 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                   title: 'Level',
                   width: 80,
                   cellBuilder: (item) => Text(
-                    item.level ?? '',
+                    item.level,
                     style: tableTextStyle,
                   ),
                 ),
@@ -245,7 +242,7 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                                               .95,
                                       width: MediaQuery.of(context).size.width *
                                           .89,
-                                      ui: SpecialVenueSelect(item.id!));
+                                      ui: SpecialVenueSelect(item.id));
                                 },
                                 child: fluent.Container(
                                     padding: const EdgeInsets.all(5),

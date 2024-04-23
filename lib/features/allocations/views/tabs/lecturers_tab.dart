@@ -1,4 +1,3 @@
-import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/provider/lecturer/provider/lecturer_provider.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';

@@ -1,5 +1,4 @@
 import 'package:aamusted_timetable_generator/config/theme/theme.dart';
-import 'package:aamusted_timetable_generator/core/data/table_model.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_button.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/core/widget/table/data/models/custom_table_columns_model.dart';
@@ -7,7 +6,6 @@ import 'package:aamusted_timetable_generator/core/widget/table/widgets/custom_ta
 import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluent_ui;
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/widget/table/data/models/custom_table_rows_model.dart';

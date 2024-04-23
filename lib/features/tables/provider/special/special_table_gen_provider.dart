@@ -28,7 +28,6 @@ class SpecialTableGenProvider extends StateNotifier<void> {
     var config = ref.watch(configProvider);
     List<LecturerClassCoursePair> unAssignedLccps = [];
     //remove the break period
-    print('special lccps ${specialLccps.length}');
     for (var lccpItem in specialLccps) {
       var vtps = ref.watch(venueTimePairProvider);
       var specialVtps = vtps
@@ -49,7 +48,6 @@ class SpecialTableGenProvider extends StateNotifier<void> {
         unAssignedLccps.add(lccpItem);
       }
     }
-    print('unassigned lccps ${unAssignedLccps.length}');
   }
 
   VenueTimePairModel? pickSpecialVenue(
@@ -114,8 +112,6 @@ class SpecialTableGenProvider extends StateNotifier<void> {
       }
     }
     if (venues.isEmpty) {
-      print(
-          'no venue found for ${lccp.courseCode} ${lccp.className} ${lccp.lecturerName} ${lccp.venues.length}');
     }
     //? here i sort the venues according to the venue capacity from the highest to the lowest
     //! this is to ensure that the largest class size is assigned to the largest venue
@@ -138,8 +134,6 @@ class SpecialTableGenProvider extends StateNotifier<void> {
     if (finalVenues.isNotEmpty) {
       return finalVenues.first;
     } else {
-      print(
-          'no venue found for ${lccp.courseCode} ${lccp.className} ${lccp.lecturerName} ${lccp.venues}');
       return null;
     }
   }

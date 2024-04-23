@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:mongo_dart/mongo_dart.dart';
 import '../../config/theme/theme.dart';
 
 enum ToastType { success, error, warning, info }

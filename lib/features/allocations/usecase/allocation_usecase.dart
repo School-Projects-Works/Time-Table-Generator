@@ -11,7 +11,6 @@ import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:mongo_dart/mongo_dart.dart';
-import '../../../core/data/constants/constant_data.dart';
 import '../../../core/data/constants/excel_headings.dart';
 import '../../../core/data/constants/instructions.dart';
 import '../../../core/functions/excel_settings.dart';

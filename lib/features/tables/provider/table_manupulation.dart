@@ -1,7 +1,6 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/class_course/lecturer_course_class_pair.dart';
-import 'package:aamusted_timetable_generator/features/tables/provider/table_generation_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/usecase/tables_usecase.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

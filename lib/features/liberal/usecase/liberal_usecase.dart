@@ -104,7 +104,6 @@ class LiberalUseCase extends LiberalRepo {
 
   @override
   Future<(bool, String, LiberalModel?)> updateLiberal(LiberalModel venue) {
-    // TODO: implement updateLiberal
     throw UnimplementedError();
   }
 
