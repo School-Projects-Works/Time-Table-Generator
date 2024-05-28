@@ -1,7 +1,8 @@
+
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:aamusted_timetable_generator/features/configurations/data/config/config_model.dart';
 import 'package:aamusted_timetable_generator/features/configurations/repo/config_repo.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 class ConfigUsecase extends ConfigRepo {
   final Db db;
   ConfigUsecase({
@@ -58,6 +59,28 @@ class ConfigUsecase extends ConfigRepo {
     } catch (e) {
       //print(e);
       return Future.value((false, null, e.toString()));
+    }
+  }
+///chenge to firebase firestore
+
+ Future<(bool, ConfigModel?, String?)> addConfigToFirebase(ConfigModel state)async {
+ 
+  try {
+     final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    await firestore.collection('config').doc(state.id).set(state.toMap());
+    return (true, state, 'Configurations added successfully');
+  } catch (e) {
+    return (false, null, e.toString());
+  }
+ }
+ Future<List<ConfigModel>> getConfigFromFirebase() async {
+    try {
+       final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      final config = await firestore.collection('config').get();
+      return config.docs.map((e) => ConfigModel.fromMap(e.data())).toList();
+    } catch (e) {
+      //print(e);
+      return Future.value([]);
     }
   }
 }

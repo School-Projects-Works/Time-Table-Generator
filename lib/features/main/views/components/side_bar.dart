@@ -30,6 +30,21 @@ class SideBar {
           }
         },
       ),
+       PaneItem(
+        key: const ValueKey('/departments'),
+        icon: const Icon(FluentIcons.d365_project_operations),
+        title: const Text('Depatments'),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != '/departments') {
+            if (configExists) {
+              context.go('/departments');
+            } else {
+              CustomDialog.showError(message: 'Please set configuration first');
+            }
+          }
+        },
+      ),
       PaneItem(
         key: const ValueKey('/allocations'),
         icon: const Icon(FluentIcons.list),

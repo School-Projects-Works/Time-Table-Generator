@@ -1,3 +1,4 @@
+import 'package:aamusted_timetable_generator/features/departments/views/dep_main_page.dart';
 import 'package:aamusted_timetable_generator/features/help/view/help.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
@@ -28,23 +29,27 @@ final router = GoRouter(navigatorKey: rootNavigatorKey, routes: [
       GoRoute(
           path: '/allocations',
           builder: (context, state) => const AllocationPage()),
+      GoRoute(
+          path: '/departments',
+          builder: (context, state) => const DepartmentPage()),
       //liberal course
       //  GoRoute(path: '/liberal', builder: (context, state) =>  const LiberalCoursesPage()),
       // /// venues
       GoRoute(path: '/venues', builder: (context, state) => const VenuePage()),
 
       /// tables
-      GoRoute(path: '/tables', builder: (context, state) => const TablesMainPage()),
+      GoRoute(
+          path: '/tables', builder: (context, state) => const TablesMainPage()),
       //liberal courses
       GoRoute(
           path: '/liberal', builder: (context, state) => const LiberalPage()),
       GoRoute(
           path: '/help',
           builder: (context, state) {
-           // var id = state.pathParameters['id'];
+            // var id = state.pathParameters['id'];
             return const HelpPage();
           }),
-          GoRoute(
+      GoRoute(
           path: '/about',
           builder: (context, state) {
             // var id = state.pathParameters['id'];

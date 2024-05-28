@@ -40,8 +40,8 @@ class AllocationTemplateProvider extends StateNotifier<void> {
       var (success, (courses, classes, lecturers), message) =
           await _allocationUsecase.importAllocation(
         path: pickedFilePath,
-        year: ref.watch(academicYearProvider),
-        semester: ref.watch(semesterProvider),
+        year: config.year!,
+        semester: config.semester!,
         config: config,
       );
       if (success) {
@@ -77,11 +77,10 @@ class AllocationTemplateProvider extends StateNotifier<void> {
   void clearAllAllocations(WidgetRef ref, String department) async {
     CustomDialog.dismiss();
     CustomDialog.showLoading(message: 'Clearing allocations...');
-    var academicYear = ref.watch(academicYearProvider);
-    var academicSemester = ref.watch(semesterProvider);
+    var config = ref.watch(configProvider);
     var (success, classes, courses, lecturers) = await AllocationUseCase()
         .deletateAllocation(
-            academicYear, academicSemester, department, ref.watch(dbProvider));
+            config.year!, config.semester!, department, ref.watch(dbProvider));
     if (success) {
       ref.read(classesDataProvider.notifier).setClasses(classes);
       ref.read(coursesDataProvider.notifier).setCourses(courses);

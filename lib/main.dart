@@ -1,3 +1,5 @@
+import 'package:aamusted_timetable_generator/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -21,6 +23,9 @@ bool get isDesktop {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MediaKit.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   // if it's not on the web, windows or android, load the accent color
   if (!kIsWeb &&
       [
@@ -34,12 +39,14 @@ void main() async {
     await flutter_acrylic.Window.initialize();
     await flutter_acrylic.Window.hideWindowControls();
     await WindowManager.instance.ensureInitialized();
+    await windowManager.setMinimumSize(const Size(1400, 800));
+    await windowManager.maximize();
     windowManager.waitUntilReadyToShow().then((_) async {
       await windowManager.setTitleBarStyle(
         TitleBarStyle.hidden,
         windowButtonVisibility: false,
       );
-      await windowManager.setMinimumSize(const Size(1400, 800));
+
       await windowManager.show();
       await windowManager.setPreventClose(true);
       await windowManager.setSkipTaskbar(false);

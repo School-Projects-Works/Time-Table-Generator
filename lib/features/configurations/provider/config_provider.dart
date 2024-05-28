@@ -17,7 +17,7 @@ final configFutureProvider = FutureProvider<ConfigModel>((ref) async {
       .toLowerCase()
       .replaceAll('/', '-');
   var configs =
-      await ConfigUsecase(db: ref.watch(dbProvider)).getConfigurations();
+      await ConfigUsecase(db: ref.watch(dbProvider)).getConfigFromFirebase();
   var config = configs
       .where((element) =>
           element.id == id &&
@@ -134,7 +134,15 @@ class RegularConfig extends StateNotifier<ConfigModel> {
   }
 
   void setEvenLibDay(String? value) {
-    state = state.copyWith(evenLibDay: () => value);
+    var periods = state.periods
+        .map((e) => PeriodModel.fromMap(e))
+        .toList();
+        // get period from periods with highest position
+    //sort periods by position
+    periods.sort((a, b) => a.position.compareTo(b.position));
+    var period = periods.last;
+    state = state.copyWith(evenLibDay: () => value,
+    evenLibPeriod: () => period.toMap(),);
   }
 
   void setEvenLibLevel(String? value) {
@@ -158,7 +166,7 @@ class RegularConfig extends StateNotifier<ConfigModel> {
         semester: () => semester,
       );
       var (success, _, message) = await ConfigUsecase(db: ref.watch(dbProvider))
-          .addConfigurations(state);
+          .addConfigToFirebase(state);
       if (success) {
         ref.invalidate(configFutureProvider);
         CustomDialog.dismiss();
