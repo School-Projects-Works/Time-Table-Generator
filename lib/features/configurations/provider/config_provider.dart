@@ -17,7 +17,7 @@ final configFutureProvider = FutureProvider<ConfigModel>((ref) async {
       .toLowerCase()
       .replaceAll('/', '-');
   var configs =
-      await ConfigUsecase(db: ref.watch(dbProvider)).getConfigFromFirebase();
+      await ConfigUsecase(db: ref.watch(dbProvider)).getConfigurations();
   var config = configs
       .where((element) =>
           element.id == id &&
@@ -164,9 +164,10 @@ class RegularConfig extends StateNotifier<ConfigModel> {
         id: () => id,
         year: () => year,
         semester: () => semester,
+        createdAt: DateTime.now().millisecondsSinceEpoch
       );
       var (success, _, message) = await ConfigUsecase(db: ref.watch(dbProvider))
-          .addConfigToFirebase(state);
+          .addConfigurations(state);
       if (success) {
         ref.invalidate(configFutureProvider);
         CustomDialog.dismiss();

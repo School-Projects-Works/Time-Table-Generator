@@ -2,6 +2,7 @@ import 'package:aamusted_timetable_generator/features/allocations/data/classes/c
 import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/lecturers/lecturer_model.dart';
 import 'package:aamusted_timetable_generator/features/configurations/data/config/config_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 abstract class AllocationRepo {
@@ -15,6 +16,7 @@ abstract class AllocationRepo {
     required String year,
     required String semester,
     required ConfigModel config,
+    required WidgetRef ref
   });
   Future<(bool, String?)> downloadTemplate();
   Future<(bool, List<ClassModel>, List<CourseModel>, List<LecturerModel>)>

@@ -18,6 +18,7 @@ class CoursesUseCase extends CoursesRepo {
         'year': courses[0].year,
         'semester': courses[0].semester,
         'department': courses[0].department,
+        'program':courses[0].program
       });
       //now add the new courses
       for (var e in courses) {
@@ -29,7 +30,8 @@ class CoursesUseCase extends CoursesRepo {
         'semester': courses[0].semester,
       }).toList();
       return allCourses.map((e) => CourseModel.fromMap(e)).toList();
-    } catch (_) {
+    } catch (error) {
+
       return [];
     }
   }

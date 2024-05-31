@@ -19,6 +19,7 @@ class ClassesUsecase extends ClassesRepo {
         'year': classes[0].year,
         'semester': classes[0].semester,
         'department': classes[0].department,
+        'program': classes[0].program
       });
       //now add the new classes
       for (var e in classes) {

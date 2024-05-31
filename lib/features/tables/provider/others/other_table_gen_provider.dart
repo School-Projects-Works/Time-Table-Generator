@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:aamusted_timetable_generator/core/functions/time_sorting.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/lecturer_class_course_pair.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/venue_time_pair_model.dart';
@@ -33,15 +35,29 @@ class OtherTableGenProvider extends StateNotifier<void> {
           .where((element) =>
               element.isSpecialVenue != true && element.isBooked == false)
           .toList();
-           var noneSpecialVTP = pickSpecialVenue(
-          lccp: lccpItem, noneSpecialVTPS: noneSpecialVtps, ref: ref, data: config);
+      var noneSpecialVTP = pickSpecialVenue(
+          lccp: lccpItem,
+          noneSpecialVTPS: noneSpecialVtps,
+          ref: ref,
+          data: config);
       if (noneSpecialVTP != null) {
         var table = buildTableItem(lccpItem, noneSpecialVTP, config);
         ref.read(unsavedTableProvider.notifier).addTable([table]);
-        ref.read(lecturerCourseClassPairProvider.notifier).markedAsigned(lccpItem);
+        ref
+            .read(lecturerCourseClassPairProvider.notifier)
+            .markedAsigned(lccpItem);
         ref.read(venueTimePairProvider.notifier).bookVTP(noneSpecialVTP);
       }
     }
+    var unAssignedLccps = ref
+        .watch(lecturerCourseClassPairProvider)
+        .where((element) => element.isAsigned == false)
+        .toList();
+    //get all lccps which require special venues
+    var unaasignedNoneSpecialLccps = unAssignedLccps
+        .where((element) =>
+            !element.requireSpecialVenue && (element.venues.isEmpty))
+        .toList();
   }
 
   VenueTimePairModel? pickSpecialVenue(
@@ -68,7 +84,6 @@ class OtherTableGenProvider extends StateNotifier<void> {
         if (!isLibLevel ||
             (isLibLevel &&
                     venue.day != data.regLibDay &&
-                    venue.day != lccp.lecturerFreeDay &&
                     venue.period != data.regLibPeriod!['period']) &&
                 venue.venueCapacity! >= lccp.classCapacity - 25) {
           venues.add(venue);
@@ -78,7 +93,6 @@ class OtherTableGenProvider extends StateNotifier<void> {
         if (!isLibLevel ||
             (isLibLevel && venue.day != data.evenLibDay) &&
                 venue.period == evenPeriod.period &&
-                venue.day != lccp.lecturerFreeDay &&
                 venue.venueCapacity! >= lccp.classCapacity - 25) {
           venues.add(venue);
         }
@@ -115,7 +129,6 @@ class OtherTableGenProvider extends StateNotifier<void> {
       var isAvailable = unsavedTables
           .where((element) =>
               element.day == venue.day &&
-              
               element.period == venue.period &&
               (element.classId == lccp.classId ||
                   element.lecturerId == lccp.lecturerId))
@@ -166,4 +179,87 @@ class OtherTableGenProvider extends StateNotifier<void> {
     );
     return table;
   }
-}
+
+  void generateWithCombineClassTables(WidgetRef ref) {
+    var lccps = ref.watch(lecturerCourseClassPairProvider);
+    //get all lccps which require special venues
+    var config = ref.watch(configProvider);
+    var vtps = ref.watch(venueTimePairProvider);
+    var noneSpecialVtps = vtps
+        .where((element) =>
+            element.isSpecialVenue != true && element.isBooked == false)
+        .toList();
+    //Here i want to loop through the [noneSpecialVtps] and pick a VTP that is not booked
+    // if the venue capacity is greater than 120 and less than 170 then look for 2 LCCp with less than 70  class capacity each
+    // and assign them to the venue
+    //the two LCCP should be from the same department, same level same course and same lecturer
+    //if the venue capacity is greater than 170 and less than 220 then look for 3 LCCp with less than 70  class capacity each
+    // or 2 LCCP with greater than 70 but less than 120 and assign them to the venue
+    //the 3 LCCP or 2 LCCP should be from the same level same course and same lecturer
+    //if the venue capacity is greater than 220 and less than 300 then look for 4 LCCp with less than 70  class capacity each
+    // or 3 LCCP with greater than 70 but less than 120 or 2 LCCP with grater than 120 and assign them to the venue
+    //the 4 LCCP or 3 LCCP or 2 LCCP should be from the same level same course and same lecturer
+    //if the venue capacity is greater than 300 then look for 4 LCCp with grater than 70  class capacity each
+    //and assign them to the venue. the 4 LCCP should be from the same level same course and same lecturer
+
+    // sort the noneSpecialVtps according to the venue capacity with largest first
+    noneSpecialVtps
+        .sort((a, b) => b.venueCapacity!.compareTo(a.venueCapacity!));
+    //loop through the noneSpecialVtps and pick a VTP
+    for (var vtp in noneSpecialVtps) {
+      var isRegular = vtp.studyMode.toLowerCase().replaceAll(' ', '') ==
+          'regular'.toLowerCase();
+      var isEvening = vtp.studyMode.toLowerCase().replaceAll(' ', '') ==
+          'evening'.toLowerCase();
+      var isLibDay = vtp.day == config.regLibDay;
+      var isEvenLibDay = vtp.day == config.evenLibDay;
+      var isLibPeriod = vtp.period == config.regLibPeriod!['period'];
+      var isEvenLibPeriod = vtp.period == config.evenLibPeriod!['period'];
+      if (vtp.venueCapacity! >= 120 && vtp.venueCapacity! <= 170) {
+        var (lccp1, lccp2) = pickTwoLCCP(lccps, config, vtp);
+      }
+    }
+  }
+
+  (LecturerClassCoursePair?, LecturerClassCoursePair?) pickTwoLCCP(
+      List<LecturerClassCoursePair> lccps,
+      ConfigModel config,
+      VenueTimePairModel vtp,
+      WidgetRef ref) {
+    var isRegular = vtp.studyMode.toLowerCase().replaceAll(' ', '') ==
+        'regular'.toLowerCase();
+    var isEvening = vtp.studyMode.toLowerCase().replaceAll(' ', '') ==
+        'evening'.toLowerCase();
+    var isLibDay = vtp.day == config.regLibDay;
+    var isEvenLibDay = vtp.day == config.evenLibDay;
+    var isLibPeriod = vtp.period == config.regLibPeriod!['period'];
+    var isEvenLibPeriod = vtp.period == config.evenLibPeriod!['period'];
+    var isLibLevel = isRegular
+        ? config.regLibLevel == lccps.first.level
+        : config.evenLibLevel == lccps.first.level;
+
+    var unsavedTables = ref.watch(unsavedTableProvider);
+    List<LecturerClassCoursePair> selectedLccp = [];
+    for (var lccp in lccps) {
+      var isAvailable = unsavedTables
+          .where((element) =>
+              element.day == vtp.day &&
+              element.period == vtp.period &&
+              (element.classId == lccp.classId ||
+                  element.lecturerId == lccp.lecturerId))
+          .isEmpty;
+      if (!isAvailable) {
+        selectedLccp.add(lccp);
+      }
+    }
+    if (selectedLccp.isEmpty) {
+      return (null, null);
+    }
+    for (var lccp in selectedLccp){
+      var isRegular = lccp.studyMode.toLowerCase().replaceAll(' ', '') ==
+          'regular'.toLowerCase();
+      var isEvening = lccp.studyMode.toLowerCase().replaceAll(' ', '') ==
+          'evening'.toLowerCase();
+      var isNotLibLevel = (lccp.level != config.regLibLevel &&
+          lccp.level != config.evenLibLevel)||(lccp.level == config.regLibLevel && lccp.level == config.evenLibLevel);
+    } 

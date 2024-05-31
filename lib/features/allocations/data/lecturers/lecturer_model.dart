@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 class LecturerModel {
   String? id;
@@ -11,7 +12,7 @@ class LecturerModel {
   String? department;
   String year;
   String semester;
-  String freeDay;
+  // String freeDay;
 
   LecturerModel({
     this.id,
@@ -21,7 +22,6 @@ class LecturerModel {
     this.department,
     required this.year,
     required this.semester,
-    required this.freeDay,
   });
 
   Map<String, dynamic> toMap() {
@@ -33,20 +33,18 @@ class LecturerModel {
       'department': department,
       'year': year,
       'semester': semester,
-      'freeDay': freeDay,
     };
   }
 
   factory LecturerModel.fromMap(Map<String, dynamic> map) {
     return LecturerModel(
       id: map['id'],
-      courses: List<Map<String, dynamic>>.from(map['courses']?.map((x) => x)),
+      courses: List<Map<String, dynamic>>.from(map['courses']?.map((x) => Map<String, dynamic>.from(x))),
       classes: List<String>.from(map['classes']),
       lecturerName: map['lecturerName'],
       department: map['department'],
       year: map['year'] ?? '',
       semester: map['semester'] ?? '',
-      freeDay: map['freeDay'] ?? '',
     );
   }
 
@@ -63,7 +61,6 @@ class LecturerModel {
     ValueGetter<String?>? department,
     String? year,
     String? semester,
-    String? freeDay,
   }) {
     return LecturerModel(
       id: id != null ? id() : this.id,
@@ -73,13 +70,12 @@ class LecturerModel {
       department: department != null ? department() : this.department,
       year: year ?? this.year,
       semester: semester ?? this.semester,
-      freeDay: freeDay ?? this.freeDay,
     );
   }
 
   @override
   String toString() {
-    return 'LecturerModel(id: $id, courses: $courses, classes: $classes, lecturerName: $lecturerName, department: $department, year: $year, semester: $semester, freeDay: $freeDay)';
+    return 'LecturerModel(id: $id, courses: $courses, classes: $classes, lecturerName: $lecturerName, department: $department, year: $year, semester: $semester)';
   }
 
   @override
@@ -93,8 +89,7 @@ class LecturerModel {
       other.lecturerName == lecturerName &&
       other.department == department &&
       other.year == year &&
-      other.semester == semester &&
-      other.freeDay == freeDay;
+      other.semester == semester;
   }
 
   @override
@@ -105,7 +100,6 @@ class LecturerModel {
       lecturerName.hashCode ^
       department.hashCode ^
       year.hashCode ^
-      semester.hashCode ^
-      freeDay.hashCode;
+      semester.hashCode;
   }
 }

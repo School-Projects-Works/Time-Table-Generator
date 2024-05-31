@@ -48,6 +48,75 @@ class SpecialTableGenProvider extends StateNotifier<void> {
         unAssignedLccps.add(lccpItem);
       }
     }
+    var restLCCP = ref.watch(lecturerCourseClassPairProvider);
+    var unAssignedSpecialLCCPS = restLCCP
+        .where((element) =>
+            element.requireSpecialVenue && element.venues.isNotEmpty)
+        .toList();
+    if (unAssignedSpecialLCCPS.isNotEmpty) {
+      var existenTables = ref.watch(unsavedTableProvider);
+      for (var sLCCP in unAssignedSpecialLCCPS) {
+        var vtps = ref.watch(venueTimePairProvider);
+        var specialVtps = vtps
+            .where((element) =>
+                element.isSpecialVenue == true &&
+                element.isBooked == false &&
+                sLCCP.venues.contains(element.venueName))
+            .toList();
+            VenueTimePairModel? vtp;
+        if (specialVtps.isNotEmpty) {
+          for (var v in specialVtps) {
+            var isPeriodTaken = existenTables.where((table) {
+              return table.day == v.day &&
+                  table.period == v.period &&
+                  (table.lecturerId == sLCCP.lecturerId ||
+                      table.classId == sLCCP.classId);
+            }).toList();
+            if(isPeriodTaken.isEmpty){
+              vtp = v;
+              break;
+            }
+          }
+          if(vtp!=null){
+            var table = buildTableItem(sLCCP, vtp, config);
+            ref.read(unsavedTableProvider.notifier).addTable([table]);
+            ref
+                .read(lecturerCourseClassPairProvider.notifier)
+                .markedAsigned(sLCCP);
+            ref.read(venueTimePairProvider.notifier).bookVTP(vtp);
+          }
+        }else{
+          //pick a random venue
+          var specialVtps = vtps
+              .where((element) =>
+                  element.isSpecialVenue == true &&
+                  element.isBooked == false
+                  )
+              .toList();
+          for (var v in specialVtps) {
+            var isPeriodTaken = existenTables.where((table) {
+              return table.day == v.day &&
+                  table.period == v.period &&
+                  (table.lecturerId == sLCCP.lecturerId ||
+                      table.classId == sLCCP.classId);
+            }).toList();
+            if (isPeriodTaken.isEmpty) {
+              vtp = v;
+              break;
+            }
+          }
+          if (vtp != null) {
+            var table = buildTableItem(sLCCP, vtp, config);
+            ref.read(unsavedTableProvider.notifier).addTable([table]);
+            ref
+                .read(lecturerCourseClassPairProvider.notifier)
+                .markedAsigned(sLCCP);
+            ref.read(venueTimePairProvider.notifier).bookVTP(vtp);
+          }
+        }
+       
+      }
+    }
   }
 
   VenueTimePairModel? pickSpecialVenue(
@@ -70,8 +139,8 @@ class SpecialTableGenProvider extends StateNotifier<void> {
           ? specialVTPS.firstWhere((element) {
               var isLibLevel = lccp.level == data.regLibLevel;
               return element.venueName!.toLowerCase() == venue.toLowerCase() &&
-                  element.day != lccp.lecturerFreeDay&&
-              element.isBooked == false && !isLibLevel ||
+                      element.isBooked == false &&
+                      !isLibLevel ||
                   (isLibLevel &&
                       element.day != data.regLibDay &&
                       element.position != data.regLibPeriod!['position']);
@@ -91,7 +160,6 @@ class SpecialTableGenProvider extends StateNotifier<void> {
               var isLibLevel = lccp.level == data.evenLibLevel;
               return element.period == evenPeriod.period &&
                       element.venueName!.toLowerCase() == venue.toLowerCase() &&
-                       element.day != lccp.lecturerFreeDay &&
                       element.isBooked == false &&
                       !isLibLevel ||
                   (isLibLevel && element.day != data.evenLibDay);
@@ -111,8 +179,7 @@ class SpecialTableGenProvider extends StateNotifier<void> {
         venues.add(vtp);
       }
     }
-    if (venues.isEmpty) {
-    }
+    if (venues.isEmpty) {}
     //? here i sort the venues according to the venue capacity from the highest to the lowest
     //! this is to ensure that the largest class size is assigned to the largest venue
     venues.sort((a, b) => b.venueCapacity!.compareTo(a.venueCapacity!));

@@ -63,9 +63,10 @@ class _SingleItemState extends ConsumerState<SingleItem> {
   }
 
   Widget _buildVenueItem({String? venue}) {
+    var width = MediaQuery.of(context).size.width;
     return Container(
-        width: 260,
-        height: 100,
+        width: width * .12,
+        height: 80,
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -80,9 +81,9 @@ class _SingleItemState extends ConsumerState<SingleItem> {
               venue!,
               textAlign: TextAlign.start,
               style: GoogleFonts.nunito(
-                  fontSize: 16,
+                  fontSize: 14,
                   color: Colors.black,
-                  fontWeight: FontWeight.w600),
+                  fontWeight: FontWeight.w700),
             ),
           ],
         ));
@@ -90,6 +91,7 @@ class _SingleItemState extends ConsumerState<SingleItem> {
 
   Widget _buildTableItem({TablesModel? table}) {
     var pair = ref.watch(tablePairProvider);
+    var width = MediaQuery.of(context).size.width;
     return InkWell(
       onHover: (value) {
         setState(() {
@@ -210,8 +212,8 @@ class _SingleItemState extends ConsumerState<SingleItem> {
         }
       },
       child: SizedBox(
-        width: 260,
-        height: 100,
+        width: width * .15,
+        height: 80,
         child: Stack(
           children: [
             Positioned(
@@ -220,8 +222,8 @@ class _SingleItemState extends ConsumerState<SingleItem> {
               left: 0,
               bottom: 0,
               child: Container(
-                  width: 260,
-                  height: 100,
+                  width: width * .15,
+                  height: 80,
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -241,7 +243,7 @@ class _SingleItemState extends ConsumerState<SingleItem> {
                                 : table.className,
                             textAlign: TextAlign.center,
                             style: GoogleFonts.nunito(
-                                fontSize: 16,
+                                fontSize: 11,
                                 color: Colors.green,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -261,7 +263,7 @@ class _SingleItemState extends ConsumerState<SingleItem> {
                       Text(
                         table.courseCode!,
                         style: GoogleFonts.nunito(
-                            fontSize: 16,
+                            fontSize: 11,
                             color: Colors.red,
                             fontWeight: FontWeight.bold),
                       ),
@@ -271,7 +273,7 @@ class _SingleItemState extends ConsumerState<SingleItem> {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.nunito(
-                            fontSize: 10,
+                            fontSize: 8,
                             color: primaryColor,
                             fontWeight: FontWeight.w900),
                       ),
@@ -281,7 +283,7 @@ class _SingleItemState extends ConsumerState<SingleItem> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.nunito(
-                            fontSize: 14,
+                            fontSize: 10,
                             color: Colors.black,
                             fontWeight: FontWeight.bold),
                       ),
@@ -323,6 +325,7 @@ class _SingleItemState extends ConsumerState<SingleItem> {
   bool _openEmptyMenu = false;
   Widget _buildEmptyItem({EmptyModel? empty}) {
     var pair = ref.watch(tablePairProvider);
+    var width = MediaQuery.of(context).size.width;
     return InkWell(
       onTap: () {
         if (pair.table1 != null) {
@@ -336,8 +339,8 @@ class _SingleItemState extends ConsumerState<SingleItem> {
         }
       },
       child: SizedBox(
-        width: 260,
-        height: 100,
+        width: width * .15,
+        height: 80,
         child: Stack(
           children: [
             Positioned(
@@ -346,8 +349,8 @@ class _SingleItemState extends ConsumerState<SingleItem> {
                 left: 0,
                 bottom: 0,
                 child: Container(
-                  width: 260,
-                  height: 100,
+                  width: width * .15,
+                  height: 70,
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -362,8 +365,8 @@ class _SingleItemState extends ConsumerState<SingleItem> {
                 left: 0,
                 bottom: 0,
                 child: Container(
-                    width: 260,
-                    height: 100,
+                    width: width * .15,
+                    height: 70,
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       color: Colors.white,

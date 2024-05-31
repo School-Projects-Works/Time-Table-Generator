@@ -28,7 +28,7 @@ class ClassCoursePairProvider
         //! here i check if the course study mode and level is the same as the class study mode and level
         if (course.studyMode == classData.studyMode &&
             course.level == classData.level &&
-            course.department == classData.department) {
+            course.department == classData.department&& course.program == classData.program) {
           //! here i generate the id for the class course pair
           var id = '${classData.id}${course.id}'
               .trim()
@@ -39,6 +39,7 @@ class ClassCoursePairProvider
             id: id,
             courseId: course.id,
             courseCode: course.code,
+            program: course.program!,
             courseName: course.title,
             course: course.toMap(),
             classId: classData.id!,

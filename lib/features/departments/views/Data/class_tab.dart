@@ -45,20 +45,22 @@ class _ClassTabState extends ConsumerState<ClassTab> {
             height: 15,
           ),
           Expanded(
-            child: Column(
-              children: [
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text('Class $index'),
-                      subtitle: Text('Class $index'),
-                      trailing: const Icon(Icons.arrow_forward_ios),
-                    );
-                  },
-                  itemCount: 10,
-                ),
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text('Class $index'),
+                        subtitle: Text('Class $index'),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                      );
+                    },
+                    itemCount: 10,
+                  ),
+                ],
+              ),
             ),
           ),
         ],

@@ -82,14 +82,14 @@ class _ClassesTabState extends ConsumerState<ClassesTab> {
               showColumnHeadersAtFooter: true,
               data: classes.items,
               columns: [
-                CustomTableColumn(
-                  title: 'Class ID',
-                  width: 200,
-                  cellBuilder: (item) => Text(
-                    item.id ?? '',
-                    style: tableTextStyle,
-                  ),
-                ),
+                // CustomTableColumn(
+                //   title: 'Class ID',
+                //   width: 200,
+                //   cellBuilder: (item) => Text(
+                //     item.id ?? '',
+                //     style: tableTextStyle,
+                //   ),
+                // ),
                 CustomTableColumn(
                   title: 'Class Name',
                   //width: 200,
@@ -115,9 +115,9 @@ class _ClassesTabState extends ConsumerState<ClassesTab> {
                   ),
                 ),
                 CustomTableColumn(
-                  title: 'Department',
+                  title: 'Program',
                   cellBuilder: (item) => Text(
-                    item.department ?? '',
+                    item.program ?? '',
                     style: tableTextStyle,
                   ),
                 ),
@@ -204,8 +204,6 @@ class _ClassesTabState extends ConsumerState<ClassesTab> {
                 //     ],
                 //   ),
                 // ),
-              
-              
               ],
             ),
           ),

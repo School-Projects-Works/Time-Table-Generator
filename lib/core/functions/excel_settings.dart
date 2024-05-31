@@ -83,81 +83,85 @@ class ExcelSettings {
     var regClassSheet = workbook.worksheets[0];
     regClassSheet.name = 'Regular-Classes';
     //? protect the entire sheet
-    ExcelSheetProtectionOption options = ExcelSheetProtectionOption();
-    options.all = true;
-    regClassSheet.protect('Password', options);
+    // ExcelSheetProtectionOption options = ExcelSheetProtectionOption();
+    // options.all = true;
+    //regClassSheet.protect('Password', options);
     //? merge the first row and set the instruction
     for (int i = 0; i < classInstructions.length; i++) {
       regClassSheet.getRangeByName(
           '${listOfAlpha[0]}${i + 1}:${listOfAlpha[columnCount - 1]}${i + 1}')
         ..merge()
         ..setText(classInstructions[i])
-        ..cellStyle = insttyle(workbook, i.toString())
-        ..cellStyle.locked = true;
+        ..cellStyle = insttyle(workbook, i.toString());
     }
     //? set the department cell
     regClassSheet.getRangeByName('A${classInstructions.length + 2}')
       ..setText('Department: ')
       ..cellStyle = headerStyle(workbook, '${DateTime.now().millisecond}',
-          hAlignType: HAlignType.right)
-      ..cellStyle.locked = true;
-    regClassSheet
-        .getRangeByName('${listOfAlpha[1]}${classInstructions.length + 2}')
-      ..setText('Select Department')
-      //set font size and colors
-      ..cellStyle = departmentStyle(workbook, 'Department')
-      ..cellStyle.locked = false;
+          hAlignType: HAlignType.right);
+
+    // regClassSheet
+    //     .getRangeByName('${listOfAlpha[1]}${classInstructions.length + 2}')
+    //   // ..setText('Select Department')
+    //   //set font size and colors
+    //   .cellStyle = departmentStyle(workbook, 'Department');
     //now set a drop down list for the department
-    final DataValidation listValidation = regClassSheet
-        .getRangeByName('${listOfAlpha[1]}${classInstructions.length + 2}')
-        .dataValidation;
-    listValidation.listOfValues = [
-      'Dep 01',
-      'Dep 02',
-      'Dep 03',
-      'Dep 04',
-      'Dep 05',
-      'Dep 06',
-      'Dep 07',
-      'Dep 08',
-      'Dep 09',
-      'Dep 10',
-      'Dep 11',
-      'Dep 12',
-      'Dep 13',
-    ];
-    listValidation.isEmptyCellAllowed = false;
-    listValidation.showErrorBox = true;
-    listValidation.errorBoxText = 'Select a department';
+    // final DataValidation listValidation = regClassSheet
+    //     .getRangeByName('${listOfAlpha[1]}${classInstructions.length + 2}')
+    //     .dataValidation;
+    // listValidation.listOfValues = [
+    //   'Dep 01',
+    //   'Dep 02',
+    //   'Dep 03',
+    //   'Dep 04',
+    //   'Dep 05',
+    //   'Dep 06',
+    //   'Dep 07',
+    //   'Dep 08',
+    //   'Dep 09',
+    //   'Dep 10',
+    //   'Dep 11',
+    //   'Dep 12',
+    //   'Dep 13',
+    // ];
+    // listValidation.isEmptyCellAllowed = false;
+    // listValidation.showErrorBox = true;
+    // listValidation.errorBoxText = 'Select a department';
     //set font size and color
     //? set the study mode cell
     regClassSheet.getRangeByName('A${classInstructions.length + 3}')
       ..setText('Study Mode: ')
       ..cellStyle = headerStyle(workbook, '${DateTime.now().millisecond}',
-          hAlignType: HAlignType.right)
-      ..cellStyle.locked = true;
-    regClassSheet.getRangeByName('B${classInstructions.length + 3}')
-      ..setText('REGULAR')
-      ..cellStyle.locked = true;
+          hAlignType: HAlignType.right);
+    regClassSheet
+        .getRangeByName('B${classInstructions.length + 3}')
+        .setText('REGULAR');
+    //?program ===================================================
+    regClassSheet.getRangeByName('A${classInstructions.length + 4}')
+      ..setText('Program: ')
+      ..cellStyle = headerStyle(workbook, '${DateTime.now().millisecond}',
+          hAlignType: HAlignType.right);
+    // regClassSheet
+    //     .getRangeByName('B${classInstructions.length + 4}')
+    //     .setText('REGULAR');
     //? add headings and make all the level column a drop down list
     for (start; start < columnCount; start++) {
       regClassSheet.getRangeByName(
-          '${listOfAlpha[start]}${classInstructions.length + 4}')
+          '${listOfAlpha[start]}${classInstructions.length + 5}')
         ..setText(headers[start])
         ..columnWidth = 25
-        ..cellStyle.locked = true
         ..cellStyle = headerStyle(workbook, start.toString());
     }
     //? unlock the rest of the cells
     var levelColumn = headers.indexOf('Level');
     var disabledColumn = headers.indexOf('hasDisabled (Yes/No)');
-    for (int i = classInstructions.length + 5;
-        i <= 600 + classInstructions.length + 5;
+    for (int i = classInstructions.length + 6;
+        i <= 600 + classInstructions.length + 6;
         i++) {
-      regClassSheet.getRangeByName(
-          '${listOfAlpha[0]}$i:${listOfAlpha[columnCount - 1]}$i')
-        ..cellStyle = normalStyle(workbook, 'Normal$i')
-        ..cellStyle.locked = false;
+      regClassSheet
+          .getRangeByName(
+              '${listOfAlpha[0]}$i:${listOfAlpha[columnCount - 1]}$i')
+          .cellStyle = normalStyle(workbook, 'Normal$i');
 
       //? set the level column to a drop down list
       DataValidation cell = regClassSheet
@@ -165,7 +169,7 @@ class ExcelSettings {
               '${listOfAlpha[levelColumn]}$i:${listOfAlpha[levelColumn]}$i')
           .dataValidation;
       cell.allowType = ExcelDataValidationType.user;
-      cell.listOfValues = ['100', '200', '300', '400', 'Graduate'];
+      cell.listOfValues = ['100', '200', '300', '400', '500', '600', '700'];
 
       //? set the hasDisabled column to a drop down list
       DataValidation cell2 = regClassSheet
@@ -184,8 +188,8 @@ class ExcelSettings {
       ..cellStyle =
           headerStyle(workbook, 'DepartmentList', hAlignType: HAlignType.center)
       //set width of the column
-      ..columnWidth = 55
-      ..cellStyle.locked = true;
+      ..columnWidth = 55;
+
     //merge the cells up to the length of the department list
     var style = departmentStyle(workbook, 'DepartmentList_data');
     style.bold = false;
@@ -197,17 +201,19 @@ class ExcelSettings {
           .map((e) => '$e = ${departmentList[e]}')
           .toList()
           .join('\n'))
-      ..cellStyle = style
-      ..cellStyle.locked = true;
+      ..cellStyle = style;
 
     //! generate regular allocation sheet
     columnCount = courseAllocationHeader.length;
     headers = courseAllocationHeader;
+    //? generate evening allocation sheet
+    columnCount = courseAllocationHeader.length;
     start = 0;
+    headers = courseAllocationHeader;
     var regAllocSheet = workbook.worksheets.add();
     regAllocSheet.name = 'Regular-Allocation';
     //? protect the entire sheet
-    regAllocSheet.protect('Password', options);
+    //eveAllocSheet.protect('Password', options);
     //? merge the first row and set the instruction
     for (int i = 0; i < courseInstructions.length; i++) {
       regAllocSheet.getRangeByName(
@@ -217,6 +223,7 @@ class ExcelSettings {
         ..cellStyle = insttyle(workbook, i.toString())
         ..cellStyle.locked = true;
     }
+
     // ignore the department cell and add study mode cell
     regAllocSheet.getRangeByName('A${courseInstructions.length + 1}')
       ..setText('Study Mode: ')
@@ -238,7 +245,7 @@ class ExcelSettings {
     //? unlock the rest of the cells
     var levelColumn2 = headers.indexOf('Level');
     var specialVenueColumn = headers.indexOf('Special Venue');
-    var freeDayColumn = headers.indexOf('Lecturer Free Day');
+    // var freeDayColumn = headers.indexOf('Lecturer Free Day');
 
     for (int i = courseInstructions.length + 3;
         i <= 600 + courseInstructions.length + 3;
@@ -254,7 +261,7 @@ class ExcelSettings {
               '${listOfAlpha[levelColumn2]}$i:${listOfAlpha[levelColumn2]}$i')
           .dataValidation;
       cell.allowType = ExcelDataValidationType.user;
-      cell.listOfValues = ['100', '200', '300', '400', 'Graduate'];
+      cell.listOfValues = ['100', '200', '300', '400', '500', '600', '700'];
 
       //? set the special venue column to a drop down list
       DataValidation cell2 = regAllocSheet
@@ -265,18 +272,18 @@ class ExcelSettings {
       cell2.listOfValues = specialVenues;
 
       //? set the free day column to a drop down list
-      DataValidation cell3 = regAllocSheet
-          .getRangeByName(
-              '${listOfAlpha[freeDayColumn]}$i:${listOfAlpha[freeDayColumn]}$i')
-          .dataValidation;
-      cell3.allowType = ExcelDataValidationType.user;
-      cell3.listOfValues = [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday'
-      ];
+      // DataValidation cell3 = regAllocSheet
+      //     .getRangeByName(
+      //         '${listOfAlpha[freeDayColumn]}$i:${listOfAlpha[freeDayColumn]}$i')
+      //     .dataValidation;
+      // cell3.allowType = ExcelDataValidationType.user;
+      // cell3.listOfValues = [
+      //   'Monday',
+      //   'Tuesday',
+      //   'Wednesday',
+      //   'Thursday',
+      //   'Friday'
+      // ];
     }
 
     // create evening class sheet and allocation sheet
@@ -289,7 +296,7 @@ class ExcelSettings {
     columnCount = classHeader.length;
 
     //? protect the entire sheet
-    eveClassSheet.protect('Password', options);
+    //eveClassSheet.protect('Password', options);
     //? merge the first row and set the instruction
     for (int i = 0; i < classInstructions.length; i++) {
       eveClassSheet.getRangeByName(
@@ -317,7 +324,6 @@ class ExcelSettings {
           '${listOfAlpha[start]}${classInstructions.length + 2}')
         ..setText(headers[start])
         ..columnWidth = 25
-        ..cellStyle.locked = true
         ..cellStyle = headerStyle(workbook, start.toString());
     }
     //? unlock the rest of the cells
@@ -337,7 +343,7 @@ class ExcelSettings {
               '${listOfAlpha[levelColumn3]}$i:${listOfAlpha[levelColumn3]}$i')
           .dataValidation;
       cell.allowType = ExcelDataValidationType.user;
-      cell.listOfValues = ['100', '200', '300', '400', 'Graduate'];
+      cell.listOfValues = ['100', '200', '300', '400', '500', '600', '700'];
 
       //   //? set the hasDisabled column to a drop down list
       DataValidation cell2 = eveClassSheet
@@ -355,7 +361,7 @@ class ExcelSettings {
     var eveAllocSheet = workbook.worksheets.add();
     eveAllocSheet.name = 'Evening-Allocation';
     //? protect the entire sheet
-    eveAllocSheet.protect('Password', options);
+    //eveAllocSheet.protect('Password', options);
     //? merge the first row and set the instruction
     for (int i = 0; i < courseInstructions.length; i++) {
       eveAllocSheet.getRangeByName(
@@ -387,7 +393,6 @@ class ExcelSettings {
     //? unlock the rest of the cells
     var levelColumn4 = headers.indexOf('Level');
     var specialVenueColumn2 = headers.indexOf('Special Venue');
-    var freeDayColumn2 = headers.indexOf('Lecturer Free Day');
     for (int i = courseInstructions.length + 3;
         i <= 600 + courseInstructions.length + 3;
         i++) {
@@ -402,7 +407,7 @@ class ExcelSettings {
               '${listOfAlpha[levelColumn4]}$i:${listOfAlpha[levelColumn4]}$i')
           .dataValidation;
       cell.allowType = ExcelDataValidationType.user;
-      cell.listOfValues = ['100', '200', '300', '400', 'Graduate'];
+      cell.listOfValues = ['100', '200', '300', '400', '500', '600', '700'];
 
       //? set the special venue column to a drop down list
       DataValidation cell2 = eveAllocSheet
@@ -412,19 +417,19 @@ class ExcelSettings {
       cell2.allowType = ExcelDataValidationType.user;
       cell2.listOfValues = specialVenues;
 
-      //? set the free day column to a drop down list
-      DataValidation cell3 = eveAllocSheet
-          .getRangeByName(
-              '${listOfAlpha[freeDayColumn2]}$i:${listOfAlpha[freeDayColumn2]}$i')
-          .dataValidation;
-      cell3.allowType = ExcelDataValidationType.user;
-      cell3.listOfValues = [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday'
-      ];
+      // //? set the free day column to a drop down list
+      // DataValidation cell3 = eveAllocSheet
+      //     .getRangeByName(
+      //         '${listOfAlpha[freeDayColumn2]}$i:${listOfAlpha[freeDayColumn2]}$i')
+      //     .dataValidation;
+      // cell3.allowType = ExcelDataValidationType.user;
+      // cell3.listOfValues = [
+      //   'Monday',
+      //   'Tuesday',
+      //   'Wednesday',
+      //   'Thursday',
+      //   'Friday'
+      // ];
     }
 
     return workbook;

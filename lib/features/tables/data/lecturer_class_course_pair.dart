@@ -24,7 +24,7 @@ class LecturerClassCoursePair {
   String semester;
   String department;
   bool hasDisability;
-  String lecturerFreeDay;
+  String program;
   LecturerClassCoursePair({
     required this.id,
     required this.lecturerId,
@@ -47,7 +47,7 @@ class LecturerClassCoursePair {
     required this.semester,
     required this.department,
     required this.hasDisability,
-    required this.lecturerFreeDay,
+    required this.program,
   });
 
   LecturerClassCoursePair copyWith({
@@ -72,7 +72,7 @@ class LecturerClassCoursePair {
     String? semester,
     String? department,
     bool? hasDisability,
-    String? lecturerFreeDay,
+    String? program,
   }) {
     return LecturerClassCoursePair(
       id: id ?? this.id,
@@ -96,7 +96,7 @@ class LecturerClassCoursePair {
       semester: semester ?? this.semester,
       department: department ?? this.department,
       hasDisability: hasDisability ?? this.hasDisability,
-      lecturerFreeDay: lecturerFreeDay ?? this.lecturerFreeDay,
+      program: program ?? this.program,
     );
   }
 
@@ -123,7 +123,7 @@ class LecturerClassCoursePair {
       'semester': semester,
       'department': department,
       'hasDisability': hasDisability,
-      'lecturerFreeDay': lecturerFreeDay,
+      'program': program,
     };
   }
 
@@ -150,7 +150,7 @@ class LecturerClassCoursePair {
       semester: map['semester'] ?? '',
       department: map['department'] ?? '',
       hasDisability: map['hasDisability'] ?? false,
-      lecturerFreeDay: map['lecturerFreeDay'] ?? '',
+      program: map['program'] ?? '',
     );
   }
 
@@ -161,7 +161,7 @@ class LecturerClassCoursePair {
 
   @override
   String toString() {
-    return 'LecturerClassCoursePair(id: $id, lecturerId: $lecturerId, lecturerName: $lecturerName, isAsigned: $isAsigned, lecturer: $lecturer, courseId: $courseId, courseCode: $courseCode, requireSpecialVenue: $requireSpecialVenue, venues: $venues, courseName: $courseName, course: $course, classId: $classId, className: $className, classData: $classData, classCapacity: $classCapacity, studyMode: $studyMode, level: $level, year: $year, semester: $semester, department: $department, hasDisability: $hasDisability, lecturerFreeDay: $lecturerFreeDay)';
+    return 'LecturerClassCoursePair(id: $id, lecturerId: $lecturerId, lecturerName: $lecturerName, isAsigned: $isAsigned, lecturer: $lecturer, courseId: $courseId, courseCode: $courseCode, requireSpecialVenue: $requireSpecialVenue, venues: $venues, courseName: $courseName, course: $course, classId: $classId, className: $className, classData: $classData, classCapacity: $classCapacity, studyMode: $studyMode, level: $level, year: $year, semester: $semester, department: $department, hasDisability: $hasDisability, program: $program)';
   }
 
   @override
@@ -190,7 +190,7 @@ class LecturerClassCoursePair {
       other.semester == semester &&
       other.department == department &&
       other.hasDisability == hasDisability &&
-      other.lecturerFreeDay == lecturerFreeDay;
+      other.program == program;
   }
 
   @override
@@ -216,6 +216,6 @@ class LecturerClassCoursePair {
       semester.hashCode ^
       department.hashCode ^
       hasDisability.hashCode ^
-      lecturerFreeDay.hashCode;
+      program.hashCode;
   }
 }

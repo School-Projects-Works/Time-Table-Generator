@@ -119,14 +119,14 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
               style: tableTextStyle,
             ),
           ),
-          CustomTableColumn(
-            title: 'Free Day',
-            width: 200,
-            cellBuilder: (item) => Text(
-              item.freeDay,
-              style: tableTextStyle,
-            ),
-          ),
+          // CustomTableColumn(
+          //   title: 'Free Day',
+          //   width: 200,
+          //   cellBuilder: (item) => Text(
+          //     item.freeDay,
+          //     style: tableTextStyle,
+          //   ),
+          // ),
           // CustomTableColumn(
           //   title: 'Action',
           //   cellBuilder: (item) => Row(

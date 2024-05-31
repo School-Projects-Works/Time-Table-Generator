@@ -21,6 +21,7 @@ class ClassCoursePairModel {
   String year;
   String semester;
   String department;
+  String program;
   bool hasDisability;
   bool isPaired;
   ClassCoursePairModel({
@@ -41,8 +42,9 @@ class ClassCoursePairModel {
     required this.year,
     required this.semester,
     required this.department,
+    required this.program,
     required this.hasDisability,
-     this.isPaired=false,
+    this.isPaired=false,
   });
 
   ClassCoursePairModel copyWith({
@@ -63,6 +65,7 @@ class ClassCoursePairModel {
     String? year,
     String? semester,
     String? department,
+    String? program,
     bool? hasDisability,
     bool? isPaired,
   }) {
@@ -84,6 +87,7 @@ class ClassCoursePairModel {
       year: year ?? this.year,
       semester: semester ?? this.semester,
       department: department ?? this.department,
+      program: program ?? this.program,
       hasDisability: hasDisability ?? this.hasDisability,
       isPaired: isPaired ?? this.isPaired,
     );
@@ -108,6 +112,7 @@ class ClassCoursePairModel {
       'year': year,
       'semester': semester,
       'department': department,
+      'program': program,
       'hasDisability': hasDisability,
       'isPaired': isPaired,
     };
@@ -132,6 +137,7 @@ class ClassCoursePairModel {
       year: map['year'] ?? '',
       semester: map['semester'] ?? '',
       department: map['department'] ?? '',
+      program: map['program'] ?? '',
       hasDisability: map['hasDisability'] ?? false,
       isPaired: map['isPaired'] ?? false,
     );
@@ -144,7 +150,7 @@ class ClassCoursePairModel {
 
   @override
   String toString() {
-    return 'ClassCoursePairModel(id: $id, courseId: $courseId, courseCode: $courseCode, courseName: $courseName, requiredSpecialVenue: $requiredSpecialVenue, lecturers: $lecturers, venues: $venues, course: $course, classId: $classId, className: $className, classData: $classData, classCapacity: $classCapacity, studyMode: $studyMode, level: $level, year: $year, semester: $semester, department: $department, hasDisability: $hasDisability, isPaired: $isPaired)';
+    return 'ClassCoursePairModel(id: $id, courseId: $courseId, courseCode: $courseCode, courseName: $courseName, requiredSpecialVenue: $requiredSpecialVenue, lecturers: $lecturers, venues: $venues, course: $course, classId: $classId, className: $className, classData: $classData, classCapacity: $classCapacity, studyMode: $studyMode, level: $level, year: $year, semester: $semester, department: $department, program: $program, hasDisability: $hasDisability, isPaired: $isPaired)';
   }
 
   @override
@@ -169,6 +175,7 @@ class ClassCoursePairModel {
       other.year == year &&
       other.semester == semester &&
       other.department == department &&
+      other.program == program &&
       other.hasDisability == hasDisability &&
       other.isPaired == isPaired;
   }
@@ -192,6 +199,7 @@ class ClassCoursePairModel {
       year.hashCode ^
       semester.hashCode ^
       department.hashCode ^
+      program.hashCode ^
       hasDisability.hashCode ^
       isPaired.hashCode;
   }

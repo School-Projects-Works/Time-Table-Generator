@@ -65,7 +65,7 @@ class LecturerCourseClassPairProvider
         courseCode: cc.courseCode,
         courseId: cc.courseId,
         isAsigned: false,
-        lecturerFreeDay: lecturer.freeDay,
+        program: cc.program,
         className: cc.className,
         courseName: cc.courseName,
         lecturer: lecturer.toMap(),

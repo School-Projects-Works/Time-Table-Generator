@@ -7,9 +7,11 @@ import 'package:aamusted_timetable_generator/features/allocations/data/lecturers
 import 'package:aamusted_timetable_generator/features/allocations/repo/allocation_repo.dart';
 import 'package:aamusted_timetable_generator/features/allocations/usecase/block_funtions.dart';
 import 'package:aamusted_timetable_generator/features/configurations/data/config/config_model.dart';
+import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import '../../../core/data/constants/excel_headings.dart';
 import '../../../core/data/constants/instructions.dart';
@@ -64,6 +66,7 @@ class AllocationUseCase extends AllocationRepo {
     required String year,
     required String semester,
     required ConfigModel config,
+    required WidgetRef ref,
   }) async {
     try {
       List<CourseModel> courses = [];
@@ -101,7 +104,7 @@ class AllocationUseCase extends AllocationRepo {
       /// if they are not correct i return an error message
       /// else i continue with the extraction of data
       var regClassHeadingRow =
-          regClassesSheet.row(classInstructions.length + 3);
+          regClassesSheet.row(classInstructions.length + 4);
 
       var evenClassHeadingRow =
           evenClassesSheet.row(classInstructions.length + 1);
@@ -129,10 +132,33 @@ class AllocationUseCase extends AllocationRepo {
       ///Extract departments from Regular-Classes sheet
       var department = ClassBooks.getDepartmentsFromExcelSheet(
           classesSheet: regClassesSheet);
+      var program =
+          ClassBooks.getProgramFromExcelSheet(classesSheet: regClassesSheet);
+
       if (department == null || department.isEmpty) {
         return Future.value(
             (false, (courses, classes, lecturers), 'No Department Found'));
       }
+
+      if (program == null || program.isEmpty) {
+        return Future.value(
+            (false, (courses, classes, lecturers), 'Program not Found'));
+      }
+
+      lecturers = ref
+          .watch(lecturersDataProvider)
+          .where((element) => element.department == department)
+          .toList();
+      courses = ref
+          .watch(coursesDataProvider)
+          .where((element) =>
+              element.department == department && element.program == program)
+          .toList();
+      classes = ref
+          .watch(classesDataProvider)
+          .where((element) =>
+              element.department == department && element.program == program)
+          .toList();
 
       ///extract data from Regular-Classes sheet
       var regClasses = ClassBooks.getClassesFromExcelSheet(
@@ -140,14 +166,22 @@ class AllocationUseCase extends AllocationRepo {
           department: department,
           semester: semester,
           year: year,
+          program: program,
           studyMode: 'Regular');
       var evenClasses = ClassBooks.getClassesFromExcelSheet(
           classesSheet: evenClassesSheet,
           department: department,
           semester: semester,
+          program: program,
           year: year,
           studyMode: 'Evening');
-      classes = [...regClasses, ...evenClasses];
+     var  classData = [...regClasses, ...evenClasses];
+     //add class to classes if not already exist
+      for (var element in classData) {
+        if (!classes.any((e) => e.id == element.id)) {
+          classes.add(element);
+        }
+      }
 
       var (regCourses, regLecturers) =
           AllocationBlocks.getCoursesAndLecturesFromExcelSheet(
@@ -155,6 +189,7 @@ class AllocationUseCase extends AllocationRepo {
               department: department,
               semester: semester,
               config: config,
+              program: program,
               year: year,
               classes: regClasses,
               studyMode: 'Regular');
@@ -164,18 +199,39 @@ class AllocationUseCase extends AllocationRepo {
               department: department,
               semester: semester,
               year: year,
+              program: program,
               config: config,
               classes: evenClasses,
               studyMode: 'Evening');
 
       //combine regular and evening courses and remove duplicates
-      courses = [...regCourses, ...evenCourses];
+     var coursesData = [...regCourses, ...evenCourses];
+
+     //add courses to courses if not already exist if exist update the course with lecturers and classes if not already exist
+      for (var element in coursesData) {
+        if (!courses.any((e) => e.id == element.id)) {
+          courses.add(element);
+        }else{
+          var existCourse = courses.where((e) => e.id == element.id).firstOrNull;
+          if(existCourse != null){
+            var existLecturers = existCourse.lecturer;
+            for (var lect in element.lecturer) {
+              if (!existLecturers.any((e) => e['id'] == lect['id'])) {
+                existLecturers.add(lect);
+              }
+            }
+            courses.removeWhere((e) => e.id == existCourse.id);
+            courses.add(existCourse);
+          }
+        }
+      }
 
       ///loop through the lecturers and add the courses to the lecturer
       ///if lecturer already exist i update the lecturer courses with new course
       ///and classes if not exist already
       ///
       ///Time to loop throgh regulart data
+      List<LecturerModel> newLecturers = [];
       for (var lecturer in regLecturers) {
         List<CourseModel> lectCourses = [];
         for (var course in courses) {
@@ -189,7 +245,8 @@ class AllocationUseCase extends AllocationRepo {
         }
         lecturer.courses = lectCourses.map((e) => e.toMap()).toList();
         var theExistenLecturer =
-            lecturers.where((element) => element.id == lecturer.id).firstOrNull;
+            newLecturers
+            .where((element) => element.id == lecturer.id).firstOrNull;
         if (theExistenLecturer != null) {
           // append classes if not already exist and append courses as well
           var existCourses = lecturer.courses;
@@ -205,11 +262,11 @@ class AllocationUseCase extends AllocationRepo {
               theExistenLecturer.classes.add(element);
             }
           }
-          lecturers
+          newLecturers
               .removeWhere((element) => element.id == theExistenLecturer.id);
-          lecturers.add(theExistenLecturer);
+          newLecturers.add(theExistenLecturer);
         } else {
-          lecturers.add(lecturer);
+          newLecturers.add(lecturer);
         }
       }
 
@@ -227,9 +284,9 @@ class AllocationUseCase extends AllocationRepo {
         lecturer.courses = lectCourses.map((e) => e.toMap()).toList();
 
         var theExistenLecturer =
-            lecturers.where((element) => element.id == lecturer.id).firstOrNull;
+            newLecturers
+            .where((element) => element.id == lecturer.id).firstOrNull;
         if (theExistenLecturer != null) {
-         
           // append classes if not already exist and append courses as well
           var existCourses = lecturer.courses;
           var existClasses = lecturer.classes;
@@ -244,11 +301,37 @@ class AllocationUseCase extends AllocationRepo {
               theExistenLecturer.classes.add(element);
             }
           }
-          lecturers
+          newLecturers
               .removeWhere((element) => element.id == theExistenLecturer.id);
-          lecturers.add(theExistenLecturer);
+          newLecturers.add(theExistenLecturer);
         } else {
-          lecturers.add(lecturer);
+          newLecturers.add(lecturer);
+        }
+      }
+
+      //add newLecturers to lecturers if not already exist if exist update the lecturer with courses and classes if not already exist
+
+      for (var element in newLecturers) {
+        if (!lecturers.any((e) => e.id == element.id)) {
+          lecturers.add(element);
+        }else{
+          var existLecturer = lecturers.where((e) => e.id == element.id).firstOrNull;
+          if(existLecturer != null){
+            var existCourses = existLecturer.courses;
+            var existClasses = existLecturer.classes;
+            for (var course in element.courses) {
+              if (!existCourses.any((e) => e['id'] == course['id'])) {
+                existCourses.add(course);
+              }
+            }
+            for (var clas in element.classes) {
+              if (!existClasses.any((e) => e == clas)) {
+                existClasses.add(clas);
+              }
+            }
+            lecturers.removeWhere((e) => e.id == existLecturer.id);
+            lecturers.add(existLecturer);
+          }
         }
       }
 

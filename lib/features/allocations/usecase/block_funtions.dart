@@ -1,4 +1,3 @@
-import 'package:aamusted_timetable_generator/core/data/constants/constant_data.dart';
 import 'package:aamusted_timetable_generator/core/data/constants/instructions.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/classes/class_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';
@@ -17,6 +16,7 @@ class AllocationBlocks {
       getCoursesAndLecturesFromExcelSheet(
           {required Sheet allocationsSheet,
           required String department,
+          required String program,
           required String semester,
           required String year,
           required String studyMode,
@@ -27,15 +27,15 @@ class AllocationBlocks {
         year: year,
         semester: semester,
         classes: classes,
-              confg: config,
+        confg: config,
         department: department);
     List<CourseModel> courses = extractCourseList(
         allocationsSheet: allocationsSheet,
         year: year,
         semester: semester,
         department: department,
+        program: program,
         studyMode: studyMode,
-  
         lecturers: lecturers);
     return (courses, lecturers);
   }
@@ -54,38 +54,37 @@ class AllocationBlocks {
       required String department}) {
     var rowStart = courseInstructions.length + 2;
     List<LecturerModel> lecturers = [];
-    var days = confg.days;
-    
+
     for (var i = rowStart; i < allocationsSheet.maxRows; i++) {
       var row = allocationsSheet.row(i);
       if (validateAllocationRow(row)) {
         var lecturerId =
             row[5]!.value.toString().trim().replaceAll(' ', '').toLowerCase();
         var lecturerName = row[6]!.value.toString();
-        var lecturerFreeDay = row[7]!.value.toString();
+        // var lecturerFreeDay = row[7]!.value.toString();
         var level = row[2]!.value.toString().trim().replaceAll(' ', '');
-        var lecturerClass = row[8] != null && row[8]!.value != null
-            ? row[8]!.value.toString()
+        var lecturerClass = row[7] != null && row[7]!.value != null
+            ? row[7]!.value.toString()
             : '';
-            var dayInit = lecturerFreeDay.length > 3
-            ? lecturerFreeDay.toLowerCase().substring(0, 3)
-            : lecturerFreeDay.toLowerCase();
-        var day = days
-            .firstWhere((element) => element.toLowerCase().startsWith(dayInit));
+        //     var dayInit = lecturerFreeDay.length > 3
+        //     ? lecturerFreeDay.toLowerCase().substring(0, 3)
+        //     : lecturerFreeDay.toLowerCase();
+        // var day = days
+        //     .firstWhere((element) => element.toLowerCase().startsWith(dayInit));
         var lecturer = LecturerModel(
-            id: lecturerId,
-            courses: [],
-            classes: [],
-            lecturerName: lecturerName,
-            department: department,
-            year: year,
-            semester: semester,
-            freeDay: day);
+          id: lecturerId,
+          courses: [],
+          classes: [],
+          lecturerName: lecturerName,
+          department: department,
+          year: year,
+          semester: semester,
+        );
 
         /// check if lecturer class is not empty split the classes with comma
         /// after the spliting check if the class is in the list of classes using the class name
         /// then add the class  id to the clecturer to the lecturer
-        
+
         List<String> lecturerClassesList = [];
         if (lecturerClass.isNotEmpty) {
           var lecturerClasses = lecturerClass.split(RegExp(r'[,.]'));
@@ -111,7 +110,7 @@ class AllocationBlocks {
         lecturers.add(lecturer);
       }
     }
-    
+
     return lecturers;
   }
 
@@ -126,6 +125,7 @@ class AllocationBlocks {
       required String semester,
       required String studyMode,
       required String department,
+      required String program,
       required List<LecturerModel> lecturers}) {
     var rowStart = courseInstructions.length + 2;
     List<CourseModel> courses = [];
@@ -133,8 +133,10 @@ class AllocationBlocks {
       var row = allocationsSheet.row(i);
       if (validateAllocationRow(row)) {
         var courseId = studyMode == 'Regular'
-            ? row[0]!.value.toString().toLowerCase().replaceAll(' ', '')
-            : 'e-${row[0]!.value.toString()}'.toLowerCase().replaceAll(' ', '');
+            ? '$program${row[0]!.value.toString().toLowerCase().replaceAll(' ', '')}'
+            : 'e-$program${row[0]!.value.toString()}'
+                .toLowerCase()
+                .replaceAll(' ', '');
         var courseCode = row[0]!.value.toString();
         var courseTitle = row[1]!.value.toString();
         var courseLevel = row[2]!.value.toString();
@@ -155,6 +157,7 @@ class AllocationBlocks {
             id: courseId,
             code: courseCode,
             title: courseTitle,
+            program: program,
             level: courseLevel,
             creditHours: courseCreditHours,
             specialVenue: courseSpecialVenue,
@@ -168,7 +171,8 @@ class AllocationBlocks {
           // Check if the course already exists in the list of courses
           // If it exists and the lectuere not already added, append the lecturer name and id to the course if not already added
           // eles, add the course to the list of courses
-          var exist = courses.any((element) => element.id == courseId);
+          var exist = courses.any((element) =>
+              element.id == courseId && element.program == program);
           if (exist) {
             // append lecturer name and id to the course if not already added
             var course =
@@ -199,13 +203,11 @@ class AllocationBlocks {
     var clevel = row[2]?.value;
     var lecID = row[5]?.value;
     var lecName = row[6]?.value;
-    var lecFreeDay = row[7]?.value;
     return ccode != null &&
         ctitle != null &&
         clevel != null &&
         lecID != null &&
-        lecName != null &&
-        lecFreeDay != null;
+        lecName != null;
   }
 }
 
@@ -224,14 +226,15 @@ class ClassBooks {
       required String department,
       required String semester,
       required String year,
+      required String program,
       required String studyMode}) {
     List<ClassModel> classes = [];
     var rowStart = studyMode == 'Regular'
-        ? classInstructions.length + 4
+        ? classInstructions.length + 5
         : classInstructions.length + 2;
     for (int i = rowStart; i < classesSheet.maxRows; i++) {
       var row = classesSheet.row(i);
-      var id = '${row[1]!.value.toString()}$department'
+      var id = '${row[1]!.value.toString()}$department$program'
           .toLowerCase()
           .hashCode
           .toString();
@@ -251,6 +254,7 @@ class ClassBooks {
           size: size,
           hasDisability: hasDisability,
           department: department,
+          program: program,
           studyMode: studyMode,
           semester: semester,
           year: year,
@@ -262,7 +266,7 @@ class ClassBooks {
   }
 
   /// Validates a class row by checking if the level and class code are not null.
-  ///
+  /// Returns `true` if both the level and class code are not null, otherwise returns `false`.
   /// Returns `true` if both the level and class code are not null, otherwise returns `false`.
   static bool validateClassRow(List<Data?> row) {
     var lev = row[0]?.value;
@@ -278,14 +282,18 @@ class ClassBooks {
     if (departmentKey.isEmpty) {
       return null;
     }
-    var department = departmentList.keys.firstWhere(
-        (element) =>
-            element.toLowerCase().replaceAll(' ', '') ==
-            departmentKey.toLowerCase().replaceAll(' ', ''),
-        orElse: () => '');
-    if (department.isEmpty) {
+
+    return departmentKey;
+  }
+
+  static String? getProgramFromExcelSheet({required Sheet classesSheet}) {
+    var programRow = classesSheet.row(classInstructions.length + 3)[1];
+    String programKey = programRow != null && programRow.value != null
+        ? programRow.value.toString()
+        : '';
+    if (programKey.isEmpty) {
       return null;
     }
-    return departmentList[department];
+    return programKey;
   }
 }

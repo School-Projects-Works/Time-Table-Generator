@@ -26,7 +26,7 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
     var courses = ref.watch(courseProvider);
     var coursesNotifier = ref.read(courseProvider.notifier);
     var tableTextStyle = getTextStyle(
-        color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500);
+        color: Colors.black, fontSize: 13, fontWeight: FontWeight.w400);
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.all(20),
@@ -173,7 +173,7 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                 ),
 
                 CustomTableColumn(
-                  title: 'Lecturer',
+                  title: 'Lecturers',
                   width: 200,
                   cellBuilder: (item) => Text(
                     item.lecturer.map((e) => e['lecturerName']).join(','),
@@ -189,8 +189,14 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                   ),
                 ),
                 CustomTableColumn(
+                  title: 'Program',
+                  cellBuilder: (item) => Text(
+                    item.program ?? '',
+                    style: tableTextStyle,
+                  ),
+                ),
+                CustomTableColumn(
                   title: 'Department',
-                  //width: 200,
                   cellBuilder: (item) => Text(
                     item.department,
                     style: tableTextStyle,
@@ -208,7 +214,8 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                             border: Border.all(
-                                color: item.venues != null
+                                color: item.venues != null &&
+                                        item.venues!.isNotEmpty
                                     ? Colors.green
                                     : Colors.red,
                                 width: 1),
@@ -248,7 +255,8 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                                     padding: const EdgeInsets.all(5),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(2),
-                                      color: item.venues != null
+                                      color: item.venues != null &&
+                                              item.venues!.isNotEmpty
                                           ? Colors.green
                                           : Colors.red,
                                       //shadow

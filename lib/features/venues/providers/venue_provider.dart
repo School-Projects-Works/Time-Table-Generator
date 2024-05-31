@@ -168,7 +168,7 @@ class VenueDataImport extends StateNotifier<void> {
         //save to db
         var (success, message) = await VenueUseCase(db: ref.watch(dbProvider)).addVenues(venues!);
         if (success) {
-          ref.read(venuesDataProvider.notifier).addVenues(venues);
+          ref.read(venuesDataProvider.notifier).setVenues(venues);
         }
         CustomDialog.dismiss();
         CustomDialog.showSuccess(message: message);

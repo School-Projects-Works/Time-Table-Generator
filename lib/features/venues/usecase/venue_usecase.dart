@@ -27,7 +27,9 @@ class VenueUseCase extends VenueRepo {
         var existingVenue =
             await db.collection('venues').findOne({'id': venue.id});
         if (existingVenue != null) {
-          await db.collection('venues').update(existingVenue, venue.toMap());
+          await db
+              .collection('venues')
+              .update(existingVenue, venue.toMap(), upsert: true);
         } else {
           await db.collection('venues').insert(venue.toMap());
         }
@@ -106,11 +108,9 @@ class VenueUseCase extends VenueRepo {
         var rowStart = venueInstructions.length + 1;
         for (int i = rowStart; i < venueSheet.maxRows; i++) {
           var row = venueSheet.row(i);
-          if (row[0] == null || row[0]!.value == null) {
-            break;
-          } else {
+          if (row[0] != null && row[0]!.value != null&& row[0]!.value.toString().isNotEmpty) {       
             var venue = VenueModel(
-              id: row[0]!.value.toString().hashCode.toString(),
+              id: row[0]!.value.toString().replaceAll(' ', ''),
               name: row[0]!.value.toString(),
               capacity: int.parse(row[1]!.value.toString()),
               disabilityAccess: row[2]!.value.toString().toLowerCase() == 'yes',

@@ -10,6 +10,7 @@ class ClassModel {
   String? size;
   String? hasDisability;
   String? department;
+  String? program;
   String year;
   String semester;
 
@@ -21,6 +22,7 @@ class ClassModel {
     this.size,
     this.hasDisability,
     this.department,
+    this.program,
     required this.year,
     required this.semester,
   });
@@ -33,6 +35,7 @@ class ClassModel {
     ValueGetter<String?>? size,
     ValueGetter<String?>? hasDisability,
     ValueGetter<String?>? department,
+    ValueGetter<String?>? program,
     String? year,
     String? semester,
   }) {
@@ -42,9 +45,9 @@ class ClassModel {
       studyMode: studyMode != null ? studyMode() : this.studyMode,
       name: name != null ? name() : this.name,
       size: size != null ? size() : this.size,
-      hasDisability:
-          hasDisability != null ? hasDisability() : this.hasDisability,
+      hasDisability: hasDisability != null ? hasDisability() : this.hasDisability,
       department: department != null ? department() : this.department,
+      program: program != null ? program() : this.program,
       year: year ?? this.year,
       semester: semester ?? this.semester,
     );
@@ -59,6 +62,7 @@ class ClassModel {
       'size': size,
       'hasDisability': hasDisability,
       'department': department,
+      'program': program,
       'year': year,
       'semester': semester,
     };
@@ -73,6 +77,7 @@ class ClassModel {
       size: map['size'],
       hasDisability: map['hasDisability'],
       department: map['department'],
+      program: map['program'],
       year: map['year'] ?? '',
       semester: map['semester'] ?? '',
     );
@@ -85,35 +90,37 @@ class ClassModel {
 
   @override
   String toString() {
-    return 'ClassModel(id: $id, level: $level, studyMode: $studyMode, name: $name, size: $size, hasDisability: $hasDisability, department: $department, year: $year, semester: $semester)';
+    return 'ClassModel(id: $id, level: $level, studyMode: $studyMode, name: $name, size: $size, hasDisability: $hasDisability, department: $department, program: $program, year: $year, semester: $semester)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-
+  
     return other is ClassModel &&
-        other.id == id &&
-        other.level == level &&
-        other.studyMode == studyMode &&
-        other.name == name &&
-        other.size == size &&
-        other.hasDisability == hasDisability &&
-        other.department == department &&
-        other.year == year &&
-        other.semester == semester;
+      other.id == id &&
+      other.level == level &&
+      other.studyMode == studyMode &&
+      other.name == name &&
+      other.size == size &&
+      other.hasDisability == hasDisability &&
+      other.department == department &&
+      other.program == program &&
+      other.year == year &&
+      other.semester == semester;
   }
 
   @override
   int get hashCode {
     return id.hashCode ^
-        level.hashCode ^
-        studyMode.hashCode ^
-        name.hashCode ^
-        size.hashCode ^
-        hasDisability.hashCode ^
-        department.hashCode ^
-        year.hashCode ^
-        semester.hashCode;
+      level.hashCode ^
+      studyMode.hashCode ^
+      name.hashCode ^
+      size.hashCode ^
+      hasDisability.hashCode ^
+      department.hashCode ^
+      program.hashCode ^
+      year.hashCode ^
+      semester.hashCode;
   }
 }

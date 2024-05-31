@@ -12,7 +12,6 @@ final List<String> courseAllocationHeader = [
   'Special Venue',
   'Lecturer ID',
   'Lecturer Name',
-  'Lecturer Free Day',
   'Lecturer Classes',
 ];
 

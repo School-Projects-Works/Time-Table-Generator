@@ -42,7 +42,7 @@ class AllocationTemplateProvider extends StateNotifier<void> {
         path: pickedFilePath,
         year: config.year!,
         semester: config.semester!,
-        config: config,
+        config: config,ref: ref
       );
       if (success) {
         var classData =
