@@ -95,12 +95,11 @@ class CourseNotifier extends StateNotifier<TableModel<CourseModel>> {
     } else {
       var data = state.items
           .where((element) =>
-              element.code!.toLowerCase().contains(query.toLowerCase()) ||
-              element.level!.toLowerCase().contains(query.toLowerCase()) ||
-              element.id!.toLowerCase().contains(query.toLowerCase()) ||
-              element.lecturer.any((element) => element['lecturerName'].contains(query.toLowerCase())) ||
-              element.title!.toLowerCase().contains(query.toLowerCase()) ||
-              element.department!.toLowerCase().contains(query.toLowerCase()))
+              element.code.toLowerCase().contains(query.toLowerCase()) ||
+              element.level.toLowerCase().contains(query.toLowerCase()) ||
+              element.id.toLowerCase().contains(query.toLowerCase()) ||
+              element.title.toLowerCase().contains(query.toLowerCase()) ||
+              element.department.toLowerCase().contains(query.toLowerCase()))
           .toList();
       List<List<CourseModel>> pages = [];
       state = state.copyWith(
@@ -131,9 +130,54 @@ class CourseNotifier extends StateNotifier<TableModel<CourseModel>> {
     }
   }
 
-  void deleteCourse(CourseModel item) {}
+  void filterCoursesWithSpecialVenues(WidgetRef ref) {
+    init();
+    var data = state.items
+        .where((element) =>
+            element.specialVenue != null && element.specialVenue!.isNotEmpty&&
+                            element.specialVenue!
+                                    .toLowerCase() !=
+                                'no')
+        .toList();
 
-  void editCourse(CourseModel item) {}
+   
+    List<List<CourseModel>> pages = [];
+    state = state.copyWith(
+        items: data,
+        selectedRows: [],
+        currentPage: 0,
+        pages: pages,
+        currentPageItems: [],
+        hasNextPage: false,
+        hasPreviousPage: false);
+    if (data.isNotEmpty) {
+      var pagesCount = (data.length / state.pageSize).ceil();
+      for (var i = 0; i < pagesCount; i++) {
+        var page = data.skip(i * state.pageSize).take(state.pageSize).toList();
+
+        pages.add(page);
+        state = state.copyWith(pages: pages);
+      }
+    } else {
+      pages.add([]);
+      state = state.copyWith(pages: pages);
+    }
+    state = state.copyWith(
+        currentPageItems: state.pages[state.currentPage],
+        hasNextPage: state.currentPage < state.pages.length - 1,
+        hasPreviousPage: state.currentPage > 0);
+
+        ref.read(isFilteredProvider.notifier).state = true;
+   
+  }
+
+  void removeFilter(WidgetRef ref) {
+    init();
+    ref.read(isFilteredProvider.notifier).state = false;
+  }
 }
 
 final courseItemHovered = StateProvider<CourseModel?>((ref) => null);
+
+
+final isFilteredProvider = StateProvider<bool>((ref) => false);

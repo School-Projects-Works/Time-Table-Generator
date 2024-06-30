@@ -1,9 +1,10 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/allocations/usecase/allocation_usecase.dart';
+import 'package:aamusted_timetable_generator/features/configurations/provider/config_provider.dart';
+import 'package:aamusted_timetable_generator/features/database/provider/database_provider.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_app_file/open_app_file.dart';
-
 import '../../main/provider/main_provider.dart';
 import 'classes/usecase/classes_usecase.dart';
 import 'courses/usecase/courses_usecase.dart';
@@ -17,15 +18,15 @@ final allocationTemplateProvider =
 class AllocationTemplateProvider extends StateNotifier<void> {
   AllocationTemplateProvider() : super(null);
   final _allocationUsecase = AllocationUseCase();
-  Future<void> downloadTemplate() async {
+  void downloadTemplate() async {
     var (success, path) = await _allocationUsecase.downloadTemplate();
-
     if (success) {
       CustomDialog.showSuccess(message: 'Template downloaded successfully');
       if (path != null) {
         await OpenAppFile.open(path);
       }
     } else {
+      CustomDialog.dismiss();
       CustomDialog.showError(message: 'Failed to download template');
     }
   }
@@ -35,22 +36,27 @@ class AllocationTemplateProvider extends StateNotifier<void> {
     CustomDialog.showLoading(message: 'Importing allocations...');
     String? pickedFilePath = await AppUtils.pickExcelFIle();
     if (pickedFilePath != null) {
+      var config = ref.watch(configProvider);
       var (success, (courses, classes, lecturers), message) =
           await _allocationUsecase.importAllocation(
         path: pickedFilePath,
-        year: ref.watch(academicYearProvider),
-        semester: ref.watch(semesterProvider),
+        year: config.year!,
+        semester: config.semester!,
+        config: config,ref: ref
       );
       if (success) {
-        var classData = await ClassesUsecase().addClasses(classes);
+        var classData =
+            await ClassesUsecase(db: ref.watch(dbProvider)).addClasses(classes);
         if (classData.isNotEmpty) {
           ref.read(classesDataProvider.notifier).addClass(classData);
         }
-        var courseData = await CoursesUseCase().addCourses(courses);
+        var courseData =
+            await CoursesUseCase(db: ref.watch(dbProvider)).addCourses(courses);
         if (courseData.isNotEmpty) {
           ref.read(coursesDataProvider.notifier).addCourses(courseData);
         }
-        var lectData = await LecturerUseCase().addLectures(lecturers);
+        var lectData = await LecturerUseCase(db: ref.watch(dbProvider))
+            .addLectures(lecturers);
         if (lectData.isNotEmpty) {
           ref.read(lecturersDataProvider.notifier).addLecturers(lectData);
         }
@@ -69,25 +75,21 @@ class AllocationTemplateProvider extends StateNotifier<void> {
   }
 
   void clearAllAllocations(WidgetRef ref, String department) async {
-    //   CustomDialog.dismiss();
-    //   CustomDialog.showLoading(message: 'Clearing all allocations...');
-    //   var academicYear = ref.watch(academicYearProvider);
-    //   var academicSemester = ref.watch(semesterProvider);
-    //   var success = await ClassesUsecase().deleteAllClasses(
-    //       academicYear, academicSemester, department);
-    //   if (success) {
-    //     ref.read(classesDataProvider.notifier).setClasses([]);
-    //   }
-    //   success = await CoursesUseCase().deleteAllCourses(academicYear,academicSemester, department);
-    //   if (success) {
-    //     ref.read(coursesDataProvider.notifier).setCourses([]);
-    //   }
-    //   success = await LecturerUseCase().deleteAllLecturers(
-    //       academicYear, academicSemester, department);
-    //   if (success) {
-    //     ref.read(lecturersDataProvider.notifier).setLecturers([]);
-    //   }
-
-    // }
+    CustomDialog.dismiss();
+    CustomDialog.showLoading(message: 'Clearing allocations...');
+    var config = ref.watch(configProvider);
+    var (success, classes, courses, lecturers) = await AllocationUseCase()
+        .deletateAllocation(
+            config.year!, config.semester!, department, ref.watch(dbProvider));
+    if (success) {
+      ref.read(classesDataProvider.notifier).setClasses(classes);
+      ref.read(coursesDataProvider.notifier).setCourses(courses);
+      ref.read(lecturersDataProvider.notifier).setLecturers(lecturers);
+      CustomDialog.dismiss();
+      CustomDialog.showSuccess(message: 'Allocations delected successfully');
+    } else {
+      CustomDialog.dismiss();
+      CustomDialog.showError(message: 'Failed to clear allocations');
+    }
   }
 }

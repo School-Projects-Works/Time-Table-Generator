@@ -1,5 +1,6 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_button.dart';
 import 'package:aamusted_timetable_generator/core/widget/table/data/models/custom_table_columns_model.dart';
+import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
 import 'package:aamusted_timetable_generator/features/venues/data/venue_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +12,7 @@ import '../../../core/widget/table/widgets/custom_table.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
 
 import '../providers/venue_provider.dart';
+import 'edit_venue.dart';
 
 class VenuePage extends ConsumerStatefulWidget {
   const VenuePage({super.key});
@@ -58,15 +60,27 @@ class _VenuePageState extends ConsumerState<VenuePage> {
                             onPressed: () {
                               ref
                                   .read(venueDataImportProvider.notifier)
-                                  .downloadTemplate();
+                                  .downloadTemplate(ref);
                             }),
                         const SizedBox(width: 10),
-                        CustomButton(
-                            //red button
-                            color: Colors.red,
-                            text: 'Clear All Venue',
-                            radius: 10,
-                            onPressed: () {}),
+                        if (ref.watch(venuesDataProvider).isNotEmpty)
+                          CustomButton(
+                              //red button
+                              color: Colors.red,
+                              text: 'Clear All Venue',
+                              radius: 10,
+                              onPressed: () {
+                                CustomDialog.showInfo(
+                                    message:
+                                        'Are you sure you want to clear all venues? This action cannot be undone.',
+                                    buttonText: 'Yes| Clear All',
+                                    onPressed: () {
+                                      ref
+                                          .read(
+                                              venueDataImportProvider.notifier)
+                                          .deleteAllVenues(ref);
+                                    });
+                              }),
                         const SizedBox(width: 10),
                       ])),
                   const SizedBox(height: 20),
@@ -149,7 +163,7 @@ class _VenuePageState extends ConsumerState<VenuePage> {
                       columns: [
                         CustomTableColumn(
                           title: 'Venue Id',
-                          //width: 100,
+                          width: 100,
                           cellBuilder: (item) => Text(
                             item.id ?? '',
                             style: tableTextStyle,
@@ -165,7 +179,7 @@ class _VenuePageState extends ConsumerState<VenuePage> {
                         ),
                         CustomTableColumn(
                           title: 'Capacity',
-                          // width: 150,
+                          width: 150,
                           cellBuilder: (item) => Text(
                             '${item.capacity ?? 0}',
                             style: tableTextStyle,
@@ -203,7 +217,7 @@ class _VenuePageState extends ConsumerState<VenuePage> {
                                           'Are you sure you want to delete this venue?',
                                       buttonText: 'Yes| Delete',
                                       onPressed: () {
-                                        venuesNotifier.deleteVenue(item);
+                                        venuesNotifier.deleteVenue(item,ref);
                                       });
                                 },
                                 child: Container(
@@ -232,13 +246,10 @@ class _VenuePageState extends ConsumerState<VenuePage> {
                               const SizedBox(width: 10),
                               GestureDetector(
                                 onTap: () {
-                                  CustomDialog.showInfo(
-                                      message:
-                                          'Are you sure you want to edit this Venue?',
-                                      buttonText: 'Yes| Edit',
-                                      onPressed: () {
-                                        venuesNotifier.editVenue(item);
-                                      });
+                                  CustomDialog.showCustom(
+                                      width: 500,
+                                      height: 350,
+                                      ui: EditVenue(item));
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(10),

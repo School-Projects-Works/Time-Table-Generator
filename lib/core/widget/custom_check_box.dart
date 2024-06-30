@@ -7,7 +7,7 @@ import 'custom_drop_down.dart';
 
 class CustomCheckBox extends StatelessWidget {
   const CustomCheckBox(
-      {Key? key,
+      {super.key,
       required this.title,
       required this.onTap,
       this.isChecked = false,
@@ -16,8 +16,7 @@ class CustomCheckBox extends StatelessWidget {
       this.onStartChanged,
       this.alwaysChecked = false,
       this.onEndChanged,
-      this.hasTime = false})
-      : super(key: key);
+      this.hasTime = false});
   final bool isChecked;
   final String title;
   final VoidCallback onTap;

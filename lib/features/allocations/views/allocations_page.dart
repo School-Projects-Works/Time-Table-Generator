@@ -82,30 +82,37 @@ class _AllocationPageState extends ConsumerState<AllocationPage> {
                       }),
                   const SizedBox(width: 10),
                   //pop up menu
-                  PopupMenuButton(
-                    itemBuilder: (_) => ['All', ...departments]
-                        .map((e) => PopupMenuItem(value: e, child: Text(e!)))
-                        .toList(),
-                    onSelected: (value) {
-                      //clear all allocations
-                      CustomDialog.showInfo(
-                          message:
-                              'Are you sure you want to clear all allocations? This action cannot be undone',
-                          buttonText: 'Yes| Clear All',
-                          onPressed: () {
-                            //clear all allocations
-                            ref
-                                .read(allocationTemplateProvider.notifier)
-                                .clearAllAllocations(ref, value);
-                          });
-                    },
-                    child: CustomButton(
+                  if (ref.watch(classesDataProvider).isNotEmpty &&
+                      ref.watch(coursesDataProvider).isNotEmpty &&
+                      ref.watch(lecturersDataProvider).isNotEmpty)
+                    PopupMenuButton(
+                      color: Colors.white,
+                      itemBuilder: (_) => ['All', ...departments]
+                          .map((e) => PopupMenuItem(value: e, child: Text(e!)))
+                          .toList(),
+                      onSelected: (value) {
+                        var department =
+                            value == 'All' ? '' : 'for $value Department';
+                        //clear all allocations
+
+                        CustomDialog.showInfo(
+                            message:
+                                'Are you sure you want to clear all allocations $department? This action cannot be undone',
+                            buttonText: 'Yes| Clear All',
+                            onPressed: () {
+                              ref
+                                  .read(allocationTemplateProvider.notifier)
+                                  .clearAllAllocations(ref, value);
+                            });
+                      },
+                      child: const CustomButton(
                         //red button
                         color: Colors.red,
                         text: 'Clear All Allocations',
                         radius: 10,
-                        onPressed: () {}),
-                  ),
+                        //onPressed: () {}
+                      ),
+                    ),
 
                   const SizedBox(width: 10),
                 ],

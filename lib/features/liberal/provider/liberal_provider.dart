@@ -1,14 +1,11 @@
-import 'dart:math';
-
 import 'package:aamusted_timetable_generator/core/data/table_model.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
+import 'package:aamusted_timetable_generator/features/database/provider/database_provider.dart';
 import 'package:aamusted_timetable_generator/features/liberal/data/liberal/liberal_model.dart';
 import 'package:aamusted_timetable_generator/features/liberal/usecase/liberal_usecase.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_app_file/open_app_file.dart';
-
 import '../../../utils/app_utils.dart';
-import '../../allocations/provider/lecturer/usecase/lecturer_usecase.dart';
 import '../../main/provider/main_provider.dart';
 
 final liberalProvider =
@@ -158,21 +155,17 @@ class LiberalDataImport extends StateNotifier<void> {
     //open file picker
     String? pickedFilePath = await AppUtils.pickExcelFIle();
     if (pickedFilePath != null) {
-      var (success, message, liberal, lecturers) = await LiberalUseCase()
-          .importLiberal(
+      var (success, message, liberal) =
+          await LiberalUseCase(db: ref.watch(dbProvider)).importLiberal(
               path: pickedFilePath,
               academicYear: academicYear,
               semester: academicSemester);
       if (success) {
         //save to db
-        var (success, message) = await LiberalUseCase().addLiberals(liberal!);
+        var (success, message) = await LiberalUseCase(db: ref.watch(dbProvider))
+            .addLiberals(liberal!);
         if (success) {
           ref.read(liberalsDataProvider.notifier).addLiberal(liberal);
-        }
-        var (newSuccess, newMessage) = await LecturerUseCase().appendLectuers(
-            list: lecturers!, year: academicYear, semester: academicSemester);
-        if (newSuccess) {
-          ref.read(lecturersDataProvider.notifier).addLecturers(lecturers);
         }
         CustomDialog.dismiss();
         CustomDialog.showSuccess(message: message);
@@ -185,18 +178,32 @@ class LiberalDataImport extends StateNotifier<void> {
     }
   }
 
-  void downloadTemplate() async {
-    CustomDialog.showLoading(message: 'Downloading template...');
-    var (success, message) = await LiberalUseCase().downloadTemplate();
+  void downloadTemplate(WidgetRef ref) async {
+    var (success, message) =
+        await LiberalUseCase(db: ref.watch(dbProvider)).downloadTemplate();
     if (success) {
-      CustomDialog.dismiss();
       //open file
-      if (message != null) {
-        await OpenAppFile.open(message);
-      }
+      CustomDialog.showSuccess(message: 'Template downloaded successfully ');
+      await OpenAppFile.open(message!);
+    } else {
+      CustomDialog.showError(message: message!);
+    }
+  }
+
+  void clearLiberals(WidgetRef ref) async {
+    CustomDialog.dismiss();
+    CustomDialog.showLoading(message: 'Deleting all liberal courses...');
+    var academicYear = ref.watch(academicYearProvider);
+    var academicSemester = ref.watch(semesterProvider);
+    var (success, message) = await LiberalUseCase(db: ref.watch(dbProvider))
+        .deleteLiberals(academicYear: academicYear, semester: academicSemester);
+    if (success) {
+      ref.read(liberalsDataProvider.notifier).setLiberals([]);
+      CustomDialog.dismiss();
+      CustomDialog.showSuccess(message: message);
     } else {
       CustomDialog.dismiss();
-      CustomDialog.showError(message: message!);
+      CustomDialog.showError(message: message);
     }
   }
 }

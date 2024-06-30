@@ -1,5 +1,4 @@
 import 'package:aamusted_timetable_generator/config/theme/theme.dart';
-import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/core/widget/custom_input.dart';
 import 'package:aamusted_timetable_generator/core/widget/table/widgets/custom_table.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/classes/class_model.dart';
@@ -83,14 +82,14 @@ class _ClassesTabState extends ConsumerState<ClassesTab> {
               showColumnHeadersAtFooter: true,
               data: classes.items,
               columns: [
-                CustomTableColumn(
-                  title: 'Class ID',
-                  width: 200,
-                  cellBuilder: (item) => Text(
-                    item.id ?? '',
-                    style: tableTextStyle,
-                  ),
-                ),
+                // CustomTableColumn(
+                //   title: 'Class ID',
+                //   width: 200,
+                //   cellBuilder: (item) => Text(
+                //     item.id ?? '',
+                //     style: tableTextStyle,
+                //   ),
+                // ),
                 CustomTableColumn(
                   title: 'Class Name',
                   //width: 200,
@@ -111,14 +110,14 @@ class _ClassesTabState extends ConsumerState<ClassesTab> {
                   title: 'Class Level',
                   width: 200,
                   cellBuilder: (item) => Text(
-                    item.level ?? '',
+                    item.level,
                     style: tableTextStyle,
                   ),
                 ),
                 CustomTableColumn(
-                  title: 'Department',
+                  title: 'Program',
                   cellBuilder: (item) => Text(
-                    item.department ?? '',
+                    item.program ?? '',
                     style: tableTextStyle,
                   ),
                 ),
@@ -131,80 +130,80 @@ class _ClassesTabState extends ConsumerState<ClassesTab> {
                   ),
                 ),
                 // delete button
-                CustomTableColumn(
-                  title: 'Action',
-                  cellBuilder: (item) => Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          CustomDialog.showInfo(
-                              message:
-                                  'Are you sure you want to delete this class?',
-                              buttonText: 'Yes| Delete',
-                              onPressed: () {
-                                classNotifier.deleteClass(item);
-                              });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(2),
-                            color: Colors.red,
-                            //shadow
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(.5),
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0, 1),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                      //edit button
-                      const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: () {
-                          CustomDialog.showInfo(
-                              message:
-                                  'Are you sure you want to edit this class?',
-                              buttonText: 'Yes| Edit',
-                              onPressed: () {
-                                classNotifier.editClass(item);
-                              });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(2),
-                            color: Colors.blue,
-                            //shadow
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(.5),
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset: const Offset(0, 1),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.edit,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // CustomTableColumn(
+                //   title: 'Action',
+                //   cellBuilder: (item) => Row(
+                //     mainAxisSize: MainAxisSize.min,
+                //     children: [
+                //       GestureDetector(
+                //         onTap: () {
+                //           CustomDialog.showInfo(
+                //               message:
+                //                   'Are you sure you want to delete this class?',
+                //               buttonText: 'Yes| Delete',
+                //               onPressed: () {
+                //                 classNotifier.deleteClass(item);
+                //               });
+                //         },
+                //         child: Container(
+                //           padding: const EdgeInsets.all(10),
+                //           decoration: BoxDecoration(
+                //             borderRadius: BorderRadius.circular(2),
+                //             color: Colors.red,
+                //             //shadow
+                //             boxShadow: [
+                //               BoxShadow(
+                //                 color: Colors.grey.withOpacity(.5),
+                //                 spreadRadius: 1,
+                //                 blurRadius: 1,
+                //                 offset: const Offset(0, 1),
+                //               ),
+                //             ],
+                //           ),
+                //           child: const Icon(
+                //             Icons.delete,
+                //             color: Colors.white,
+                //             size: 20,
+                //           ),
+                //         ),
+                //       ),
+                //       //edit button
+                //       const SizedBox(width: 10),
+                //       GestureDetector(
+                //         onTap: () {
+                //           CustomDialog.showInfo(
+                //               message:
+                //                   'Are you sure you want to edit this class?',
+                //               buttonText: 'Yes| Edit',
+                //               onPressed: () {
+                //                 classNotifier.editClass(item);
+                //               });
+                //         },
+                //         child: Container(
+                //           padding: const EdgeInsets.all(10),
+                //           decoration: BoxDecoration(
+                //             borderRadius: BorderRadius.circular(2),
+                //             color: Colors.blue,
+                //             //shadow
+                //             boxShadow: [
+                //               BoxShadow(
+                //                 color: Colors.grey.withOpacity(.5),
+                //                 spreadRadius: 1,
+                //                 blurRadius: 1,
+                //                 offset: const Offset(0, 1),
+                //               ),
+                //             ],
+                //           ),
+                //           child: const Icon(
+                //             Icons.edit,
+                //             color: Colors.white,
+                //             size: 20,
+                //           ),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 
 class ActionControls extends StatefulWidget {
-  const ActionControls({Key? key}) : super(key: key);
+  const ActionControls({super.key});
 
   @override
   State<ActionControls> createState() => _ActionControlsState();

@@ -1,94 +1,68 @@
 import 'dart:async';
-
 import 'package:aamusted_timetable_generator/features/allocations/data/classes/class_model.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-
+import 'package:mongo_dart/mongo_dart.dart';
 import '../repo/classes_repo.dart';
 
 class ClassesUsecase extends ClassesRepo {
+  final Db db;
+
+  ClassesUsecase({required this.db});
   @override
-  Future< List<ClassModel>> addClasses(List<ClassModel> classes) async {
+  Future<List<ClassModel>> addClasses(List<ClassModel> classes) async {
     try {
       //! saving classes=========================================
-      final Box<ClassModel> classBox =
-          await Hive.openBox<ClassModel>('classes');
-      //check if box is open
-      if (!classBox.isOpen) {
-        await Hive.openBox('classes');
+      if (db.state != State.open) {
+        await db.open();
       }
-      //re,ove all classes where academic year and semester is the same
-      var allClassesToDelete = classBox.values
-          .where((element) =>
-              element.year == classes[0].year &&
-              element.department == classes[0].department &&
-              element.semester == classes[0].semester)
-          .toList();
-      await classBox.deleteAll(allClassesToDelete.map((e) => e.id).toList());
-      await classBox.putAll({for (var e in classes) e.id: e});
-      var allClasses = classBox.values
-          .where((element) =>
-              element.year == classes[0].year &&
-              element.semester == classes[0].semester)
-          .toList();
-      return  allClasses;
+      //remove all classes where academic year, semester and department is the same
+      await db.collection('classes').remove({
+        'year': classes[0].year,
+        'semester': classes[0].semester,
+        'department': classes[0].department,
+        'program': classes[0].program
+      });
+      //now add the new classes
+      for (var e in classes) {
+        await db.collection('classes').insert(e.toMap());
+      }
+
+      //get all classes where academic year and semester is the same
+      var allClasses = await db.collection('classes').find({
+        'year': classes[0].year,
+        'semester': classes[0].semester,
+      }).toList();
+      return allClasses.map((e) => ClassModel.fromMap(e)).toList();
     } catch (_) {
       return [];
     }
   }
 
   @override
-  Future<bool> deleteAllClasses(
-      String year, String semester, String department) async {
-    try {
-      final Box<ClassModel> classBox =
-          await Hive.openBox<ClassModel>('classes');
-      //check if box is open
-      if (!classBox.isOpen) {
-        await Hive.openBox('classes');
-      }
-      //get all classes where academic year and semester is the same
-      if (department.toLowerCase() == 'All'.toLowerCase()) {
-        var allClassesToDelete = classBox.values
-            .where((element) =>
-                element.year == year && element.semester == semester)
-            .toList();
-        await classBox.deleteAll(allClassesToDelete.map((e) => e.id).toList());
-        return true;
-      }
-      var allClassesToDelete = classBox.values
-          .where((element) =>
-              element.year == year &&
-              element.department == department &&
-              element.semester == semester)
-          .toList();
-      await classBox.deleteAll(allClassesToDelete.map((e) => e.id).toList());
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  @override
   Future<bool> deleteClass(String id) {
-    // TODO: implement deleteClass
-    throw UnimplementedError();
+    try {
+      if (db.state != State.open) {
+        db.open();
+      }
+      db.collection('classes').remove({'class_id': id});
+      return Future.value(true);
+    } catch (_) {
+      return Future.value(false);
+    }
   }
 
   @override
   Future<List<ClassModel>> getClasses(String year, String semester) async {
     try {
-      final Box<ClassModel> classBox =
-          await Hive.openBox<ClassModel>('classes');
-      //check if box is open
-      if (!classBox.isOpen) {
-        await Hive.openBox('classes');
+      if (db.state != State.open) {
+        await db.open();
       }
       //get all classes where academic year and semester is the same
-      var allClasses = classBox.values
-          .where(
-              (element) => element.year == year && element.semester == semester)
-          .toList();
-      return allClasses;
+      var allClasses = await db.collection('classes').find({
+        'year': year,
+        'semester': semester,
+      }).toList();
+
+      return allClasses.map((e) => ClassModel.fromMap(e)).toList();
     } catch (_) {
       return [];
     }

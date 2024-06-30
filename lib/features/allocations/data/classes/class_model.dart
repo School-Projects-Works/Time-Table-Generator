@@ -1,31 +1,17 @@
 import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
-import 'package:hive/hive.dart';
 
-part 'class_model.g.dart';
-
-@HiveType(typeId: 1)
 class ClassModel {
-  @HiveField(0)
   String? id;
-  @HiveField(1)
   String level;
-  @HiveField(2)
   String? studyMode;
-  @HiveField(3)
   String? name;
-  @HiveField(4)
   String? size;
-  @HiveField(5)
   String? hasDisability;
-  @HiveField(6)
   String? department;
-  @HiveField(7)
-  String? createdAt;
-  @HiveField(8)
+  String? program;
   String year;
-  @HiveField(9)
   String semester;
 
   ClassModel({
@@ -36,7 +22,7 @@ class ClassModel {
     this.size,
     this.hasDisability,
     this.department,
-    this.createdAt,
+    this.program,
     required this.year,
     required this.semester,
   });
@@ -49,7 +35,7 @@ class ClassModel {
     ValueGetter<String?>? size,
     ValueGetter<String?>? hasDisability,
     ValueGetter<String?>? department,
-    ValueGetter<String?>? createdAt,
+    ValueGetter<String?>? program,
     String? year,
     String? semester,
   }) {
@@ -61,7 +47,7 @@ class ClassModel {
       size: size != null ? size() : this.size,
       hasDisability: hasDisability != null ? hasDisability() : this.hasDisability,
       department: department != null ? department() : this.department,
-      createdAt: createdAt != null ? createdAt() : this.createdAt,
+      program: program != null ? program() : this.program,
       year: year ?? this.year,
       semester: semester ?? this.semester,
     );
@@ -76,7 +62,7 @@ class ClassModel {
       'size': size,
       'hasDisability': hasDisability,
       'department': department,
-      'createdAt': createdAt,
+      'program': program,
       'year': year,
       'semester': semester,
     };
@@ -91,7 +77,7 @@ class ClassModel {
       size: map['size'],
       hasDisability: map['hasDisability'],
       department: map['department'],
-      createdAt: map['createdAt'],
+      program: map['program'],
       year: map['year'] ?? '',
       semester: map['semester'] ?? '',
     );
@@ -99,11 +85,12 @@ class ClassModel {
 
   String toJson() => json.encode(toMap());
 
-  factory ClassModel.fromJson(String source) => ClassModel.fromMap(json.decode(source));
+  factory ClassModel.fromJson(String source) =>
+      ClassModel.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'ClassModel(id: $id, level: $level, studyMode: $studyMode, name: $name, size: $size, hasDisability: $hasDisability, department: $department, createdAt: $createdAt, year: $year, semester: $semester)';
+    return 'ClassModel(id: $id, level: $level, studyMode: $studyMode, name: $name, size: $size, hasDisability: $hasDisability, department: $department, program: $program, year: $year, semester: $semester)';
   }
 
   @override
@@ -118,7 +105,7 @@ class ClassModel {
       other.size == size &&
       other.hasDisability == hasDisability &&
       other.department == department &&
-      other.createdAt == createdAt &&
+      other.program == program &&
       other.year == year &&
       other.semester == semester;
   }
@@ -132,7 +119,7 @@ class ClassModel {
       size.hashCode ^
       hasDisability.hashCode ^
       department.hashCode ^
-      createdAt.hashCode ^
+      program.hashCode ^
       year.hashCode ^
       semester.hashCode;
   }

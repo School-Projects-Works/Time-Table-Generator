@@ -2,12 +2,15 @@
 class Assets {
   Assets._();
 
+  static const String assetsAbout = 'assets/about.md';
   static const String assetsBack = 'assets/back.jpg';
   static const String assetsFluentIcons = 'assets/FluentIcons.ttf';
+  static const String assetsHelp = 'assets/help.md';
   static const String assetsLogo = 'assets/logo.png';
   static const String assetsLogoDart = 'assets/logo_dart.png';
   static const String assetsLogoLight = 'assets/logo_light.png';
   static const String assetsLogoWhite = 'assets/logo_white.png';
+  static const String assetsNf = 'assets/nf.jpg';
   static const String robotoLICENSE = 'assets/Roboto/LICENSE.txt';
   static const String robotoRobotoBlack = 'assets/Roboto/Roboto-Black.ttf';
   static const String robotoRobotoBlackItalic = 'assets/Roboto/Roboto-BlackItalic.ttf';

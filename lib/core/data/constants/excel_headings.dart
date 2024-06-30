@@ -12,7 +12,6 @@ final List<String> courseAllocationHeader = [
   'Special Venue',
   'Lecturer ID',
   'Lecturer Name',
-  'Lecturer Email (Optional)',
   'Lecturer Classes',
 ];
 
@@ -21,7 +20,6 @@ final List<String> liberalHeader = [
   'Course Title',
   'Lecturer ID',
   'Lecturer Name',
-  'Lecturer Email (Optional)',
 ];
 final List<String> venueHeader = [
   'Venue',

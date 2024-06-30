@@ -7,6 +7,8 @@ import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_app_file/open_app_file.dart';
 
+import '../../database/provider/database_provider.dart';
+
 final venueProvider =
     StateNotifierProvider<VenueNotifier, TableModel<VenueModel>>((ref) {
   return VenueNotifier(ref.watch(venuesDataProvider));
@@ -130,7 +132,19 @@ class VenueNotifier extends StateNotifier<TableModel<VenueModel>> {
     }
   }
 
-  void deleteVenue(VenueModel item) {}
+  void deleteVenue(VenueModel item,WidgetRef ref) async{
+    CustomDialog.dismiss();
+    CustomDialog.showLoading(message: 'Deleting venue....');
+   var (success, message) =await VenueUseCase(db: ref.watch(dbProvider)).deleteVenue(item.id!);
+    if (success) {
+     ref.read(venuesDataProvider.notifier).deleteVenue(item.id!);
+      CustomDialog.dismiss();
+      CustomDialog.showSuccess(message: message);
+    } else {
+      CustomDialog.dismiss();
+      CustomDialog.showError(message: message);
+    }
+  }
 
   void editVenue(VenueModel item) {}
 }
@@ -149,12 +163,12 @@ class VenueDataImport extends StateNotifier<void> {
     String? pickedFilePath = await AppUtils.pickExcelFIle();
     if (pickedFilePath != null) {
       var (success, message, venues) =
-          await VenueUseCase().importVenues(pickedFilePath);
+          await VenueUseCase(db: ref.watch(dbProvider)).importVenues(pickedFilePath);
       if (success) {
         //save to db
-        var (success, message) = await VenueUseCase().addVenues(venues!);
+        var (success, message) = await VenueUseCase(db: ref.watch(dbProvider)).addVenues(venues!);
         if (success) {
-          ref.read(venuesDataProvider.notifier).addVenues(venues);
+          ref.read(venuesDataProvider.notifier).setVenues(venues);
         }
         CustomDialog.dismiss();
         CustomDialog.showSuccess(message: message);
@@ -162,16 +176,16 @@ class VenueDataImport extends StateNotifier<void> {
         CustomDialog.dismiss();
         CustomDialog.showError(message: message);
       }
+    }else{
+      CustomDialog.dismiss();
     }
   }
 
-  void downloadTemplate() async {
-    CustomDialog.showLoading(message: 'Downloading Venues Template....');
-    var (success, message) = await VenueUseCase().downloadTemplate();
+  void downloadTemplate(WidgetRef ref) async {
+    var (success, message) = await VenueUseCase(db: ref.watch(dbProvider)).downloadTemplate();
     if (success) {
-      CustomDialog.dismiss();
-      //open file
       if (message != null) {
+        CustomDialog.showSuccess(message: 'Template downloaded successfully');
         await OpenAppFile.open(message);
       }
     } else {
@@ -179,5 +193,32 @@ class VenueDataImport extends StateNotifier<void> {
       CustomDialog.showError(message: message!);
     }
     //
+  }
+
+  void deleteAllVenues(WidgetRef ref) async {
+    CustomDialog.dismiss();
+    CustomDialog.showLoading(message: 'Deleting all venues....');
+    var (success, message) = await VenueUseCase(db: ref.watch(dbProvider)).deleteAllVenues();
+    if (success) {
+      ref.read(venuesDataProvider.notifier).setVenues([]);
+      CustomDialog.dismiss();
+      CustomDialog.showSuccess(message: message);
+    } else {
+      CustomDialog.dismiss();
+      CustomDialog.showError(message: message);
+    }
+  }
+
+  void updateVenue(VenueModel venue, WidgetRef ref) async {
+    CustomDialog.showLoading(message: 'Updating venue....');
+    var (success, message, data) = await VenueUseCase(db: ref.watch(dbProvider)).updateVenue(venue);
+    if (success) {
+      ref.read(venuesDataProvider.notifier).updateVenue(data!);
+      CustomDialog.dismiss();
+      CustomDialog.showSuccess(message: message);
+    } else {
+      CustomDialog.dismiss();
+      CustomDialog.showError(message: message);
+    }
   }
 }

@@ -1,16 +1,17 @@
 import 'package:aamusted_timetable_generator/core/widget/custom_button.dart';
 import 'package:aamusted_timetable_generator/features/liberal/data/liberal/liberal_model.dart';
+import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/theme/theme.dart';
 import 'package:fluent_ui/fluent_ui.dart' as fluent;
-
 import '../../../core/widget/custom_dialog.dart';
 import '../../../core/widget/custom_input.dart';
 import '../../../core/widget/table/data/models/custom_table_columns_model.dart';
 import '../../../core/widget/table/data/models/custom_table_rows_model.dart';
 import '../../../core/widget/table/widgets/custom_table.dart';
 import '../provider/liberal_provider.dart';
+
 class LiberalPage extends ConsumerStatefulWidget {
   const LiberalPage({super.key});
 
@@ -19,10 +20,9 @@ class LiberalPage extends ConsumerStatefulWidget {
 }
 
 class _LiberalPageState extends ConsumerState<LiberalPage> {
-
   @override
   Widget build(BuildContext context) {
-      final liberals = ref.watch(liberalProvider);
+    final liberals = ref.watch(liberalProvider);
     final liberalsNotifier = ref.read(liberalProvider.notifier);
     var tableTextStyle = getTextStyle(
         color: Colors.black, fontSize: 14, fontWeight: FontWeight.w500);
@@ -59,15 +59,27 @@ class _LiberalPageState extends ConsumerState<LiberalPage> {
                             onPressed: () {
                               ref
                                   .read(liberalDataImportProvider.notifier)
-                                  .downloadTemplate();
+                                  .downloadTemplate(ref);
                             }),
                         const SizedBox(width: 10),
-                        CustomButton(
-                            //red button
-                            color: Colors.red,
-                            text: 'Clear Courses',
-                            radius: 10,
-                            onPressed: () {}),
+                        if (ref.watch(liberalsDataProvider).isNotEmpty)
+                          CustomButton(
+                              //red button
+                              color: Colors.red,
+                              text: 'Clear Courses',
+                              radius: 10,
+                              onPressed: () {
+                                CustomDialog.showInfo(
+                                    message:
+                                        'Are you sure you want to clear all courses? This action cannot be undone',
+                                    buttonText: 'Yes| Clear',
+                                    onPressed: () {
+                                      ref
+                                          .read(liberalDataImportProvider
+                                              .notifier)
+                                          .clearLiberals(ref);
+                                    });
+                              }),
                         const SizedBox(width: 10),
                       ])),
                   const SizedBox(height: 20),
@@ -78,7 +90,6 @@ class _LiberalPageState extends ConsumerState<LiberalPage> {
                       header: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            
                             SizedBox(
                               width: 600,
                               child: CustomTextFields(
@@ -93,7 +104,9 @@ class _LiberalPageState extends ConsumerState<LiberalPage> {
                           ]),
                       isAllRowsSelected: true,
                       currentIndex: liberals.currentPageItems.isNotEmpty
-                          ? liberals.items.indexOf(liberals.currentPageItems[0]) + 1
+                          ? liberals.items
+                                  .indexOf(liberals.currentPageItems[0]) +
+                              1
                           : 0,
                       lastIndex: liberals.pageSize * (liberals.currentPage + 1),
                       pageSize: liberals.pageSize,
@@ -111,7 +124,9 @@ class _LiberalPageState extends ConsumerState<LiberalPage> {
                             }
                           : null,
                       rows: [
-                        for (int i = 0; i < liberals.currentPageItems.length; i++)
+                        for (int i = 0;
+                            i < liberals.currentPageItems.length;
+                            i++)
                           CustomTableRow(
                             item: liberals.currentPageItems[i],
                             context: context,
@@ -155,7 +170,14 @@ class _LiberalPageState extends ConsumerState<LiberalPage> {
                             style: tableTextStyle,
                           ),
                         ),
-
+                        CustomTableColumn(
+                          title: 'Lect. ID',
+                          width: 100,
+                          cellBuilder: (item) => Text(
+                            item.lecturerId ?? '',
+                            style: tableTextStyle,
+                          ),
+                        ),
                         CustomTableColumn(
                           title: 'Lecturer',
                           // width: 100,
@@ -163,7 +185,7 @@ class _LiberalPageState extends ConsumerState<LiberalPage> {
                             item.lecturerName ?? '',
                             style: tableTextStyle,
                           ),
-                        ),                     
+                        ),
                         // delete button
                         CustomTableColumn(
                           title: 'Action',

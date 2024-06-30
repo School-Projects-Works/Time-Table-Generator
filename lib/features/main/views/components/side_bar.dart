@@ -1,14 +1,23 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../../configurations/provider/config_provider.dart';
 
 class SideBar {
   BuildContext context;
-  SideBar({
-    required this.context,
-  });
+  WidgetRef ref;
+  SideBar({required this.context, required this.ref});
 
   List<NavigationPaneItem> getItems() {
+    var config = ref.watch(configProvider);
+    bool configExists = config.id != null &&
+        config.days.isNotEmpty &&
+        config.periods.isNotEmpty &&
+        config.year != null &&
+        config.semester != null;
     return [
       PaneItem(
         key: const ValueKey('/'),
@@ -21,6 +30,21 @@ class SideBar {
           }
         },
       ),
+       PaneItem(
+        key: const ValueKey('/departments'),
+        icon: const Icon(FluentIcons.d365_project_operations),
+        title: const Text('Depatments'),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != '/departments') {
+            if (configExists) {
+              context.go('/departments');
+            } else {
+              CustomDialog.showError(message: 'Please set configuration first');
+            }
+          }
+        },
+      ),
       PaneItem(
         key: const ValueKey('/allocations'),
         icon: const Icon(FluentIcons.list),
@@ -28,7 +52,11 @@ class SideBar {
         body: const SizedBox.shrink(),
         onTap: () {
           if (GoRouterState.of(context).uri.toString() != '/allocations') {
-            context.go('/allocations');
+            if (configExists) {
+              context.go('/allocations');
+            } else {
+              CustomDialog.showError(message: 'Please set configuration first');
+            }
           }
         },
       ),
@@ -39,7 +67,11 @@ class SideBar {
         body: const SizedBox.shrink(),
         onTap: () {
           if (GoRouterState.of(context).uri.toString() != '/liberal') {
-            context.go('/liberal');
+            if (configExists) {
+              context.go('/liberal');
+            } else {
+              CustomDialog.showError(message: 'Please set configuration first');
+            }
           }
         },
       ),
@@ -50,7 +82,11 @@ class SideBar {
         body: const SizedBox.shrink(),
         onTap: () {
           if (GoRouterState.of(context).uri.toString() != '/venues') {
-            context.go('/venues');
+            if (configExists) {
+              context.go('/venues');
+            } else {
+              CustomDialog.showError(message: 'Please set configuration first');
+            }
           }
         },
       ),
@@ -61,7 +97,47 @@ class SideBar {
         body: const SizedBox.shrink(),
         onTap: () {
           if (GoRouterState.of(context).uri.toString() != '/tables') {
-            context.go('/tables');
+            if (configExists) {
+              context.go('/tables');
+            } else {
+              CustomDialog.showError(message: 'Please set configuration first');
+            }
+          }
+        },
+      ),
+      PaneItem(
+        key: const ValueKey('space1'),
+        icon: const SizedBox.shrink(),
+        enabled: false,
+        body: const SizedBox.shrink(),
+      ),
+      //add a divider
+      PaneItemSeparator(thickness: 4),
+      PaneItem(
+        key: const ValueKey('space2'),
+        icon: const SizedBox.shrink(),
+        enabled: false,
+        body: const SizedBox.shrink(),
+      ),
+      PaneItem(
+        key: const ValueKey('/help'),
+        icon: const Icon(FluentIcons.help),
+        title: const Text('Help'),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != '/help') {
+            context.go('/help');
+          }
+        },
+      ),
+      PaneItem(
+        key: const ValueKey('/about'),
+        icon: const Icon(FluentIcons.user_gauge),
+        title: const Text('About'),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          if (GoRouterState.of(context).uri.toString() != '/about') {
+            context.go('/about');
           }
         },
       ),

@@ -1,40 +1,28 @@
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
-import 'package:hive/hive.dart';
+import 'package:flutter/widgets.dart';
 
-part 'lecturer_model.g.dart';
-
-@HiveType(typeId: 3)
 class LecturerModel {
-  @HiveField(0)
   String? id;
-  @HiveField(1)
-  List<String> courses;
-  @HiveField(2)
-  List<Map<String,dynamic>> classes;
-  @HiveField(3)
+
+  List<Map<String, dynamic>> courses;
+  List<String> classes;
   String? lecturerName;
-  @HiveField(4)
-  String? lecturerEmail;
-  @HiveField(5)
   String? department;
-  @HiveField(6)
   String year;
-  @HiveField(7)
   String semester;
+  // String freeDay;
 
   LecturerModel({
     this.id,
     required this.courses,
     required this.classes,
     this.lecturerName,
-    this.lecturerEmail,
     this.department,
     required this.year,
     required this.semester,
   });
-
- 
 
   Map<String, dynamic> toMap() {
     return {
@@ -42,7 +30,6 @@ class LecturerModel {
       'courses': courses,
       'classes': classes,
       'lecturerName': lecturerName,
-      'lecturerEmail': lecturerEmail,
       'department': department,
       'year': year,
       'semester': semester,
@@ -52,10 +39,9 @@ class LecturerModel {
   factory LecturerModel.fromMap(Map<String, dynamic> map) {
     return LecturerModel(
       id: map['id'],
-      courses: List<String>.from(map['courses']),
-      classes: List<Map<String,dynamic>>.from(map['classes']?.map((x) => Map<String,dynamic>.from(x))),
+      courses: List<Map<String, dynamic>>.from(map['courses']?.map((x) => Map<String, dynamic>.from(x))),
+      classes: List<String>.from(map['classes']),
       lecturerName: map['lecturerName'],
-      lecturerEmail: map['lecturerEmail'],
       department: map['department'],
       year: map['year'] ?? '',
       semester: map['semester'] ?? '',
@@ -64,14 +50,14 @@ class LecturerModel {
 
   String toJson() => json.encode(toMap());
 
-  factory LecturerModel.fromJson(String source) => LecturerModel.fromMap(json.decode(source));
+  factory LecturerModel.fromJson(String source) =>
+      LecturerModel.fromMap(json.decode(source));
 
   LecturerModel copyWith({
     ValueGetter<String?>? id,
-    List<String>? courses,
-    List<Map<String,dynamic>>? classes,
+    List<Map<String, dynamic>>? courses,
+    List<String>? classes,
     ValueGetter<String?>? lecturerName,
-    ValueGetter<String?>? lecturerEmail,
     ValueGetter<String?>? department,
     String? year,
     String? semester,
@@ -81,7 +67,6 @@ class LecturerModel {
       courses: courses ?? this.courses,
       classes: classes ?? this.classes,
       lecturerName: lecturerName != null ? lecturerName() : this.lecturerName,
-      lecturerEmail: lecturerEmail != null ? lecturerEmail() : this.lecturerEmail,
       department: department != null ? department() : this.department,
       year: year ?? this.year,
       semester: semester ?? this.semester,
@@ -90,7 +75,7 @@ class LecturerModel {
 
   @override
   String toString() {
-    return 'LecturerModel(id: $id, courses: $courses, classes: $classes, lecturerName: $lecturerName, lecturerEmail: $lecturerEmail, department: $department, year: $year, semester: $semester)';
+    return 'LecturerModel(id: $id, courses: $courses, classes: $classes, lecturerName: $lecturerName, department: $department, year: $year, semester: $semester)';
   }
 
   @override
@@ -102,7 +87,6 @@ class LecturerModel {
       listEquals(other.courses, courses) &&
       listEquals(other.classes, classes) &&
       other.lecturerName == lecturerName &&
-      other.lecturerEmail == lecturerEmail &&
       other.department == department &&
       other.year == year &&
       other.semester == semester;
@@ -114,7 +98,6 @@ class LecturerModel {
       courses.hashCode ^
       classes.hashCode ^
       lecturerName.hashCode ^
-      lecturerEmail.hashCode ^
       department.hashCode ^
       year.hashCode ^
       semester.hashCode;

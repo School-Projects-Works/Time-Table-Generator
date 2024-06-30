@@ -8,10 +8,7 @@ final academicYears = [
   '2028/2029',
   '2029/2030',
 ];
-final studentTypes = [
-  'Regular (inc Masters)',
-  'Evening (inc Masters)'
-];
+final studentTypes = ['Regular (inc Masters)', 'Evening (inc Masters)'];
 
 final levels = [
   '100',
@@ -36,7 +33,7 @@ final List<String> periodList = [
   'Period 2',
   'Period 3',
   'Period 4',
-  'Break'
+  'Period 5'
 ];
 
 final regularTime = [
@@ -67,4 +64,81 @@ final regularTime = [
   '7:00 PM',
   '7:30 PM',
   '8:00 PM',
+  '8:30 PM',
+  '9:00 PM',
+  '9:30 PM',
+  '10:00 PM',
+  '10:30 PM',
+  '11:00 PM',
+];
+
+Map<String,String> departmentList = 
+  {
+    'Dep 01': 'Information Technology Edu',
+    'Dep 02': 'Mathematics Edu',
+    'Dep 03': 'Accounting Studies',
+    'Dep 04': 'Management Studies',
+    'Dep 05': 'Construction Tech & Management Edu',
+    'Dep 06': 'Wood Science and Technology Edu',
+    'Dep 07': 'Architecture and Civil Engineering',
+    'Dep 08': 'Automotive & Mechnical Technology Edu',
+    'Dep 09': 'Electrical & Electronics Tech Edu',
+    'Dep 10': 'Catering & Hospitality Edu',
+    'Dep 11': 'Fashion & Textiles Design Edu',
+    'Dep 12': 'Languages Edu',
+    'Dep 13': 'Interdisciplinary Studies',
+
+  };
+
+List<String> freeDays = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+];
+
+List<String> conditions = [
+  'Yes',
+  'No',
+];
+
+List<String> specialVenues = [
+  'Computer Lab',
+  'Library',
+  'Workshop',
+  'Auto Lab',
+  'Electrical Lab',
+  'Catering Lab',
+  'Fashion Lab',
+  'Drawing Studio',
+  'Others'
+];
+final listOfAlpha = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z'
 ];

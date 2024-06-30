@@ -3,7 +3,6 @@ import 'package:fluent_ui/fluent_ui.dart' as fluent;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../config/theme/theme.dart';
-import '../../../../core/widget/custom_dialog.dart';
 import '../../../../core/widget/custom_input.dart';
 import '../../../../core/widget/table/data/models/custom_table_columns_model.dart';
 import '../../../../core/widget/table/data/models/custom_table_rows_model.dart';
@@ -90,7 +89,7 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
           ),
           CustomTableColumn(
             title: 'Lecturer Name',
-            width: 200,
+            width: 300,
             cellBuilder: (item) => Text(
               item.lecturerName ?? '',
               style: tableTextStyle,
@@ -98,108 +97,108 @@ class _LecturersTabState extends ConsumerState<LecturersTab> {
           ),
           CustomTableColumn(
             title: 'Department',
-            width: 200,
+            //width: 200,
             cellBuilder: (item) => Text(
               item.department ?? '',
               style: tableTextStyle,
             ),
           ),
           CustomTableColumn(
-            title: 'Email',
-            width: 200,
-            cellBuilder: (item) => Text(
-              item.lecturerEmail ?? '',
-              style: tableTextStyle,
-            ),
-          ),
-          CustomTableColumn(
             title: 'Courses',
-            width: 200,
+            //width: 200,
             cellBuilder: (item) => Text(
-              item.courses.join(','),
+              item.courses.length.toString(),
               style: tableTextStyle,
             ),
           ),
           CustomTableColumn(
-            title: 'Classes',
+            title: 'Class',
             width: 200,
             cellBuilder: (item) => Text(
-              item.classes.map((e) => e['name']).join(','),
+              item.classes.length.toString(),
               style: tableTextStyle,
             ),
           ),
-          CustomTableColumn(
-            title: 'Action',
-            cellBuilder: (item) => Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    CustomDialog.showInfo(
-                        message: 'Are you sure you want to delete this class?',
-                        buttonText: 'Yes| Delete',
-                        onPressed: () {
-                          lecturersNotifier.deleteClass(item);
-                        });
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
-                      color: Colors.red,
-                      //shadow
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(.5),
-                          spreadRadius: 1,
-                          blurRadius: 1,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                ),
-                //edit button
-                const SizedBox(width: 10),
-                GestureDetector(
-                  onTap: () {
-                    CustomDialog.showInfo(
-                        message: 'Are you sure you want to edit this class?',
-                        buttonText: 'Yes| Edit',
-                        onPressed: () {
-                          lecturersNotifier.editClass(item);
-                        });
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
-                      color: Colors.blue,
-                      //shadow
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(.5),
-                          spreadRadius: 1,
-                          blurRadius: 1,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.edit,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // CustomTableColumn(
+          //   title: 'Free Day',
+          //   width: 200,
+          //   cellBuilder: (item) => Text(
+          //     item.freeDay,
+          //     style: tableTextStyle,
+          //   ),
+          // ),
+          // CustomTableColumn(
+          //   title: 'Action',
+          //   cellBuilder: (item) => Row(
+          //     mainAxisSize: MainAxisSize.min,
+          //     children: [
+          //       GestureDetector(
+          //         onTap: () {
+          //           CustomDialog.showInfo(
+          //               message: 'Are you sure you want to delete this class?',
+          //               buttonText: 'Yes| Delete',
+          //               onPressed: () {
+          //                 lecturersNotifier.deleteClass(item);
+          //               });
+          //         },
+          //         child: Container(
+          //           padding: const EdgeInsets.all(10),
+          //           decoration: BoxDecoration(
+          //             borderRadius: BorderRadius.circular(2),
+          //             color: Colors.red,
+          //             //shadow
+          //             boxShadow: [
+          //               BoxShadow(
+          //                 color: Colors.grey.withOpacity(.5),
+          //                 spreadRadius: 1,
+          //                 blurRadius: 1,
+          //                 offset: const Offset(0, 1),
+          //               ),
+          //             ],
+          //           ),
+          //           child: const Icon(
+          //             Icons.delete,
+          //             color: Colors.white,
+          //             size: 20,
+          //           ),
+          //         ),
+          //       ),
+          //       //edit button
+          //       const SizedBox(width: 10),
+          //       GestureDetector(
+          //         onTap: () {
+          //           CustomDialog.showInfo(
+          //               message: 'Are you sure you want to edit this class?',
+          //               buttonText: 'Yes| Edit',
+          //               onPressed: () {
+          //                 lecturersNotifier.editClass(item);
+          //               });
+          //         },
+          //         child: Container(
+          //           padding: const EdgeInsets.all(10),
+          //           decoration: BoxDecoration(
+          //             borderRadius: BorderRadius.circular(2),
+          //             color: Colors.blue,
+          //             //shadow
+          //             boxShadow: [
+          //               BoxShadow(
+          //                 color: Colors.grey.withOpacity(.5),
+          //                 spreadRadius: 1,
+          //                 blurRadius: 1,
+          //                 offset: const Offset(0, 1),
+          //               ),
+          //             ],
+          //           ),
+          //           child: const Icon(
+          //             Icons.edit,
+          //             color: Colors.white,
+          //             size: 20,
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );

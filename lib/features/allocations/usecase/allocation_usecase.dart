@@ -1,94 +1,57 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/classes/class_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/lecturers/lecturer_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/repo/allocation_repo.dart';
+import 'package:aamusted_timetable_generator/features/allocations/usecase/block_funtions.dart';
+import 'package:aamusted_timetable_generator/features/configurations/data/config/config_model.dart';
+import 'package:aamusted_timetable_generator/features/main/provider/main_provider.dart';
 import 'package:aamusted_timetable_generator/utils/app_utils.dart';
 import 'package:excel/excel.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:syncfusion_flutter_xlsio/xlsio.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 import '../../../core/data/constants/excel_headings.dart';
 import '../../../core/data/constants/instructions.dart';
 import '../../../core/functions/excel_settings.dart';
 
 class AllocationUseCase extends AllocationRepo {
   @override
-  Future<(bool, ClassModel?, String?)> detleteClass() {
-    // TODO: implement detleteClass
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<(bool, CourseModel?, String?)> detleteCourse() {
-    // TODO: implement detleteCourse
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<(bool, LecturerModel?, String?)> detleteLecturer() {
-    // TODO: implement detleteLecturer
-    throw UnimplementedError();
-  }
-
-  @override
   Future<(bool, String?)> downloadTemplate() async {
     try {
       CustomDialog.showLoading(message: 'Downloading template...');
-      final Workbook workbook = Workbook();
-      ExcelSettings(
-              book: workbook,
-              sheetName: 'Regular-Classes',
-              columnCount: classHeader.length,
-              headings: classHeader,
-              sheetAt: 0,
-              instructions: classInstructions)
-          .sheetSettings();
-      ExcelSettings(
-              book: workbook,
-              sheetName: 'Regular-Allocations',
-              columnCount: courseAllocationHeader.length,
-              headings: courseAllocationHeader,
-              sheetAt: 1,
-              instructions: courseInstructions)
-          .sheetSettings();
-      ExcelSettings(
-              book: workbook,
-              sheetName: 'Evening-Classes',
-              columnCount: classHeader.length,
-              headings: classHeader,
-              sheetAt: 2,
-              instructions: classInstructions)
-          .sheetSettings();
-      ExcelSettings(
-              book: workbook,
-              sheetName: 'Evening-Allocations',
-              columnCount: courseAllocationHeader.length,
-              headings: courseAllocationHeader,
-              sheetAt: 3,
-              instructions: courseInstructions)
-          .sheetSettings();
+      var workbook = ExcelSettings.generateAllocationTem();
 
-      Directory directory = await getApplicationDocumentsDirectory();
-      String path = '${directory.path}/AllocationTemplate.xlsx';
-      File file = File(path);
-      if (!file.existsSync()) {
-        file.createSync();
-      } else {
-        file.deleteSync();
-        file.createSync();
-      }
-      file.writeAsBytesSync(workbook.saveAsStream());
-      // workbook.dispose();
+      String? outputFile = await FilePicker.platform.saveFile(
+        dialogTitle: 'Please select an output file:',
+        fileName: 'AllocationTemplate.xlsx',
+      );
       CustomDialog.dismiss();
-      if (file.existsSync()) {
-        return Future.value((true, file.path));
+      CustomDialog.showText(
+        text: 'Saving template... Please wait',
+      );
+      //delay to show the saving text
+      await Future.delayed(const Duration(seconds: 1));
+
+      if (outputFile == null) {
+        CustomDialog.dismiss();
+        return Future.value((false, 'Unable to download template'));
       } else {
-        return Future.value((false, 'Error downloading template'));
+        var file = File(outputFile);
+        await file.writeAsBytes(workbook.saveAsStream());
+        CustomDialog.dismiss();
+        if (file.existsSync()) {
+          return Future.value((true, file.path));
+        } else {
+          return Future.value((false, 'Error downloading template'));
+        }
       }
     } catch (e) {
       CustomDialog.dismiss();
-      return Future.value((false, e.toString()));
+      return Future.value(
+          (false, 'Error downloading template, Check file is already Opened'));
     }
   }
 
@@ -102,6 +65,8 @@ class AllocationUseCase extends AllocationRepo {
     required String path,
     required String year,
     required String semester,
+    required ConfigModel config,
+    required WidgetRef ref,
   }) async {
     try {
       List<CourseModel> courses = [];
@@ -109,40 +74,272 @@ class AllocationUseCase extends AllocationRepo {
       List<LecturerModel> lecturers = [];
       var bytes = File(path).readAsBytesSync();
       Excel excel = Excel.decodeBytes(List<int>.from(bytes));
-      var (regClass, regCourses, regLecturers) =
-          getRegularData(excel, semester, year);
-      if (regClass.isEmpty && regCourses.isEmpty && regLecturers.isEmpty) {
-        return Future.value(
-            (false, (courses, classes, lecturers), 'Invalid file selected'));
+
+      ///check if the excel file contains the required sheets
+      ///Regular-Classes, Regular-Allocations, Evening-Classes, Evening-Allocations
+      ///if any of the sheets is missing return an error message
+      ///else continue with the extraction of data
+      var regClassesSheet =
+          excel.tables['Regular-Classes'] ?? excel.tables['Sheet1'];
+      var regAllocationsSheet = excel.tables['Regular-Allocation'];
+      if (regClassesSheet == null || regAllocationsSheet == null) {
+        return Future.value((
+          false,
+          (courses, classes, lecturers),
+          'No Regular Classes or Allocation Sheet'
+        ));
       }
-      var (eveClass, eveCourses, eveLecturers) =
-          getEveningData(excel, semester, year);
-      if (eveClass.isEmpty && eveCourses.isEmpty && eveLecturers.isEmpty) {
-        return Future.value(
-            (false, (courses, classes, lecturers), 'Invalid file selected'));
+      var evenClassesSheet = excel.tables['Evening-Classes'];
+      var eveAllocationsSheet = excel.tables['Evening-Allocation'];
+      if (evenClassesSheet == null || eveAllocationsSheet == null) {
+        return Future.value((
+          false,
+          (courses, classes, lecturers),
+          'No Evening Classes or Allocation Sheet'
+        ));
       }
-      classes.addAll(regClass);
-      classes.addAll(eveClass);
-      courses.addAll(regCourses);
-      courses.addAll(eveCourses);
-      lecturers.addAll(regLecturers);
-      //check if lecturer is already in the list then add the courses and classes to the lecturer
-      for (var lecturer in eveLecturers) {
-        if (lecturers.any((element) => element.id == lecturer.id)) {
-          var existenLecturer =
-              lecturers.firstWhere((element) => element.id == lecturer.id);
-          existenLecturer.classes.addAll(lecturer.classes
-              .where((element) => !existenLecturer.classes.contains(element)));
-          existenLecturer.courses.addAll(lecturer.courses
-              .where((element) => !existenLecturer.courses.contains(element)));
-          lecturers.removeWhere((element) => element.id == lecturer.id);
-          lecturers.add(existenLecturer);
-        } else {
-          lecturers.add(lecturer);
+
+      //validate both reg and evening headings
+      /// here i extract the headings from the excel various sheet and validate to see if they are correct
+      /// if they are not correct i return an error message
+      /// else i continue with the extraction of data
+      var regClassHeadingRow =
+          regClassesSheet.row(classInstructions.length + 4);
+
+      var evenClassHeadingRow =
+          evenClassesSheet.row(classInstructions.length + 1);
+      var regAllocationsHeadingRow =
+          regAllocationsSheet.row(courseInstructions.length + 1);
+      var evenAllocationsHeadingRow =
+          eveAllocationsSheet.row(courseInstructions.length + 1);
+
+      var regClassIsValid =
+          AppUtils.validateExcel(regClassHeadingRow, classHeader);
+      var evenClassIsValid =
+          AppUtils.validateExcel(evenClassHeadingRow, classHeader);
+      var regAlloIsValid = AppUtils.validateExcel(
+          regAllocationsHeadingRow, courseAllocationHeader);
+      var evenAlloIsValid = AppUtils.validateExcel(
+          evenAllocationsHeadingRow, courseAllocationHeader);
+      if (!regClassIsValid ||
+          !evenClassIsValid ||
+          !regAlloIsValid ||
+          !evenAlloIsValid) {
+        return Future.value(
+            (false, (courses, classes, lecturers), 'Invalid Excel Sheet'));
+      }
+
+      ///Extract departments from Regular-Classes sheet
+      var department = ClassBooks.getDepartmentsFromExcelSheet(
+          classesSheet: regClassesSheet);
+      var program =
+          ClassBooks.getProgramFromExcelSheet(classesSheet: regClassesSheet);
+
+      if (department == null || department.isEmpty) {
+        return Future.value(
+            (false, (courses, classes, lecturers), 'No Department Found'));
+      }
+
+      if (program == null || program.isEmpty) {
+        return Future.value(
+            (false, (courses, classes, lecturers), 'Program not Found'));
+      }
+
+      lecturers = ref
+          .watch(lecturersDataProvider)
+          .where((element) => element.department == department)
+          .toList();
+      courses = ref
+          .watch(coursesDataProvider)
+          .where((element) =>
+              element.department == department && element.program == program)
+          .toList();
+      classes = ref
+          .watch(classesDataProvider)
+          .where((element) =>
+              element.department == department && element.program == program)
+          .toList();
+
+      ///extract data from Regular-Classes sheet
+      var regClasses = ClassBooks.getClassesFromExcelSheet(
+          classesSheet: regClassesSheet,
+          department: department,
+          semester: semester,
+          year: year,
+          program: program,
+          studyMode: 'Regular');
+      var evenClasses = ClassBooks.getClassesFromExcelSheet(
+          classesSheet: evenClassesSheet,
+          department: department,
+          semester: semester,
+          program: program,
+          year: year,
+          studyMode: 'Evening');
+     var  classData = [...regClasses, ...evenClasses];
+     //add class to classes if not already exist
+      for (var element in classData) {
+        if (!classes.any((e) => e.id == element.id)) {
+          classes.add(element);
         }
       }
 
-      return Future.value((true, (courses, classes, lecturers), null));
+      var (regCourses, regLecturers) =
+          AllocationBlocks.getCoursesAndLecturesFromExcelSheet(
+              allocationsSheet: regAllocationsSheet,
+              department: department,
+              semester: semester,
+              config: config,
+              program: program,
+              year: year,
+              classes: regClasses,
+              studyMode: 'Regular');
+      var (evenCourses, evenLecturers) =
+          AllocationBlocks.getCoursesAndLecturesFromExcelSheet(
+              allocationsSheet: eveAllocationsSheet,
+              department: department,
+              semester: semester,
+              year: year,
+              program: program,
+              config: config,
+              classes: evenClasses,
+              studyMode: 'Evening');
+
+      //combine regular and evening courses and remove duplicates
+     var coursesData = [...regCourses, ...evenCourses];
+
+     //add courses to courses if not already exist if exist update the course with lecturers and classes if not already exist
+      for (var element in coursesData) {
+        if (!courses.any((e) => e.id == element.id)) {
+          courses.add(element);
+        }else{
+          var existCourse = courses.where((e) => e.id == element.id).firstOrNull;
+          if(existCourse != null){
+            var existLecturers = existCourse.lecturer;
+            for (var lect in element.lecturer) {
+              if (!existLecturers.any((e) => e['id'] == lect['id'])) {
+                existLecturers.add(lect);
+              }
+            }
+            courses.removeWhere((e) => e.id == existCourse.id);
+            courses.add(existCourse);
+          }
+        }
+      }
+
+      ///loop through the lecturers and add the courses to the lecturer
+      ///if lecturer already exist i update the lecturer courses with new course
+      ///and classes if not exist already
+      ///
+      ///Time to loop throgh regulart data
+      List<LecturerModel> newLecturers = [];
+      for (var lecturer in regLecturers) {
+        List<CourseModel> lectCourses = [];
+        for (var course in courses) {
+          var lects =
+              course.lecturer.map((e) => LecturerModel.fromMap(e)).toList();
+          if (lects.any((element) => element.id == lecturer.id)) {
+            if (!lectCourses.any((element) => element.id == course.id)) {
+              lectCourses.add(course);
+            }
+          }
+        }
+        lecturer.courses = lectCourses.map((e) => e.toMap()).toList();
+        var theExistenLecturer =
+            newLecturers
+            .where((element) => element.id == lecturer.id).firstOrNull;
+        if (theExistenLecturer != null) {
+          // append classes if not already exist and append courses as well
+          var existCourses = lecturer.courses;
+          var existClasses = lecturer.classes;
+          for (var element in existCourses) {
+            if (!theExistenLecturer.courses
+                .any((c) => c['id'] == element['id'])) {
+              theExistenLecturer.courses.add(element);
+            }
+          }
+          for (var element in existClasses) {
+            if (!theExistenLecturer.classes.any((c) => c == element)) {
+              theExistenLecturer.classes.add(element);
+            }
+          }
+          newLecturers
+              .removeWhere((element) => element.id == theExistenLecturer.id);
+          newLecturers.add(theExistenLecturer);
+        } else {
+          newLecturers.add(lecturer);
+        }
+      }
+
+      ///Time to loop through evening data
+      for (var lecturer in evenLecturers) {
+        List<CourseModel> lectCourses = [];
+        for (var course in courses) {
+          var lects =
+              course.lecturer.map((e) => LecturerModel.fromMap(e)).toList();
+          if (lects.any((element) => element.id == lecturer.id)) {
+            lectCourses.add(course);
+          }
+        }
+
+        lecturer.courses = lectCourses.map((e) => e.toMap()).toList();
+
+        var theExistenLecturer =
+            newLecturers
+            .where((element) => element.id == lecturer.id).firstOrNull;
+        if (theExistenLecturer != null) {
+          // append classes if not already exist and append courses as well
+          var existCourses = lecturer.courses;
+          var existClasses = lecturer.classes;
+          for (var element in existCourses) {
+            if (!theExistenLecturer.courses
+                .any((c) => c['id'] == element['id'])) {
+              theExistenLecturer.courses.add(element);
+            }
+          }
+          for (var element in existClasses) {
+            if (!theExistenLecturer.classes.any((c) => c == element)) {
+              theExistenLecturer.classes.add(element);
+            }
+          }
+          newLecturers
+              .removeWhere((element) => element.id == theExistenLecturer.id);
+          newLecturers.add(theExistenLecturer);
+        } else {
+          newLecturers.add(lecturer);
+        }
+      }
+
+      //add newLecturers to lecturers if not already exist if exist update the lecturer with courses and classes if not already exist
+
+      for (var element in newLecturers) {
+        if (!lecturers.any((e) => e.id == element.id)) {
+          lecturers.add(element);
+        }else{
+          var existLecturer = lecturers.where((e) => e.id == element.id).firstOrNull;
+          if(existLecturer != null){
+            var existCourses = existLecturer.courses;
+            var existClasses = existLecturer.classes;
+            for (var course in element.courses) {
+              if (!existCourses.any((e) => e['id'] == course['id'])) {
+                existCourses.add(course);
+              }
+            }
+            for (var clas in element.classes) {
+              if (!existClasses.any((e) => e == clas)) {
+                existClasses.add(clas);
+              }
+            }
+            lecturers.removeWhere((e) => e.id == existLecturer.id);
+            lecturers.add(existLecturer);
+          }
+        }
+      }
+
+      return Future.value((
+        true,
+        (courses, classes, lecturers),
+        'Allocation Imported Successfully'
+      ));
     } catch (e) {
       List<CourseModel> courses = [];
       List<ClassModel> classes = [];
@@ -151,315 +348,69 @@ class AllocationUseCase extends AllocationRepo {
     }
   }
 
-  bool validateRow(List<Data?> row) {
-    //! do it here
-    var ccode = row[0]?.value;
-    var ctitle = row[1]?.value;
-    var clevel = row[2]?.value;
-    var lecID = row[5]?.value;
-    var lecName = row[6]?.value;
-    var lecEmail = row[7]?.value;
-    return ccode != null &&
-        ctitle != null &&
-        clevel != null &&
-        lecID != null &&
-        lecName != null &&
-        lecEmail != null;
-  }
-
-  bool validateClassRow(List<Data?> row) {
-    var lev = row[0]?.value;
-    var classcode = row[1]?.value;
-    return lev != null && classcode != null;
-  }
-
-  (List<ClassModel>, List<CourseModel>, List<LecturerModel>) getRegularData(
-      Excel excel, String semester, String year) {
-    List<CourseModel> courses = [];
-    List<ClassModel> classes = [];
-    List<LecturerModel> lecturers = [];
-    var classesSheet = excel.tables['Regular-Classes'];
-    if (classesSheet == null) {
-      return ([], [], []);
-    }
-    var allocationsSheet = excel.tables['Regular-Allocations'];
-    if (allocationsSheet == null) {
-      return ([], [], []);
-    }
-    var classHeadingRow = classesSheet.row(classInstructions.length + 2);
-    var courseHeadingRow = allocationsSheet.row(courseInstructions.length + 2);
-    if (AppUtils.validateExcel(classHeadingRow, classHeader) &&
-        AppUtils.validateExcel(courseHeadingRow, courseAllocationHeader)) {
-      var departmentRow = classesSheet.row(classInstructions.length + 1)[1];
-      String department = departmentRow != null && departmentRow.value != null
-          ? departmentRow.value.toString()
-          : '';
-      var rowStart = classInstructions.length + 3;
-      if (department.isNotEmpty) {
-        for (int i = rowStart; i < classesSheet.maxRows; i++) {
-          var row = classesSheet.row(i);
-          if (validateClassRow(row)) {
-            classes.add(ClassModel(
-              id: '${row[1]!.value.toString()}$department'.toLowerCase().hashCode.toString(),
-              level: row[0]!.value.toString(),
-              name: row[1]!.value.toString(),
-              size: row[2] != null && row[2]!.value != null
-                  ? row[2]!.value.toString()
-                  : '0',
-              department: department,
-              studyMode: 'Regular',
-              semester: semester,
-              year: year,
-              hasDisability: row[3] != null && row[3]!.value != null
-                  ? row[3]!.value.toString()
-                  : 'No',
-              createdAt: DateTime.now().toString(),
-            ));
-          }
-        }
+  @override
+  Future<(bool, List<ClassModel>, List<CourseModel>, List<LecturerModel>)>
+      deletateAllocation(String academicYear, String academicSemester,
+          String department, Db db) async {
+    try {
+      List<ClassModel> remainingClases = [];
+      List<CourseModel> remainingCourses = [];
+      List<LecturerModel> remainingLecturer = [];
+      if (db.state != State.open) {
+        await db.open();
       }
+      if (department == 'All') {
+        //delete all classes, courses and lecturers
+        await db
+            .collection('courses')
+            .remove({'semester': academicSemester, 'year': academicYear});
+        await db
+            .collection('classes')
+            .remove({'semester': academicSemester, 'year': academicYear});
+        await db
+            .collection('lecturers')
+            .remove({'semester': academicSemester, 'year': academicYear});
+        return Future.value(
+            (true, remainingClases, remainingCourses, remainingLecturer));
+      } else {
+        //delete all classes, courses and lecturers for the department
+        await db.collection('courses').remove({
+          'department': department,
+          'semester': academicSemester,
+          'year': academicYear
+        });
+        await db.collection('classes').remove({
+          'department': department,
+          'semester': academicSemester,
+          'year': academicYear
+        });
+        await db.collection('lecturers').remove({
+          'department': department,
+          'semester': academicSemester,
+          'year': academicYear
+        });
+        //get remaing classes, courses and lecturers with academic year and semester
+        var remainingCourses = await db.collection('courses').find(
+            {'semester': academicSemester, 'year': academicYear}).toList();
 
-      rowStart = courseInstructions.length + 3;
-      for (int i = rowStart; i < allocationsSheet.maxRows; i++) {
-        var row = allocationsSheet.row(i);
-        if (validateRow(row)) {
-          var courseId =
-              row[0]!.value.toString().toLowerCase().replaceAll(' ', '');
-          var lecturerId =
-              row[5]!.value.toString().trim().replaceAll(' ', '').toLowerCase();
-          var lecturerName = row[6]!.value.toString();
-          //? Lecturers extraction.....................................................
-          LecturerModel lecturer = LecturerModel(
-            courses: [courseId],
-            classes: [],
-            id: lecturerId,
-            lecturerName: lecturerName,
-            department: department,
-            semester: semester,
-            year: year,
-            lecturerEmail: row[7] != null && row[7]!.value != null
-                ? row[7]!.value.toString()
-                : '',
-          );
-          var level = row[2]!.value.toString().trim().replaceAll(' ', '');
-          var lecturerClass = row[8] != null && row[8]!.value != null
-              ? row[8]!.value.toString()
-              : '';
-          if (lecturerClass.isNotEmpty) {
-            var lecturerClasses = lecturerClass.split(',');
-            for (var aClass in lecturerClasses) {
-              var theClass = classes
-                  .where((element) =>
-                      element.name!.trim().toLowerCase() ==
-                      aClass.trim().toLowerCase())
-                  .firstOrNull;
-              if (theClass != null) {
-                lecturer.classes.add(theClass.toMap());
-              }
-            }
-          } else {
-            // add all classes with same level to lecturer
-            lecturer.classes = classes
-                .where((element) =>
-                    element.level.trim().replaceAll(' ', '') == level)
-                .map((e) => e.toMap())
-                .toList();
-          }
-
-          if (!lecturers.any((element) => element.id == lecturerId)) {
-            lecturers.add(lecturer);
-          } else {
-            var existenLecturer =
-                lecturers.firstWhere((element) => element.id == lecturerId);
-            existenLecturer.classes.addAll(lecturer.classes.where(
-                (element) => !existenLecturer.classes.contains(element)));
-            existenLecturer.courses.addAll(lecturer.courses.where(
-                (element) => !existenLecturer.courses.contains(element)));
-            lecturers.removeWhere((element) => element.id == lecturerId);
-            lecturers.add(existenLecturer);
-          }
-          //? Courses extraction.....................................................
-          var exist = courses.any((element) => element.id == courseId);
-          if (exist) {
-            //append lecturer name and id to the course if not already added
-            var course =
-                courses.firstWhere((element) => element.id == courseId);
-            if (!course.lecturer
-                .any((element) => element['id'] == lecturerId)) {
-              course.lecturer.add(lecturer.toMap());
-              courses.removeWhere((element) => element.id == courseId);
-              courses.add(course);
-            }
-          } else {
-            courses.add(CourseModel(
-                id: courseId,
-                code: row[0]!.value.toString(),
-                title: row[1]!.value.toString(),
-                level: row[2]!.value.toString(),
-                creditHours: row[3] != null && row[3]!.value != null
-                    ? row[3]!.value.toString()
-                    : '3',
-                specialVenue: row[4] != null && row[4]!.value != null
-                    ? row[4]!.value.toString()
-                    : '',
-                lecturer: [lecturer.toMap()],
-                department: department,
-                studyMode: 'Regular',
-                semester: semester,
-                year: year));
-          }
-          //! End of courses extraction.....................................................
-        }
+        var remainingClasses = await db.collection('classes').find(
+            {'semester': academicSemester, 'year': academicYear}).toList();
+        var remainingLecturers = await db.collection('lecturers').find(
+            {'semester': academicSemester, 'year': academicYear}).toList();
+        return Future.value((
+          true,
+          remainingClasses.map((e) => ClassModel.fromMap(e)).toList(),
+          remainingCourses.map((e) => CourseModel.fromMap(e)).toList(),
+          remainingLecturers.map((e) => LecturerModel.fromMap(e)).toList()
+        ));
       }
-      return (classes, courses, lecturers);
-    } else {
-      return ([], [], []);
+    } catch (e) {
+      List<ClassModel> remainingClasses = [];
+      List<CourseModel> remainingCourses = [];
+      List<LecturerModel> remainingLecturers = [];
+      return Future.value(
+          (false, remainingClasses, remainingCourses, remainingLecturers));
     }
-  }
-
-  (List<ClassModel>, List<CourseModel>, List<LecturerModel>) getEveningData(
-      Excel excel, String semester, String year) {
-    List<CourseModel> courses = [];
-    List<ClassModel> classes = [];
-    List<LecturerModel> lecturers = [];
-    var classesSheet = excel.tables['Evening-Classes'];
-    if (classesSheet == null) {
-      return ([], [], []);
-    }
-    var classHeadingRow = classesSheet.row(classInstructions.length + 2);
-    if (!AppUtils.validateExcel(classHeadingRow, classHeader)) {
-      return ([], [], []);
-    }
-
-    var departmentRow = classesSheet.row(classInstructions.length + 1)[1];
-    String department = departmentRow != null && departmentRow.value != null
-        ? departmentRow.value.toString()
-        : '';
-    var rowStart = classInstructions.length + 3;
-    if (department.isNotEmpty) {
-      for (int i = rowStart; i < classesSheet.maxRows; i++) {
-        var row = classesSheet.row(i);
-        if (validateClassRow(row)) {
-          classes.add(ClassModel(
-            id: '${row[1]!.value.toString()}$department'.hashCode.toString(),
-            level: row[0]!.value.toString(),
-            name: row[1]!.value.toString(),
-            size: row[2] != null && row[2]!.value != null
-                ? row[2]!.value.toString()
-                : '0',
-            department: department,
-            studyMode: 'Evening',
-            semester: semester,
-            year: year,
-            hasDisability: row[3] != null && row[3]!.value != null
-                ? row[3]!.value.toString()
-                : 'No',
-            createdAt: DateTime.now().toString(),
-          ));
-        }
-      }
-    }
-    // get allocations sheet===========================================================
-    var allocationsSheet = excel.tables['Evening-Allocations'];
-    if (allocationsSheet == null) {
-      return ([], [], []);
-    }
-    var courseHeadingRow = allocationsSheet.row(courseInstructions.length + 2);
-    if (!AppUtils.validateExcel(courseHeadingRow, courseAllocationHeader)) {
-      return ([], [], []);
-    }
-    rowStart = courseInstructions.length + 3;
-    for (int i = rowStart; i < allocationsSheet.maxRows; i++) {
-      var row = allocationsSheet.row(i);
-      if (validateRow(row)) {
-        var courseId = 'E${row[0]!.value.toString().toLowerCase()}';
-        var lecturerId =
-            row[5]!.value.toString().trim().replaceAll(' ', '').toLowerCase();
-        var lecturerName = row[6]!.value.toString();
-        //? Lecturers extraction.....................................................
-        LecturerModel lecturer = LecturerModel(
-          courses: [courseId],
-          classes: [],
-          id: lecturerId,
-          lecturerName: lecturerName,
-          department: department,
-          semester: semester,
-          year: year,
-          lecturerEmail: row[7] != null && row[7]!.value != null
-              ? row[7]!.value.toString()
-              : '',
-        );
-
-        var level = row[2]!.value.toString().trim().replaceAll(' ', '');
-        var lecturerClass = row[8] != null && row[8]!.value != null
-            ? row[8]!.value.toString()
-            : '';
-        if (lecturerClass.isNotEmpty) {
-          var lecturerClasses = lecturerClass.split(',');
-          for (var aClass in lecturerClasses) {
-            var theClass = classes
-                .where((element) =>
-                    element.name!.trim().toLowerCase() ==
-                    aClass.trim().toLowerCase())
-                .firstOrNull;
-            if (theClass != null) {
-              lecturer.classes.add(theClass.toMap());
-            }
-          }
-        } else {
-          // add all classes with same level to lecturer
-          lecturer.classes = classes
-              .where((element) =>
-                  element.level.trim().replaceAll(' ', '') == level)
-              .map((e) => e.toMap())
-              .toList();
-        }
-
-        if (!lecturers.any((element) => element.id == lecturerId)) {
-          lecturers.add(lecturer);
-        } else {
-          var existenLecturer =
-              lecturers.firstWhere((element) => element.id == lecturerId);
-          existenLecturer.classes.addAll(lecturer.classes
-              .where((element) => !existenLecturer.classes.contains(element)));
-          existenLecturer.courses.addAll(lecturer.courses
-              .where((element) => !existenLecturer.courses.contains(element)));
-          lecturers.removeWhere((element) => element.id == lecturerId);
-          lecturers.add(existenLecturer);
-        }
-        //? Courses extraction.....................................................
-
-        var exist = courses.any((element) => element.id == courseId);
-        if (exist) {
-          //append lecturer name and id to the course if not already added
-          var course = courses.firstWhere((element) => element.id == courseId);
-          if (!course.lecturer.any((element) => element['id'] == lecturerId)) {
-            course.lecturer.add(lecturer.toMap());
-            courses.removeWhere((element) => element.id == courseId);
-            courses.add(course);
-          }
-        } else {
-          courses.add(CourseModel(
-              id: courseId,
-              code: 'E${row[0]!.value.toString()}',
-              title: row[1]!.value.toString(),
-              level: row[2]!.value.toString(),
-              creditHours: row[3] != null && row[3]!.value != null
-                  ? row[3]!.value.toString()
-                  : '3',
-              specialVenue: row[4] != null && row[4]!.value != null
-                  ? row[4]!.value.toString()
-                  : '',
-              lecturer: [lecturer.toMap()],
-              department: department,
-              studyMode: 'Evening',
-              semester: semester,
-              year: year));
-        }
-        //! End of courses extraction.....................................................
-      }
-    }
-    return (classes, courses, lecturers);
   }
 }
 
