@@ -297,10 +297,10 @@ class _ExportPageState extends ConsumerState<ExportPage> {
                                   child: IconButton(
                                       style: ButtonStyle(
                                           foregroundColor:
-                                              MaterialStateColor.resolveWith(
+                                              WidgetStateColor.resolveWith(
                                                   (states) => Colors.red),
                                           backgroundColor:
-                                              MaterialStateProperty.all(
+                                              WidgetStateProperty.all(
                                                   Colors.red)),
                                       onPressed: () {
                                         setState(() {

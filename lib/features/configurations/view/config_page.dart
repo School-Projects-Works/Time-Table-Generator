@@ -93,9 +93,9 @@ class _ConfigPageState extends ConsumerState<ConfigPage> {
                         ref.watch(configProvider).days.isNotEmpty&& ref.watch(configProvider).periods.isNotEmpty)
                       fluent.Button(
                           style: fluent.ButtonStyle(
-                            backgroundColor: fluent.ButtonState.all(
+                            backgroundColor: fluent.WidgetStateProperty.all(
                                 Colors.red.withOpacity(.8)),
-                            shape: fluent.ButtonState.all(
+                            shape: fluent.WidgetStateProperty.all(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                               ),

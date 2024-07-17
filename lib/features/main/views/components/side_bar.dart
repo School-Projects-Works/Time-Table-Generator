@@ -1,10 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
+import 'package:aamusted_timetable_generator/config/routes/router.dart';
+import 'package:aamusted_timetable_generator/config/routes/router_item.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../configurations/provider/config_provider.dart';
 
 class SideBar {
   BuildContext context;
@@ -12,97 +12,75 @@ class SideBar {
   SideBar({required this.context, required this.ref});
 
   List<NavigationPaneItem> getItems() {
-    var config = ref.watch(configProvider);
-    bool configExists = config.id != null &&
-        config.days.isNotEmpty &&
-        config.periods.isNotEmpty &&
-        config.year != null &&
-        config.semester != null;
+    // var config = ref.watch(configProvider);
+    // bool configExists = config.id != null &&
+    //     config.days.isNotEmpty &&
+    //     config.periods.isNotEmpty &&
+    //     config.year != null &&
+    //     config.semester != null;
+    var myRouter = MyRouter(ref: ref, context: context);
     return [
       PaneItem(
-        key: const ValueKey('/'),
+        key: ValueKey(RouterItem.configRoute.name),
         icon: const Icon(FluentIcons.settings),
         title: const Text('Config'),
         body: const SizedBox.shrink(),
         onTap: () {
-          if (GoRouterState.of(context).uri.toString() != '/') {
-            context.go('/');
-          }
+          myRouter.navigateToRoute(RouterItem.configRoute);
         },
       ),
-       PaneItem(
-        key: const ValueKey('/departments'),
-        icon: const Icon(FluentIcons.d365_project_operations),
+      PaneItem(
+        key: ValueKey(RouterItem.departmentRoute.name),
+        icon: const Icon(FluentIcons.office_logo),
         title: const Text('Depatments'),
         body: const SizedBox.shrink(),
         onTap: () {
-          if (GoRouterState.of(context).uri.toString() != '/departments') {
-            if (configExists) {
-              context.go('/departments');
-            } else {
-              CustomDialog.showError(message: 'Please set configuration first');
-            }
-          }
+            myRouter.navigateToRoute(RouterItem.departmentRoute);        
         },
       ),
       PaneItem(
-        key: const ValueKey('/allocations'),
-        icon: const Icon(FluentIcons.list),
-        title: const Text('Allocations'),
-        body: const SizedBox.shrink(),
-        onTap: () {
-          if (GoRouterState.of(context).uri.toString() != '/allocations') {
-            if (configExists) {
-              context.go('/allocations');
-            } else {
-              CustomDialog.showError(message: 'Please set configuration first');
-            }
-          }
-        },
-      ),
-      PaneItem(
-        key: const ValueKey('/liberal'),
-        icon: const Icon(FluentIcons.book_answers),
-        title: const Text('Liberal Courses'),
-        body: const SizedBox.shrink(),
-        onTap: () {
-          if (GoRouterState.of(context).uri.toString() != '/liberal') {
-            if (configExists) {
-              context.go('/liberal');
-            } else {
-              CustomDialog.showError(message: 'Please set configuration first');
-            }
-          }
-        },
-      ),
-      PaneItem(
-        key: const ValueKey('/venues'),
+        key:  ValueKey(RouterItem.venuesRoute.name),
         icon: const Icon(FluentIcons.room),
         title: const Text('Venues'),
         body: const SizedBox.shrink(),
         onTap: () {
-          if (GoRouterState.of(context).uri.toString() != '/venues') {
-            if (configExists) {
-              context.go('/venues');
-            } else {
-              CustomDialog.showError(message: 'Please set configuration first');
-            }
-          }
+          myRouter.navigateToRoute(RouterItem.venuesRoute);
+        },
+      ),
+       PaneItem(
+        key: ValueKey(RouterItem.lecturerRoute.name),
+        icon: const Icon(FluentIcons.admin),
+        title: const Text('Lecturers'),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          myRouter.navigateToRoute(RouterItem.lecturerRoute);
         },
       ),
       PaneItem(
-        key: const ValueKey('/tables'),
+        key:  ValueKey(RouterItem.classesRoute.name),
+        icon: const Icon(FluentIcons.group),
+        title: const Text('Classes'),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          myRouter.navigateToRoute(RouterItem.classesRoute);
+        },
+      ),
+      PaneItem(
+        key: ValueKey(RouterItem.allocationRoute.name),
+        icon: const Icon(FluentIcons.open_folder_horizontal),
+        title: const Text('Allocations'),
+        body: const SizedBox.shrink(),
+        onTap: () {
+          myRouter.navigateToRoute(RouterItem.allocationRoute);
+        },
+      ),
+      PaneItem(
+        key:  ValueKey(RouterItem.tableRoute.name),
         icon: const Icon(FluentIcons.table),
         title: const Text('Tables'),
         body: const SizedBox.shrink(),
         onTap: () {
-          if (GoRouterState.of(context).uri.toString() != '/tables') {
-            if (configExists) {
-              context.go('/tables');
-            } else {
-              CustomDialog.showError(message: 'Please set configuration first');
-            }
-          }
+          myRouter.navigateToRoute(RouterItem.tableRoute);
         },
       ),
       PaneItem(
@@ -120,25 +98,21 @@ class SideBar {
         body: const SizedBox.shrink(),
       ),
       PaneItem(
-        key: const ValueKey('/help'),
+        key:  ValueKey(RouterItem.helpRoute.name),
         icon: const Icon(FluentIcons.help),
         title: const Text('Help'),
         body: const SizedBox.shrink(),
         onTap: () {
-          if (GoRouterState.of(context).uri.toString() != '/help') {
-            context.go('/help');
-          }
+          myRouter.navigateToRoute(RouterItem.helpRoute);
         },
       ),
       PaneItem(
-        key: const ValueKey('/about'),
+        key:  ValueKey(RouterItem.aboutRoute.name),
         icon: const Icon(FluentIcons.user_gauge),
         title: const Text('About'),
         body: const SizedBox.shrink(),
         onTap: () {
-          if (GoRouterState.of(context).uri.toString() != '/about') {
-            context.go('/about');
-          }
+          myRouter.navigateToRoute(RouterItem.aboutRoute);
         },
       ),
     ];

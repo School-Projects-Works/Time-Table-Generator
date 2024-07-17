@@ -1,3 +1,4 @@
+import 'package:aamusted_timetable_generator/config/routes/router.dart';
 import 'package:aamusted_timetable_generator/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -6,10 +7,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:media_kit/media_kit.dart';
-import 'package:system_theme/system_theme.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:window_manager/window_manager.dart';
-import 'config/routes/routes.dart';
+
 
 bool get isDesktop {
   if (kIsWeb) return false;
@@ -32,7 +32,6 @@ void main() async {
         TargetPlatform.windows,
         TargetPlatform.android,
       ].contains(defaultTargetPlatform)) {
-    SystemTheme.accentColor.load();
   }
 
   if (isDesktop) {
@@ -56,11 +55,11 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return FluentApp.router(
       title: 'AAMUSTED TIMETABLE GENERATOR',
       debugShowCheckedModeBanner: false,
@@ -90,9 +89,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       builder: FlutterSmartDialog.init(),
-      routeInformationParser: router.routeInformationParser,
-      routerDelegate: router.routerDelegate,
-      routeInformationProvider: router.routeInformationProvider,
+      routerConfig: MyRouter(ref:ref, context: context).router()
     );
   }
 }

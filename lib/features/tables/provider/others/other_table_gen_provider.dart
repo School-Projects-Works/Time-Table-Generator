@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:aamusted_timetable_generator/core/functions/time_sorting.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/lecturer_class_course_pair.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/venue_time_pair_model.dart';
@@ -216,7 +214,7 @@ class OtherTableGenProvider extends StateNotifier<void> {
       var isLibPeriod = vtp.period == config.regLibPeriod!['period'];
       var isEvenLibPeriod = vtp.period == config.evenLibPeriod!['period'];
       if (vtp.venueCapacity! >= 120 && vtp.venueCapacity! <= 170) {
-        var (lccp1, lccp2) = pickTwoLCCP(lccps, config, vtp);
+        var (lccp1, lccp2) = pickTwoLCCP(lccps, config, vtp,ref);
       }
     }
   }
@@ -255,11 +253,16 @@ class OtherTableGenProvider extends StateNotifier<void> {
     if (selectedLccp.isEmpty) {
       return (null, null);
     }
-    for (var lccp in selectedLccp){
+    for (var lccp in selectedLccp) {
       var isRegular = lccp.studyMode.toLowerCase().replaceAll(' ', '') ==
           'regular'.toLowerCase();
       var isEvening = lccp.studyMode.toLowerCase().replaceAll(' ', '') ==
           'evening'.toLowerCase();
       var isNotLibLevel = (lccp.level != config.regLibLevel &&
-          lccp.level != config.evenLibLevel)||(lccp.level == config.regLibLevel && lccp.level == config.evenLibLevel);
-    } 
+              lccp.level != config.evenLibLevel) ||
+          (lccp.level == config.regLibLevel &&
+              lccp.level == config.evenLibLevel);
+    }
+    return (null, null);
+  }
+}

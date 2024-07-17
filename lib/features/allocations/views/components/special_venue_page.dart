@@ -212,7 +212,7 @@ class _SpecialVenueSelectState extends ConsumerState<SpecialVenueSelect> {
                                                         style: fluent
                                                             .CheckboxThemeData(
                                                           checkedDecoration: fluent
-                                                                  .ButtonState
+                                                                  .WidgetStateProperty 
                                                               .all(const fluent
                                                                   .BoxDecoration(
                                                                   color: Colors
@@ -297,7 +297,8 @@ class _SpecialVenueSelectState extends ConsumerState<SpecialVenueSelect> {
                                                   style:
                                                       fluent.CheckboxThemeData(
                                                     checkedDecoration:
-                                                        fluent.ButtonState.all(
+                                                        fluent.WidgetStateProperty
+                                                        .all(
                                                             const fluent
                                                                 .BoxDecoration(
                                                                 color: Colors

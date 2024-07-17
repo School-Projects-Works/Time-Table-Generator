@@ -1,5 +1,6 @@
 import 'package:aamusted_timetable_generator/features/departments/data/department_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class DepartmentServices{
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -10,7 +11,9 @@ class DepartmentServices{
       await _db.collection('departments').doc(department.id!).set(department.toMap());
       return true;
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       return false;
     }
   }
@@ -24,7 +27,9 @@ class DepartmentServices{
       await _db.collection('departments').doc(departmentModel.id).update(departmentModel.toMap());
       return true;
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       return false;
     }
   }
@@ -33,7 +38,9 @@ class DepartmentServices{
     try {
       await _db.collection('departments').doc(item.id).delete();
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 }

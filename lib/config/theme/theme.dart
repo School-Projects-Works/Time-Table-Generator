@@ -6,7 +6,7 @@ const secondaryColor = Color(0xFF724C19);
 final ThemeData lightMode = ThemeData(
   brightness: Brightness.light,
   colorScheme: ColorScheme.light(
-    background: Colors.grey.shade300,
+    surface: Colors.grey.shade300,
     primary: primaryColor,
     secondary: secondaryColor,
     tertiary: Colors.grey.shade100,
@@ -23,7 +23,7 @@ final ThemeData darkMode = ThemeData(
   //   color: Colors.grey.shade800,
   // ),
   colorScheme: ColorScheme.dark(
-    background: Colors.grey.shade800,
+    surface: Colors.grey.shade800,
     primary: primaryColor,
     secondary: secondaryColor,
     tertiary: Colors.grey.shade500,

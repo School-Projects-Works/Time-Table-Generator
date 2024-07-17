@@ -97,7 +97,7 @@ class CustomDialog {
   static void showSuccess({required String message}) {
     SmartDialog.show(
       maskColor: Colors.transparent,
-      builder: (_) {
+      builder: (context) {
         return Container(
           width: 450,
           height: 250,
@@ -148,7 +148,7 @@ class CustomDialog {
                       child: TextButton(
                         style: TextButton.styleFrom(
                           foregroundColor:
-                              Theme.of(_).textTheme.bodyLarge!.color,
+                              Theme.of(context).textTheme.bodyLarge!.color,
                         ),
                         onPressed: () => SmartDialog.dismiss(),
                         child: Text(
@@ -175,7 +175,7 @@ class CustomDialog {
       VoidCallback? onPressed2}) async {
     SmartDialog.show(
       maskColor: Colors.transparent,
-      builder: (_) {
+      builder: (context) {
         return Container(
           width: 400,
           height: 230,
@@ -234,7 +234,7 @@ class CustomDialog {
                             child: TextButton(
                               style: TextButton.styleFrom(
                                 foregroundColor:
-                                    Theme.of(_).textTheme.bodyLarge!.color,
+                                    Theme.of(context).textTheme.bodyLarge!.color,
                               ),
                               onPressed: () {
                                 if (onPressed != null) {
@@ -262,7 +262,7 @@ class CustomDialog {
                             child: TextButton(
                               style: TextButton.styleFrom(
                                 foregroundColor:
-                                    Theme.of(_).textTheme.bodyLarge!.color,
+                                    Theme.of(context).textTheme.bodyLarge!.color,
                               ),
                               onPressed: () {
                                 if (onPressed2 != null) {
@@ -300,7 +300,7 @@ class CustomDialog {
       clickMaskDismiss: false,
       controller: controller,
       maskColor: Colors.transparent,
-      builder: (_) {
+      builder: (context) {
         return SizedBox(
           width: width ?? 900,
           height: height,
@@ -315,7 +315,7 @@ class CustomDialog {
       alignment: Alignment.center,
       animationType: SmartAnimationType.centerScale_otherSlide,
       clickMaskDismiss: false,
-      builder: (_) {
+      builder: (context) {
         return Container(
           alignment: Alignment.center,
           padding: const EdgeInsets.all(10),
@@ -345,7 +345,7 @@ class CustomDialog {
   static Future<void> showImageDialog({String? path}) async {
     SmartDialog.show(
       maskColor: Colors.transparent,
-      builder: (_) {
+      builder: (context) {
         return Card(
           elevation: 10,
           child: Container(

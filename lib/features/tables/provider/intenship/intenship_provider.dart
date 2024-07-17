@@ -1,6 +1,4 @@
-import 'package:aamusted_timetable_generator/features/configurations/provider/config_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/data/tables_model.dart';
-import 'package:aamusted_timetable_generator/features/tables/provider/unsaved_tables_provider.dart';
 import 'package:aamusted_timetable_generator/features/tables/provider/venue_time_pair_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,7 +11,7 @@ class IntenshipProvider extends StateNotifier<List<TablesModel>> {
 
   void generateIntenship(WidgetRef ref) {
     var venueTimePairs = ref.watch(venueTimePairProvider);
-    var config = ref.watch(configProvider);
+   // var config = ref.watch(configProvider);
     venueTimePairs.sort((a, b) => b.venueCapacity!.compareTo(a.venueCapacity!));
     // get all unbooked venue time pairs
     var unbookedVenueTimePairs =

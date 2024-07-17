@@ -56,12 +56,12 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                           padding: const EdgeInsets.only(right: 20),
                           child: IconButton(
                             style: ButtonStyle(
-                                shape: MaterialStateProperty.all(
+                                shape: WidgetStateProperty.all(
                                     RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(5))),
                                 backgroundColor:
-                                    MaterialStateProperty.all(Colors.red)),
+                                    WidgetStateProperty.all(Colors.red)),
                             icon: const Icon(Icons.sort, color: Colors.white),
                             onPressed: () {
                               coursesNotifier
@@ -74,12 +74,12 @@ class _CoursesTabsState extends ConsumerState<CoursesTabs> {
                           padding: const EdgeInsets.only(right: 20),
                           child: IconButton(
                             style: ButtonStyle(
-                                shape: MaterialStateProperty.all(
+                                shape: WidgetStateProperty.all(
                                     RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(5))),
                                 backgroundColor:
-                                    MaterialStateProperty.all(Colors.green)),
+                                    WidgetStateProperty.all(Colors.green)),
                             icon: const Icon(Icons.cancel, color: Colors.white),
                             onPressed: () {
                               coursesNotifier.removeFilter(ref);

@@ -14,11 +14,10 @@ class MainPage extends ConsumerStatefulWidget {
   const MainPage({
     super.key,
     required this.child,
-    required this.shellContext,
   });
 
   final Widget child;
-  final BuildContext? shellContext;
+  
 
   @override
   ConsumerState<MainPage> createState() => _MyHomePageState();
