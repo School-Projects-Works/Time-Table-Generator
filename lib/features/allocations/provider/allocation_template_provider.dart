@@ -34,39 +34,35 @@ class AllocationTemplateProvider extends StateNotifier<void> {
     //open file picker
     CustomDialog.showLoading(message: 'Importing allocations...');
     String? pickedFilePath = await AppUtils.pickExcelFIle();
-    if (pickedFilePath != null) {
-      var (success, (courses, classes, lecturers), message) =
-          await _allocationUsecase.importAllocation(
-              path: pickedFilePath,
-              year: ref.watch(academicYearProvider),
-              semester: ref.watch(semesterProvider),
-             );
-      if (success) {
-        var save = await ClassesUsecase().addClasses(classes);
-        if (save) {
-          ref.read(classesDataProvider.notifier).addClass(classes);
-        }
-        save = await CoursesUseCase().addCourses(courses);
-        if (save) {
-          ref.read(coursesDataProvider.notifier).addCourses(courses);
-        }
-        save = await LecturerUseCase().addLectures(lecturers);
-        if (save) {
-          ref.read(lecturersDataProvider.notifier).addLecturers(lecturers);
-        }
-
-        CustomDialog.dismiss();
-        CustomDialog.showSuccess(
-            message: message ?? 'Allocations imported successfully');
-      } else {
-        CustomDialog.dismiss();
-        CustomDialog.showError(
-            message: message ?? 'Failed to import allocations');
+    var (success, (courses, classes, lecturers), message) =
+        await _allocationUsecase.importAllocation(
+            path: pickedFilePath,
+            year: ref.watch(academicYearProvider),
+            semester: ref.watch(semesterProvider),
+           );
+    if (success) {
+      var save = await ClassesUsecase().addClasses(classes);
+      if (save) {
+        ref.read(classesDataProvider.notifier).addClass(classes);
       }
-    }else{
+      save = await CoursesUseCase().addCourses(courses);
+      if (save) {
+        ref.read(coursesDataProvider.notifier).addCourses(courses);
+      }
+      save = await LecturerUseCase().addLectures(lecturers);
+      if (save) {
+        ref.read(lecturersDataProvider.notifier).addLecturers(lecturers);
+      }
+
       CustomDialog.dismiss();
+      CustomDialog.showSuccess(
+          message: message ?? 'Allocations imported successfully');
+    } else {
+      CustomDialog.dismiss();
+      CustomDialog.showError(
+          message: message ?? 'Failed to import allocations');
     }
-  }
+    }
 
   void clearAllAllocations(WidgetRef ref, String department) async {
     CustomDialog.dismiss();

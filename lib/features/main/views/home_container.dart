@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/main/views/components/window_buttons.dart';
