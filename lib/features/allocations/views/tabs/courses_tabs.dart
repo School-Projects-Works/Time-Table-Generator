@@ -11,7 +11,6 @@ import '../../../../core/widget/table/data/models/custom_table_columns_model.dar
 import '../../../../core/widget/table/data/models/custom_table_rows_model.dart';
 import '../../../../core/widget/table/widgets/custom_table.dart';
 import '../../../venues/data/venue_model.dart';
-import '../components/special_venue_page.dart';
 
 class CoursesTabs extends ConsumerStatefulWidget {
   const CoursesTabs({super.key});

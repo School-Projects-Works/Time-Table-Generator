@@ -147,23 +147,21 @@ class VenueDataImport extends StateNotifier<void> {
     CustomDialog.showLoading(message: 'Importing Venues....');
     //open file picker
     String? pickedFilePath = await AppUtils.pickExcelFIle();
-    if (pickedFilePath != null) {
-      var (success, message, venues) =
-          await VenueUseCase().importVenues(pickedFilePath);
+    var (success, message, venues) =
+        await VenueUseCase().importVenues(pickedFilePath);
+    if (success) {
+      //save to db
+      var (success, message) = await VenueUseCase().addVenues(venues!);
       if (success) {
-        //save to db
-        var (success, message) = await VenueUseCase().addVenues(venues!);
-        if (success) {
-          ref.read(venuesDataProvider.notifier).addVenues(venues);
-        }
-        CustomDialog.dismiss();
-        CustomDialog.showSuccess(message: message);
-      } else {
-        CustomDialog.dismiss();
-        CustomDialog.showError(message: message);
+        ref.read(venuesDataProvider.notifier).addVenues(venues);
       }
+      CustomDialog.dismiss();
+      CustomDialog.showSuccess(message: message);
+    } else {
+      CustomDialog.dismiss();
+      CustomDialog.showError(message: message);
     }
-  }
+    }
 
   void downloadTemplate() async {
     CustomDialog.showLoading(message: 'Downloading Venues Template....');

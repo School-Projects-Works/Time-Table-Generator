@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:aamusted_timetable_generator/core/widget/custom_dialog.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/classes/class_model.dart';
 import 'package:aamusted_timetable_generator/features/allocations/data/courses/courses_model.dart';

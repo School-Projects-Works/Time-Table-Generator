@@ -84,7 +84,7 @@ class _AllocationPageState extends ConsumerState<AllocationPage> {
                   //pop up menu
                   PopupMenuButton(
                     itemBuilder: (_) => ['All', ...departments]
-                        .map((e) => PopupMenuItem(value: e, child: Text(e!)))
+                        .map((e) => PopupMenuItem(value: e, child: Text(e)))
                         .toList(),
                     onSelected: (value) {
                       //clear all allocations
